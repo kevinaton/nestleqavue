@@ -78,7 +78,7 @@
           { title: 'Roles' },
           { title: 'Users' },
           { title: 'Lookup Lists' },
-        ],
+        ]
       }),
     }
   </script>
