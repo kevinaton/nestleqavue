@@ -38,8 +38,8 @@
         
         <template v-slot:extension>
             <v-tabs dark align-with-title slider-color="light-blue accent-1">
-              <v-tab>QA</v-tab>
-              <v-tab>REPORTS</v-tab>
+              <v-tab to= '/qa'>QA</v-tab>
+              <v-tab to= '/about'>REPORTS</v-tab>
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                   <v-tab v-bind="attrs" v-on="on">ADMINISTRATION <v-icon right>mdi-menu-down</v-icon></v-tab>
