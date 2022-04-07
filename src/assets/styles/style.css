@@ -2,3 +2,7 @@
     font-weight: 600;
     color: white;
 }
+
+.v-card__text, .v-card__title {
+    word-break: normal !important;
+  }
