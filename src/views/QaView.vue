@@ -6,6 +6,7 @@
     sort-by="report"
     class="elevation-1"
   >
+    <!-- toolbar area -->
     <template v-slot:top>
       <Breadcrumbs 
         :items="bcrumbs"
@@ -238,6 +239,22 @@
         Reset
       </v-btn>
     </template>
+    <template v-slot:[`item.type`]="{ item }">
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+        >
+        <v-icon v-bind:class="{ showColor: item.active }">
+          {{ item.type.icon ? item.type.icon : "mdi-alert-circle-outline" }}
+        </v-icon>
+        </v-btn>
+        </template>
+        <span> {{ item.type.name ? item.type.name : "no data" }} </span>
+      </v-tooltip>
+    </template>
   </v-data-table>
 </template>
 
@@ -337,7 +354,7 @@
   {
     report: "1",
     daycode: "9274",
-    type: "mdi-clock-check",
+    type: {icon: "mdi-timer-off-outline", name: "HRD"},
     productdesc: "Stouffers 5 Cheese Lasagna",
     line: "1",
     shift: "1",
@@ -349,7 +366,7 @@
   {
     report: "2",
     daycode: "9274",
-    type: "mdi-clock-check",
+    type: {icon: "mdi-bug-outline", name: "Pest"},
     productdesc: "LC CMCL Herb Roasted Chkn",
     line: "1",
     shift: "1",
@@ -361,7 +378,7 @@
   {
     report: "3",
     daycode: "9273",
-    type: "mdi-clock-check",
+    type: {icon: "mdi-store-outline", name: "SMI"},
     productdesc: "Stouffers Npro Mac & Cheese",
     line: "1",
     shift: "2",
@@ -373,7 +390,7 @@
   {
     report: "4",
     daycode: "9270",
-    type: "mdi-clock-check",
+    type: "",
     productdesc: "Stfr Spinach Souffle",
     line: "2",
     shift: "3",
@@ -385,19 +402,19 @@
   {
     report: "5",
     daycode: "9270",
-    type: "mdi-clock-check",
+    type: {icon: "mdi-bug-outline", name: "Pest"},
     productdesc: "Stfr Bf Steak & mash potato",
     line: "2",
     shift: "3",
     hourcode: "B",
     cases: "987",
     shortdescription: "Leakers",
-    originator: "John Doe"
+    originator: "John Doe",
   },
   {
     report: "6",
     daycode: "9270",
-    type: "mdi-clock-check",
+    type: {icon: "mdi-cancel", name: "HRD"},
     productdesc: "Stouffers 5 Cheese Lasagna",
     line: "3",
     shift: "2",
@@ -405,6 +422,18 @@
     cases: "5684",
     shortdescription: "Sensory - KSA(sauce coverage)",
     originator: "Fred Flintstone"
+  },
+  {
+    report: "7",
+    daycode: "12382",
+    type: {icon: "mdi-virus-outline", name: "Micro"},
+    productdesc: "Lorem ipsum dolor",
+    line: "7",
+    shift: "10",
+    hourcode: "Z",
+    cases: "0821",
+    shortdescription: "Sensory - KSA(sauce coverage)",
+    originator: "John Doe"
   }
 ]
       },

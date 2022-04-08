@@ -21,6 +21,7 @@
             <v-list-item
               v-for="(item, index) in items"
               :key="index"
+              :to= "item.to"
               link
             >
               <v-list-item-title>{{ item.title }}</v-list-item-title>
@@ -56,7 +57,7 @@
    export default {
       data: () => ({
         items: [
-          { title: 'Change Password' },
+          { title: 'Change Password', to: '/changepassword' },
           { title: 'Logout' },
         ],
         adminItems: [
