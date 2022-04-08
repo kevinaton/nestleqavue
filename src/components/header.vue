@@ -28,7 +28,6 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        
         <template v-slot:extension>
             <v-tabs dark align-with-title slider-color="light-blue accent-1">
               <v-tab to= '/'>QA</v-tab>

@@ -104,10 +104,11 @@
                     sm="6"
                     md="4"
                   >
-                    <v-text-field
-                      v-model="editedItem.type"
+                    <v-select
+                      :items="selectType"
                       label="Type"
-                    ></v-text-field>
+                    >
+                    </v-select>
                   </v-col>
                   <v-col
                     cols="12"
@@ -247,12 +248,12 @@
           v-bind="attrs"
           v-on="on"
         >
-        <v-icon v-bind:class="{ showColor: item.active }">
+        <v-icon color="{item.type.icon ? black : error}">
           {{ item.type.icon ? item.type.icon : "mdi-alert-circle-outline" }}
         </v-icon>
         </v-btn>
         </template>
-        <span> {{ item.type.name ? item.type.name : "no data" }} </span>
+        <span>{{ item.type.name ? item.type.name : "no data" }} </span>
       </v-tooltip>
     </template>
   </v-data-table>
@@ -267,6 +268,7 @@
     data: () => ({
       search: '',
       dialog: false,
+      selectType: ['HRD', 'HSI', 'Pest'],
       dialogDelete: false,
       exporter: [
           { title: 'Excel' },
@@ -295,7 +297,7 @@
       editedItem: {
         report: '',
         daycode: 0,
-        type: 0,
+        type: '',
         productdesc: '',
         line: 0,
         shift: 0,
@@ -305,16 +307,16 @@
         originator: '',
       },
       defaultItem: {
-        report: '',
+        report: '#',
         daycode: 0,
-        type: 0,
-        productdesc: '',
+        type: 'Select',
+        productdesc: 'add description',
         line: 0,
         shift: 0,
         hourcode: 0,
         cases: 0,
-        shortdescription: '',
-        originator: '',
+        shortdescription: 'add description',
+        originator: 'originator',
       },
       bcrumbs: [
         {
@@ -354,7 +356,7 @@
   {
     report: "1",
     daycode: "9274",
-    type: {icon: "mdi-timer-off-outline", name: "HRD"},
+    type: {icon: "mdi-timer-off-outline", name: "HRD", color:"black"},
     productdesc: "Stouffers 5 Cheese Lasagna",
     line: "1",
     shift: "1",
@@ -366,7 +368,7 @@
   {
     report: "2",
     daycode: "9274",
-    type: {icon: "mdi-bug-outline", name: "Pest"},
+    type: {icon: "", name: ""},
     productdesc: "LC CMCL Herb Roasted Chkn",
     line: "1",
     shift: "1",
