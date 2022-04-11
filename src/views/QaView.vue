@@ -8,16 +8,19 @@
   >
     <!-- toolbar area -->
     <template v-slot:top>
+      <!-- Breadcrumbs -->
       <Breadcrumbs 
         :items="bcrumbs"
       />
+
       <!-- Toolbar -->
       <v-toolbar
         flat
       >
         <v-toolbar-title>QA Records</v-toolbar-title>
         <v-spacer></v-spacer>
-        <!-- Search -->
+        
+        <!-- Search input -->
         <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -25,36 +28,12 @@
         single-line
         hide-details
       ></v-text-field>
-        <!-- Export menu -->
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                color="secondary"
-                dark
-                class="mb-2 ml-5"
-                outlined
-                v-bind="attrs"
-                v-on="on"
-              >
-              <v-icon
-                dark
-                left
-              >
-              mdi-export
-              </v-icon>
-                Export
-            </v-btn>
-          </template>
-          <v-list>
-              <v-list-item
-                v-for="(exporter, index) in exporter"
-                :key="index"
-                link
-              >
-                <v-list-item-title>{{ exporter.title }}</v-list-item-title>
-              </v-list-item>
-          </v-list>
-        </v-menu>
+
+        <!-- Export CSV/Excel Component -->
+        <Export
+        :item="exporter"
+        />
+
         <!-- New QA record -->
         <v-dialog
           v-model="dialog"
@@ -105,7 +84,8 @@
                     md="4"
                   >
                     <v-select
-                      :items="selectType"
+                      v-model="editedItem.type"
+                      :items="selectType.name"
                       label="Type"
                     >
                     </v-select>
@@ -150,7 +130,7 @@
                       label="Hour Code"
                     ></v-text-field>
                   </v-col>
-                   <v-col
+                  <v-col
                     cols="12"
                     sm="6"
                     md="4"
@@ -203,7 +183,8 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <!-- Delete -->
+        
+        <!-- Delete dialogue -->
         <v-dialog v-model="dialogDelete" max-width="20%">
           <v-card>
             <v-card-title class="body-1">Are you sure you want to delete this item?</v-card-title>
@@ -214,23 +195,46 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+
       </v-toolbar>
     </template>
+
+    <!-- Actions Edit & Delete -->
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
+      <div class="text-center">
+        <v-menu offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon small>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item-group
+              v-model="selectedItem"
+              color="primary"
+            >
+              <v-list-item
+                v-for="(option, i) in options"
+                :key="i"
+                @click="menuActionClick(option.action, item)"
+              >
+              <v-list-item-icon>
+                <v-icon v-text="option.icon"></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="option.text"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            </v-list-item-group>
+          </v-list>
+        </v-menu>
+      </div>
     </template>
+
     <!-- No data -->
     <template v-slot:no-data>
       <v-btn
@@ -240,6 +244,8 @@
         Reset
       </v-btn>
     </template>
+
+    <!-- Type Icons -->
     <template v-slot:[`item.type`]="{ item }">
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -256,19 +262,26 @@
         <span>{{ item.type.name ? item.type.name : "no data" }} </span>
       </v-tooltip>
     </template>
+
   </v-data-table>
 </template>
 
 <script>
   import Breadcrumbs from '@/components/breadcrumbs.vue'
+  import Export from '@/components/Exportcsv.vue'
   export default {
     components: {
-      Breadcrumbs
+      Breadcrumbs,
+      Export
     },
     data: () => ({
       search: '',
       dialog: false,
-      selectType: ['HRD', 'HSI', 'Pest'],
+      selectType: [
+        { title: 'HRD', icon:'' },
+        { title: 'HSI', icon:'' },
+        { title: 'Pest', icon: '' }
+      ],
       dialogDelete: false,
       exporter: [
           { title: 'Excel' },
@@ -291,6 +304,11 @@
         { text: 'Short Description', value:'shortdescription'},
         { text: 'Originator', value:'originator'},
         { text: 'Actions', value: 'actions', sortable: false },
+      ],
+      selectedItem: 1,
+      options: [
+        {text: 'Edit', icon: 'mdi-pencil', action: 'edit'},
+        {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
       ],
       qa: [],
       editedIndex: -1,
@@ -440,17 +458,30 @@
 ]
       },
 
-      editItem (item) {
-        this.editedIndex = this.qa.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
+      menuActionClick(action, item) {
+        if (action === "edit") {
+          this.editedIndex = this.qa.indexOf(item)
+          this.editedItem = Object.assign({}, item)
+          this.dialog = true
+        } 
+        else if (action === "delete") {
+          this.editedIndex = this.qa.indexOf(item)
+          this.editedItem = Object.assign({}, item)
+          this.dialogDelete = true  
+        }
       },
 
-      deleteItem (item) {
-        this.editedIndex = this.qa.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
+      // editItem (item) {
+      //   this.editedIndex = this.qa.indexOf(item)
+      //   this.editedItem = Object.assign({}, item)
+      //   this.dialog = true
+      // },
+
+      // deleteItem (item) {
+      //   this.editedIndex = this.qa.indexOf(item)
+      //   this.editedItem = Object.assign({}, item)
+      //   this.dialogDelete = true
+      // },
 
       deleteItemConfirm () {
         this.qa.splice(this.editedIndex, 1)
