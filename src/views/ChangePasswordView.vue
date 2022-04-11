@@ -9,7 +9,7 @@
         v-slot="{}"
       >
         <form @submit.prevent="submit" class="pa-8">
-          <h3 class="mb-6">Change Password</h3>
+          <h2 class="mb-6">Change Password</h2>
           
           <validation-provider
             v-slot="{ errors }"

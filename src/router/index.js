@@ -6,6 +6,7 @@ import LaborView from '../views/LaborView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import ChangePasswordView from '../views/ChangePasswordView.vue'
 import ReportView from '../views/ReportView.vue'
+import NewQARecords from '../views/NewQARecords.vue'
 
 Vue.use(VueRouter)
 
@@ -43,6 +44,11 @@ const routes = [
     name: 'change_password',
     component: ChangePasswordView
   },
+  {
+    path: '/qa/newqa',
+    name: 'new_qa',
+    component: NewQARecords
+  }
 ]
 
 const router = new VueRouter({

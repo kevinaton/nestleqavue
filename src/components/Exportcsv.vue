@@ -19,18 +19,22 @@
             </v-btn>
         </template>
         <v-list>
-            <v-list-item 
-            v-for="(exporter, i) in item"
-            :key="i"
-            link
-            >
-            <v-list-item-title>{{ exporter.title }}</v-list-item-title>
+            <v-list-item link>  
+                <v-list-item-content>
+                    <v-list-item-title>CSV</v-list-item-title>
+                </v-list-item-content>
+            </v-list-item>
+            <v-list-item link>
+                <v-list-item-content>
+                    <v-list-item-title>Excel</v-list-item-title>
+                </v-list-item-content>
             </v-list-item>
         </v-list>
     </v-menu>
 </template>
 
 <script>
+import VueJsonToCsv from 'vue-json-to-csv'
 export default {
     props: {
         item: {

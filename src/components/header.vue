@@ -7,7 +7,12 @@
       >
         <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
   
-        <v-toolbar-title class="mTitle">Nestle QA</v-toolbar-title>
+        <v-toolbar-title class="mTitle"
+        @click="$router.push('/')"
+        style="cursor:pointer"
+        >
+        Nestle QA
+        </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
@@ -68,5 +73,10 @@
           { title: 'Lookup Lists' },
         ]
       }),
+      methods: {
+        homelink() {
+
+        }
+      }
     }
 </script>
