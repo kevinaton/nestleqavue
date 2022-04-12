@@ -266,7 +266,7 @@
         </v-icon>
         </v-btn>
         </template>
-        <span>{{ item.type.name ? item.type.name : "no data" }} </span>
+        <span>{{ item.type.name ? item.type.name : "no data" }}</span>
       </v-tooltip>
     </template>
 
@@ -274,7 +274,7 @@
 </template>
 
 <script>
-  import Breadcrumbs from '@/components/breadcrumbs.vue'
+  import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import Export from '@/components/Exportcsv.vue'
   export default {
     components: {

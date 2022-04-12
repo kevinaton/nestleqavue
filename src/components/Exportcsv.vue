@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import VueJsonToCsv from 'vue-json-to-csv'
 export default {
     props: {
         item: {

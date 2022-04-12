@@ -11,24 +11,20 @@
         <router-view></router-view>
       </v-main>
 
-      <v-footer padless>
-        <v-col
-          class="text-center"
-          cols="12"
-        >
-          <div class="text-caption">{{ new Date().getFullYear() }} © Nestle QA</div>
-        </v-col>
-  </v-footer>
+      <Footer />
     </v-app>
     
 
   </template>
   
   <script>
-    import Header from '@/components/header.vue'
+    import Header from '@/components/Header.vue'
+    import Footer from '@/components/Footer.vue'
+
     export default {
       components: {
-        Header 
+        Header,
+        Footer
       },
     }
   </script>
