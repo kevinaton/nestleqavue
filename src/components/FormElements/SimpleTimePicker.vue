@@ -11,9 +11,11 @@
     >
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
+            outlined
             v-model="items.time"
+            :rules="[rules.required]"
             :label="label"
-            prepend-icon="mdi-clock-time-four-outline"
+            prepend-inner-icon="mdi-clock-time-four-outline"
             readonly
             v-bind="attrs"
             v-on="on"
@@ -31,6 +33,7 @@
 export default {
     props: {
         label: String,
+        rules: Object,
         items: {
             type: Object,
             default: () => {},

@@ -19,23 +19,67 @@
             <v-expansion-panel>
                 <v-expansion-panel-header class="font-weight-bold text-h6">Highlights</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                    <v-form v-model="valid">
+                    <v-form v-model="valid" class="mt-6">
                             <v-row>
                                 <v-col>
-                                    <SimpleDatePicker :items="calendar" label="Date" />
+                                    <SimpleDatePicker 
+                                        :items="calendar"
+                                        label="Date"
+                                    />
                                 </v-col>
                                 <v-col>
-                                    <SimpleTimePicker :items="clock" label="Time of incident" />
+                                    <SimpleTimePicker 
+                                        :items="clock"
+                                        :rules="rules"
+                                        label="Time of incident*" 
+                                    />
                                 </v-col>
                             </v-row>
                             <v-row>
                                 <v-col>
-                                    <v-autocomplete
-                                        v-model="value"
+                                    <YearOnly
                                         :items="years"
-                                        dense
                                         label="Year"
-                                    ></v-autocomplete>
+                                        :disabled= calendar.allow
+                                    />
+                                </v-col>
+                                <v-col>
+                                    <v-text-field
+                                        :rules="[rules.required]"
+                                        label="Day Code*"
+                                        type="number"
+                                        outlined
+                                    >
+                                    </v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col>
+                                    <v-text-field outlined label="Originator"></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-text-field outlined label="Plant"></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col>
+                                    <v-text-field outlined :rules="[rules.required]" label="BU Manager*"></v-text-field>
+                                </v-col>
+                                <v-col>
+                                    <v-select
+                                        outlined
+                                        :items="type"
+                                        label="Type"
+                                    ></v-select>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col>
+                                    <v-select
+                                        outlined
+                                        :items="line"
+                                        label="Line"
+                                    ></v-select>
                                 </v-col>
                                 <v-col>
                                 </v-col>
@@ -106,17 +150,20 @@
     import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
     import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
     import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
+    import YearOnly from '@/components/FormElements/YearOnly.vue'
 
     export default {
     components: {
         Newqacheckbox,
         SimpleDatePicker,
-        SimpleTimePicker
+        SimpleTimePicker,
+        YearOnly
     },
     data: () => ({
         panel: [0],
         readonly: false,
         valid: false,
+        allowYear: false,
         visible: [
             { label:"HRD", value:false },
             { label:"Pest", value:false },
@@ -127,23 +174,35 @@
         ],
         calendar: {
             time: null,
-            date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+            date: null,
+            // (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
             date2: null,
             menu: false,
             modal: false,
             menu1: false,
+            allow: true
         },
         clock: {
             time: null,
             menu1: false,
             label: ''
         },
+        rules: {
+            required: value => !!value || 'Required.',
+            counter: value => value.length <= 20 || 'Max 20 characters',
+            email: value => {
+                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                return pattern.test(value) || 'Invalid e-mail.'
+            },
+        },
+        type: ['Pre-op','Operational', 'USDA', 'Other'],
+        line: [1,2,3,4,5,6,7,8,9]
     }),
     computed : {
-    years () {
-        const year = new Date().getFullYear()
-        return Array.from({length: year - 1960}, (value, index) => new Date().getFullYear() - index)
-    }
+        years () {
+            const year = new Date().getFullYear()
+            return Array.from({length: year - 1960}, (value, index) => new Date().getFullYear() - index)
+        },
     }
     }
 </script>

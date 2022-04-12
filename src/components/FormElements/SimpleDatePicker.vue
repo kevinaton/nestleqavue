@@ -9,9 +9,10 @@
     >
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
+            outlined
             v-model="items.date"
             :label="label"
-            prepend-icon="mdi-calendar"
+            prepend-inner-icon="mdi-calendar"
             readonly
             v-bind="attrs"
             v-on="on"
@@ -20,7 +21,7 @@
         <v-date-picker
             v-model="items.date"
             show-adjacent-months
-            @input="items.menu1 = false"
+            @input="items.menu1 = false, items.allow = false"
         ></v-date-picker>
     </v-menu>
 </template>
