@@ -6,6 +6,10 @@
     >
         <v-row class="mb-0">
             <v-col>
+                <v-btn to='/' plain class="pa-0 mb-5">
+                    <v-icon>mdi-arrow-left</v-icon>
+                    Back
+                </v-btn>
                 <h2 class="mb-4">New QA Record</h2>
                 <p class="mb-0">Check the following to show the form.</p>
                 <Newqacheckbox :items="visible" />
@@ -60,12 +64,26 @@
                                 <v-text-field outlined :rules="[rules.required]" label="BU Manager*"></v-text-field>
                             </v-col>
                             <v-col>
-                                <SelectDropdown :items="type" label="Type" />
+                                <SelectDropdown 
+                                    :items="type" 
+                                    v-model="typeSelect" 
+                                    label="Type" 
+                                    @change="(value) => {
+                                        this.typeSelect = value   
+                                    }"
+                                />
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col>
-                                <SelectDropdown :items="line" label="Line" />
+                                <SelectDropdown 
+                                    :items="line" 
+                                    v-model="lineSelect" 
+                                    label="Line" 
+                                    @change="(value) => {
+                                        this.lineSelect = value   
+                                    }"
+                                />
                             </v-col>
                             <v-col>
                                 <v-text-field outlined :rules="[rules.required]" label="Line Supervisor*"></v-text-field>
@@ -90,14 +108,28 @@
                         </v-row>
                         <v-row>
                             <v-col>
-                                <SelectDropdown :items="shift" label="Shift" />
+                                <SelectDropdown 
+                                    :items="shift" 
+                                    v-model="shiftSelect" 
+                                    label="Shift" 
+                                    @change="(value) => {
+                                        this.shiftSelect = value   
+                                    }"
+                                />
                             </v-col>
                             <v-col>
                             </v-col>
                         </v-row>
                         <v-row>
                             <v-col>
-                                <SelectDropdown :items="short_description" label="Short Description" />
+                                <SelectDropdown 
+                                    :items="short_description" 
+                                    v-model="shortSelect" 
+                                    label="Short Description" 
+                                    @change="(value) => {
+                                        this.shortSelect = value   
+                                    }"
+                                />
                             </v-col>
                             <v-col>
                                 <v-text-field outlined label="Additional Description"></v-text-field>
@@ -138,19 +170,44 @@
                     <v-form v-model="valid" class="mt-6">
                         <v-row>
                             <v-col>
-                                <v-select 
-                                    outlined
-                                    :items="pests"
-                                    v-model="pestSelect"
-                                    name="pestSelect"
-                                    item-text="text"
-                                    label="Pest Type"
-                                    return-object
-                                ></v-select>
+                                <SelectDropdown 
+                                    :items="pests" 
+                                    v-model="pestSelect" 
+                                    label="Pest Type" 
+                                    @change="(value) => {
+                                        this.pestSelect = value   
+                                    }"
+                                />
                             </v-col>
                             <v-col>
-                                {{pestSelect}}
-                                <v-text-field outlined label="Hour Codes" type="number"></v-text-field>
+                                <SelectDropdown 
+                                    :items="yn" 
+                                    v-model="pcoSelect" 
+                                    label="PCO Contacted Immediately" 
+                                    @change="(value) => {
+                                        this.pcoSelect = value   
+                                    }"
+                                />
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <SelectDropdown 
+                                    :items="yn" 
+                                    v-model="paSelect" 
+                                    label="Product Adultered" 
+                                    @change="(value) => {
+                                        this.paSelect = value   
+                                    }"
+                                />
+                            </v-col>
+                            <v-col>
+                                <v-text-field outlined label="POs"></v-text-field>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-textarea v-if="paSelect == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-textarea>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -160,7 +217,30 @@
             <v-expansion-panel v-if="visible[2].value">
                 <v-expansion-panel-header class="font-weight-bold text-h6">SMI</v-expansion-panel-header>
                 <v-expansion-panel-content>
-                Some content
+                    <v-row>
+                        <v-col>
+                            <v-text-field v-model="mNum" outlined label="Material Number"></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="rMD" outlined label="Raw Material Description"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-text-field v-model="batchLot" outlined label="Batch Lot"></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="venNum" outlined label="Vendor Number"></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col>
+                            <v-text-field v-model="venName" outlined label="Vendor Name"></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-text-field v-model="venSiteNum" outlined label="Vendor Site Number"></v-text-field>
+                        </v-col>
+                    </v-row>
                 </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -254,7 +334,9 @@
                 return pattern.test(value) || 'Invalid e-mail.'
             },
         },
+        typeSelect:'',
         type: ['Pre-op','Operational', 'USDA', 'Other'],
+        lineSelect: [],
         line: [1,2,3,4,5,6,7,8,9],
         area: { text: 'area', disabled: false },
         areas: [
@@ -279,7 +361,9 @@
             { text: '...Other', disabled: false },
             
         ],
+        shiftSelect: [],
         shift: [1,2,3],
+        shortSelect:'',
         short_description: [
             'Ammonia', 'Coding', 'Film/Film Seals', 'Foreign Body',
             'GMP', 'HACCP(CPP/OPRP)', 'Hi Core', 'Housekeeping', 'Net Weight', 'Packaging', 'Pest Sighting',
@@ -287,19 +371,18 @@
         ],
         pestSelect: "",
         pests: [
-            { text:"Insect - Ant" }, 
-            { text:"Insect - Bee"},
-            { text:"Insect - Beetle"},
-            { text:"Insect - Fly"}, 
-            { text:"Insect - Generic"}, 
-            { text:"Insect - Roach"},
-            { text:"Insect - Stink Bug/Kudzu Bug"}, 
-            { text:"Rodent"},
-            { text:"Bird"},
-            { text:"Mammal"}, 
-            { text:"Other"}
+            "Insect - Ant", "Insect - Bee", "Insect - Beetle", "Insect - Fly", "Insect - Generic",
+            "Insect - Roach" ,"Insect - Stink Bug/Kudzu Bug", "Rodent", "Bird", "Mammal", "Other"
         ],
-
+        yn: ['Yes', 'No'],
+        pcoSelect: '',
+        paSelect: '',
+        mNum: '',
+        rMD: '',
+        batchLot: '',
+        venNum: '',
+        venName: '',
+        venSiteNum: '',
     }),
     computed : {
         years () {
@@ -307,10 +390,6 @@
             return Array.from({length: year - 1960}, (value, index) => new Date().getFullYear() - index)
         },
     },
-    methods: {
-        test(res){
-            console.log(res)
-        }
-    }
+
     }
 </script>

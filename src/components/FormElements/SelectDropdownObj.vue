@@ -39,7 +39,6 @@ export default {
     },
     methods: {
         selectoption: function (value) {
-            console.log(value)
             this.$emit('change', value)
         }
     }

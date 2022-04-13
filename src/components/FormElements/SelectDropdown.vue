@@ -3,6 +3,7 @@
         outlined
         :items="items"
         :label="label"
+        @input="selectoption($event)"
     ></v-select>
 </template>
 
@@ -14,6 +15,12 @@ export default {
             type: Array,
             default: () => {},
             required: false,
+        }
+    },
+    emits: ["change"],
+    methods: {
+        selectoption: function (value) {
+            this.$emit('change', value)
         }
     }
 }
