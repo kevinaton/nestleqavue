@@ -4,6 +4,7 @@
             <v-btn
                 color="secondary"
                 dark
+                large
                 class="mb-2 ml-5"
                 outlined
                 v-bind="attrs"

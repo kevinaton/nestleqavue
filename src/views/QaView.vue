@@ -183,6 +183,7 @@
           </v-card>
         </v-dialog> -->
         <v-btn
+          large
           color="primary"
           dark
           class="mb-2 ml-3"
