@@ -11,10 +11,14 @@
 export default {
     name: 'SelectDropdown',
     props: {
-        label: String,
+        label: {
+            type:String,
+            default: () => '',
+            required: false,
+        },
         items: {
             type: Array,
-            default: () => {},
+            default: () => [],
             required: false,
         }
     },
