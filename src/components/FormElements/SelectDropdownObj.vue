@@ -13,6 +13,7 @@
 
 <script>
 export default {
+    name: 'SelectDropdownObj',
     props: {
         label: String,
         text: String,

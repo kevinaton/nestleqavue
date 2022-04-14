@@ -37,6 +37,7 @@
 <script>
 export default {
     props: {
+        name: 'Exportcsv',
         item: {
             type: Array,
             default: () => [],

@@ -10,6 +10,7 @@
 
 <script>
 export default {
+    name: 'YearOnly',
     props: {
         label: String,
         value: Array,

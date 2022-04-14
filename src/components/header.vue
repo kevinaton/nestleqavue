@@ -59,6 +59,7 @@
 
 <script>
    export default {
+      name: 'Header',
       data: () => ({
         items: [
           { title: 'Change Password', to: '/changepassword' },

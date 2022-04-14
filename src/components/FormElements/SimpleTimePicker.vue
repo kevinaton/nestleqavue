@@ -32,6 +32,7 @@
 <script>
 export default {
     props: {
+        name: 'SimpleTimePicker',
         label: String,
         rules: Object,
         items: {

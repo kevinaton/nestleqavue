@@ -9,6 +9,7 @@
 
 <script>
 export default {
+    name: 'SelectDropdown',
     props: {
         label: String,
         items: {

@@ -5,6 +5,7 @@
 <script>
 export default {
     props: {
+        name: 'BreadCrumbs',
         items: {
             type: Array,
             default: () => [],
