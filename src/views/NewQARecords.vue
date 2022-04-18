@@ -23,62 +23,16 @@
             <HighlightsExp 
                 :input="highlights"
                 :rules="rules"
-                :valid="valid"
             />
             <HRD 
-                v-if="visible[0].value" 
                 :input="hrd"
-                :valid="valid"
+                v-if="visible[0].value" 
             />
-            <v-expansion-panel v-if="visible[1].value">
-                <v-expansion-panel-header class="font-weight-bold text-h6">Pest</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <v-form v-model="valid" class="mt-6">
-                        <v-row>
-                            <v-col>
-                                <SelectDropdown 
-                                    :items="pests" 
-                                    v-model="pestSelect" 
-                                    label="Pest Type" 
-                                    @change="(value) => {
-                                        this.pestSelect = value   
-                                    }"
-                                />
-                            </v-col>
-                            <v-col>
-                                <SelectDropdown 
-                                    :items="yn" 
-                                    v-model="pcoSelect" 
-                                    label="PCO Contacted Immediately" 
-                                    @change="(value) => {
-                                        this.pcoSelect = value   
-                                    }"
-                                />
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <SelectDropdown 
-                                    :items="yn" 
-                                    v-model="paSelect" 
-                                    label="Product Adultered" 
-                                    @change="(value) => {
-                                        this.paSelect = value   
-                                    }"
-                                />
-                            </v-col>
-                            <v-col>
-                                <v-text-field outlined label="POs"></v-text-field>
-                            </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
-                                <v-textarea v-if="paSelect == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-textarea>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
+            <Pest
+                :input="pest"
+                :yn="yn"
+                v-if="visible[1].value"
+            />
 
             <v-expansion-panel v-if="visible[2].value">
                 <v-expansion-panel-header class="font-weight-bold text-h6">SMI</v-expansion-panel-header>
@@ -369,16 +323,10 @@
         <v-row class="mt-8">
             <v-divider></v-divider>
         </v-row>
-        <v-row>
-            <v-col class="mt-8 d-flex flex-row-reverse align-end">
-                <v-btn color="primary" large>
-                    Submit
-                </v-btn>
-                <v-btn class="mr-3" light large>
-                    Discard
-                </v-btn>
-            </v-col>
-        </v-row>
+        
+        <SubmitDiscard 
+        :input="submitdiscard"
+        />
     </v-card>
 </template>
 
@@ -391,6 +339,8 @@
     import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
     import HighlightsExp from '@/components/qa/HighlightsExp.vue'
     import HRD from '@/components/qa/HRD.vue'
+    import Pest from '@/components/qa/Pest.vue'
+    import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 
     export default {
     components: {
@@ -401,7 +351,9 @@
         SelectDropdown,
         SelectDropdownObj,
         HighlightsExp,
-        HRD
+        HRD,
+        Pest,
+        SubmitDiscard
     },
     data: () => ({
         valid: false,
@@ -422,6 +374,7 @@
                 return pattern.test(value) || 'Invalid e-mail.'
             },
         },
+        yn: ['Yes', 'No'],
         highlights: {
             calendar: {
                 time: null,
@@ -478,16 +431,21 @@
             pos:'',
             reworkInstructions:'',
         },
+        pest: {
+            pestSelect: "",
+            pests: [
+                "Insect - Ant", "Insect - Bee", "Insect - Beetle", "Insect - Fly", "Insect - Generic",
+                "Insect - Roach" ,"Insect - Stink Bug/Kudzu Bug", "Rodent", "Bird", "Mammal", "Other"
+            ],
+            pcoSelect: '',
+            paSelect: '',
+        },
+        submitdiscard: {
+            submitDialog: false,
+            discardDialog: false,
+        },
         readonly: false,
         allowYear: false,
-        pestSelect: "",
-        pests: [
-            "Insect - Ant", "Insect - Bee", "Insect - Beetle", "Insect - Fly", "Insect - Generic",
-            "Insect - Roach" ,"Insect - Stink Bug/Kudzu Bug", "Rodent", "Bird", "Mammal", "Other"
-        ],
-        yn: ['Yes', 'No'],
-        pcoSelect: '',
-        paSelect: '',
         mNum: '',
         rMD: '',
         batchLot: '',
@@ -868,6 +826,6 @@
             'Pasta', 'Rice', 'Potato', 'Quinoa',
         ],
     }),
-
     }
+    
 </script>

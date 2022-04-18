@@ -2,7 +2,6 @@
     <v-expansion-panel>
         <v-expansion-panel-header class="font-weight-bold text-h6">Highlights</v-expansion-panel-header>
             <v-expansion-panel-content>
-                <v-form v-model="valid" class="mt-6">
                     <v-row>
                         <v-col>
                             <SimpleDatePicker 
@@ -114,7 +113,6 @@
                             <v-text-field outlined label="Additional Description"></v-text-field>
                         </v-col>
                     </v-row>
-                </v-form>
         </v-expansion-panel-content>
     </v-expansion-panel>
 </template>
@@ -146,11 +144,6 @@ export default {
             default: {},
             required: false,
         },
-        valid: {
-            type: Boolean,
-            default: false,
-            required: false,
-        }
     },
     computed : {
         years () {

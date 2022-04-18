@@ -2,7 +2,6 @@
     <v-expansion-panel>
         <v-expansion-panel-header class="font-weight-bold text-h6">HRD</v-expansion-panel-header>
         <v-expansion-panel-content>
-            <v-form v-model="valid" class="mt-6">
                 <v-row>
                     <v-col>
                         <v-text-field v-model="input.caseHeld" outlined label="Cases Held"></v-text-field>
@@ -22,7 +21,6 @@
                         <v-textarea v-model="input.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
                     </v-col>
                 </v-row>
-            </v-form>
         </v-expansion-panel-content>
     </v-expansion-panel>
 </template>
@@ -35,11 +33,6 @@ export default {
             type: Object,
             default: () => {},
         },
-        valid: {
-            type: Boolean,
-            default: false,
-            required: false,
-        }
     },
 }
 </script>
