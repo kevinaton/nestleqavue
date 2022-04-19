@@ -21,49 +21,14 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <div class="text-center">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              icon
-              v-bind="attrs"
-              v-on="on"
-            >
-              <v-icon small>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-item-group
-              v-model="qatoolbar.selectedItem"
-              color="primary"
-            >
-              <v-list-item
-                v-for="(option, i) in qatoolbar.options"
-                :key="i"
-                @click="menuActionClick(option.action, item)"
-              >
-              <v-list-item-icon>
-                <v-icon v-text="option.icon"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="option.text"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            </v-list-item-group>
-          </v-list>
-        </v-menu>
-      </div>
+      <TableMenu 
+        :input="qatoolbar"
+        :item="item"
+        :qa="qa"
+      />
     </template>
 
-    <!-- No data -->
-    <template v-slot:no-data>
-      <v-btn
-        color="primary"
-        @click="initialize"
-      >
-        Reset
-      </v-btn>
-    </template>
+    <ResetTable  @click="initialize" />
 
     <!-- Type Icons -->
     <template v-slot:[`item.type`]="{ item }">
@@ -90,12 +55,16 @@
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import QaToolbar from '@/components/TableElements/qaToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
+  import ResetTable from '@/components/TableElements/ResetTable.vue'
+  import TableMenu from '@/components/TableElements/TableMenu.vue'
   
   export default {
     components: {
       Breadcrumbs,
       QaToolbar,
       RowDelete,
+      ResetTable,
+      TableMenu
     },
     data: () => ({
       qatoolbar: {
@@ -279,23 +248,6 @@
           }
         ]
       },
-      menuActionClick(action, item) {
-        if (action === "vqa") {
-          this.qatoolbar.editedIndex = this.qa.indexOf(item)
-          this.qatoolbar.editedItem = Object.assign({}, item)
-          this.qatoolbar.dialog = true
-        }
-        else if (action === "vhrd") {
-          this.qatoolbar.editedIndex = this.qa.indexOf(item)
-          this.qatoolbar.editedItem = Object.assign({}, item)
-          this.qatoolbar.dialog = true
-        }
-        else if (action === "delete") {
-          this.qatoolbar.editedIndex = this.qa.indexOf(item)
-          this.qatoolbar.editedItem = Object.assign({}, item)
-          this.qatoolbar.dialogDelete = true
-        }
-      },
       deleteItem (item) {
         this.qatoolbar.editedIndex = this.qa.indexOf(item)
         this.qatoolbar.editedItem = Object.assign({}, item)
@@ -308,7 +260,6 @@
           this.qatoolbar.editedIndex = -1
         })
       },
-
       save () {
         if (this.qatoolbar.editedIndex > -1) {
           Object.assign(this.qa[this.qatoolbar.editedIndex], this.qatoolbar.editedItem)
