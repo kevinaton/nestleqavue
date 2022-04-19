@@ -6,10 +6,7 @@
     >
         <v-row class="mb-0">
             <v-col>
-                <v-btn to='/' plain class="pa-0 mb-5">
-                    <v-icon>mdi-arrow-left</v-icon>
-                    Back
-                </v-btn>
+                <BackBtn :input="backbtn" />
                 <h2 class="mb-4">New QA Record</h2>
                 <p class="mb-0">Check the following to show the form.</p>
                 <Newqacheckbox :items="visible" />
@@ -320,9 +317,6 @@
             </v-expansion-panel>
 
         </v-expansion-panels>
-        <v-row class="mt-8">
-            <v-divider></v-divider>
-        </v-row>
         
         <SubmitDiscard 
         :input="submitdiscard"
@@ -341,6 +335,7 @@
     import HRD from '@/components/qa/HRD.vue'
     import Pest from '@/components/qa/Pest.vue'
     import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
+    import BackBtn from '@/components/FormElements/BackBtn.vue'
 
     export default {
     components: {
@@ -353,11 +348,12 @@
         HighlightsExp,
         HRD,
         Pest,
-        SubmitDiscard
+        SubmitDiscard,
+        BackBtn
     },
     data: () => ({
         valid: false,
-        panel: [0,2,3,4],
+        panel: [0,1,2,3,4,5],
         visible: [
             { label:"HRD", value:false },
             { label:"Pest", value:false },
@@ -444,6 +440,7 @@
             submitDialog: false,
             discardDialog: false,
         },
+        backbtn:false,
         readonly: false,
         allowYear: false,
         mNum: '',

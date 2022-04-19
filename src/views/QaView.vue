@@ -2,212 +2,24 @@
   <v-data-table
     :headers="headers"
     :items="qa"
-    :search="search"
+    :search="qatoolbar.search"
     sort-by="report"
     class="elevation-1"
   >
-    <!-- toolbar area -->
     <template v-slot:top>
-      <!-- Breadcrumbs -->
+      <RowDelete 
+        :input='qatoolbar'
+        :qa="qa"
+      />
       <Breadcrumbs 
         :items="bcrumbs"
       />
-
-      <!-- Toolbar -->
-      <v-toolbar
-        flat
-      >
-        <v-toolbar-title>QA Records</v-toolbar-title>
-        <v-spacer></v-spacer>
-        
-        <!-- Search input -->
-        <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-
-        <!-- Export CSV/Excel Component -->
-        <Export
-          :item="qa"
-        />
-        <!-- New QA record -->
-        <!-- <v-dialog
-          v-model="dialog"
-          max-width="500px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="primary"
-              dark
-              class="mb-2 ml-3"
-              v-bind="attrs"
-              v-on="on"
-            >
-              New QA Record
-            </v-btn>
-          </template>
-          <v-card>
-            <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.report"
-                      label="Report"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.daycode"
-                      label="Daycode"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-select
-                      v-model="editedItem.type"
-                      :items="selectType.name"
-                      label="Type"
-                    >
-                    </v-select>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.prodDesc"
-                      label="Product Description"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.line"
-                      label="Line"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.protein"
-                      label="Shift"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.hourcode"
-                      label="Hour Code"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.cases"
-                      label="Cases"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.shortdescription"
-                      label="Short Description"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                    <v-text-field
-                      v-model="editedItem.originator"
-                      label="Originator"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-              >
-                Cancel
-              </v-btn>
-              <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-              >
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog> -->
-        <v-btn
-          large
-          color="primary"
-          dark
-          class="mb-2 ml-3"
-          to="/qa/newqa"
-        >
-          New QA Record
-        </v-btn>
-
-        <!-- Delete dialogue -->
-        <v-dialog v-model="dialogDelete" max-width="20%">
-          <v-card>
-            <v-card-title class="body-1">Are you sure you want to delete this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-
-      </v-toolbar>
+      <QaToolbar 
+        :input="qatoolbar"
+        :qa="qa"
+      />
     </template>
 
-    <!-- Actions Edit & Delete -->
     <template v-slot:[`item.actions`]="{ item }">
       <div class="text-center">
         <v-menu offset-y>
@@ -222,11 +34,11 @@
           </template>
           <v-list>
             <v-list-item-group
-              v-model="selectedItem"
+              v-model="qatoolbar.selectedItem"
               color="primary"
             >
               <v-list-item
-                v-for="(option, i) in options"
+                v-for="(option, i) in qatoolbar.options"
                 :key="i"
                 @click="menuActionClick(option.action, item)"
               >
@@ -276,21 +88,57 @@
 
 <script>
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
-  import Export from '@/components/Exportcsv.vue'
+  import QaToolbar from '@/components/TableElements/qaToolbar.vue'
+  import RowDelete from '@/components/TableElements/RowDelete.vue'
+  
   export default {
     components: {
       Breadcrumbs,
-      Export
+      QaToolbar,
+      RowDelete,
     },
     data: () => ({
-      search: '',
-      dialog: false,
+      qatoolbar: {
+        search: '',
+        dialogDelete: false,
+        dialog: false,
+        editedIndex: -1,
+        selectedItem: 1,
+        options: [
+          {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
+          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
+          {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
+        ],
+        editedItem: {
+          report: '',
+          daycode: 0,
+          type: '',
+          productdesc: '',
+          line: 0,
+          shift: 0,
+          hourcode: 0,
+          cases: 0,
+          shortdescription: '',
+          originator: '',
+        },
+        defaultItem: {
+          report: '#',
+          daycode: 0,
+          type: '',
+          productdesc: 'add description',
+          line: 0,
+          shift: 0,
+          hourcode: 0,
+          cases: 0,
+          shortdescription: 'add description',
+          originator: 'originator',
+        },
+      },
       selectType: [
         { title: 'HRD', icon:'' },
         { title: 'HSI', icon:'' },
         { title: 'Pest', icon: '' }
       ],
-      dialogDelete: false,
       headers: [
         {
           text: 'Report #',
@@ -309,37 +157,7 @@
         { text: 'Originator', value:'originator'},
         { text: 'Actions', value: 'actions', sortable: false },
       ],
-      selectedItem: 1,
-      options: [
-        {text: 'Edit', icon: 'mdi-pencil', action: 'edit'},
-        {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
-      ],
       qa: [],
-      editedIndex: -1,
-      editedItem: {
-        report: '',
-        daycode: 0,
-        type: '',
-        productdesc: '',
-        line: 0,
-        shift: 0,
-        hourcode: 0,
-        cases: 0,
-        shortdescription: '',
-        originator: '',
-      },
-      defaultItem: {
-        report: '#',
-        daycode: 0,
-        type: 'Select',
-        productdesc: 'add description',
-        line: 0,
-        shift: 0,
-        hourcode: 0,
-        cases: 0,
-        shortdescription: 'add description',
-        originator: 'originator',
-      },
       bcrumbs: [
         {
           text: 'Home',
@@ -355,7 +173,7 @@
 
     computed: {
       formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+        return this.qatoolbar.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
     },
 
@@ -461,58 +279,41 @@
           }
         ]
       },
-
       menuActionClick(action, item) {
-        if (action === "edit") {
-          this.editedIndex = this.qa.indexOf(item)
-          this.editedItem = Object.assign({}, item)
-          this.dialog = true
-        } 
+        if (action === "vqa") {
+          this.qatoolbar.editedIndex = this.qa.indexOf(item)
+          this.qatoolbar.editedItem = Object.assign({}, item)
+          this.qatoolbar.dialog = true
+        }
+        else if (action === "vhrd") {
+          this.qatoolbar.editedIndex = this.qa.indexOf(item)
+          this.qatoolbar.editedItem = Object.assign({}, item)
+          this.qatoolbar.dialog = true
+        }
         else if (action === "delete") {
-          this.editedIndex = this.qa.indexOf(item)
-          this.editedItem = Object.assign({}, item)
-          this.dialogDelete = true  
+          this.qatoolbar.editedIndex = this.qa.indexOf(item)
+          this.qatoolbar.editedItem = Object.assign({}, item)
+          this.qatoolbar.dialogDelete = true
         }
       },
-
-      // editItem (item) {
-      //   this.editedIndex = this.qa.indexOf(item)
-      //   this.editedItem = Object.assign({}, item)
-      //   this.dialog = true
-      // },
-
-      // deleteItem (item) {
-      //   this.editedIndex = this.qa.indexOf(item)
-      //   this.editedItem = Object.assign({}, item)
-      //   this.dialogDelete = true
-      // },
-
-      deleteItemConfirm () {
-        this.qa.splice(this.editedIndex, 1)
-        this.closeDelete()
+      deleteItem (item) {
+        this.qatoolbar.editedIndex = this.qa.indexOf(item)
+        this.qatoolbar.editedItem = Object.assign({}, item)
+        this.qatoolbar.dialogDelete = true
       },
-
       close () {
-        this.dialog = false
+        this.qatoolbar.dialog = false
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
+          this.qatoolbar.editedItem = Object.assign({}, this.qatoolbar.defaultItem)
+          this.qatoolbar.editedIndex = -1
         })
       },
 
       save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.qa[this.editedIndex], this.editedItem)
+        if (this.qatoolbar.editedIndex > -1) {
+          Object.assign(this.qa[this.qatoolbar.editedIndex], this.qatoolbar.editedItem)
         } else {
-          this.qa.push(this.editedItem)
+          this.qa.push(this.qatoolbar.editedItem)
         }
         this.close()
       },
