@@ -18,6 +18,7 @@
                 <v-list-item
                 v-for="(option, i) in input.options"
                 :key="i"
+                :to="option.to"
                 @click="menuActionClick(option.action, item)"
                 >
                 <v-list-item-icon>

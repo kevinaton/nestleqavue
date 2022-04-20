@@ -7,8 +7,8 @@
         <v-row class="mb-0">
             <v-col>
                 <BackBtn 
+                class="ma-0"
                 :input="backbtn" 
-                @updatedInput="(value) => {this.input = value}"
                 />
                 
                 <h2 class="mb-4">New QA Record</h2>

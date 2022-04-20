@@ -1,10 +1,10 @@
 <template>
     <v-dialog
-        v-model="initialValue"
         max-width="290"
+        v-model="initialValue"
     >
         <template v-slot:activator="{ on, attrs }">
-            <v-btn plain class="pa-0 mb-5" light large v-bind="attrs" v-on="on" @click="changeInput($event)">
+            <v-btn plain class="pa-0" light large v-bind="attrs" v-on="on">
                 <v-icon>mdi-arrow-left</v-icon>
                 Back
             </v-btn>
@@ -19,7 +19,7 @@
             <v-btn
                 color="primary"
                 text
-                @click="input = false"
+                @click="changeInput($event)"
             >
                 Cancel
             </v-btn>
@@ -27,9 +27,9 @@
                 color=""
                 text
                 to='/'
-                @click="input = false"
+                @click="changeInput($event)"
             >
-                Discard
+                Confirm
             </v-btn>
             </v-card-actions>
         </v-card>
@@ -48,14 +48,15 @@ export default {
     },
     emits: ['updateInput'],
     data: () => ({
-        initalValue:false
+        initialValue:false
     }),
     created () {
         this.initialValue = this.input
     },
     methods: {
         changeInput(value) {
-            this.$emit("updatedInput", value)
+            value = false
+            this.initialValue = value
         },
     },
 }

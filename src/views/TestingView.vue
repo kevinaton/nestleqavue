@@ -6,14 +6,14 @@
         sort-by="year"
     >
         <template v-slot:top>
-        <Breadcrumbs 
-            :items="bcrumbs"
-        />
-        <SimpleToolbar 
-            title="Testing"
-            :input="labortoolbar"
-            :table="labors"
-        />
+            <Breadcrumbs 
+                :items="bcrumbs"
+            />
+            <SimpleToolbar 
+                title="Testing"
+                :input="labortoolbar"
+                :table="labors"
+            />
         </template>
         <template v-slot:[`item.actions`]="{ item }">
         <v-icon
