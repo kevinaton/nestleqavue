@@ -1,11 +1,11 @@
 <template>
-    <v-dialog v-model="input.dialogDelete" max-width="500px">
+    <v-dialog v-model="input.dialogDelete" max-width="300px">
         <v-card>
-        <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+        <v-card-title class="text-center">Are you sure you want to delete this item?</v-card-title>
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-            <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+            <v-btn color="" text @click="deleteItemConfirm">OK</v-btn>
             <v-spacer></v-spacer>
         </v-card-actions>
         </v-card>
@@ -19,7 +19,7 @@ export default {
             type: Object,
             default: () => {},
         },
-        qa: {
+    table: {
             type: Array,
             default: [],
         },
@@ -33,7 +33,7 @@ export default {
         })
         },
         deleteItemConfirm () {
-            this.qa.splice(this.input.editedIndex, 1)
+            this.table.splice(this.input.editedIndex, 1)
             this.closeDelete()
         },
     }

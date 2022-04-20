@@ -46,7 +46,7 @@ export default {
             default: () => {},
             required: false,
         },
-        qa: {
+        table: {
             type: Array,
             default: () => [],
             required: false,
@@ -54,22 +54,22 @@ export default {
     },
     methods: {
         menuActionClick(action, item) {
-        if (action === "vqa") {
-          this.input.editedIndex = this.qa.indexOf(item)
-          this.input.editedItem = Object.assign({}, item)
-          this.input.dialog = true
-        }
-        else if (action === "vhrd") {
-          this.input.editedIndex = this.qa.indexOf(item)
-          this.input.editedItem = Object.assign({}, item)
-          this.input.dialog = true
-        }
-        else if (action === "delete") {
-          this.input.editedIndex = this.qa.indexOf(item)
-          this.input.editedItem = Object.assign({}, item)
-          this.input.dialogDelete = true
-        }
-      },
+            if (action === "vqa") {
+                this.input.editedIndex = this.table.indexOf(item)
+                this.input.editedItem = Object.assign({}, item)
+                this.input.dialog = true
+            }
+            else if (action === "vhrd") {
+                this.input.editedIndex = this.table.indexOf(item)
+                this.input.editedItem = Object.assign({}, item)
+                this.input.dialog = true
+            }
+            else if (action === "delete") {
+                this.input.editedIndex = this.table.indexOf(item)
+                this.input.editedItem = Object.assign({}, item)
+                this.input.dialogDelete = true
+            }
+        },
     },
 }
 </script>

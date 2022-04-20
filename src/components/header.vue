@@ -68,7 +68,7 @@
         adminItems: [
           { title: 'Products', to: '/products'},
           { title: 'Labor', to: '/labor'},
-          { title: 'Testing' },
+          { title: 'Testing', to: '/testing' },
           { title: 'Roles' },
           { title: 'Users' },
           { title: 'Lookup Lists' },

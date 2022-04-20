@@ -4,19 +4,19 @@
     :items="qa"
     :search="qatoolbar.search"
     sort-by="report"
-    class="elevation-1"
   >
     <template v-slot:top>
       <RowDelete 
         :input='qatoolbar'
-        :qa="qa"
+        :table="qa"
       />
       <Breadcrumbs 
         :items="bcrumbs"
       />
       <QaToolbar 
+        title="QA Records"
         :input="qatoolbar"
-        :qa="qa"
+        :table="qa"
       />
     </template>
 
@@ -24,30 +24,18 @@
       <TableMenu 
         :input="qatoolbar"
         :item="item"
-        :qa="qa"
+        :table="qa"
       />
     </template>
 
     <ResetTable  @click="initialize" />
 
-    <!-- Type Icons -->
     <template v-slot:[`item.type`]="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          icon
-          v-bind="attrs"
-          v-on="on"
-        >
-        <v-icon color="{item.type.icon ? black : error}">
-          {{ item.type.icon ? item.type.icon : "mdi-alert-circle-outline" }}
-        </v-icon>
-        </v-btn>
-        </template>
-        <span>{{ item.type.name ? item.type.name : "no data" }}</span>
-      </v-tooltip>
+      <TypeIcons 
+        :item="item"
+        :input="qatoolbar"
+      />
     </template>
-
   </v-data-table>
 </template>
 
@@ -57,6 +45,7 @@
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
   import TableMenu from '@/components/TableElements/TableMenu.vue'
+  import TypeIcons from '@/components/TableElements/TypeIcons.vue'
   
   export default {
     components: {
@@ -64,7 +53,8 @@
       QaToolbar,
       RowDelete,
       ResetTable,
-      TableMenu
+      TableMenu,
+      TypeIcons,
     },
     data: () => ({
       qatoolbar: {
@@ -139,21 +129,6 @@
         },
       ],
     }),
-
-    computed: {
-      formTitle () {
-        return this.qatoolbar.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-    },
-
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
-    },
 
     created () {
       this.initialize()
@@ -247,26 +222,6 @@
             originator: "John Doe"
           }
         ]
-      },
-      deleteItem (item) {
-        this.qatoolbar.editedIndex = this.qa.indexOf(item)
-        this.qatoolbar.editedItem = Object.assign({}, item)
-        this.qatoolbar.dialogDelete = true
-      },
-      close () {
-        this.qatoolbar.dialog = false
-        this.$nextTick(() => {
-          this.qatoolbar.editedItem = Object.assign({}, this.qatoolbar.defaultItem)
-          this.qatoolbar.editedIndex = -1
-        })
-      },
-      save () {
-        if (this.qatoolbar.editedIndex > -1) {
-          Object.assign(this.qa[this.qatoolbar.editedIndex], this.qatoolbar.editedItem)
-        } else {
-          this.qa.push(this.qatoolbar.editedItem)
-        }
-        this.close()
       },
     },
   }

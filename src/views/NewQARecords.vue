@@ -6,7 +6,11 @@
     >
         <v-row class="mb-0">
             <v-col>
-                <BackBtn :input="backbtn" />
+                <BackBtn 
+                :input="backbtn" 
+                @updatedInput="(value) => {this.input = value}"
+                />
+                
                 <h2 class="mb-4">New QA Record</h2>
                 <p class="mb-0">Check the following to show the form.</p>
                 <Newqacheckbox :items="visible" />

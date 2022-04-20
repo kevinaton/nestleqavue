@@ -15,16 +15,6 @@
         <Export
             :item="table"
         />
-        
-        <v-btn
-            large
-            color="primary"
-            dark
-            class="mb-2 ml-3"
-            to="/qa/newqa"
-        >
-            New QA Record
-        </v-btn>
 
     </v-toolbar>
 </template>

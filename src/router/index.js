@@ -7,6 +7,7 @@ import ProductsView from '../views/ProductsView.vue'
 import ChangePasswordView from '../views/ChangePasswordView.vue'
 import ReportView from '../views/ReportView.vue'
 import NewQARecords from '../views/NewQARecords.vue'
+import TestingView from '../views/TestingView.vue'
 
 Vue.use(VueRouter)
 
@@ -48,6 +49,11 @@ const routes = [
     path: '/qa/newqa',
     name: 'new_qa',
     component: NewQARecords
+  },
+  {
+    path: '/testing',
+    name: 'testing',
+    component: TestingView
   }
 ]
 

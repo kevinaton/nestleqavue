@@ -1,10 +1,10 @@
 <template>
     <v-dialog
-        v-model="input"
+        v-model="initialValue"
         max-width="290"
     >
         <template v-slot:activator="{ on, attrs }">
-            <v-btn plain class="pa-0 mb-5" light large v-bind="attrs" v-on="on">
+            <v-btn plain class="pa-0 mb-5" light large v-bind="attrs" v-on="on" @click="changeInput($event)">
                 <v-icon>mdi-arrow-left</v-icon>
                 Back
             </v-btn>
@@ -45,6 +45,18 @@ export default {
             default: false,
             required: false,
         }
+    },
+    emits: ['updateInput'],
+    data: () => ({
+        initalValue:false
+    }),
+    created () {
+        this.initialValue = this.input
+    },
+    methods: {
+        changeInput(value) {
+            this.$emit("updatedInput", value)
+        },
     },
 }
 </script>
