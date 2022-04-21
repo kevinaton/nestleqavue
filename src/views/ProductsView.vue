@@ -1,11 +1,14 @@
 <template>
+  <div>
   <v-data-table
     :headers="headers"
     :items="products"
     :search="prodtoolbar.search"
-    sort-by="year"
   >
     <template v-slot:top>
+      <SnackBar 
+        :input="snackbar"
+      />
       <RowDelete 
         :input='prodtoolbar'
         :table="products"
@@ -19,6 +22,33 @@
         :table="products"
       />
     </template>
+
+    <template v-slot:[`item.year`]="props">
+      <EditTable 
+      :year="props.item.year"
+      :input="snackbar"
+      />
+
+      <!-- <v-edit-dialog
+        :return-value.sync="props.item.year"
+        light
+        @save="save"
+        @cancel="cancel"
+        @close="close"
+      >
+        {{ props.item.year }}
+        <template v-slot:input>
+            <v-text-field
+                v-model="props.item.year"
+                :rules="[max25chars]"
+                label="Edit"
+                single-line
+                persistent
+            ></v-text-field>
+        </template>
+    </v-edit-dialog> -->
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon
         small
@@ -34,21 +64,33 @@
         mdi-delete
       </v-icon>
     </template>
+
     <ResetTable  @click="initialize" />
+  
   </v-data-table>
+  </div>
 </template>
 
 <script>
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
+  import SnackBar from '@/components/TableElements/SnackBar.vue'
+  import EditTable from '@/components/TableElements/EditTable.vue'
   export default {
     components: {
       Breadcrumbs,
       SimpleToolbar,
-      RowDelete
+      RowDelete,
+      SnackBar,
+      EditTable
     },
     data: () => ({
+      snackbar: {
+        snack: false,
+        snackColor: '',
+        snackText: '',
+      },
       prodtoolbar: {
         search: '',
         dialogDelete: false,
@@ -61,7 +103,7 @@
           {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
         ],
         editedItem: {
-          year: '',
+          year:'',
           gpn: 0,
           description: '',
           costpercase: '',
@@ -140,17 +182,17 @@
           nobestbeforedate: "0"
         },
         {
-          year: "2019",
+          year: "2018",
           gpn: "11000263",
-          description: "Stouffers Macaroni and Cheese 12x12oz",
+          description: "Banana Split with chocholate and cream",
           costpercase: "9.24",
           country: "US",
           nobestbeforedate: "0"
         },
         {
-          year: "2019",
+          year: "2020",
           gpn: "11000341",
-          description: "Stouffers Npro Green Ppr Steak 4x72oz",
+          description: "Lorem ipsum dolor",
           costpercase: "38.3",
           country: "US",
           nobestbeforedate: "0"
@@ -158,7 +200,7 @@
         {
           year: "2019",
           gpn: "11000349",
-          description: "Stouffers Npro Mcrn+Cheese 4x76oz",
+          description: "Cream apple pie",
           costpercase: "13.95",
           country: "US",
           nobestbeforedate: "0"
@@ -173,7 +215,19 @@
         }
         ]
       },
-
+      // save () {
+      //   this.snackbar.snack = true
+      //   this.snackbar.snackColor = 'success'
+      //   this.snackbar.snackText = 'Data saved'
+      // },
+      // cancel () {
+      //   this.snackbar.snack = true
+      //   this.snackbar.snackColor = 'error'
+      //   this.snackbar.snackText = 'Canceled'
+      // },
+      // close () {
+      //   console.log('Dialog closed')
+      // },
     },
   }
 </script>
