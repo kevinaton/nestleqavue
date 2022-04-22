@@ -23,6 +23,11 @@ export default {
             type: Array,
             default: [],
         },
+        snackbar: {
+            type:Object,
+            default: () => {},
+            required: false
+        }
     },
     methods: {
         closeDelete () {
@@ -33,7 +38,10 @@ export default {
         })
         },
         deleteItemConfirm () {
-            this.table.splice(this.input.editedIndex, 1)
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'success'
+            this.snackbar.snackText = 'Successfully deleted'
+            this.table.splice(this.snackbar.editedIndex, 1)
             this.closeDelete()
         },
     }

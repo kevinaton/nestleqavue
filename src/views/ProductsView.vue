@@ -12,6 +12,7 @@
       <RowDelete 
         :input='prodtoolbar'
         :table="products"
+        :snackbar="snackbar"
       />
       <Breadcrumbs 
         :items="bcrumbs"
@@ -50,19 +51,11 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
+      <DeleteAction 
+        :item="item"
+        :tableItem="products"
+        :input="prodtoolbar"
+      />
     </template>
 
     <ResetTable  @click="initialize" />
@@ -77,13 +70,15 @@
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import SnackBar from '@/components/TableElements/SnackBar.vue'
   import EditTable from '@/components/TableElements/EditTable.vue'
+  import DeleteAction from '@/components/TableElements/DeleteAction.vue'
   export default {
     components: {
       Breadcrumbs,
       SimpleToolbar,
       RowDelete,
       SnackBar,
-      EditTable
+      EditTable,
+      DeleteAction
     },
     data: () => ({
       snackbar: {
@@ -158,12 +153,7 @@
     },
 
     watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
-      },
+
     },
 
     created () {
@@ -215,19 +205,6 @@
         }
         ]
       },
-      // save () {
-      //   this.snackbar.snack = true
-      //   this.snackbar.snackColor = 'success'
-      //   this.snackbar.snackText = 'Data saved'
-      // },
-      // cancel () {
-      //   this.snackbar.snack = true
-      //   this.snackbar.snackColor = 'error'
-      //   this.snackbar.snackText = 'Canceled'
-      // },
-      // close () {
-      //   console.log('Dialog closed')
-      // },
     },
   }
 </script>
