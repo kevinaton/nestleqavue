@@ -26,28 +26,53 @@
 
     <template v-slot:[`item.year`]="props">
       <EditTable 
-      :year="props.item.year"
-      :input="snackbar"
+        :year="props.item.year"
+        :input="snackbar"
+        @change="(value) => { props.item.year = value }"
+        type="number"
       />
+    </template>
 
-      <!-- <v-edit-dialog
-        :return-value.sync="props.item.year"
-        light
-        @save="save"
-        @cancel="cancel"
-        @close="close"
-      >
-        {{ props.item.year }}
-        <template v-slot:input>
-            <v-text-field
-                v-model="props.item.year"
-                :rules="[max25chars]"
-                label="Edit"
-                single-line
-                persistent
-            ></v-text-field>
-        </template>
-    </v-edit-dialog> -->
+    <template v-slot:[`item.gpn`]="props">
+      <EditTable 
+        :year="props.item.gpn"
+        :input="snackbar"
+        @change="(value) => { props.item.gpn = value }"
+      />
+    </template>
+
+    <template v-slot:[`item.description`]="props">
+      <EditTable 
+        :year="props.item.description"
+        :input="snackbar"
+        @change="(value) => { props.item.description = value }"
+      />
+    </template>
+
+    <template v-slot:[`item.costpercase`]="props">
+      <EditTable 
+        :year="props.item.costpercase"
+        :input="snackbar"
+        @change="(value) => { props.item.costpercase = value }"
+        type="number"
+      />
+    </template>
+
+    <template v-slot:[`item.country`]="props">
+      <EditTable 
+        :year="props.item.country"
+        :input="snackbar"
+        @change="(value) => { props.item.country = value }"
+      />
+    </template>
+
+    <template v-slot:[`item.nobestbeforedate`]="props">
+      <EditTable 
+        :year="props.item.nobestbeforedate"
+        :input="snackbar"
+        @change="(value) => { props.item.nobestbeforedate = value }"
+        type="number"
+      />
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">

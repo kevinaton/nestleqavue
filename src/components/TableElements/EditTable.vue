@@ -4,13 +4,15 @@
         light
         @save="save"
         @cancel="cancel"
-        @close="close"
     >
         {{ year }}
         <template v-slot:input>
+
             <v-text-field
-                v-model="year"
-                :rules="[max25chars]"
+                :value="year"
+                @input="updateValue($event)"
+                :rules="[max50chars]"
+                :type="type"
                 label="Edit"
                 single-line
                 persistent
@@ -33,24 +35,33 @@ export default {
             default: '',
             required: false
         },
+        type: {
+            type:String,
+            default: '',
+            required: false
+        }
     },
     data: () => ({
-        max25chars: v => v.length <= 25 || 'Input too long!',
+        max50chars: v => v.length <= 50 || 'Input too long!',
+        tempValue:'',
     }),
+    emits: ['change'],
     methods: {
         save () {
-        this.input.snack = true
-        this.input.snackColor = 'success'
-        this.input.snackText = 'Data saved'
+            this.input.snack = true
+            this.input.snackColor = 'success'
+            this.input.snackText = 'Data saved'
         },
         cancel () {
             this.input.snack = true
             this.input.snackColor = 'error'
             this.input.snackText = 'Canceled'
         },
-        close () {
+        updateValue(value) {
+            this.tempValue = value
+            this.$emit('change', value)
+        }
 
-        },
     }
 }
 </script>

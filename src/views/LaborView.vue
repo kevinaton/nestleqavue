@@ -3,11 +3,18 @@
     :headers="headers"
     :items="labors"
     :search="labortoolbar.search"
-    sort-by="year"
   >
     <template v-slot:top>
+      <SnackBar 
+        :input="snackbar"
+      />
       <Breadcrumbs 
         :items="bcrumbs"
+      />
+      <RowDelete 
+        :input='labortoolbar'
+        :table="labors"
+        :snackbar="snackbar"
       />
       <SimpleToolbar 
         title="Labor"
@@ -15,20 +22,28 @@
         :table="labors"
       />
     </template>
+    <template v-slot:[`item.year`]="props">
+      <EditTable 
+        :year="props.item.year"
+        :input="snackbar"
+        type="number"
+        @change="(value) => { props.item.year = value }"
+      />
+    </template>
+    <template v-slot:[`item.laborcost`]="props">
+      <EditTable 
+        :year="props.item.laborcost"
+        :input="snackbar"
+        type="number"
+        @change="(value) => { props.item.laborcost = value }"
+      />
+    </template>
     <template v-slot:[`item.actions`]="{ item }">
-      <v-icon
-        small
-        class="mr-2"
-        @click="editItem(item)"
-      >
-        mdi-pencil
-      </v-icon>
-      <v-icon
-        small
-        @click="deleteItem(item)"
-      >
-        mdi-delete
-      </v-icon>
+      <DeleteAction 
+        :item="item"
+        :tableItem="labors"
+        :input="labortoolbar"
+      />
     </template>
     
     <ResetTable  @click="initialize" />
@@ -40,27 +55,36 @@
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
+  import SnackBar from '@/components/TableElements/SnackBar.vue'
+  import RowDelete from '@/components/TableElements/RowDelete.vue'
+  import DeleteAction from '@/components/TableElements/DeleteAction.vue'
+  import EditTable from '@/components/TableElements/EditTable.vue'
+
   export default {
     components: {
       Breadcrumbs,
       SimpleToolbar,
-      ResetTable
+      ResetTable,
+      SnackBar,
+      RowDelete,
+      DeleteAction,
+      EditTable,
     },
     data: () => ({
+      snackbar: {
+        snack: false,
+        snackColor: '',
+        snackText: '',
+      },
       labortoolbar: {
         search: '',
         dialogDelete: false,
         dialog: false,
         editedIndex: -1,
         selectedItem: 1,
-        options: [
-          {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
-          {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
-        ],
         editedItem: {
           year: '',
-        laborcost: 0,
+          laborcost: 0,
         },
         defaultItem: {
           year: '',
@@ -99,15 +123,6 @@
     computed: {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-      },
-    },
-
-    watch: {
-      dialog (val) {
-        val || this.close()
-      },
-      dialogDelete (val) {
-        val || this.closeDelete()
       },
     },
 
