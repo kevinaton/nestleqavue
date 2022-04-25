@@ -2,6 +2,8 @@
     <v-edit-dialog
         :return-value.sync="table"
         light
+        @save="save"
+        @cancel="cancel"
     >
         {{ table }}
         <template v-slot:input>
@@ -12,6 +14,7 @@
                 label="Edit"
                 single-line
                 persistent
+                required
             >
             </v-autocomplete>
         </template>
@@ -44,7 +47,6 @@ export default {
         }
     },
     data: () => ({
-        max50chars: v => v.length <= 50 || 'Input too long!',
         tempValue:'',
     }),
     emits: ['change'],

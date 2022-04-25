@@ -32,7 +32,7 @@
 <script>
 import Export from '@/components/Exportcsv.vue'
 export default {
-    name:'qaToolbar',
+    name:'QaToolbar',
     components: {
         Export,
     },

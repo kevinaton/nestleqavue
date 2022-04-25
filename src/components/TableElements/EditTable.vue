@@ -10,7 +10,7 @@
             <v-text-field
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[max50chars]"
+                :rules="[max50chars, required]"
                 :type="type"
                 label="Edit"
                 single-line
@@ -42,6 +42,7 @@ export default {
     },
     data: () => ({
         max50chars: v => v.length <= 50 || 'Input too long!',
+        required: value => !!value || 'Required.',
         tempValue:'',
     }),
     emits: ['change'],
