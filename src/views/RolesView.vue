@@ -1,8 +1,8 @@
 <template>
     <v-data-table
         :headers="headers"
-        :items="testings"
-        :search="testingtoolbar.search"
+        :items="roles"
+        :search="roletoolbar.search"
     >
         <template v-slot:top>
             <SnackBar 
@@ -12,34 +12,25 @@
                 :items="bcrumbs"
             />
             <RowDelete 
-                :input='testingtoolbar'
-                :table="testings"
+                :input='roletoolbar'
+                :table="roles"
                 :snackbar="snackbar"
             />
             <SimpleToolbar 
-                title="Testing"
-                :input="testingtoolbar"
-                :table="testings"
+                title="Roles"
+                :input="roletoolbar"
+                :table="roles"
             />
         </template>
 
-        <template v-slot:[`item.year`]="props">
+        <template v-slot:[`item.roleid`]="props">
             <EditTable 
-                :table="props.item.year"
+                :table="props.item.roleid"
                 :input="snackbar"
                 type="number"
-                @change="(value) => { props.item.year = value }"
+                @change="(value) => { props.item.roleid = value }"
             />
         </template>
-
-        <template v-slot:[`item.testname`]="props">
-            <EditTable 
-                :table="props.item.testname"
-                :input="snackbar"
-                @change="(value) => { props.item.testname = value }"
-            />
-        </template>
-
         <template v-slot:[`item.testcost`]="props">
             <EditTable 
                 :table="props.item.testcost"
@@ -52,8 +43,8 @@
         <template v-slot:[`item.actions`]="{ item }">
             <DeleteAction 
                 :item="item"
-                :tableItem="testings"
-                :input="testingtoolbar"
+                :tableItem="roles"
+                :input="roletoolbar"
             />
         </template>
         
@@ -87,37 +78,33 @@
             snackColor: '',
             snackText: '',
         },
-        testingtoolbar: {
+        roletoolbar: {
             search: '',
             dialogDelete: false,
             dialog: false,
             editedIndex: -1,
             selectedItem: 1,
             editedItem: {
-            year: '',
-            testname:'',
-            testcost: 0,
+            roleid:'',
+            testcost:0,
             },
             defaultItem: {
-            year: '',
-            testname: '',
-            testcost: 0,
+            roleid: '',
+            testcost:0,
             },
         },
         
         headers: [
             {
-            text: 'Year',
+            text: 'ID',
             align: 'start',
             sortable: true,
-            type: 'number',
-            value: 'year',
+            value: 'roleid',
             },
-            { text: 'Test Name', value: 'testname' },
             { text: 'Test Cost', value: 'testcost' },
             { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
         ],
-        testings: [],
+        roles: [],
         bcrumbs: [
             {
             text: 'Home',
@@ -128,20 +115,20 @@
             disabled: true,
             },
             {
-            text: 'Testing',
+            text: 'Roles',
             disabled: false,
-            href: '/testing',
+            href: '/roles',
             },
         ],
         }),
 
         watch: {
-        dialog (val) {
-            val || this.close()
-        },
-        dialogDelete (val) {
-            val || this.closeDelete()
-        },
+            dialog (val) {
+                val || this.close()
+            },
+            dialogDelete (val) {
+                val || this.closeDelete()
+            },
         },
 
         created () {
@@ -150,55 +137,45 @@
 
         methods: {
         initialize () {
-            this.testings = [
+            this.roles = [
             {
-                year: "2019",
-                testname: "29.67",
+                roleid: "0001",
                 testcost: "9.24"
             },
             {
-                year: "2018",
-                testname: "APC",
+                roleid: "0002",
                 testcost: "84.24"
             },
             {
-                year: "2021",
-                testname: "B. Cereus",
+                roleid: "0003",
                 testcost: "1.67"
             },
             {
-                year: "2019",
-                testname: "CPS",
+                roleid: "0004",
                 testcost: "49.12"
             },
             {
-                year: "2020",
-                testname: "E. Coli",
+                roleid: "0005",
                 testcost: "105.92"
             },
             {
-                year: "2020",
-                testname: "EB",
+                roleid: "0006",
                 testcost: "71"
             },
             {
-                year: "2020",
-                testname: "Listeria spp.",
+                roleid: "0007",
                 testcost: "1.06"
             },
             {
-                year: "2020",
-                testname: "CPS",
+                roleid: "0008",
                 testcost: "8"
             },
             {
-                year: "2020",
-                testname: "B. Cereus",
+                roleid: "0009",
                 testcost: "14"
             },
             {
-                year: "2020",
-                testname: "EB",
+                roleid: "0010",
                 testcost: "35.12"
             }
         ]

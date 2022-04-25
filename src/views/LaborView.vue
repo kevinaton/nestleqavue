@@ -24,7 +24,7 @@
     </template>
     <template v-slot:[`item.year`]="props">
       <EditTable 
-        :year="props.item.year"
+        :table="props.item.year"
         :input="snackbar"
         type="number"
         @change="(value) => { props.item.year = value }"
@@ -32,7 +32,7 @@
     </template>
     <template v-slot:[`item.laborcost`]="props">
       <EditTable 
-        :year="props.item.laborcost"
+        :table="props.item.laborcost"
         :input="snackbar"
         type="number"
         @change="(value) => { props.item.laborcost = value }"
@@ -84,11 +84,11 @@
         selectedItem: 1,
         editedItem: {
           year: '',
-          laborcost: 0,
+          laborcost: '',
         },
         defaultItem: {
           year: '',
-          laborcost: 0,
+          laborcost: '',
         },
       },
       
@@ -99,7 +99,7 @@
           sortable: true,
           value: 'year',
         },
-        { text: 'Labor Cost', value: 'laborcost' },
+        { text: 'Labor Cost', sortable: true, value: 'laborcost' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
       ],
       labors: [],
@@ -154,48 +154,6 @@
           laborcost: "28.23"
         }
       ]
-      },
-
-      editItem (item) {
-        this.editedIndex = this.product.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      deleteItem (item) {
-        this.editedIndex = this.product.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialogDelete = true
-      },
-
-      deleteItemConfirm () {
-        this.product.splice(this.editedIndex, 1)
-        this.closeDelete()
-      },
-
-      close () {
-        this.dialog = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      closeDelete () {
-        this.dialogDelete = false
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.product[this.editedIndex], this.editedItem)
-        } else {
-          this.product.push(this.editedItem)
-        }
-        this.close()
       },
     },
   }

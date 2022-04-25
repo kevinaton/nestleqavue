@@ -36,8 +36,8 @@
 
 <script>
 export default {
+    name: 'Exportcsv',
     props: {
-        name: 'Exportcsv',
         item: {
             type: Array,
             default: () => [],

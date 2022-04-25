@@ -9,6 +9,7 @@
 
 <script>
 export default {
+    name:'DeleteAction',
     props: {
         item: {
             type: Object,
@@ -26,6 +27,7 @@ export default {
             required: false
         }
     },
+    
     methods: {
         deleteItem (item) {
         this.input.editedIndex = this.tableItem.indexOf(item)

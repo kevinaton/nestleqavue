@@ -14,6 +14,7 @@
 
 <script>
 export default {
+    name:'RowDelete',
     props: {
         input: {
             type: Object,
@@ -29,6 +30,11 @@ export default {
             required: false
         }
     },
+    watch: {
+        dialogDelete (val) {
+            val || this.closeDelete()
+        },
+    },
     methods: {
         closeDelete () {
         this.input.dialogDelete = false
@@ -41,7 +47,7 @@ export default {
             this.snackbar.snack = true
             this.snackbar.snackColor = 'success'
             this.snackbar.snackText = 'Successfully deleted'
-            this.table.splice(this.snackbar.editedIndex, 1)
+            this.table.splice(this.input.editedIndex, 1)
             this.closeDelete()
         },
     }

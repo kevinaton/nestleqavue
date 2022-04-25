@@ -36,6 +36,7 @@
 
 <script>
 export default {
+    name:'TableMenu',
     props: {
         input: {
             type: Object,

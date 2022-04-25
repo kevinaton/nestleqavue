@@ -26,24 +26,24 @@
 
     <template v-slot:[`item.year`]="props">
       <EditTable 
-        :year="props.item.year"
+        :table="props.item.year"
         :input="snackbar"
         @change="(value) => { props.item.year = value }"
         type="number"
       />
     </template>
 
-    <template v-slot:[`item.gpn`]="props">
+    <template v-slot:[`item.fert`]="props">
       <EditTable 
-        :year="props.item.gpn"
+        :table="props.item.fert"
         :input="snackbar"
-        @change="(value) => { props.item.gpn = value }"
+        @change="(value) => { props.item.fert = value }"
       />
     </template>
 
     <template v-slot:[`item.description`]="props">
       <EditTable 
-        :year="props.item.description"
+        :table="props.item.description"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
@@ -51,7 +51,7 @@
 
     <template v-slot:[`item.costpercase`]="props">
       <EditTable 
-        :year="props.item.costpercase"
+        :table="props.item.costpercase"
         :input="snackbar"
         @change="(value) => { props.item.costpercase = value }"
         type="number"
@@ -59,16 +59,17 @@
     </template>
 
     <template v-slot:[`item.country`]="props">
-      <EditTable 
-        :year="props.item.country"
+      <EditAutoComplete 
+        :table="props.item.country"
         :input="snackbar"
+        :options="country"
         @change="(value) => { props.item.country = value }"
       />
     </template>
 
     <template v-slot:[`item.nobestbeforedate`]="props">
       <EditTable 
-        :year="props.item.nobestbeforedate"
+        :table="props.item.nobestbeforedate"
         :input="snackbar"
         @change="(value) => { props.item.nobestbeforedate = value }"
         type="number"
@@ -96,6 +97,8 @@
   import SnackBar from '@/components/TableElements/SnackBar.vue'
   import EditTable from '@/components/TableElements/EditTable.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
+  import EditAutoComplete from '@/components/TableElements/EditAutoComplete.vue'
+  
   export default {
     components: {
       Breadcrumbs,
@@ -103,7 +106,8 @@
       RowDelete,
       SnackBar,
       EditTable,
-      DeleteAction
+      DeleteAction,
+      EditAutoComplete,
     },
     data: () => ({
       snackbar: {
@@ -117,14 +121,9 @@
         dialog: false,
         editedIndex: -1,
         selectedItem: 1,
-        options: [
-          {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
-          {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
-        ],
         editedItem: {
           year:'',
-          gpn: 0,
+          fert: 0,
           description: '',
           costpercase: '',
           country: '',
@@ -132,13 +131,16 @@
         },
         defaultItem: {
           year: '',
-          gpn: 0,
+          fert: 0,
           description: '',
           costpercase: '',
           country: '',
           nobestbeforedate: 0,
         },
       },
+      country: [
+        'US', 'CA', 'NZ', 'JP', 'CH', 'ISR', 'PH', 'AFR'
+      ],
       headers: [
         {
           text: 'Year',
@@ -146,7 +148,7 @@
           sortable: true,
           value: 'year',
         },
-        { text: 'GPN', value: 'gpn' },
+        { text: 'FERT', value: 'fert' },
         { text: 'Description', value: 'description'},
         { text: 'Cost per Case', value: 'costpercase' },
         { text: 'Country', value: 'country' },
@@ -176,11 +178,7 @@
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
     },
-
-    watch: {
-
-    },
-
+    
     created () {
       this.initialize()
     },
@@ -190,7 +188,7 @@
         this.products = [
         {
           year: "2019",
-          gpn: "04397971",
+          fert: "04397971",
           description: "FG RL1810 Test SE Cauliflower Mac",
           costpercase: "16",
           country: "US",
@@ -198,7 +196,7 @@
         },
         {
           year: "2018",
-          gpn: "11000263",
+          fert: "11000263",
           description: "Banana Split with chocholate and cream",
           costpercase: "9.24",
           country: "US",
@@ -206,7 +204,7 @@
         },
         {
           year: "2020",
-          gpn: "11000341",
+          fert: "11000341",
           description: "Lorem ipsum dolor",
           costpercase: "38.3",
           country: "US",
@@ -214,7 +212,7 @@
         },
         {
           year: "2019",
-          gpn: "11000349",
+          fert: "11000349",
           description: "Cream apple pie",
           costpercase: "13.95",
           country: "US",
@@ -222,7 +220,7 @@
         },
         {
           year: "2019",
-          gpn: "11000851",
+          fert: "11000851",
           description: "Stouffers Macaroni and Cheese 12x340oz",
           costpercase: "9.72",
           country: "CA",

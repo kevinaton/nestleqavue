@@ -8,6 +8,7 @@ import ChangePasswordView from '../views/ChangePasswordView.vue'
 import ReportView from '../views/ReportView.vue'
 import NewQARecords from '../views/NewQARecords.vue'
 import TestingView from '../views/TestingView.vue'
+import RolesView from '../views/RolesView.vue'
 
 Vue.use(VueRouter)
 
@@ -54,6 +55,11 @@ const routes = [
     path: '/testing',
     name: 'testing',
     component: TestingView
+  },
+  {
+    path: '/roles',
+    name: 'roles',
+    component: RolesView
   }
 ]
 

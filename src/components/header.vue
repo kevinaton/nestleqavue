@@ -34,7 +34,7 @@
           </v-list>
         </v-menu>
         <template v-slot:extension>
-            <v-tabs dark align-with-title slider-color="light-blue accent-1">
+            <v-tabs dark align-with-title slider-color="light-blue accent-2">
               <v-tab to= '/'>QA</v-tab>
               <v-tab to= '/about'>REPORTS</v-tab>
               <v-menu offset-y>
@@ -69,7 +69,7 @@
           { title: 'Products', to: '/products'},
           { title: 'Labor', to: '/labor'},
           { title: 'Testing', to: '/testing' },
-          { title: 'Roles' },
+          { title: 'Roles', to: '/roles' },
           { title: 'Users' },
           { title: 'Lookup Lists' },
         ]

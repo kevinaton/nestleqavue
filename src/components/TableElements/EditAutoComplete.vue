@@ -2,27 +2,25 @@
     <v-edit-dialog
         :return-value.sync="table"
         light
-        @save="save"
-        @cancel="cancel"
     >
         {{ table }}
         <template v-slot:input>
-            <v-text-field
+            <v-autocomplete
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[max50chars]"
-                :type="type"
+                :items="options"
                 label="Edit"
                 single-line
                 persistent
-            ></v-text-field>
+            >
+            </v-autocomplete>
         </template>
     </v-edit-dialog>
 </template>
 
 <script>
 export default {
-    name:'EditTable',
+    name:'EditAutoComplete',
     props: {
         input: {
             type:Object,
@@ -38,6 +36,11 @@ export default {
             type:String,
             default: '',
             required: false
+        },
+        options: {
+            type:Array,
+            default: () => [],
+            required: false,
         }
     },
     data: () => ({

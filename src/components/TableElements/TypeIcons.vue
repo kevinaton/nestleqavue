@@ -17,6 +17,7 @@
 
 <script>
 export default {
+    name:'TypeIcons',
     props: {
         input: {
             type: Object,

@@ -4,8 +4,8 @@
 
 <script>
 export default {
+    name: 'BreadCrumbs',
     props: {
-        name: 'BreadCrumbs',
         items: {
             type: Array,
             default: () => [],
