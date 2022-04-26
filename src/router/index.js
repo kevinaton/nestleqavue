@@ -9,6 +9,8 @@ import ReportView from '../views/ReportView.vue'
 import NewQARecords from '../views/NewQARecords.vue'
 import TestingView from '../views/TestingView.vue'
 import RolesView from '../views/RolesView.vue'
+import UsersView from '../views/UsersView.vue'
+import LookupView from '../views/LookupView.vue'
 
 Vue.use(VueRouter)
 
@@ -60,6 +62,16 @@ const routes = [
     path: '/roles',
     name: 'roles',
     component: RolesView
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: UsersView
+  },
+  {
+    path: '/lookup',
+    name: 'lookup',
+    component: LookupView
   }
 ]
 

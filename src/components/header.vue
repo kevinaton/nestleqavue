@@ -70,8 +70,8 @@
           { title: 'Labor', to: '/labor'},
           { title: 'Testing', to: '/testing' },
           { title: 'Roles', to: '/roles' },
-          { title: 'Users' },
-          { title: 'Lookup Lists' },
+          { title: 'Users', to: '/users' },
+          { title: 'Lookup Lists', to: '/lookup' },
         ]
       }),
       methods: {

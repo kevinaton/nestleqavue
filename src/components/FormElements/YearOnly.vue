@@ -1,8 +1,8 @@
 <template>
     <v-autocomplete
         outlined
-        v-model="value"
         :items="items"
+        @input="updateValue($event)"
         :label="label"
         :disabled="disabled"
     ></v-autocomplete>
@@ -13,15 +13,22 @@ export default {
     name: 'YearOnly',
     props: {
         label: String,
-        value: Array,
         disabled: Boolean,
         items: {
             type: Array,
             default: () => {},
             required: false,
         },
-        data: () => {
-        },
+        data: () => ({
+            tempValue:'',
+        }),
+    },
+    emits: ['change'],
+    methods: {
+        updateValue(value) {
+            this.tempValue = value
+            this.$emit('change', value)
+        }
     }
 }
 </script>

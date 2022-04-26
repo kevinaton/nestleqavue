@@ -383,7 +383,8 @@
                 menu: false,
                 modal: false,
                 menu1: false,
-                allow: true
+                allow: true,
+                yearonly: '',
             },
             clock: {
                 time: null,
