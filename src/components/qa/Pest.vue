@@ -37,7 +37,7 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined label="POs"></v-text-field>
+                        <v-text-field outlined label="Where found"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -62,10 +62,11 @@ export default {
         input: {
             type: Object,
             default: () => {},
+            required: false
         },
         yn: {
             type: Array,
-            deafault: '',
+            default: '',
             requried: false,
         },
 

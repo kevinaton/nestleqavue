@@ -191,8 +191,8 @@ export default {
         SelectDropdownObj
 
     },
-    name: 'HighlightsExp',
     props: {
+        name: 'HighlightsExp',
         input: {
             type: Object,
             default: () => {},
