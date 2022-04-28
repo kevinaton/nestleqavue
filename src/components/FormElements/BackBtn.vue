@@ -4,7 +4,7 @@
         v-model="initialValue"
     >
         <template v-slot:activator="{ on, attrs }">
-            <v-btn plain class="pa-0" light large v-bind="attrs" v-on="on">
+            <v-btn plain class="pa-0" light large v-bind="attrs" v-on="on" text>
                 <v-icon>mdi-arrow-left</v-icon>
                 Back
             </v-btn>

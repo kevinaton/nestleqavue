@@ -11,6 +11,7 @@ import TestingView from '../views/TestingView.vue'
 import RolesView from '../views/RolesView.vue'
 import UsersView from '../views/UsersView.vue'
 import LookupView from '../views/LookupView.vue'
+import ViewHRD from '../views/ViewHRD.vue'
 
 Vue.use(VueRouter)
 
@@ -72,7 +73,13 @@ const routes = [
     path: '/lookup',
     name: 'lookup',
     component: LookupView
-  }
+  },
+  {
+    path: '/viewhrd',
+    name: 'HRD Detail',
+    component: ViewHRD
+  },
+
 ]
 
 const router = new VueRouter({

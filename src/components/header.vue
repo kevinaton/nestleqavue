@@ -26,17 +26,46 @@
             <v-list-item
               v-for="(item, index) in items"
               :key="index"
-              :to= "item.to"
               link
             >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-title  @click="verify(item)">{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
+        <template>
+          <v-dialog
+              max-width="290"
+              v-model="initialValue"
+          >
+            <v-card>
+                <v-card-title class="text-h5">
+                Are you sure?
+                </v-card-title>
+                <v-card-text>Any unsaved data will be lost.</v-card-text>
+                <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                    color="primary"
+                    text
+                    @click="cancel"
+                >
+                    Cancel
+                </v-btn>
+                <v-btn
+                    color=""
+                    text
+                    @click="redirect"
+                >
+                    Confirm
+                </v-btn>
+                </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </template>
         <template v-slot:extension>
             <v-tabs dark align-with-title slider-color="light-blue accent-2">
-              <v-tab to= '/'>QA</v-tab>
-              <v-tab to= '/about'>REPORTS</v-tab>
+              <v-tab @click="verify(qa)">{{ qa.title }}</v-tab>
+              <v-tab @click="verify(report)">{{ report.title }}</v-tab>
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                   <v-tab v-bind="attrs" v-on="on">ADMINISTRATION <v-icon right>mdi-menu-down</v-icon></v-tab>
@@ -45,10 +74,9 @@
                   <v-list-item
                     v-for="(admin, index) in adminItems"
                     :key="index"
-                    :to= "admin.to"
                     link
                   >
-                    <v-list-item-title>{{ admin.title }}</v-list-item-title>
+                    <v-list-item-title @click="verify(admin)">{{ admin.title }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
@@ -58,13 +86,15 @@
 </template>
 
 <script>
-   export default {
+  export default {
       name: 'Header',
       data: () => ({
         items: [
           { title: 'Change Password', to: '/changepassword' },
           { title: 'Logout' },
         ],
+        qa: {title:'QA', to:'/'},
+        report: {title:'Report', to:'/report'},
         adminItems: [
           { title: 'Products', to: '/products'},
           { title: 'Labor', to: '/labor'},
@@ -72,11 +102,28 @@
           { title: 'Roles', to: '/roles' },
           { title: 'Users', to: '/users' },
           { title: 'Lookup Lists', to: '/lookup' },
-        ]
+        ],
+        initialValue:false,
+        redirectvalue:[],
       }),
+      created () {
+      },
       methods: {
-        homelink() {
-
+        cancel() {
+            this.initialValue = false
+        },
+        verify(value) {          
+          if(this.$route.name != 'new_qa') {
+            this.initialValue = false
+            this.$router.push(value.to).catch(()=>{})
+          } else {
+            this.initialValue = true
+            this.redirectvalue = value
+          }
+        },
+        redirect() {
+          this.$router.push(this.redirectvalue.to).catch(()=>{})
+          this.initialValue = false
         }
       }
     }

@@ -65,7 +65,7 @@
         selectedItem: 1,
         options: [
           {text: 'View QA', icon: 'mdi-eye', action: 'vqa', to:'/qa/newqa'},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
+          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd', to:'/viewhrd'},
           {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
         ],
         editedItem: {

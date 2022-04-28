@@ -51,208 +51,13 @@
                 v-if="visible[4].value"
             />            
 
-            <v-expansion-panel v-if="visible[5].value">
-                <v-expansion-panel-header class="font-weight-bold text-h6">Micro</v-expansion-panel-header>
-                <v-expansion-panel-content>
-                    <v-row>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="holdconcerns" 
-                                v-model="hcSelect"
-                                label="Hold/Concern" 
-                                @change="(value) => {
-                                    this.hcSelect = value   
-                                }"
-                            />
-                        </v-col>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="dayofweeks" 
-                                v-model="daySelect"
-                                label="Day of Week" 
-                                @change="(value) => {
-                                    this.daySelect = value   
-                                }"
-                            />
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="whens" 
-                                v-model="whenSelect"
-                                label="When" 
-                                @change="(value) => {
-                                    this.whenSelect = value   
-                                }"
-                            />
-                        </v-col>
-                        <v-col>
-                            <v-text-field v-if="whenSelect == 'Other'" outlined label="Tag Number"></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <SimpleDatePicker 
-                            :items="micro.calendar"
-                            label="Date of Resample"
-                            />
-                        </v-col>
-                        <v-col>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="yn" 
-                                v-model="meatSelect"
-                                label="Meat Component" 
-                                @change="(value) => {
-                                    this.tagSelect = value   
-                                }"
-                            />
-                        </v-col>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="yn" 
-                                v-model="vegSelect"
-                                label="Veggie Component" 
-                                @change="(value) => {
-                                    this.tagSelect = value   
-                                }"
-                            />
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="sauces" 
-                                v-model="sauceSelect"
-                                label="Sauce Type" 
-                                @change="(value) => {
-                                    this.tagSelect = value   
-                                }"
-                            />
-                        </v-col>
-                        <v-col>
-                            <SelectDropdown 
-                                :items="starches" 
-                                v-model="starchSelect"
-                                label="Starch Type" 
-                                @change="(value) => {
-                                    this.tagSelect = value   
-                                }"
-                            />
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col>
-                            <v-textarea outlined label="Additional Comments?"></v-textarea>
-                        </v-col>
-                        <v-col>
-                            <v-data-table
-                                :headers="micro.microheaders"
-                                :items="micro.microtable"
-                                class="mb-6 pt-0 elevation-1"
-                            >
-                                <template v-slot:top>
-                                        <SnackBar 
-                                            :input="snackbar"
-                                        />
-                                    <v-toolbar flat>
-                                        <v-toolbar-title>Micro</v-toolbar-title>
-                                        <v-spacer></v-spacer>
-                                        <v-dialog
-                                        v-model="micro.dialog"
-                                        max-width="500px"
-                                        >
-                                        <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                            color="primary"
-                                            dark
-                                            class="mb-2"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            >
-                                                New Entry
-                                            </v-btn>
-                                        </template>
-                                        <v-card>
-                                            <v-card-title>
-                                            <span class="text-h5">New Micro</span>
-                                            </v-card-title>
-                                            <v-card-text>
-                                            <v-container>
-                                                <v-row>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                    v-model="micro.editedItem.hour"
-                                                    label="Dessert name"
-                                                    type="number"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                    v-model="micro.editedItem.count"
-                                                    label="Calories"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                    v-model="micro.editedItem.organism"
-                                                    label="Organism"
-                                                    placeholder="Organism"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                </v-row>
-                                            </v-container>
-                                            </v-card-text>
-                                                <v-card-actions>
-                                                <v-spacer></v-spacer>
-                                                <v-btn
-                                                    color="blue darken-1"
-                                                    text
-                                                    @click="close"
-                                                >
-                                                    Cancel
-                                                </v-btn>
-                                                <v-btn
-                                                    color="blue darken-1"
-                                                    text
-                                                    @click="save"
-                                                >
-                                                    Save
-                                                </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-dialog>
-                                    </v-toolbar>
-                                </template>
-                                <template v-slot:[`item.hour`]="props">
-                                    <EditTable 
-                                        :table="props.item.hour"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.hour = value }"
-                                        type="number"
-                                    />
-                                </template>
-                            </v-data-table>
-                        </v-col>
-                    </v-row>
-                </v-expansion-panel-content>
-            </v-expansion-panel>
+            <Micro 
+                :input="micro"
+                :test="test"
+                :snackbar="snackbar"
+                :yn="yn"
+                v-if="visible[5].value"
+            />
 
         </v-expansion-panels>
         
@@ -269,18 +74,11 @@
     import SMI from '@/components/qa/SMI.vue'
     import FM from '@/components/qa/FM.vue'
     import NR from '@/components/qa/NR.vue'
+    import Micro from '@/components/qa/Micro.vue'
 
     import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
-    import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
-    import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
-    import YearOnly from '@/components/FormElements/YearOnly.vue'
-    import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
-    import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
     import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
     import BackBtn from '@/components/FormElements/BackBtn.vue'
-
-    import SnackBar from '@/components/TableElements/SnackBar.vue'
-    import EditTable from '@/components/TableElements/EditTable.vue'
 
     export default {
     components: {
@@ -290,18 +88,11 @@
         SMI,
         FM,
         NR,
+        Micro,
 
         Newqacheckbox,
-        SimpleDatePicker,
-        SimpleTimePicker,
-        YearOnly,
-        SelectDropdown,
-        SelectDropdownObj,
         SubmitDiscard,
         BackBtn,
-
-        SnackBar,
-        EditTable
     },
     data: () => ({
         valid: false,
@@ -776,6 +567,7 @@
         },
         micro: {
             dialog: false,
+            dialogDelete: false,
             calendar: {
                 time: null,
                 date: null,
@@ -790,6 +582,7 @@
                 { text:'Hour', value: 'hour' },
                 { text: 'Count', value: 'count' },
                 { text:'Organism', value: 'organism'},
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             microtable: [
                 { hour:'0', count:'22', organism:'E. Coli' },
@@ -808,6 +601,52 @@
                 count:'0',
                 organism:'',
             },
+            hcSelect: '',
+            holdconcerns: [
+                'Hold', 'Concern',
+            ],
+            dayofweeks: [
+            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
+            ],
+            daySelect: '',
+            whens: [
+            'Startup', 'Changeover', 'Other',
+            ],
+            whenSelect: '',
+            meatSelect: '',
+            vegSelect: '',
+            sauceSelect: '',
+            sauces: [
+                'Water', 'Tomato', 'Milk'
+            ],
+            starchSelect: '',
+            starches: [
+                'Pasta', 'Rice', 'Potato', 'Quinoa',
+            ],
+        },
+        test: {
+            dialog: false,
+            dialogDelete: false,
+            testheaders: [
+                { text:'HRDDID', value: 'hrddid' },
+                { text: 'Test Name', value: 'testname' },
+                { text:'Quantity', value: 'quantity'},
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+            ],
+            testtable: [
+                { hrddid:'0', testname:'select', quantity:'0' },
+            ],
+            editedIndex: -1,
+            editedItem: {
+                hrddid:'',
+                testname:'',
+                quantity:''
+            },
+            defaultItem: {
+                hrddid:'',
+                testname:'',
+                quantity:''
+            },
         },
         tagSelect: '',
         submitdiscard: {
@@ -817,51 +656,12 @@
         backbtn:false,
         readonly: false,
         allowYear: false,
-        hcSelect: '',
-        holdconcerns: [
-            'Hold', 'Concern',
-        ],
-        daySelect: '',
-        dayofweeks: [
-            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
-        ],
-        whenSelect: '',
-        whens: [
-            'Startup', 'Changeover', 'Other',
-        ],
-        meatSelect: '',
-        vegSelect: '',
-        sauceSelect: '',
-        sauces: [
-            'Water', 'Tomato', 'Milk'
-        ],
-        starchSelect: '',
-        starches: [
-            'Pasta', 'Rice', 'Potato', 'Quinoa',
-        ],
         snackbar: {
             snack: false,
             snackColor: '',
             snackText: '',
         },
     }),
-    methods: {
-        close () {
-            this.micro.dialog = false
-            this.$nextTick(() => {
-                this.micro.editedItem = Object.assign({}, this.micro.defaultItem)
-                this.micro.editedIndex = -1
-            })
-        },
-        save () {
-            if (this.editedIndex > -1) {
-            Object.assign(this.micro.microtable[this.micro.editedIndex], this.micro.editedItem)
-            } else {
-            this.micro.microtable.push(this.micro.editedItem)
-            }
-            this.close()
-        },
-    },
     }
     
 </script>
