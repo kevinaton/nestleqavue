@@ -19,6 +19,7 @@
         <v-expansion-panels
         v-model="panel"
         multiple
+        focusable
         class="expanHeight"
         >
             <HighlightsExp 
@@ -95,7 +96,6 @@
         BackBtn,
     },
     data: () => ({
-        valid: false,
         panel: [0,1,2,3,4,5],
         visible: [
             { label:"HRD", value:false },

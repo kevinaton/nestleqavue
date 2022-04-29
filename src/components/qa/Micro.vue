@@ -1,6 +1,6 @@
 <template>
     <v-expansion-panel>
-                <v-expansion-panel-header class="font-weight-bold text-h6">Micro</v-expansion-panel-header>
+                <v-expansion-panel-header class="font-weight-bold mb-6 mb-6 text-h6 rounded-b-0">Micro</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <v-row>
                         <v-col>

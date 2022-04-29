@@ -1,6 +1,6 @@
 <template>
     <v-expansion-panel>
-        <v-expansion-panel-header class="font-weight-bold text-h6">Pest</v-expansion-panel-header>
+        <v-expansion-panel-header class="font-weight-bold text-h6 mb-6 rounded-b-0">Pest</v-expansion-panel-header>
         <v-expansion-panel-content>
             <v-form class="mt-6">
                 <v-row>
