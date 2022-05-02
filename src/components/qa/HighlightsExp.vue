@@ -21,7 +21,6 @@
                     <v-col>
                         <YearOnly
                             v-model="input.calendar.yearonly"
-                            :items="years"
                             label="Year"
                             :disabled= input.calendar.allow
                             @change="(value) => { input.calendar.yearonly = value }"
@@ -201,12 +200,6 @@ export default {
             type: Object,
             default: {},
             required: false,
-        },
-    },
-    computed : {
-        years () {
-            const year = new Date().getFullYear()
-            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear() - index)
         },
     },
 }

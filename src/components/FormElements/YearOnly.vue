@@ -1,7 +1,7 @@
 <template>
     <v-autocomplete
         outlined
-        :items="items"
+        :items="years"
         @input="updateValue($event)"
         :label="label"
         :disabled="disabled"
@@ -22,6 +22,12 @@ export default {
         data: () => ({
             tempValue:'',
         }),
+    },
+    computed : {
+        years () {
+            const year = new Date().getFullYear()
+            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear() - index)
+        },
     },
     emits: ['change'],
     methods: {

@@ -184,9 +184,50 @@
                             <v-text-field label="Other HRD #s" outlined></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-col>
-                        <!-- tables -->
-                    </v-col>
+                    <v-row>
+                        <v-col>
+                            <v-card elevation="0">
+                                <v-data-table
+                                    :headers="details.firstHeader"
+                                    :items="details.firstTable"
+                                    class="grey lighten-4"
+                                >
+                                    <template v-slot:top>
+                                        <v-toolbar color="grey lighten-4" flat class="text-h6">First Check</v-toolbar>
+                                        <v-row>
+                                            <v-col class="ma-4">
+                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                            </v-col>
+                                            <v-col class="ma-4">
+                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </template>
+                                </v-data-table>
+                            </v-card>
+                        </v-col>
+                        <v-col>
+                            <v-card elevation="0">
+                                <v-data-table
+                                    :headers="details.firstHeader"
+                                    :items="details.firstTable"
+                                    class="grey lighten-4"
+                                >
+                                    <template v-slot:top>
+                                        <v-toolbar color="grey lighten-4" flat class="text-h6">Second Check</v-toolbar>
+                                        <v-row>
+                                            <v-col class="ma-4">
+                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                            </v-col>
+                                            <v-col class="ma-4">
+                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </template>
+                                </v-data-table>
+                            </v-card>
+                        </v-col>
+                    </v-row>
                 </v-expansion-panel-content>
             </v-expansion-panel>
 
@@ -197,7 +238,19 @@
             <Rework 
                 :input="rework"    
             />
+
+            <IncidentReport
+                :input="incirep"
+            />
+            
+            <Scrap 
+                :input="scrap"    
+            />
         </v-expansion-panels>
+
+        <SubmitDiscard 
+            :input="submitdiscard"
+        />
     </v-card>
 </template>
 
@@ -205,20 +258,26 @@
     import HighlightsExp from '@/components/qa/HighlightsExp.vue'
     import HoldClassification from '@/components/ViewHrd/HoldClassification.vue'
     import Rework from '@/components/ViewHrd/Rework.vue'
+    import IncidentReport from '@/components/ViewHrd/IncidentReport.vue'
+    import Scrap from '@/components/ViewHrd/Scrap.vue'
 
     import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
     import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
     import BackBtn from '@/components/FormElements/BackBtn.vue'
+    import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 
     export default {
         components: {
             HighlightsExp,
             HoldClassification,
             Rework,
+            IncidentReport,
+            Scrap,
 
             SelectDropdown,
             SimpleDatePicker,
             BackBtn,
+            SubmitDiscard
         },
         data: () => ({
             backbtn:false,
@@ -230,6 +289,10 @@
                     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     return pattern.test(value) || 'Invalid e-mail.'
                 },
+            },
+            submitdiscard: {
+                submitDialog: false,
+                discardDialog: false,
             },
             highlights: {
                 calendar: {
@@ -305,7 +368,35 @@
                 ohahr: [
                     { label:"Other HRDs Affected?", value:false },
                     { label:"High Risk", value:false },
-                ]
+                ],
+                firstHeader: [
+                    { text:'1st Title', value: 'aTitle' },
+                    { text: '2nd Title', value: 'bTitle' },
+                    { text:'3rd Title', value: 'cTitle'},
+                ],
+                firstTable: [
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                    { aTitle:'Data', bTitle:'Data', cTitle:'Data' },
+                ],
+                secheader: [
+                    { text:'1st Title', value: 'oneTitle' },
+                    { text: '2nd Title', value: 'twoTitle' },
+                    { text:'3rd Title', value: 'threeTitle'},
+                ],
+                secTable: [
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                    { oneTitle:'Data', twoTitle:'Data', threeTitle:'Data' },
+                ],
             },
             holdclass: {
                 selectClass:'',
@@ -330,10 +421,21 @@
                 reworkApproved: false,
                 daystorework: 0,
             },
+            incirep: {
+                yearonly:''
+            },
+            scrap: {
+                visible: [
+                    { label:"Approval Request by QA", value:true },
+                    { label:"Plant Manager Approval", value:true },
+                    { label:"Plant Controller Approval", value:true },
+                    { label:"Destroyed", value:true },
+                ],
+            }
         }),
         methods: {
 
-        }
+        },
     }
 </script>
 
