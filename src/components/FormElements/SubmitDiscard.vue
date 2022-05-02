@@ -20,6 +20,7 @@
                 <v-btn
                     color=""
                     text
+                    large
                     @click="input.submitDialog = false"
                 >
                     Cancel
@@ -27,6 +28,7 @@
                 <v-btn
                     color="primary"
                     text
+                    large
                     @click="input.submitDialog = false"
                 >
                     Submit
