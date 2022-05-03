@@ -6,7 +6,7 @@
             v-bind="attrs"
             v-on="on"
         >
-        <v-icon color="{item.type.icon ? black : error}">
+        <v-icon :color="item.type.color ? item.type.color : 'error'">
             {{ item.type.icon ? item.type.icon : "mdi-alert-circle-outline" }}
         </v-icon>
         </v-btn>

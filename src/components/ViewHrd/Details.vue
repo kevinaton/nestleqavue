@@ -167,14 +167,16 @@
                                 >
                                     <template v-slot:top>
                                         <v-toolbar flat class="text-h6">First Check</v-toolbar>
-                                        <v-row>
-                                            <v-col class="ma-4">
-                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                            <v-col>
+                                                <v-row>
+                                                    <v-col>
+                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                    </v-col>
+                                                    <v-col>
+                                                        <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                    </v-col>
+                                                </v-row>
                                             </v-col>
-                                            <v-col class="ma-4">
-                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
-                                            </v-col>
-                                        </v-row>
                                     </template>
                                 </v-data-table>
                             </v-card>
@@ -187,14 +189,16 @@
                                 >
                                     <template v-slot:top>
                                         <v-toolbar flat class="text-h6">Second Check</v-toolbar>
-                                        <v-row>
-                                            <v-col class="ma-4">
-                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
-                                            </v-col>
-                                            <v-col class="ma-4">
-                                                <v-text-field label="Other HRD #s" outlined></v-text-field>
-                                            </v-col>
-                                        </v-row>
+                                        <v-col>
+                                            <v-row>
+                                                <v-col>
+                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                </v-col>
+                                                <v-col>
+                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                </v-col>
+                                            </v-row>
+                                        </v-col>
                                     </template>
                                 </v-data-table>
                             </v-card>
@@ -205,11 +209,25 @@
 </template>
 
 <script>
+import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
+
 export default {
     name:'Details',
-    input: {
+    components: {
+        SimpleDatePicker,
+        SelectDropdown,
+    },
+    props: {
+        input: {
             type: Object,
             default: () => {},
         },
+        rules: {
+            type: Object,
+            default: {},
+            required: false,
+        },
+    }
 }
 </script>

@@ -27,6 +27,7 @@
 
             <Details
                 :input="details"
+                :rules="rules"
             />
 
             <HoldClassification 

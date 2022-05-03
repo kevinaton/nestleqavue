@@ -6,9 +6,13 @@
     sort-by="report"
   >
     <template v-slot:top>
+      <SnackBar 
+        :input="snackbar"
+      />
       <RowDelete 
         :input='qatoolbar'
         :table="qa"
+        :snackbar="snackbar"
       />
       <Breadcrumbs 
         :items="bcrumbs"
@@ -44,6 +48,7 @@
   import QaToolbar from '@/components/TableElements/QaToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
+  import SnackBar from '@/components/TableElements/SnackBar.vue'
   import TableMenu from '@/components/TableElements/TableMenu.vue'
   import TypeIcons from '@/components/TableElements/TypeIcons.vue'
   
@@ -55,8 +60,14 @@
       ResetTable,
       TableMenu,
       TypeIcons,
+      SnackBar,
     },
     data: () => ({
+      snackbar: {
+        snack: false,
+        snackColor: '',
+        snackText: '',
+      },
       qatoolbar: {
         search: '',
         dialogDelete: false,
@@ -143,7 +154,7 @@
           {
             report: "1",
             daycode: "9274",
-            type: {icon: "mdi-timer-off-outline", name: "HRD", color:"black"},
+            type: {icon: "mdi-timer-off-outline", name: "HRD", color:'light-blue darken-4'},
             fert: '892172',
             productdesc: "Stouffers 5 Cheese Lasagna",
             line: "1",
@@ -156,7 +167,7 @@
           {
             report: "2",
             daycode: "9274",
-            type: {icon: "", name: ""},
+            type: {icon: "", name: "", color:''},
             fert: '82312',
             productdesc: "LC CMCL Herb Roasted Chkn",
             line: "1",
@@ -170,7 +181,7 @@
             report: "3",
             daycode: "9273",
             fert: '2931238',
-            type: {icon: "mdi-store-outline", name: "SMI"},
+            type: {icon: "mdi-store-outline", name: "SMI", color:'light-blue darken-4'},
             productdesc: "Stouffers Npro Mac & Cheese",
             line: "1",
             shift: "2",
@@ -194,8 +205,8 @@
           },
           {
             report: "5",
-            daycode: "9270",
-            type: {icon: "mdi-bug-outline", name: "Pest"},
+            daycode: "9210",
+            type: {icon: "mdi-bug-outline", name: "Pest", color:'light-blue darken-4'},
             fert: "82394234",
             productdesc: "Stfr Bf Steak & mash potato",
             line: "2",
@@ -208,7 +219,7 @@
           {
             report: "6",
             daycode: "9270",
-            type: {icon: "mdi-cancel", name: "HRD"},
+            type: {icon: "mdi-cancel", name: "HRD", color:'light-blue darken-4'},
             fert: '2312355',
             productdesc: "Stouffers 5 Cheese Lasagna",
             line: "3",
@@ -221,7 +232,7 @@
           {
             report: "7",
             daycode: "12382",
-            type: {icon: "mdi-virus-outline", name: "Micro"},
+            type: {icon: "mdi-virus-outline", name: "Micro", color:'light-blue darken-4'},
             fert: "192123",
             productdesc: "Lorem ipsum dolor",
             line: "7",
