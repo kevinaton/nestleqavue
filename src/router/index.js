@@ -76,7 +76,7 @@ const routes = [
   },
   {
     path: '/viewhrd',
-    name: 'HRD Detail',
+    name: 'hrd_detail',
     component: ViewHRD
   },
 

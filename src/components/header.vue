@@ -86,22 +86,23 @@
 </template>
 
 <script>
+
   export default {
       name: 'Header',
       data: () => ({
         items: [
-          { title: 'Change Password', to: '/changepassword' },
+          { title: 'Change Password', name:'change_password' },
           { title: 'Logout' },
         ],
-        qa: {title:'QA', name: 'qa', to:'/'},
-        report: {title:'Report', to:'/report'},
+        qa: {title:'QA', name: 'qa'},
+        report: {title:'Report', name:'report' },
         adminItems: [
-          { title: 'Products', name:'products', to: '/products'},
-          { title: 'Labor', name:'labor', to: '/labor'},
-          { title: 'Testing', name:'testing', to: '/testing' },
-          { title: 'Roles', name:'roles', to: '/roles' },
-          { title: 'Users', name:'users', to: '/users' },
-          { title: 'Lookup Lists', name:'lookup', to: '/lookup' },
+          { title: 'Products', name:'products'},
+          { title: 'Labor', name:'labor'},
+          { title: 'Testing', name:'testing' },
+          { title: 'Roles', name:'roles' },
+          { title: 'Users', name:'users' },
+          { title: 'Lookup Lists', name:'lookup' },
         ],
         initialValue:false,
         redirectvalue:[],
@@ -113,16 +114,16 @@
             this.initialValue = false
         },
         verify(value) {          
-          if(this.$route.name != 'new_qa') {
-            this.initialValue = false
-            this.$router.push(value.to).catch(()=>{})
-          } else {
+          if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail') {
             this.initialValue = true
             this.redirectvalue = value
+          } else {
+            this.initialValue = false
+            this.$router.push({name:value.name}).catch(()=>{})
           }
         },
         redirect() {
-          this.$router.push(this.redirectvalue.to).catch(()=>{})
+          this.$router.push({name:this.redirectvalue.name}).catch(()=>{})
           this.initialValue = false
         }
       }
