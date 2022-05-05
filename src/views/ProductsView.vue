@@ -25,11 +25,10 @@
     </template>
 
     <template v-slot:[`item.year`]="props">
-      <EditTable 
+      <EditYearOnly
         :table="props.item.year"
         :input="snackbar"
         @change="(value) => { props.item.year = value }"
-        type="number"
       />
     </template>
 
@@ -98,6 +97,7 @@
   import EditTable from '@/components/TableElements/EditTable.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
   import EditAutoComplete from '@/components/TableElements/EditAutoComplete.vue'
+  import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
   
   export default {
     components: {
@@ -108,6 +108,7 @@
       EditTable,
       DeleteAction,
       EditAutoComplete,
+      EditYearOnly,
     },
     data: () => ({
       snackbar: {
@@ -187,7 +188,7 @@
       initialize () {
         this.products = [
         {
-          year: "2019",
+          year: 2019,
           fert: "04397971",
           description: "FG RL1810 Test SE Cauliflower Mac",
           costpercase: "16",
@@ -195,7 +196,7 @@
           nobestbeforedate: "0"
         },
         {
-          year: "2018",
+          year: 2018,
           fert: "11000263",
           description: "Banana Split with chocholate and cream",
           costpercase: "9.24",
@@ -203,7 +204,7 @@
           nobestbeforedate: "0"
         },
         {
-          year: "2020",
+          year: 2020,
           fert: "11000341",
           description: "Lorem ipsum dolor",
           costpercase: "38.3",
@@ -211,7 +212,7 @@
           nobestbeforedate: "0"
         },
         {
-          year: "2019",
+          year: 2019,
           fert: "11000349",
           description: "Cream apple pie",
           costpercase: "13.95",
@@ -219,7 +220,7 @@
           nobestbeforedate: "0"
         },
         {
-          year: "2019",
+          year: 2019,
           fert: "11000851",
           description: "Stouffers Macaroni and Cheese 12x340oz",
           costpercase: "9.72",

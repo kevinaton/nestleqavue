@@ -24,7 +24,7 @@
         </template>
 
         <template v-slot:[`item.year`]="props">
-            <EditTable 
+            <EditYearOnly
                 :table="props.item.year"
                 :input="snackbar"
                 type="number"
@@ -70,6 +70,7 @@
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
     import EditTable from '@/components/TableElements/EditTable.vue'
+    import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
 
     export default {
         components: {
@@ -79,7 +80,8 @@
         DeleteAction,
         SnackBar,
         RowDelete,
-        EditTable
+        EditTable,
+        EditYearOnly,
         },
         data: () => ({
         snackbar: {
@@ -152,52 +154,52 @@
         initialize () {
             this.testings = [
             {
-                year: "2019",
+                year: 2019,
                 testname: "29.67",
                 testcost: "9.24"
             },
             {
-                year: "2018",
+                year: 2018,
                 testname: "APC",
                 testcost: "84.24"
             },
             {
-                year: "2021",
+                year: 2021,
                 testname: "B. Cereus",
                 testcost: "1.67"
             },
             {
-                year: "2019",
+                year: 2019,
                 testname: "CPS",
                 testcost: "49.12"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "E. Coli",
                 testcost: "105.92"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "EB",
                 testcost: "71"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "Listeria spp.",
                 testcost: "1.06"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "CPS",
                 testcost: "8"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "B. Cereus",
                 testcost: "14"
             },
             {
-                year: "2020",
+                year: 2020,
                 testname: "EB",
                 testcost: "35.12"
             }

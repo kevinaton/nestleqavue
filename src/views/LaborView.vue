@@ -23,10 +23,9 @@
       />
     </template>
     <template v-slot:[`item.year`]="props">
-      <EditTable 
+      <EditYearOnly 
         :table="props.item.year"
         :input="snackbar"
-        type="number"
         @change="(value) => { props.item.year = value }"
       />
     </template>
@@ -59,6 +58,7 @@
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
   import EditTable from '@/components/TableElements/EditTable.vue'
+  import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
 
   export default {
     components: {
@@ -69,6 +69,7 @@
       RowDelete,
       DeleteAction,
       EditTable,
+      EditYearOnly,
     },
     data: () => ({
       snackbar: {
@@ -134,23 +135,23 @@
       initialize () {
         this.labors = [
         {
-          year: "2019",
+          year: 2019,
           laborcost: "29.67"
         },
         {
-          year: "2018",
+          year: 2018,
           laborcost: "27.74"
         },
         {
-          year: "2021",
+          year: 2021,
           laborcost: "26.46"
         },
         {
-          year: "2019",
+          year: 2019,
           laborcost: "27.45"
         },
         {
-          year: "2020",
+          year: 2020,
           laborcost: "28.23"
         }
       ]

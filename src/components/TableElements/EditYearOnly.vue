@@ -1,9 +1,9 @@
 <template>
     <v-edit-dialog
-        :return-value.sync="table"
+        :v-model="table"
         light
-        persistent
         large
+        persistent
         @save="save"
         @cancel="cancel"
     >
@@ -12,10 +12,10 @@
             <v-autocomplete
                 :value="table"
                 @input="updateValue($event)"
-                :items="options"
+                @keypress="filter(event)"
+                :items="years"
                 label="Edit"
                 single-line
-                persistent
                 required
             >
             </v-autocomplete>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    name:'EditAutoComplete',
+    name:'EditYearOnly',
     props: {
         input: {
             type:Object,
@@ -33,30 +33,39 @@ export default {
             required: false,
         },
         table: {
-            type:String,
-            default: '',
+            type:Number,
+            default:0,
             required: false
         },
-        type: {
-            type:String,
-            default: '',
-            required: false
+    },
+    computed : {
+        years () {
+            const year = new Date().getFullYear()
+            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear() - index)
         },
-        options: {
-            type:Array,
-            default: () => [],
-            required: false,
-        }
     },
     data: () => ({
-        tempValue:'',
+        tempValue:0,
+        event:'',
     }),
     emits: ['change'],
     methods: {
+        filter: function(evt) {
+            evt = (evt) ? evt : window.event;
+            let expect = evt.target.value.toString() + evt.key.toString();
+            
+            if (!/^[-+]?[0-9]*\.?[0-9]*$/.test(expect)) {
+                evt.preventDefault();
+            } else {
+                return true;
+            }
+        },
         save () {
             this.input.snack = true
             this.input.snackColor = 'success'
             this.input.snackText = 'Data saved'
+            var value = this.tempValue
+            this.$emit('change', value)
         },
         cancel () {
             this.input.snack = true
@@ -65,8 +74,7 @@ export default {
         },
         updateValue(value) {
             this.tempValue = value
-            this.$emit('change', value)
-        }
+        },
     }
 }
 </script>
