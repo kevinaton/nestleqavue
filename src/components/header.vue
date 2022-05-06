@@ -75,8 +75,9 @@
                     v-for="(admin, index) in adminItems"
                     :key="index"
                     link
+                    @click="verify(admin)"
                   >
-                    <v-list-item-title @click="verify(admin)">{{ admin.title }}</v-list-item-title>
+                    <v-list-item-title>{{ admin.title }}</v-list-item-title>
                   </v-list-item>
                 </v-list>
               </v-menu>
