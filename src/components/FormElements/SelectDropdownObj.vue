@@ -7,6 +7,7 @@
         v-model="selectedData"
         :name="name"
         :item-text="text"
+        :item-value="value"
         return-object
     ></v-select>
 </template>
@@ -23,12 +24,16 @@ export default {
         },
         items: {
             type: Array,
-            default: () => {},
+            default: () => [],
             required: false,
         },
         name: {
             type: String,
             default: '',
+        },
+        value: {
+            type: Object,
+            default: () => {},
         }
     },
     emits: ["change"],

@@ -5,7 +5,7 @@ import QaView from '../views/QaView.vue'
 import LaborView from '../views/LaborView.vue'
 import ProductsView from '../views/ProductsView.vue'
 import ChangePasswordView from '../views/ChangePasswordView.vue'
-import ReportView from '../views/ReportView.vue'
+import CaseCost from '../views/CasesCost.vue'
 import NewQARecords from '../views/NewQARecords.vue'
 import TestingView from '../views/TestingView.vue'
 import RolesView from '../views/RolesView.vue'
@@ -27,12 +27,12 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/ReportView.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/CasesCost.vue')
   },
   {
-    path: '/report',
-    name: 'report',
-    component: ReportView
+    path: '/casecost',
+    name: 'casecost',
+    component: CaseCost
   },
   {
     path: '/products',

@@ -102,7 +102,7 @@
                     <v-col>
                         <SelectDropdown 
                             :items="input.short_description" 
-                            v-model="input.hortSelect" 
+                            v-model="input.shortSelect" 
                             label="Short Description" 
                             @change="(value) => {
                                 this.input.shortSelect = value   

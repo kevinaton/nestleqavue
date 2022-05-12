@@ -170,15 +170,27 @@
                                             <v-col>
                                                 <v-row>
                                                     <v-col>
-                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                    <v-text-field label="Username" outlined readonly :value="input.useract[0].userlog"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                        <v-text-field label="Date logged in" outlined readonly :value="input.useract[0].datelog"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                             </v-col>
                                     </template>
                                 </v-data-table>
+                                <v-alert
+                                    color="blue-grey lighten-5"
+                                    class="ma-3 pa-0"
+                                    light
+                                    rounded
+                                >
+                                    <v-list-item>
+                                    <v-list-item-content class="pa-0">
+                                        <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[0]}}</v-list-item-title>
+                                    </v-list-item-content>
+                                    </v-list-item>
+                                </v-alert>
                             </v-card>
                         </v-col>
                         <v-col>
@@ -192,15 +204,27 @@
                                         <v-col>
                                             <v-row>
                                                 <v-col>
-                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                    <v-text-field label="Username" outlined readonly :value="input.useract[1].userlog"></v-text-field>
                                                 </v-col>
                                                 <v-col>
-                                                    <v-text-field label="Other HRD #s" outlined></v-text-field>
+                                                    <v-text-field label="Date logged in" outlined readonly :value="input.useract[0].datelog"></v-text-field>
                                                 </v-col>
                                             </v-row>
                                         </v-col>
                                     </template>
                                 </v-data-table>
+                                <v-alert
+                                    color="blue-grey lighten-5"
+                                    class="ma-3 pa-0"
+                                    light
+                                    rounded
+                                >
+                                    <v-list-item>
+                                    <v-list-item-content class="pa-0">
+                                        <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[1]}}</v-list-item-title>
+                                    </v-list-item-content>
+                                    </v-list-item>
+                                </v-alert>
                             </v-card>
                         </v-col>
                     </v-row>

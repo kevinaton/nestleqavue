@@ -65,7 +65,23 @@
         <template v-slot:extension>
             <v-tabs dark align-with-title slider-color="light-blue accent-2">
               <v-tab @click="verify(qa)">{{ qa.title }}</v-tab>
-              <v-tab @click="verify(report)">{{ report.title }}</v-tab>
+
+              <v-menu offset-y>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-tab v-bind="attrs" v-on="on">REPORTS<v-icon right>mdi-menu-down</v-icon></v-tab>
+                </template>
+                <v-list>
+                  <v-list-item
+                    v-for="(report, index) in reports"
+                    :key="index"
+                    link
+                    @click="verify(report)"
+                  >
+                    <v-list-item-title>{{ report.title }}</v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
+
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
                   <v-tab v-bind="attrs" v-on="on">ADMINISTRATION <v-icon right>mdi-menu-down</v-icon></v-tab>
@@ -96,7 +112,12 @@
           { title: 'Logout' },
         ],
         qa: {title:'QA', name: 'qa'},
-        report: {title:'Report', name:'report' },
+        reports: [
+          { title:'Cases & Cost Held by Category', name:'casecost' },
+          { title:'Microbe Case', name:'microbecase' },
+          { title:'FM Cases', name:'fmcase' },
+          { title:'Pest Log', name:'pestlog' }
+        ],
         adminItems: [
           { title: 'Products', name:'products'},
           { title: 'Labor', name:'labor'},
