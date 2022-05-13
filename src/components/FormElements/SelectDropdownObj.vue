@@ -6,8 +6,8 @@
         @input="selectoption($event)"
         v-model="selectedData"
         :name="name"
-        :item-text="text"
-        :item-value="value"
+        item-text="text"
+        item-value="value"
         return-object
     ></v-select>
 </template>
@@ -16,9 +16,15 @@
 export default {
     name: 'SelectDropdownObj',
     props: {
-        label: String,
-        text: String,
-        modelValue: {
+        label: {
+            type: String,
+            default:'',
+        },
+        text: {
+            type:String,
+            default:'',
+        },
+        defaultValue: {
             type: Object,
             default: () => {},
         },
@@ -30,10 +36,6 @@ export default {
         name: {
             type: String,
             default: '',
-        },
-        value: {
-            type: Object,
-            default: () => {},
         }
     },
     emits: ["change"],
@@ -41,7 +43,7 @@ export default {
         selectedData: {}
     }),
     created () {
-        this.selectedData = this.modelValue
+        this.selectedData = this.defaultValue
     },
     methods: {
         selectoption: function (value) {

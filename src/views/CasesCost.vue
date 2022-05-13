@@ -9,39 +9,73 @@
           <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="mb-8">
       <v-col>
         <v-row>
             <v-col>
-              <v-radio-group
-                v-model="row"
-                row
+              <v-chip-group
+                v-model="filter.defaultTime"
+                active-class="info"
+                mandatory
               >
-                <v-radio
-                  label="Today"
+                <v-chip
                   value="today"
                   active
-                ></v-radio>
-                <v-radio
-                  label="Last Week"
+                >Today</v-chip>
+                <v-chip
                   value="lastweek"
-                ></v-radio>
-                <v-radio
-                  label="Last Month"
+                >Last Week</v-chip>
+                <v-chip
                   value="lastmonth"
-                ></v-radio>
-                <v-radio
-                  label="Date Range"
-                  value="daterange"
-                ></v-radio>
-              </v-radio-group>
+                >Last Month</v-chip>
+
+                <v-menu
+                  ref="menu"
+                  v-model="filter.menu"
+                  :close-on-content-click="false"
+                  :return-value.sync="filter.date"
+                  transition="scale-transition"
+                  offset-y
+                  max-width="290px"
+                  min-width="auto"
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-chip
+                      value="daterange"
+                      v-bind="attrs"
+                      v-on="on"
+                    >{{(filter.dates.length > 0 ? filter.date : "Date Range")}}</v-chip>
+                  </template>
+                  <v-date-picker
+                    v-model="filter.dates"
+                    range
+                  >
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="filter.menu = false"
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="dateRangeText"
+                    >
+                      OK
+                    </v-btn>
+                  </v-date-picker>
+                </v-menu>
+              </v-chip-group>
             </v-col>
         </v-row>
         <v-row>
           <v-col>
             <SelectDropdownObj 
                 :items="filter.line"
-                v-model="filter.lineSelect" 
+                :defaultValue="filter.lineSelect"
+                v-model="filter.lineSelect"
                 name="Line" 
                 item-text="text"
                 item-value="value"
@@ -54,6 +88,7 @@
           <v-col>
             <SelectDropdownObj 
                 :items="filter.weekheld" 
+                :defaultValue="filter.weekheldSelect"
                 v-model="filter.weekheldSelect" 
                 name="weekheld" 
                 item-text="text"
@@ -68,35 +103,69 @@
         <v-row>
           <v-col>
             <SelectDropdownObj 
-                :items="filter.closeopen" 
-                v-model="filter.closeopenSelect" 
-                :value="filter.closeopen.value"
-                name="Type" 
                 item-text="text"
                 item-value="value"
-                label="Type"
+                label="Closed/Open"
+                v-model="filter.closeopenSelect" 
+                :defaultValue="filter.closeopenSelect"
+                :items="filter.closeopen" 
                 @change="(value) => {
                     this.filter.closeopenSelect = value   
                 }"
             />
           </v-col>
+          <v-col>
+            <SelectDropdownObj 
+                item-text="text"
+                item-value="value"
+                label="Cost Graph Modifier"
+                v-model="filter.costgraphSelect" 
+                :defaultValue="filter.costgraphSelect"
+                :items="filter.costgraph" 
+                @change="(value) => {
+                    this.filter.costgraphSelect = value   
+                }"
+            />
+          </v-col>
         </v-row>
       </v-col>
-      <v-col></v-col>
+      <v-col>
+        <v-card elevation="0" outlined>
+          <v-data-table
+              :headers="table.header"
+              :items="table.linecasecost"
+          >
+          </v-data-table>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-divider></v-divider>
+    </v-row>
+    <v-row>
+      <v-col>
+        <BarChart />
+      </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
+import BarChart from '@/components/Reports/BarChart.vue'
 import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
-    name: "CaseCost",
+    name: "CasesCost",
     components: {
       SelectDropdownObj,
+      BarChart,
     },
     data: () => ({
-      row: null,
       filter: {
+        defaultTime:0,
+        dates:[],
+        date: new Date().toISOString().substr(0, 10),
+        menu: false,
+        modal: false,
         line: [
           { text: '1', value:'1', disabled: false },
           { text: '2', value:'2', disabled: false },
@@ -122,7 +191,32 @@ export default {
           { text: 'Open', value:'open', disabled: false },
         ],
         closeopenSelect: {text:'All', value:'all'},
+        costgraphSelect: { text: 'Cost by Category', value:'costbycategory', disabled: false },
+        costgraph: [
+          { text: 'Cost by Category', value:'costbycategory', disabled: false },
+          { text: 'Cost by Allocation', value:'costbyallocation', disabled: false },
+        ],
+      },
+      table: {
+        header: [
+          { text:'Line', value: 'line' },
+          { text:'Total Cases', value: 'totalcases' },
+          { text:'Total Cost', value: 'totalcost' },
+        ],
+        linecasecost: [
+          { line:'9', totalcases:'12234', totalcost:'$20235' },
+          { line:'7', totalcases:'93112', totalcost:'$10026' },
+          { line:'10', totalcases:'32221', totalcost:'$32201' },
+          { line:'24', totalcases:'33821', totalcost:'$83112' },
+          { line:'35', totalcases:'2123', totalcost:'$5225' },
+        ],
       }
-    })
+    }),
+    methods: {
+      dateRangeText () {
+        this.$refs.menu.save(this.filter.dates.join(' - '))
+        console.log(this.filter.dates)
+      },
+    }
 }
 </script>
