@@ -1,12 +1,20 @@
 <template>
   <v-card
         elevation="0"
-        class="mx-auto mt-6 pa-8"
+        class="mx-auto pa-8"
   >
+    <v-row>
+      <v-col class="ma-0 pa-0">
+        <Breadcrumbs 
+          class="ma-0 py-0 pl-3"
+          :items="bcrumbs"
+        />
+      </v-col>
+    </v-row>
     <v-row class="mb-0">
       <v-col>
-          <h2 class="mb-4">Cases & Cost Held by Category</h2>
-          <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <h2 class="mb-4">Cases & Cost Held by Category</h2>
+        <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
       </v-col>
     </v-row>
     <v-row class="mb-8">
@@ -143,23 +151,51 @@
       <v-divider></v-divider>
     </v-row>
     <v-row>
-      <v-col>
-        <BarChart />
+      <v-col class="mt-4">
+        <h3>Cases Held by Category</h3>
+        <BarChart 
+          barLabel="Cases Held by Category"
+          barColor='#4DD0E1'
+          :xLabels="caseheldChart.xLabels"
+          :barData="caseheldChart.barData"
+        />
+      </v-col>
+      <v-col class="mt-4">
+        <h3>Cost Held by Category</h3>
+        <BarChart 
+          barLabel="Cost Held by Category"
+          barColor='#AED581'
+          :xLabels="costheldChart.xLabels"
+          :barData="costheldChart.barData"
+        />
       </v-col>
     </v-row>
   </v-card>
 </template>
 
 <script>
+import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import BarChart from '@/components/Reports/BarChart.vue'
 import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
     name: "CasesCost",
     components: {
+      Breadcrumbs,
       SelectDropdownObj,
       BarChart,
     },
     data: () => ({
+      bcrumbs: [
+        {
+          text: 'Reports',
+          disabled: true,
+        },
+        {
+          text: 'Cases & Cost Held by Category',
+          disabled: false,
+          href: '/casecost',
+        },
+      ],
       filter: {
         defaultTime:0,
         dates:[],
@@ -210,6 +246,14 @@ export default {
           { line:'24', totalcases:'33821', totalcost:'$83112' },
           { line:'35', totalcases:'2123', totalcost:'$5225' },
         ],
+      },
+      caseheldChart: {
+          xLabels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul' ],
+          barData: [400, 203, 125, 583, 831, 349, 299]
+      },
+      costheldChart: {
+          xLabels: [ 'Cat1', 'Cat2', 'Cat3', 'Cat4', 'Cat5' ],
+          barData: [5030, 2345, 3921, 1923, 4224 ]
       }
     }),
     methods: {

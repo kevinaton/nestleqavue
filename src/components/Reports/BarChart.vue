@@ -23,47 +23,64 @@ name: 'BarChart',
 components: { Bar },
 props: {
     chartId: {
-    type: String,
-    default: 'bar-chart'
+        type: String,
+        default: 'bar-chart'
     },
     datasetIdKey: {
-    type: String,
-    default: 'label'
+        type: String,
+        default: 'label'
     },
-    width: {
-    type: Number,
+        width: {
+        type: Number,
     default: 400
     },
     height: {
-    type: Number,
-    default: 400
+        type: Number,
+        default: 400
     },
     cssClasses: {
-    default: '',
-    type: String
+        default: '',
+        type: String
     },
     styles: {
-    type: Object,
-    default: () => {}
+        type: Object,
+        default: () => {}
     },
     plugins: {
-    type: Object,
-    default: () => {}
+        type: Object,
+        default: () => {}
+    },
+    barLabel: {
+        type: String,
+        default: ''
+    },
+    xLabels: {
+        type: Array,
+        default:() => []
+    },
+    barData: {
+        type: Array,
+        default:() => []
+    },
+    barColor: {
+        type: String,
+        default:''
     }
 },
 data() {
     return {
     chartData: {
-        labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul' ],
-        datasets: [ { 
-            label: 'Test',
-            backgroundColor:'#f87979',
-            data: [400, 203, 125, 583, 831, 349, 299] } ]
+        labels: this.xLabels,
+        datasets: [{ 
+            label:this.barLabel,
+            backgroundColor:this.barColor,
+            data: this.barData
+        }]
     },
     chartOptions: {
         responsive: true,
         maintainAspectRatio: false
-    }
+    },
     }
 }
 }
