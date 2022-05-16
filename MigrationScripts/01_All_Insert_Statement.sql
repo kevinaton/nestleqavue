@@ -215,9 +215,9 @@ GO
 /*********************************************/
 /***** PRODUCT  ********/
 /*********************************************/
-INSERT INTO [dbo].[Users] ([UserID], Name)
-	SELECT UserID,Name
-		FROM OldHRD.dbo.Users
+INSERT INTO [dbo].[Product] ([Year], GPN, [Description], CostPerCase, Country, NoBBDate, Holiday)
+	SELECT [Year], GPN, [Description], CostPerCase, Country, NoBBDate, Holiday
+		FROM OldHRD.dbo.Product
 GO
 
 /*********************************************/
