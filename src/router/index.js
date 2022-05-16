@@ -12,6 +12,7 @@ import RolesView from '../views/RolesView.vue'
 import UsersView from '../views/UsersView.vue'
 import LookupView from '../views/LookupView.vue'
 import ViewHRD from '../views/ViewHRD.vue'
+import MicrobeCases from '../views/MicrobeCases'
 
 Vue.use(VueRouter)
 
@@ -22,17 +23,14 @@ const routes = [
     component: QaView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/CasesCost.vue')
-  },
-  {
     path: '/casecost',
     name: 'casecost',
     component: CaseCost
+  },
+  {
+    path: '/microbecases',
+    name: 'microbecases',
+    component: MicrobeCases
   },
   {
     path: '/products',

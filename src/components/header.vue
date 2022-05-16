@@ -114,7 +114,7 @@
         qa: {title:'QA', name: 'qa'},
         reports: [
           { title:'Cases & Cost Held by Category', name:'casecost' },
-          { title:'Microbe Case', name:'microbecase' },
+          { title:'Microbe Case', name:'microbecases' },
           { title:'FM Cases', name:'fmcase' },
           { title:'Pest Log', name:'pestlog' }
         ],

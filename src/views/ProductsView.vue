@@ -169,7 +169,7 @@
         {
           text: 'Products',
           disabled: false,
-          href: '/products',
+          href: '',
         },
       ],
     }),

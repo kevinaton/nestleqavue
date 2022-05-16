@@ -65,6 +65,10 @@ props: {
     barColor: {
         type: String,
         default:''
+    },
+    barTitle: {
+        type: String,
+        default:''
     }
 },
 data() {
@@ -79,8 +83,20 @@ data() {
     },
     chartOptions: {
         responsive: true,
-        maintainAspectRatio: false
-    },
+        maintainAspectRatio: false,
+        plugins: {
+            title: {
+                display: true,
+                text: this.barTitle,
+                align:'start',
+                color:'#212121',
+                font: {
+                    size:18,
+                    weight:'bold'
+                }
+            }
+        },
+    }
     }
 }
 }

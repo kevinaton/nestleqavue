@@ -124,7 +124,7 @@ export default {
         {
         text: 'Users',
         disabled: false,
-        href: '/users',
+        href: '',
         },
     ],
     }),

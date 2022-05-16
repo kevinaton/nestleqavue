@@ -116,7 +116,7 @@
         {
           text: 'Labor',
           disabled: false,
-          href: '/Labor',
+          href: '',
         },
       ],
     }),

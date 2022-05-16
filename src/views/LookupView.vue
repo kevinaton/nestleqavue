@@ -113,7 +113,7 @@ export default {
         {
         text: 'Lookup Lists',
         disabled: false,
-        href: '/lookup',
+        href: '',
         },
     ],
     }),

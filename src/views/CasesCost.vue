@@ -4,167 +4,43 @@
         class="mx-auto pa-8"
   >
     <v-row>
-      <v-col class="ma-0 pa-0">
-        <Breadcrumbs 
-          class="ma-0 py-0 pl-3"
-          :items="bcrumbs"
-        />
-      </v-col>
+      <Breadcrumbs 
+        class="ma-0 py-0 pl-3"
+        :items="bcrumbs"
+      />
     </v-row>
     <v-row class="mb-0">
-      <v-col>
-        <h2 class="mb-4">Cases & Cost Held by Category</h2>
-        <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-      </v-col>
+      <ReportTitle 
+        titleContent="Cases & Cost Held by Category"
+        subContent="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      />
     </v-row>
     <v-row class="mb-8">
-      <v-col>
-        <v-row>
-            <v-col>
-              <v-chip-group
-                v-model="filter.defaultTime"
-                active-class="info"
-                mandatory
-              >
-                <v-chip
-                  value="today"
-                  active
-                >Today</v-chip>
-                <v-chip
-                  value="lastweek"
-                >Last Week</v-chip>
-                <v-chip
-                  value="lastmonth"
-                >Last Month</v-chip>
+      <CaseFilter 
+        :input="filter"
+      />
+      <CaseTable 
+        :input="table"
+      />
+    </v-row>
 
-                <v-menu
-                  ref="menu"
-                  v-model="filter.menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="filter.date"
-                  transition="scale-transition"
-                  offset-y
-                  max-width="290px"
-                  min-width="auto"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-chip
-                      value="daterange"
-                      v-bind="attrs"
-                      v-on="on"
-                    >{{(filter.dates.length > 0 ? filter.date : "Date Range")}}</v-chip>
-                  </template>
-                  <v-date-picker
-                    v-model="filter.dates"
-                    range
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="filter.menu = false"
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="dateRangeText"
-                    >
-                      OK
-                    </v-btn>
-                  </v-date-picker>
-                </v-menu>
-              </v-chip-group>
-            </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <SelectDropdownObj 
-                :items="filter.line"
-                :defaultValue="filter.lineSelect"
-                v-model="filter.lineSelect"
-                name="Line" 
-                item-text="text"
-                item-value="value"
-                label="Line" 
-                @change="(value) => {
-                    this.filter.lineSelect = value   
-                }"
-            />
-          </v-col>
-          <v-col>
-            <SelectDropdownObj 
-                :items="filter.weekheld" 
-                :defaultValue="filter.weekheldSelect"
-                v-model="filter.weekheldSelect" 
-                name="weekheld" 
-                item-text="text"
-                item-value="value"
-                label="Week Held" 
-                @change="(value) => {
-                    this.filter.weekheldSelect = value   
-                }"
-            />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <SelectDropdownObj 
-                item-text="text"
-                item-value="value"
-                label="Closed/Open"
-                v-model="filter.closeopenSelect" 
-                :defaultValue="filter.closeopenSelect"
-                :items="filter.closeopen" 
-                @change="(value) => {
-                    this.filter.closeopenSelect = value   
-                }"
-            />
-          </v-col>
-          <v-col>
-            <SelectDropdownObj 
-                item-text="text"
-                item-value="value"
-                label="Cost Graph Modifier"
-                v-model="filter.costgraphSelect" 
-                :defaultValue="filter.costgraphSelect"
-                :items="filter.costgraph" 
-                @change="(value) => {
-                    this.filter.costgraphSelect = value   
-                }"
-            />
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col>
-        <v-card elevation="0" outlined>
-          <v-data-table
-              :headers="table.header"
-              :items="table.linecasecost"
-          >
-          </v-data-table>
-        </v-card>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-divider></v-divider>
-    </v-row>
+    <v-divider></v-divider>
+
     <v-row>
       <v-col class="mt-4">
-        <h3>Cases Held by Category</h3>
         <BarChart 
           barLabel="Cases Held by Category"
           barColor='#4DD0E1'
+          barTitle="Cases Held by Category"
           :xLabels="caseheldChart.xLabels"
           :barData="caseheldChart.barData"
         />
       </v-col>
       <v-col class="mt-4">
-        <h3>Cost Held by Category</h3>
         <BarChart 
           barLabel="Cost Held by Category"
           barColor='#AED581'
+          barTitle="Cost Held by Category"
           :xLabels="costheldChart.xLabels"
           :barData="costheldChart.barData"
         />
@@ -175,14 +51,21 @@
 
 <script>
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
-import BarChart from '@/components/Reports/BarChart.vue'
 import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
+import BarChart from '@/components/Reports/BarChart.vue'
+import CaseFilter from '@/components/Reports/CaseFilter.vue'
+import CaseTable from '@/components/Reports/CaseTable.vue'
+import ReportTitle from '@/components/Reports/ReportTitle.vue'
+
 export default {
     name: "CasesCost",
     components: {
       Breadcrumbs,
       SelectDropdownObj,
       BarChart,
+      CaseFilter,
+      CaseTable,
+      ReportTitle
     },
     data: () => ({
       bcrumbs: [
@@ -193,7 +76,7 @@ export default {
         {
           text: 'Cases & Cost Held by Category',
           disabled: false,
-          href: '/casecost',
+          href: '',
         },
       ],
       filter: {

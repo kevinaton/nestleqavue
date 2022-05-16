@@ -139,7 +139,7 @@
         {
           text: 'QA',
           disabled: false,
-          href: '/',
+          href: '',
         },
       ],
     }),

@@ -117,7 +117,7 @@
             {
             text: 'Roles',
             disabled: false,
-            href: '/roles',
+            href: '',
             },
         ],
         }),
