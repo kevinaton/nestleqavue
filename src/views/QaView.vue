@@ -15,6 +15,7 @@
         :snackbar="snackbar"
       />
       <Breadcrumbs 
+        class="mt-3"
         :items="bcrumbs"
       />
       <QaToolbar 
@@ -132,10 +133,6 @@
       ],
       qa: [],
       bcrumbs: [
-        {
-          text: 'Home',
-          disabled: true,
-        },
         {
           text: 'QA',
           disabled: false,

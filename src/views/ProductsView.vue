@@ -15,6 +15,7 @@
         :snackbar="snackbar"
       />
       <Breadcrumbs 
+        class="mt-3"
         :items="bcrumbs"
       />
       <SimpleToolbar 
@@ -158,10 +159,6 @@
       ],
       products: [],
       bcrumbs: [
-        {
-          text: 'Home',
-          disabled: true,
-        },
         {
           text: 'Administration',
           disabled: true,

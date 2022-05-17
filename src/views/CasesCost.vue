@@ -3,19 +3,15 @@
         elevation="0"
         class="mx-auto pa-8"
   >
+    <Breadcrumbs 
+      class="ma-0 pa-0 mb-8"
+      :items="bcrumbs"
+    />
+    <ReportTitle 
+      titleContent="Cases & Cost Held by Category"
+      subContent="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+    />
     <v-row>
-      <Breadcrumbs 
-        class="ma-0 py-0 pl-3"
-        :items="bcrumbs"
-      />
-    </v-row>
-    <v-row class="mb-0">
-      <ReportTitle 
-        titleContent="Cases & Cost Held by Category"
-        subContent="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      />
-    </v-row>
-    <v-row class="mb-8">
       <CaseFilter 
         :input="filter"
       />
@@ -23,28 +19,22 @@
         :input="table"
       />
     </v-row>
-
-    <v-divider></v-divider>
-
+    <v-divider class="mt-8"></v-divider>
     <v-row>
-      <v-col class="mt-4">
-        <BarChart 
-          barLabel="Cases Held by Category"
-          barColor='#4DD0E1'
-          barTitle="Cases Held by Category"
-          :xLabels="caseheldChart.xLabels"
-          :barData="caseheldChart.barData"
-        />
-      </v-col>
-      <v-col class="mt-4">
-        <BarChart 
-          barLabel="Cost Held by Category"
-          barColor='#AED581'
-          barTitle="Cost Held by Category"
-          :xLabels="costheldChart.xLabels"
-          :barData="costheldChart.barData"
-        />
-      </v-col>
+      <BarChart 
+        barLabel="Cases Held by Category"
+        barColor='#4DD0E1'
+        barTitle="Cases Held by Category"
+        :xLabels="caseheldChart.xLabels"
+        :barData="caseheldChart.barData"
+      />
+      <BarChart 
+        barLabel="Cost Held by Category"
+        barColor='#AED581'
+        barTitle="Cost Held by Category"
+        :xLabels="costheldChart.xLabels"
+        :barData="costheldChart.barData"
+      />
     </v-row>
   </v-card>
 </template>
