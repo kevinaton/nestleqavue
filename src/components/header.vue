@@ -115,7 +115,7 @@
         reports: [
           { title:'Cases & Cost Held by Category', name:'casecost' },
           { title:'Microbe Case', name:'microbecases' },
-          { title:'FM Cases', name:'fmcase' },
+          { title:'FM Cases', name:'fmcases' },
           { title:'Pest Log', name:'pestlog' }
         ],
         adminItems: [

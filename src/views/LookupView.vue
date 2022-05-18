@@ -8,7 +8,8 @@
     <SnackBar 
         :input="snackbar"
     />
-    <Breadcrumbs 
+    <Breadcrumbs
+        class="mt-3"
         :items="bcrumbs"
     />
     <RowDelete 
@@ -102,10 +103,6 @@ export default {
     ],
     lookups: [],
     bcrumbs: [
-        {
-        text: 'Home',
-        disabled: true,
-        },
         {
         text: 'Administration',
         disabled: true,

@@ -9,6 +9,7 @@
         :input="snackbar"
       />
       <Breadcrumbs 
+        class="mt-3"
         :items="bcrumbs"
       />
       <RowDelete 
@@ -105,10 +106,6 @@
       ],
       labors: [],
       bcrumbs: [
-        {
-          text: 'Home',
-          disabled: true,
-        },
         {
           text: 'Administration',
           disabled: true,

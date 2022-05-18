@@ -12,7 +12,8 @@ import RolesView from '../views/RolesView.vue'
 import UsersView from '../views/UsersView.vue'
 import LookupView from '../views/LookupView.vue'
 import ViewHRD from '../views/ViewHRD.vue'
-import MicrobeCases from '../views/MicrobeCases'
+import MicrobeCases from '../views/MicrobeCases.vue'
+import FmCases from '../views/FmCases.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ const routes = [
     path: '/microbecases',
     name: 'microbecases',
     component: MicrobeCases
+  },
+  {
+    path: '/fmcases',
+    name: 'fmcases',
+    component: FmCases
   },
   {
     path: '/products',
