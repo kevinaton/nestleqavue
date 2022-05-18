@@ -118,7 +118,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.HourCode).HasMaxLength(100);
 
-                entity.Property(e => e.Hrd1).HasColumnName("HRD");
+                entity.Property(e => e.HrdValue).HasColumnName("HRD");
 
                 entity.Property(e => e.HrdcompletedBy)
                     .HasMaxLength(50)
@@ -285,7 +285,7 @@ namespace HRD.WebApi.Data
                     .IsUnicode(false)
                     .IsFixedLength();
 
-                entity.Property(e => e.LaborCost1)
+                entity.Property(e => e.LaborCostValue)
                     .HasColumnType("smallmoney")
                     .HasColumnName("LaborCost");
             });
@@ -393,7 +393,7 @@ namespace HRD.WebApi.Data
             {
                 entity.ToTable("TestCost");
 
-                entity.Property(e => e.TestCost1)
+                entity.Property(e => e.TestCostValue)
                     .HasColumnType("money")
                     .HasColumnName("TestCost");
 

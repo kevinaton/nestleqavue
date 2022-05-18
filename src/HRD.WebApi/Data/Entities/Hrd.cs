@@ -17,7 +17,7 @@ namespace HRD.WebApi.Data.Entities
         public int Id { get; set; }
         public string Plant { get; set; }
         public string Originator { get; set; }
-        public bool? Hrd1 { get; set; }
+        public bool? HrdValue { get; set; }
         public string DayCode { get; set; }
         public string Line { get; set; }
         public string Shift { get; set; }

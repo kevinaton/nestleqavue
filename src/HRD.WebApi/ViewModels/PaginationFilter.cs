@@ -17,8 +17,8 @@
         {
             this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
             this.PageSize = pageSize < 10 ? 10 : pageSize;
-            this.SortColumn = !string.IsNullOrWhiteSpace(sortColumn) ? sortColumn.ToLower() : "daycode";
-            this.SortOrder = !string.IsNullOrWhiteSpace(sortOrder) ? sortColumn.ToLower() : "asc";
+            this.SortColumn = !string.IsNullOrWhiteSpace(sortColumn) ? sortColumn.ToLower() : "";
+            this.SortOrder = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.ToLower() : "asc";
             this.SearchString = searchString;
         }
     }
