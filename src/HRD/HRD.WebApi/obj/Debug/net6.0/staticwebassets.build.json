@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "IWgWPnywsqhbY3DkNlWVzPwbErD4NzWYoJLxpeTtepM=",
+  "Source": "HRD.WebApi",
+  "BasePath": "_content/HRD.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
