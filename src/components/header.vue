@@ -63,38 +63,49 @@
           </v-dialog>
         </template>
         <template v-slot:extension>
-            <v-tabs dark align-with-title slider-color="light-blue accent-2">
-              <v-tab @click="verify(qa)">{{ qa.title }}</v-tab>
+            <v-tabs v-model="selectedTab" dark align-with-title slider-color="light-blue accent-2">
+              <v-tab @click="verify(qa)">{{ tabs[0].title }}</v-tab>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab v-bind="attrs" v-on="on">REPORTS<v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='report' v-bind="attrs" v-on="on">{{ tabs[1].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
-                  <v-list-item
-                    v-for="(report, index) in reports"
-                    :key="index"
-                    link
-                    @click="verify(report)"
+                  <v-list-item-group
+                    v-model="selectedReport"
+                    color="primary"
                   >
-                    <v-list-item-title>{{ report.title }}</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      v-for="(report, index) in reports"
+                      :key="index"
+                      link
+                      @click="verify(report)"
+                      :index="index"
+                    >
+                      <v-list-item-title>{{ report.title }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list-item-group>
                 </v-list>
               </v-menu>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab v-bind="attrs" v-on="on">ADMINISTRATION <v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='admin' v-bind="attrs" v-on="on">{{ tabs[2].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
-                  <v-list-item
-                    v-for="(admin, index) in adminItems"
-                    :key="index"
-                    link
-                    @click="verify(admin)"
+                  <v-list-item-group
+                    v-model="selectedAdmin"
+                    color="primary"
                   >
-                    <v-list-item-title>{{ admin.title }}</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      v-for="(admin, index) in adminItems"
+                      :key="index"
+                      link
+                      @click="verify(admin)"
+                    >
+                      <v-list-item-title>{{ admin.title }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list-item-group>
                 </v-list>
               </v-menu>
             </v-tabs>
@@ -106,30 +117,52 @@
 
   export default {
       name: 'Header',
+      props: {
+      },
       data: () => ({
+        selectedReport:null,
+        selectedAdmin:null,
+        currentPage:{},
+        selectedTab:'admin',
         items: [
           { title: 'Change Password', name:'change_password' },
           { title: 'Logout' },
         ],
-        qa: {title:'QA', name: 'qa'},
+        tabs: [
+          { id:1, title:'QA', name: 'qa', href:'tab-1' },
+          { id:2, title:'REPORTS', name:'reports', href:'tab-2' },
+          { id:3, title:'ADMINISTRATION', name:'administration', href:'tab-3' }
+        ],
         reports: [
-          { title:'Cases & Cost Held by Category', name:'casecost' },
-          { title:'Microbe Case', name:'microbecases' },
-          { title:'FM Cases', name:'fmcases' },
-          { title:'Pest Log', name:'pestlog' }
+          { index:0, title:'Cases & Cost Held by Category', name:'casecost' },
+          { index:1, title:'Microbe Case', name:'microbecases' },
+          { index:2, title:'FM Cases', name:'fmcases' },
+          { index:3, title:'Pest Log', name:'pestlog' }
         ],
         adminItems: [
-          { title: 'Products', name:'products'},
-          { title: 'Labor', name:'labor'},
-          { title: 'Testing', name:'testing' },
-          { title: 'Roles', name:'roles' },
-          { title: 'Users', name:'users' },
-          { title: 'Lookup Lists', name:'lookup' },
+          { index:4, title: 'Products', name:'products'},
+          { index:5, title: 'Labor', name:'labor'},
+          { index:6, title: 'Testing', name:'testing' },
+          { index:7, title: 'Roles', name:'roles' },
+          { index:8, title: 'Users', name:'users' },
+          { index:9, title: 'Lookup Lists', name:'lookup' },
         ],
         initialValue:false,
         redirectvalue:[],
       }),
       created () {
+        this.currentPage=this.$route.name
+        let x = this.currentPage
+        for (let i=0; i<this.reports.length; i++) {
+          if (x == this.reports[i].name) {
+            this.selectedReport = i
+          }
+        }
+        for (let i=0; i<this.adminItems.length; i++) {
+          if (x == this.adminItems[i].name) {
+            this.selectedAdmin = i
+          }
+        }
       },
       methods: {
         cancel() {
@@ -142,6 +175,8 @@
           } else {
             this.initialValue = false
             this.$router.push({name:value.name}).catch(()=>{})
+            this.selectedTab = value.name
+            this.selectedItem = value.index
           }
         },
         redirect() {

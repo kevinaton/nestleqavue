@@ -14,6 +14,7 @@ import LookupView from '../views/LookupView.vue'
 import ViewHRD from '../views/ViewHRD.vue'
 import MicrobeCases from '../views/MicrobeCases.vue'
 import FmCases from '../views/FmCases.vue'
+import PestLog from '../views/PestLog.vue'
 
 Vue.use(VueRouter)
 
@@ -83,6 +84,11 @@ const routes = [
     name: 'hrd_detail',
     component: ViewHRD
   },
+  {
+    path: '/pestlog',
+    name: 'pestlog',
+    component: PestLog
+  }
 
 ]
 
