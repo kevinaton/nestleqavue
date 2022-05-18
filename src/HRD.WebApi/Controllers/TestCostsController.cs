@@ -13,26 +13,28 @@ namespace HRD.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LaborCostsController : ControllerBase
+    public class TestCostsController : ControllerBase
     {
         private readonly HRDContext _context;
 
-        public LaborCostsController(HRDContext context)
+        public TestCostsController(HRDContext context)
         {
             _context = context;
         }
 
-        // GET: api/LaborCosts
+        // GET: api/TestCosts
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LaborCostViewModel>>> GetLaborCosts([FromQuery]PaginationFilter filter)
+        public async Task<ActionResult<IEnumerable<TestCostViewModel>>> GetTestCosts([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
 
-            var query = _context.LaborCosts
-                .Select(s => new LaborCostViewModel
+            var query = _context.TestCosts
+                .Select(s => new TestCostViewModel
                 {
+                    Id = s.Id,
                     Year = s.Year,
-                    LaborCosts = s.LaborCostValue
+                    TestCost = s.TestCostValue,
+                    TestName = s.TestName
                 });
 
             //Sorting
@@ -43,57 +45,62 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.Year)
                         : query.OrderBy(o => o.Year);
                     break;
-                case "laborcost":
+                case "testname":
                     query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.LaborCosts)
-                        : query.OrderBy(o => o.LaborCosts);
+                        ? query.OrderByDescending(o => o.TestName)
+                        : query.OrderBy(o => o.TestName);
+                    break;
+                case "testcost":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.TestCost)
+                        : query.OrderBy(o => o.TestCost);
                     break;
             }
 
             //Search
             if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
             {
-                query = query.Where(f => f.Year.Contains(filter.SearchString));
+                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
             }
 
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
 
-            var laborCostList = await query.ToListAsync();
+            var testCostList = await query.ToListAsync();
 
-            var totalRecords = await _context.Hrds.CountAsync();
+            var totalRecords = await _context.TestCosts.CountAsync();
             var totalPages = (totalRecords / validFilter.PageSize);
 
 
-            return Ok(new PagedResponse<List<LaborCostViewModel>>(laborCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+            return Ok(new PagedResponse<List<TestCostViewModel>>(testCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
-        // GET: api/LaborCosts/5
+        // GET: api/TestCosts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<LaborCost>> GetLaborCost(string id)
+        public async Task<ActionResult<TestCost>> GetTestCost(int id)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(id);
+            var testCost = await _context.TestCosts.FindAsync(id);
 
-            if (laborCost == null)
+            if (testCost == null)
             {
                 return NotFound();
             }
 
-            return laborCost;
+            return testCost;
         }
 
-        // PUT: api/LaborCosts/5
+        // PUT: api/TestCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutLaborCost(string id, LaborCost laborCost)
+        public async Task<IActionResult> PutTestCost(int id, TestCost testCost)
         {
-            if (id != laborCost.Year)
+            if (id != testCost.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(laborCost).State = EntityState.Modified;
+            _context.Entry(testCost).State = EntityState.Modified;
 
             try
             {
@@ -101,7 +108,7 @@ namespace HRD.WebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LaborCostExists(id))
+                if (!TestCostExists(id))
                 {
                     return NotFound();
                 }
@@ -114,50 +121,36 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/LaborCosts
+        // POST: api/TestCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<LaborCost>> PostLaborCost(LaborCost laborCost)
+        public async Task<ActionResult<TestCost>> PostTestCost(TestCost testCost)
         {
-            _context.LaborCosts.Add(laborCost);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (LaborCostExists(laborCost.Year))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _context.TestCosts.Add(testCost);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetLaborCost", new { id = laborCost.Year }, laborCost);
+            return CreatedAtAction("GetTestCost", new { id = testCost.Id }, testCost);
         }
 
-        // DELETE: api/LaborCosts/5
+        // DELETE: api/TestCosts/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLaborCost(string id)
+        public async Task<IActionResult> DeleteTestCost(int id)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(id);
-            if (laborCost == null)
+            var testCost = await _context.TestCosts.FindAsync(id);
+            if (testCost == null)
             {
                 return NotFound();
             }
 
-            _context.LaborCosts.Remove(laborCost);
+            _context.TestCosts.Remove(testCost);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool LaborCostExists(string id)
+        private bool TestCostExists(int id)
         {
-            return _context.LaborCosts.Any(e => e.Year == id);
+            return _context.TestCosts.Any(e => e.Id == id);
         }
     }
 }
