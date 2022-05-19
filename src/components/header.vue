@@ -63,38 +63,49 @@
           </v-dialog>
         </template>
         <template v-slot:extension>
-            <v-tabs dark align-with-title slider-color="light-blue accent-2">
-              <v-tab @click="verify(qa)">{{ qa.title }}</v-tab>
+            <v-tabs v-model="selectedTab" dark align-with-title slider-color="light-blue accent-2">
+              <v-tab :to="qa.to" @click="verify(qa)">{{ tabs[0].title }}</v-tab>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab v-bind="attrs" v-on="on">REPORTS<v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='report' v-bind="attrs" v-on="on">{{ tabs[1].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
-                  <v-list-item
-                    v-for="(report, index) in reports"
-                    :key="index"
-                    link
-                    @click="verify(report)"
+                  <v-list-item-group
+                    v-model="selectedReport"
+                    color="primary"
                   >
-                    <v-list-item-title>{{ report.title }}</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      v-for="(report, index) in reports"
+                      :key="index"
+                      link
+                      @click="verify(report)"
+                      :index="index"
+                    >
+                      <v-list-item-title>{{ report.title }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list-item-group>
                 </v-list>
               </v-menu>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab v-bind="attrs" v-on="on">ADMINISTRATION <v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='admin' v-bind="attrs" v-on="on">{{ tabs[2].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
-                  <v-list-item
-                    v-for="(admin, index) in adminItems"
-                    :key="index"
-                    link
-                    @click="verify(admin)"
+                  <v-list-item-group
+                    v-model="selectedAdmin"
+                    color="primary"
                   >
-                    <v-list-item-title>{{ admin.title }}</v-list-item-title>
-                  </v-list-item>
+                    <v-list-item
+                      v-for="(admin, index) in adminItems"
+                      :key="index"
+                      link
+                      @click="verify(admin)"
+                    >
+                      <v-list-item-title>{{ admin.title }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list-item-group>
                 </v-list>
               </v-menu>
             </v-tabs>
@@ -106,12 +117,24 @@
 
   export default {
       name: 'Header',
+      props: {
+      },
       data: () => ({
+        selectedReport:null,
+        selectedAdmin:null,
+        currentPage:{},
+        selectedTab:null,
         items: [
           { title: 'Change Password', name:'change_password' },
           { title: 'Logout' },
         ],
-        qa: {title:'QA', name: 'qa'},
+        tabs: [
+          { title:'QA', name: 'qa' },
+          { title:'REPORTS', name:'reports' },
+          { title:'ADMINISTRATION', name:'administration' }
+        ],
+        qa: { title:'QA', name:'qa', to:'/' }
+        ,
         reports: [
           { title:'Cases & Cost Held by Category', name:'casecost' },
           { title:'Microbe Case', name:'microbecases' },
@@ -130,6 +153,20 @@
         redirectvalue:[],
       }),
       created () {
+        this.currentPage=this.$route.name
+        let x = this.currentPage
+        for (let i=0; i<this.reports.length; i++) {
+          if (x == this.reports[i].name) {
+            this.selectedReport = i
+            this.selectedTab = 1
+          }
+        }
+        for (let i=0; i<this.adminItems.length; i++) {
+          if (x == this.adminItems[i].name) {
+            this.selectedAdmin = i
+            this.selectedTab = 2
+          }
+        }
       },
       methods: {
         cancel() {
