@@ -64,7 +64,7 @@
         </template>
         <template v-slot:extension>
             <v-tabs v-model="selectedTab" dark align-with-title slider-color="light-blue accent-2">
-              <v-tab @click="verify(qa)">{{ tabs[0].title }}</v-tab>
+              <v-tab :to="qa.to" @click="verify(qa)">{{ tabs[0].title }}</v-tab>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
@@ -123,29 +123,31 @@
         selectedReport:null,
         selectedAdmin:null,
         currentPage:{},
-        selectedTab:'admin',
+        selectedTab:null,
         items: [
           { title: 'Change Password', name:'change_password' },
           { title: 'Logout' },
         ],
         tabs: [
-          { id:1, title:'QA', name: 'qa', href:'tab-1' },
-          { id:2, title:'REPORTS', name:'reports', href:'tab-2' },
-          { id:3, title:'ADMINISTRATION', name:'administration', href:'tab-3' }
+          { title:'QA', name: 'qa' },
+          { title:'REPORTS', name:'reports' },
+          { title:'ADMINISTRATION', name:'administration' }
         ],
+        qa: { title:'QA', name:'qa', to:'/' }
+        ,
         reports: [
-          { index:0, title:'Cases & Cost Held by Category', name:'casecost' },
-          { index:1, title:'Microbe Case', name:'microbecases' },
-          { index:2, title:'FM Cases', name:'fmcases' },
-          { index:3, title:'Pest Log', name:'pestlog' }
+          { title:'Cases & Cost Held by Category', name:'casecost' },
+          { title:'Microbe Case', name:'microbecases' },
+          { title:'FM Cases', name:'fmcases' },
+          { title:'Pest Log', name:'pestlog' }
         ],
         adminItems: [
-          { index:4, title: 'Products', name:'products'},
-          { index:5, title: 'Labor', name:'labor'},
-          { index:6, title: 'Testing', name:'testing' },
-          { index:7, title: 'Roles', name:'roles' },
-          { index:8, title: 'Users', name:'users' },
-          { index:9, title: 'Lookup Lists', name:'lookup' },
+          { title: 'Products', name:'products'},
+          { title: 'Labor', name:'labor'},
+          { title: 'Testing', name:'testing' },
+          { title: 'Roles', name:'roles' },
+          { title: 'Users', name:'users' },
+          { title: 'Lookup Lists', name:'lookup' },
         ],
         initialValue:false,
         redirectvalue:[],
@@ -156,11 +158,13 @@
         for (let i=0; i<this.reports.length; i++) {
           if (x == this.reports[i].name) {
             this.selectedReport = i
+            this.selectedTab = 1
           }
         }
         for (let i=0; i<this.adminItems.length; i++) {
           if (x == this.adminItems[i].name) {
             this.selectedAdmin = i
+            this.selectedTab = 2
           }
         }
       },
@@ -175,8 +179,6 @@
           } else {
             this.initialValue = false
             this.$router.push({name:value.name}).catch(()=>{})
-            this.selectedTab = value.name
-            this.selectedItem = value.index
           }
         },
         redirect() {
