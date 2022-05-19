@@ -121,7 +121,7 @@ namespace HRD.WebApi.Controllers
 
             return Ok(new PagedResponse<List<QAListViewModel>>(hrdList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
-
+        
         // GET: api/Hrds/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Hrd>> GetHrd(int id)
@@ -197,6 +197,93 @@ namespace HRD.WebApi.Controllers
         private bool HrdExists(int id)
         {
             return _context.Hrds.Any(e => e.Id == id);
+        }
+
+        //Get HRDDC
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HrdDCViewModel>>> GetHrdDcs([FromQuery] int hrdId)
+        {
+            var query = await _context.Hrddcs.Where(s => s.Hrdid == hrdId)
+                                            .Select(s => new HrdDCViewModel { 
+                                                        Id = s.Id,
+                                                        HrdId = s.Hrdid,
+                                                        Location = s.Location,
+                                                        NumberOfCases = s.NumberOfCases,
+                                            }).ToListAsync();
+            
+            if (query == null)
+            {
+                return NotFound();
+            }
+
+            return query;
+        }
+
+        //Get HRDFC
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HrdFCViewModel>>> GetHrdFcs([FromQuery] int hrdId)
+        {
+            var query = await _context.Hrdfcs.Where(s => s.Hrdid == hrdId)
+                                            .Select(s => new HrdFCViewModel
+                                            {
+                                                Id = s.Id,
+                                                HrdId = s.Hrdid,
+                                                Location = s.Location,
+                                                NumberOfCases = s.NumberOfCases,
+                                            }).ToListAsync();
+
+            if (query == null)
+            {
+                return NotFound();
+            }
+
+            return query;
+        }
+
+        //Get HRDPO
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HrdPoViewModel>>> GetHrdPos([FromQuery] int hrdId)
+        {
+            var query = await _context.Hrdpos.Where(s => s.Hrdid == hrdId)
+                                            .Select(s => new HrdPoViewModel
+                                            {
+                                                Id = s.Id,
+                                                HrdId = s.Hrdid,
+                                                PONumber = s.Ponumber
+                                            }).ToListAsync();
+
+            if (query == null)
+            {
+                return NotFound();
+            }
+
+            return query;
+        }
+
+        //Get HRDNote
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<HrdNoteViewModel>>> GetHrdNotes([FromQuery] int hrdId)
+        {
+            var query = await _context.Hrdnotes.Where(s => s.Hrdid == hrdId)
+                                            .Select(s => new HrdNoteViewModel
+                                            {
+                                                Id = s.Id,
+                                                HrdId = s.Hrdid,
+                                                Category = s.Category,
+                                                Description = s.Description,
+                                                UserId = s.UserId,
+                                                Date = s.Date,
+                                                Filename = s.FileName,
+                                                Path = s.Path,
+                                                Size = s.Size,
+                                            }).ToListAsync();
+
+            if (query == null)
+            {
+                return NotFound();
+            }
+
+            return query;
         }
     }
 }

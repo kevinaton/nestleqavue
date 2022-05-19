@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
+using HRD.WebApi.ViewModels;
 
 namespace HRD.WebApi.Controllers
 {
@@ -20,12 +21,16 @@ namespace HRD.WebApi.Controllers
         {
             _context = context;
         }
-
+        
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users.Select(s=> new UserViewModel { 
+                                                    Id=s.Id,
+                                                    Name = s.Name,
+                                                    UserId = s.UserId
+                                                    }).ToListAsync();
         }
 
         // GET: api/Users/5

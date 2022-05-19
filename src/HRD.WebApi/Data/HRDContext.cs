@@ -236,6 +236,7 @@ namespace HRD.WebApi.Data
                 entity.HasOne(d => d.Hrd)
                     .WithMany(p => p.Hrdnotes)
                     .HasForeignKey(d => d.Hrdid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__HRDNotes__HRDId__398D8EEE");
             });
 

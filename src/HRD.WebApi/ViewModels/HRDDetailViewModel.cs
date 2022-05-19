@@ -1,4 +1,4 @@
-﻿using HRD.WebApi.Data.Entities;
+﻿//using HRD.WebApi.Data.Entities;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +31,7 @@ namespace HRD.WebApi.ViewModels
         public bool? Gstdrequired { get; set; }
         public string HourCode { get; set; }
         //public string ContinuousRun { get; set; }
-        public List<Hrdpo> HrdPo { get; set; }
+        public List<HrdPoViewModel> HrdPo { get; set; }
         public string QaComments { get; set; }
         public DateTime? DateCompleted { get; set; }
         public int? Clear { get; set; }
