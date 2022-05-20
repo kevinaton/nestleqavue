@@ -312,7 +312,7 @@ GO
 
 
 /*********************************************/
-/***** DROPDOWNTYPE  ********/
+/***** DROPDOWNItem  ********/
 /*********************************************/
 INSERT INTO [dbo].[DropDownItem] ([DropDownTypeId], [Value], SortOrder, IsActive)
 SELECT DISTINCT t.[Id] as DropDownTypeId ,PrimaryCategory as [Value], PrimarySort as SortOrder, 1 as IsActive

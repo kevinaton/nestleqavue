@@ -199,7 +199,7 @@ IF OBJECT_ID('HRDNotes', 'U') IS  NULL
 BEGIN
 CREATE TABLE [dbo].[HRDNotes](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[HRDId] [int] NULL,
+	[HRDId] [int] NOT NULL,
 	[Category] [nvarchar](50) NULL,
 	[Description] [nvarchar](max) NULL,
 	[UserID] [nvarchar](50) NULL,
