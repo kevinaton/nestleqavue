@@ -11,7 +11,7 @@
         </template>
         <v-card>
             <v-card-title class="text-h5">
-            Are you sure?
+                Are you sure?
             </v-card-title>
             <v-card-text>Any unsaved data will be lost.</v-card-text>
             <v-card-actions>
