@@ -1,13 +1,12 @@
-﻿using System;
+﻿using HRD.WebApi.Data;
+using HRD.WebApi.Data.Entities;
+using HRD.WebApi.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using HRD.WebApi.Data;
-using HRD.WebApi.Data.Entities;
-using HRD.WebApi.ViewModels;
 
 namespace HRD.WebApi.Controllers
 {
@@ -124,16 +123,88 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hrd>> GetHrd(int id)
+        public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
-            var hrd = await _context.Hrds.FindAsync(id);
+            var hrd = await _context.Hrds.Include(i => i.Hrddcs)
+                                         .Include(i => i.Hrdfcs)
+                                         .Include(i => i.Hrdnotes)
+                                         .Include(i => i.Hrdpos)
+                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
             {
                 return NotFound();
             }
 
-            return hrd;
+            var model = new HRDDetailViewModel
+            {
+                Id = id,
+                YearHeld = hrd.YearHeld,
+                DayCode = hrd.DayCode,
+                Originator = hrd.Originator,
+                Plant = hrd.Plant,
+                Line = hrd.Line,
+                Shift = hrd.Shift,
+                ShortDescription = hrd.ShortDescription,
+                Gstdrequired = hrd.Gstdrequired,
+                HourCode = hrd.HourCode,
+
+                HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
+                HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
+                HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
+
+                QaComments = hrd.Qacomments,
+                //DateCompleted = hrd.DateCompleted, //not mapped
+                Clear = hrd.Clear,
+                HrdcompletedBy = hrd.HrdcompletedBy,
+                Scrap = hrd.Scrap,
+                DateofDisposition = hrd.DateofDisposition,
+                ThriftStore = hrd.ThriftStore,
+                Complete = hrd.Complete,
+                Cancelled = hrd.Cancelled,
+                Samples = hrd.Samples,
+                //NumberOfDaysHeld = hrd.numberOfDaysheld//notmappep
+                //Donate = hrd.Donate, //not mapped
+                AllCasesAccountedFor = hrd.AllCasesAccountedFor,
+                Cases = hrd.Cases,
+                OtherHrdAffected = hrd.OtherHrdaffected,
+                HighRisk = hrd.HighRisk,
+                OtherHrdNum = hrd.OtherHrdnum,
+
+                FcDate = hrd.Fcdate,
+                FcUser = hrd.Fcuser,
+                DcDate = hrd.Dcdate,
+                DcUser = hrd.Dcuser,
+                Classification = hrd.Classification,
+                HoldCategory = hrd.HoldCategory,
+                HoldSubCategory = hrd.HoldSubCategory,
+                DateHeld = hrd.DateHeld,
+
+                //WeekHeld = hrd.WeekHeld, //not mapped
+                CostofProductonHold = hrd.CostofProductonHold,
+                ReworkApproved = hrd.ReworkApproved,
+                //not mapped
+                //NumberOfDaysToReworkApproval = hrd.NumberOfDaysToReworkApproval,
+                //CaseCount = hrd.CaseCount,
+                //ReasonAction = hrd.ReasonAction,
+                //ApprovalRequestByQa = hrd.ApprovalRequestByQa,
+                //PlantManagerAprpoval = hrd.PlantManagerAprpoval,
+                //PlantControllerApproval = hrd.PlantControllerApproval,
+                //Destroyed = hrd.Destroyed,
+                //ApprovedByQAWho = hrd.ApprovedByQAWho,
+                //ApprovedByQAWhen = hrd.ApprovedByQAWhen,
+                //ApprovedByPlantManagerWho = hrd.ApprovedByPlantManagerWho,
+                //ApprovedPlantManagerQAWhen = hrd.ApprovedPlantManagerQAWhen,
+                //ApprovedByPlantControllerWho = hrd.ApprovedByPlantControllerWho,
+                //ApprovedByPlantControllerWhen = hrd.ApprovedByPlantControllerWhen,
+                //ApprovedByDistroyedWho = hrd.ApprovedByDistroyedWho,
+                //ApprovedByDistroyedWhen = hrd.ApprovedByDistroyedWhen,
+                //Comments = hrd.Comments,
+            };
+
+
+            return model;
         }
 
         // PUT: api/Hrds/5

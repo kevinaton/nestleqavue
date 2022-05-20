@@ -6,6 +6,7 @@
         public int DropDownTypeId { get; set; }
         public string Value { get; set; }
         public short SortOrder { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; }  
+        public DropDownTypeViewModel Type { get; set; }
     }
 }

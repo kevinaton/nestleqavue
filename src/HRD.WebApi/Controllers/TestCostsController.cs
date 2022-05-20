@@ -78,7 +78,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/TestCosts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TestCost>> GetTestCost(int id)
+        public async Task<ActionResult<TestCostViewModel>> GetTestCost(int id)
         {
             var testCost = await _context.TestCosts.FindAsync(id);
 
@@ -87,18 +87,34 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
-            return testCost;
+            var model = new TestCostViewModel
+            {
+                Id = id,
+                TestCost = testCost.TestCostValue,
+                TestName = testCost.TestName,
+                Year = testCost.Year,
+            };
+
+            return model;
         }
 
         // PUT: api/TestCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTestCost(int id, TestCost testCost)
+        public async Task<IActionResult> PutTestCost(int id, TestCostViewModel model)
         {
-            if (id != testCost.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
+
+            var testCost = new TestCost
+            {
+                Id = id,
+                TestName = model.TestName,
+                TestCostValue = model.TestCost,
+                Year = model.Year
+            };
 
             _context.Entry(testCost).State = EntityState.Modified;
 
@@ -124,12 +140,20 @@ namespace HRD.WebApi.Controllers
         // POST: api/TestCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TestCost>> PostTestCost(TestCost testCost)
+        public async Task<ActionResult<TestCostViewModel>> PostTestCost(TestCostViewModel model)
         {
+            var testCost = new TestCost
+            {
+                TestName = model.TestName,
+                TestCostValue = model.TestCost,
+                Year = model.Year
+            };
+
             _context.TestCosts.Add(testCost);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTestCost", new { id = testCost.Id }, testCost);
+            model.Id = testCost.Id;
+            return CreatedAtAction("GetTestCost", new { id = model.Id }, model);
         }
 
         // DELETE: api/TestCosts/5

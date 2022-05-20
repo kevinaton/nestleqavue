@@ -35,7 +35,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -44,18 +44,32 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
-            return user;
+            var model = new UserViewModel
+            {
+                Id = id,
+                Name = user.Name,
+                UserId = user.UserId
+            };
+
+            return model;
         }
 
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutUser(int id, UserViewModel model)
         {
-            if (id != user.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
+
+            var user = new User
+            {
+                Id = model.Id,
+                UserId = model.UserId,
+                Name = model.Name
+            };
 
             _context.Entry(user).State = EntityState.Modified;
 
@@ -81,12 +95,20 @@ namespace HRD.WebApi.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<UserViewModel>> PostUser(UserViewModel model)
         {
+            var user = new User
+            {
+                Id = model.Id,
+                Name = model.Name,
+                UserId = model.UserId
+            };
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            model.Id = user.Id;
+            return CreatedAtAction("GetUser", new { id = model.Id }, model);
         }
 
         // DELETE: api/Users/5

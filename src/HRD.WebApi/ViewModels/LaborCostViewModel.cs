@@ -3,6 +3,6 @@
     public class LaborCostViewModel
     {
         public string Year { get; set; }
-        public decimal? LaborCosts { get; set; }
+        public decimal? LaborCost { get; set; }
     }
 }
