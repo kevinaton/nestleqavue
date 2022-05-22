@@ -24,7 +24,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/types
 
-        [HttpGet("/types")]
+        [HttpGet("types")]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
         {
             return await _context.DropDownTypes.Select(s => new DropDownTypeViewModel
@@ -37,12 +37,13 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items
 
-        [HttpGet("/items")]
-        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems()
+        [HttpGet("items")]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
         {
-            return await _context.DropDownItems
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
+
+            var query = _context.DropDownItems
                 .Include(i => i.DropDownType)
-                .Take(20)
                 .Select(s => new DropDownItemViewModel
                 {
                     Id = s.Id,
@@ -55,11 +56,67 @@ namespace HRD.WebApi.Controllers
                         Id = s.DropDownType.Id,
                         Name = s.DropDownType.Name
                     }
-                }).ToListAsync();
+
+                });
+
+            //Sorting
+            switch (validFilter.SortColumn)
+            {
+                case "type":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Type.Name)
+                        : query.OrderBy(o => o.Type.Name);
+                    break;
+                case "value":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Value)
+                        : query.OrderBy(o => o.Value);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(validFilter.SearchString))
+            {
+                query = query.Where(f => f.Value.Contains(filter.SearchString)
+                                        || f.Type.Name.Contains(filter.SearchString));
+            }
+
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
+            //Pagination
+            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize);
+
+            var itemList = await query.ToListAsync();
+
+            return Ok(new PagedResponse<List<DropDownItemViewModel>>(itemList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
-        // GET: api/Lookup/5
-        [HttpGet("item/{id}")]
+        // GET: api/Lookup/items/typeid/5
+        [HttpGet("items/typeid/{id}")]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByTypeId(int id)
+        {
+            var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownTypeId == id)
+                .Select(s => new DropDownItemViewModel
+                {
+                    Id = s.Id,
+                    DropDownTypeId = s.DropDownTypeId,
+                    IsActive = s.IsActive,
+                    SortOrder = s.SortOrder,
+                    Value = s.Value,
+                }).ToListAsync();
+
+            if (dropDownItems == null)
+            {
+                return NotFound();
+            }
+
+
+            return dropDownItems;
+        }
+
+        // GET: api/Lookup/items/5
+        [HttpGet("items/{id}")]
         public async Task<ActionResult<DropDownItemViewModel>> GetDropDownItem(int id)
         {
             var ddItem = await _context.DropDownItems.FindAsync(id);
@@ -80,36 +137,9 @@ namespace HRD.WebApi.Controllers
 
             return model;
         }
-        // GET: api/Lookup/5
-        [HttpGet("type/{id}")]
-        public async Task<ActionResult<DropDownTypeViewModel>> GetDropDownType(int id)
-        {
-            var dropDownType = await _context.DropDownTypes.Include(i => i.DropDownItems).FirstOrDefaultAsync(a => a.Id == id);
 
-            if (dropDownType == null)
-            {
-                return NotFound();
-            }
-
-            var model = new DropDownTypeViewModel
-            {
-                Id = id,
-                Name = dropDownType.Name,
-                DropDownItems = dropDownType.DropDownItems.Select(s => new DropDownItemViewModel
-                {
-                    Id = s.Id,
-                    DropDownTypeId = s.DropDownTypeId,
-                    IsActive = s.IsActive,
-                    SortOrder = s.SortOrder,
-                    Value = s.Value
-                }).ToList()
-            };
-
-            return model;
-        }
-
-        //Post: api/Lookup/5
-        [HttpPut("item/{id}")]
+        //Put: api/Lookup/items/5
+        [HttpPut("items/{id}")]
         public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
         {
 
@@ -148,9 +178,9 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Lookup
+        // POST: api/Lookup/items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("items/")]
         public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
         {
             var dropdownitem = new DropDownItem
@@ -169,8 +199,8 @@ namespace HRD.WebApi.Controllers
             return CreatedAtAction("GetDropDownItem", new { id = model.Id }, model);
         }
 
-        // DELETE: api/Lookup/5
-        [HttpDelete("item/{id}")]
+        // DELETE: api/Lookup/items/5
+        [HttpDelete("items/{id}")]
         public async Task<IActionResult> DeleteDropDownItem(int id)
         {
             var dropdownitem = await _context.DropDownItems.FindAsync(id);

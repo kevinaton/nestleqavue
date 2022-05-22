@@ -84,13 +84,14 @@ namespace HRD.WebApi.Controllers
                                         || f.Country.Contains(filter.SearchString));
             }
 
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
             //Pagination
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                 .Take(validFilter.PageSize);
 
             var productList = await query.ToListAsync();
-            var totalRecords = await _context.Products.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
 
             return Ok(new PagedResponse<List<ProductViewModel>>(productList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }

@@ -108,15 +108,15 @@ namespace HRD.WebApi.Controllers
                                         || f.Originator.Contains(filter.SearchString));
             }
 
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
+
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
 
             var hrdList = await query.ToListAsync();
-
-            var totalRecords = await _context.Hrds.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
-
 
             return Ok(new PagedResponse<List<QAListViewModel>>(hrdList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
@@ -210,12 +210,85 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHrd(int id, Hrd hrd)
+        public async Task<IActionResult> PutHrd(int id, HRDDetailViewModel model)
         {
-            if (id != hrd.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
+
+            var hrd = new HRDDetailViewModel
+            {
+                Id = id,
+                YearHeld = model.YearHeld,
+                DayCode = model.DayCode,
+                Originator = model.Originator,
+                Plant = model.Plant,
+                //Fert = model.Fert,//not mapped
+                Line = model.Line,
+                //LineSuper = model.LineSupervisor, //not mapped
+                //Area = model.Area,//not mapped
+                //AreaIfOther = model.AreaIfOther,//not mapped
+                Shift = model.Shift,
+                ShortDescription = model.ShortDescription,
+                //AdditionalDescription = model.AdditionalDescription, //not mapped
+                //DetailedDescription = model.DetailedDesctiption, //not mapped
+                Gstdrequired = model.Gstdrequired,
+                HourCode = model.HourCode,
+                HrdPo = model.HrdPo,
+
+                QaComments = model.QaComments,
+                DateCompleted = model.DateCompleted,
+                Clear = model.Clear,
+
+                HrdcompletedBy = model.HrdcompletedBy,
+                Scrap = model.Scrap,
+                DateofDisposition = model.DateofDisposition,
+                ThriftStore = model.ThriftStore,
+                Complete = model.Complete,
+                Cancelled = model.Cancelled,
+
+                Samples = model.Samples,
+                NumberOfDaysHeld = model.NumberOfDaysHeld,
+                Donate = model.Donate,
+                AllCasesAccountedFor = model.AllCasesAccountedFor,
+                OtherHrdNum = model.OtherHrdNum,
+                HighRisk = model.HighRisk,
+                //OtherHRDNum = model.OtherHrdNum,
+                HrdDc = model.HrdDc,
+                HrdFc = model.HrdFc,
+
+                FcDate = model.FcDate,
+                FcUser = model.FcUser,
+                DcDate = model.DcDate,
+                DcUser = model.DcUser,
+                Classification = model.Classification,
+                HoldCategory = model.HoldCategory,
+                HoldSubCategory = model.HoldSubCategory,
+                DateHeld = model.DateHeld,
+
+                //WeekHeld = model.WeekHeld, //not mapped
+                CostofProductonHold = model.CostofProductonHold,
+                ReworkApproved = model.ReworkApproved,
+
+                //not mapped
+                //NumberOfDaysToReworkApproval = model.NumberOfDaysToReworkApproval,
+                //CaseCount = model.CaseCount,
+                //ReasonAction = model.ReasonAction,
+                //ApprovalRequestByQa = model.ApprovalRequestByQa,
+                //PlantManagerAprpoval = model.PlantManagerAprpoval,
+                //PlantControllerApproval = model.PlantControllerApproval,
+                //Destroyed = model.Destroyed,
+                //ApprovedByQAWho = model.ApprovedByQAWho,
+                //ApprovedByQAWhen = model.ApprovedByQAWhen,
+                //ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho,
+                //ApprovedPlantManagerQAWhen = model.ApprovedPlantManagerQAWhen,
+                //ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho,
+                //ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen,
+                //ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
+                //ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
+                //Comments = model.Comments,
+            };
 
             _context.Entry(hrd).State = EntityState.Modified;
 
