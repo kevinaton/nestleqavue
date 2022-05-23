@@ -111,7 +111,6 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
-
             return dropDownItems;
         }
 
@@ -142,7 +141,6 @@ namespace HRD.WebApi.Controllers
         [HttpPut("items/{id}")]
         public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
         {
-
             if (id != model.Id)
             {
                 return BadRequest();

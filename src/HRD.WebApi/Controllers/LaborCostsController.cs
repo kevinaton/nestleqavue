@@ -56,15 +56,14 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString));
             }
 
+            var totalRecords = await _context.Hrds.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
 
             var laborCostList = await query.ToListAsync();
-
-            var totalRecords = await _context.Hrds.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
-
 
             return Ok(new PagedResponse<List<LaborCostViewModel>>(laborCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }

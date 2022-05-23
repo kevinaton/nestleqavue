@@ -24,13 +24,48 @@ namespace HRD.WebApi.Controllers
         
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers([FromQuery] PaginationFilter filter)
         {
-            return await _context.Users.Select(s=> new UserViewModel { 
-                                                    Id=s.Id,
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
+
+            var query = _context.Users.Select(s => new UserViewModel 
+                                                {
+                                                    Id = s.Id,
                                                     Name = s.Name,
                                                     UserId = s.UserId
-                                                    }).ToListAsync();
+                                                });
+
+            //Sorting
+            switch (validFilter.SortColumn)
+            {
+                case "name":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Name)
+                        : query.OrderBy(o => o.Name);
+                    break;
+                case "userid":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.UserId)
+                        : query.OrderBy(o => o.UserId);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(validFilter.SearchString))
+            {
+                query = query.Where(f => f.Name.Contains(filter.SearchString)
+                                        || f.UserId.Contains(filter.SearchString));
+            }
+
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
+            //Pagination
+            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize);
+
+            var itemList = await query.ToListAsync();
+
+            return Ok(new PagedResponse<List<UserViewModel>>(itemList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
         // GET: api/Users/5
