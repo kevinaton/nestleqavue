@@ -17,7 +17,7 @@ namespace HRD.WebApi.Data.Entities
         public int Id { get; set; }
         public string Plant { get; set; }
         public string Originator { get; set; }
-        public bool? HrdValue { get; set; }
+        public bool? IsHrd { get; set; }
         public string DayCode { get; set; }
         public string Line { get; set; }
         public string Shift { get; set; }
@@ -80,6 +80,11 @@ namespace HRD.WebApi.Data.Entities
         public string YearHeld { get; set; }
         public string Qacomments { get; set; }
         public bool? SecondaryNotification { get; set; }
+        public bool? IsPest { get; set; }
+        public bool? IsSmi { get; set; }
+        public bool? IsNr { get; set; }
+        public bool? IsFm { get; set; }
+        public bool? IsMicro { get; set; }
 
         public virtual ICollection<Hrddc> Hrddcs { get; set; }
         public virtual ICollection<Hrdfc> Hrdfcs { get; set; }

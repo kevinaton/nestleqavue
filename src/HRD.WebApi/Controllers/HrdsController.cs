@@ -32,8 +32,8 @@ namespace HRD.WebApi.Controllers
                 {
                     Id = s.Id,
                     DayCode = s.DayCode,
-                    Type = s.CodingType, //TODO: Confirm if correct
-                    Fert = String.Empty, //TODO: Not mapped
+                    //Type = s.Type, //TODO: Confirm if correct
+                    Fert = s.Globenum, //TODO: Not mapped
                     ProductDescription = s.ShortDescription, //TODO: Confirm if correct
                     Line = s.Line,
                     Shift = s.Shift,
@@ -111,7 +111,6 @@ namespace HRD.WebApi.Controllers
             var totalRecords = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
 
-
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
@@ -142,6 +141,9 @@ namespace HRD.WebApi.Controllers
                 YearHeld = hrd.YearHeld,
                 DayCode = hrd.DayCode,
                 Originator = hrd.Originator,
+                //BUManager
+                //Type = hrd.Type,
+                Fert = hrd.Globenum,
                 Plant = hrd.Plant,
                 Line = hrd.Line,
                 Shift = hrd.Shift,
@@ -223,8 +225,10 @@ namespace HRD.WebApi.Controllers
                 YearHeld = model.YearHeld,
                 DayCode = model.DayCode,
                 Originator = model.Originator,
+                //BUManager
+                Type = model.Type,
                 Plant = model.Plant,
-                //Fert = model.Fert,//not mapped
+                Fert = model.Fert,//not mapped
                 Line = model.Line,
                 //LineSuper = model.LineSupervisor, //not mapped
                 //Area = model.Area,//not mapped
@@ -252,9 +256,8 @@ namespace HRD.WebApi.Controllers
                 NumberOfDaysHeld = model.NumberOfDaysHeld,
                 Donate = model.Donate,
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
-                OtherHrdNum = model.OtherHrdNum,
                 HighRisk = model.HighRisk,
-                //OtherHRDNum = model.OtherHrdNum,
+                OtherHrdNum = model.OtherHrdNum,
                 HrdDc = model.HrdDc,
                 HrdFc = model.HrdFc,
 
@@ -314,12 +317,87 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hrd>> PostHrd(Hrd hrd)
+        public async Task<ActionResult<HRDDetailViewModel>> PostHrd(HRDDetailViewModel model)
         {
+            var hrd = new Hrd
+            {
+                YearHeld = model.YearHeld,
+                DayCode = model.DayCode,
+                Originator = model.Originator,
+                //BUManager
+                //Type = model.Type, //not mapped
+                Plant = model.Plant,
+                Globenum = model.Fert,//not mapped
+                Line = model.Line,
+                //LineSuper = model.LineSupervisor, //not mapped
+                //Area = model.Area,//not mapped
+                //AreaIfOther = model.AreaIfOther,//not mapped
+                Shift = model.Shift,
+                ShortDescription = model.ShortDescription,
+                //AdditionalDescription = model.AdditionalDescription, //not mapped
+                //DetailedDescription = model.DetailedDesctiption, //not mapped
+                Gstdrequired = model.Gstdrequired,
+                HourCode = model.HourCode,
+                Hrdpos = (ICollection<Hrdpo>)model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }),
+
+                Qacomments = model.QaComments,
+                //DateCompleted = model.DateCompleted,
+                Clear = model.Clear,
+
+                HrdcompletedBy = model.HrdcompletedBy,
+                Scrap = model.Scrap,
+                DateofDisposition = model.DateofDisposition,
+                ThriftStore = model.ThriftStore,
+                Complete = model.Complete,
+                Cancelled = model.Cancelled,
+
+                Samples = model.Samples,
+                //NumberOfDaysHeld = model.NumberOfDaysHeld,
+                //Donate = model.Donate,
+                AllCasesAccountedFor = model.AllCasesAccountedFor,
+                HighRisk = model.HighRisk,
+                OtherHrdnum = model.OtherHrdNum,
+                Hrddcs = (ICollection<Hrddc>)model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }),
+                Hrdfcs = (ICollection<Hrdfc>)model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }),
+                Hrdnotes = (ICollection<Hrdnote>)model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }),
+
+                Fcdate = model.FcDate,
+                Fcuser = model.FcUser,
+                Dcdate = model.DcDate,
+                Dcuser = model.DcUser,
+                Classification = model.Classification,
+                HoldCategory = model.HoldCategory,
+                HoldSubCategory = model.HoldSubCategory,
+                DateHeld = model.DateHeld,
+
+                //WeekHeld = model.WeekHeld, //not mapped
+                CostofProductonHold = model.CostofProductonHold,
+                ReworkApproved = model.ReworkApproved,
+
+                //not mapped
+                //NumberOfDaysToReworkApproval = model.NumberOfDaysToReworkApproval,
+                //CaseCount = model.CaseCount,
+                //ReasonAction = model.ReasonAction,
+                //ApprovalRequestByQa = model.ApprovalRequestByQa,
+                //PlantManagerAprpoval = model.PlantManagerAprpoval,
+                //PlantControllerApproval = model.PlantControllerApproval,
+                //Destroyed = model.Destroyed,
+                //ApprovedByQAWho = model.ApprovedByQAWho,
+                //ApprovedByQAWhen = model.ApprovedByQAWhen,
+                //ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho,
+                //ApprovedPlantManagerQAWhen = model.ApprovedPlantManagerQAWhen,
+                //ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho,
+                //ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen,
+                //ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
+                //ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
+                //Comments = model.Comments,
+            };
+
             _context.Hrds.Add(hrd);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetHrd", new { id = hrd.Id }, hrd);
+            model.Id = hrd.Id;
+            return CreatedAtAction("GetHrd", new { id = model.Id }, model);
         }
 
         // DELETE: api/Hrds/5
@@ -341,6 +419,81 @@ namespace HRD.WebApi.Controllers
         private bool HrdExists(int id)
         {
             return _context.Hrds.Any(e => e.Id == id);
+        }
+
+        // GET: api/Hrds/5
+        [HttpGet("qa/{id}")]
+        public async Task<ActionResult<QARecordViewModel>> GetQA(int id)
+        {
+            var qa = await _context.Hrds.FirstOrDefaultAsync(f => f.Id == id);
+
+            if (qa == null)
+            {
+                return NotFound();
+            }
+
+            var model = new QARecordViewModel
+            {
+                Id = id,
+                YearHeld = qa.YearHeld,
+                DayCode = qa.DayCode,
+                Originator = qa.Originator,
+                //BUManager
+                //Type = qa.Type,
+                Fert = qa.Globenum,
+                Line = qa.Line,
+                Shift = qa.Shift,
+                ShortDescription = qa.ShortDescription,
+                //CasesHeld = qa.CasesHeld,
+                HourCode = qa.HourCode,//not mapped
+
+                //not mapped
+                //POs = qa.POs,
+                //ReworkInstructions = qa.ReworkInstructions,
+                //PestType = qa.PestType,
+                //PCOContactedImmediately = qa.PCOContactedImmediately,
+                //ProductAdultered = qa.ProductAdultered,
+                //WhereFound = qa.WhereFound,
+                //IfYesAffectedProduct = qa.IfYesAffectedProduct,
+                //MaterialNumber = qa.MaterialNumber,
+                //RawMaterialDescription = qa.RawMaterialDescription,
+                //BatchLot = qa.BatchLot,
+                //VendorNumber = qa.VendorNumber,
+                //VendorName = qa.VendorName,
+                //VendorSiteNumber = qa.VendorSiteNumber,
+                //IsInspections = qa.IsInspections,
+                //IsXray = qa.IsXray,
+                //IsMetalDetector = qa.IsMetalDetector,
+                //FMType = qa.FMType,
+                //Size = qa.Size,
+                //Equipment = qa.Equipment,
+                //IfOther = qa.IfOther,
+                //ROHMaterial = qa.ROHMaterial,
+                //FMMaterial = qa.FMMaterial,
+                //RawBatchLot = qa.RawBatchLot,
+                //FMDescription = qa.FMDescription,
+                //PiecesTotal = qa.PiecesTotal,
+                //HazardousSize = qa.HazardousSize,
+                //Responsibility = qa.Responsibility,
+                //NonHazardousSize = qa.NonHazardousSize,
+                //DateReceived = qa.DateReceived,
+                //InspectorsName = qa.InspectorsName,
+                //NRCategory = qa.NRCategory,
+                //Tagged = qa.Tagged,
+                //Response = qa.Response,
+                //HoldConcern = qa.HoldConcern,
+                //DayOfWeek = qa.DayOfWeek,
+                //When = qa.When,
+                //Other = qa.Other,
+                //DateOfResample = qa.DateOfResample,
+                //MeatComponent = qa.MeatComponent,
+                //VeggieComponent = qa.VeggieComponent,
+                //SauceType = qa.SauceType,
+                //StarchType = qa.StarchType,
+                //AdditionalComments = qa.AdditionalComments,
+            };
+
+            return model;
         }
     }
 }
