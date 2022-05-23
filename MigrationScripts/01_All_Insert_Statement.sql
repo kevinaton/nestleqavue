@@ -6,7 +6,7 @@ INSERT INTO dbo.HRD
 		[Id],
 		[Plant],
 		[Originator],
-		[HRD],
+		[IsHRD],
 		[DayCode],
 		[Line],
 		[Shift],

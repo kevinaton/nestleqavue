@@ -16,7 +16,8 @@ namespace HRD.WebApi.ViewModels
         public string Plant { get; set; }
 
         //public string BUManager { get; set; }
-        //public string Type { get; set; }
+        public string Type { get; set; }
+        public string Fert { get; set; }
         public string Line { get; set; }
 
         //public string LineSupervisor { get; set; }

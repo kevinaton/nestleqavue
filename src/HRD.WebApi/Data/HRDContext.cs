@@ -118,11 +118,17 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.HourCode).HasMaxLength(100);
 
-                entity.Property(e => e.HrdValue).HasColumnName("HRD");
-
                 entity.Property(e => e.HrdcompletedBy)
                     .HasMaxLength(50)
                     .HasColumnName("HRDCompletedBy");
+
+                entity.Property(e => e.IsFm).HasColumnName("IsFM");
+
+                entity.Property(e => e.IsHrd).HasColumnName("IsHRD");
+
+                entity.Property(e => e.IsNr).HasColumnName("IsNR");
+
+                entity.Property(e => e.IsSmi).HasColumnName("IsSMI");
 
                 entity.Property(e => e.LaborHours).HasColumnType("numeric(10, 4)");
 

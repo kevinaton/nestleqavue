@@ -8,7 +8,7 @@ CREATE TABLE [dbo].[HRD](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Plant] [nchar](4) NULL,
 	[Originator] [nvarchar](50) NULL,
-	[HRD] [bit] NULL,
+	[IsHRD] [bit] NULL,
 	[DayCode] [nvarchar](7) NULL,
 	[Line] [nvarchar](50) NULL,
 	[Shift] [nvarchar](50) NULL,
@@ -71,6 +71,11 @@ CREATE TABLE [dbo].[HRD](
 	[YearHeld] [nvarchar](4) NULL,
 	[QAComments] [nvarchar](max) NULL,
 	[SecondaryNotification] [bit] NULL,
+	[IsPest] [bit] NULL,
+	[IsSMI] [bit] NULL,
+	[IsNR] [bit] NULL,
+	[IsFM] [bit] NULL,
+	[IsMicro] [bit] NULL,
  CONSTRAINT [PK_HRD] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
