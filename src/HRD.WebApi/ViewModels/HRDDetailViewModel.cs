@@ -31,6 +31,9 @@ namespace HRD.WebApi.ViewModels
         public bool? Gstdrequired { get; set; }
         public string HourCode { get; set; }
         //public string ContinuousRun { get; set; }
+        public List<HrdDCViewModel> HrdDc { get; set; }
+        public List<HrdFCViewModel> HrdFc { get; set; }
+        public List<HrdNoteViewModel> HrdNote { get; set; }
         public List<HrdPoViewModel> HrdPo { get; set; }
         public string QaComments { get; set; }
         public DateTime? DateCompleted { get; set; }

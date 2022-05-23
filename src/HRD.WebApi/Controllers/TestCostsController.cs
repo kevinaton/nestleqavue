@@ -63,22 +63,21 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
             }
 
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
 
             var testCostList = await query.ToListAsync();
 
-            var totalRecords = await _context.TestCosts.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
-
-
             return Ok(new PagedResponse<List<TestCostViewModel>>(testCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
         // GET: api/TestCosts/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TestCost>> GetTestCost(int id)
+        public async Task<ActionResult<TestCostViewModel>> GetTestCost(int id)
         {
             var testCost = await _context.TestCosts.FindAsync(id);
 
@@ -87,18 +86,34 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
-            return testCost;
+            var model = new TestCostViewModel
+            {
+                Id = id,
+                TestCost = testCost.TestCostValue,
+                TestName = testCost.TestName,
+                Year = testCost.Year,
+            };
+
+            return model;
         }
 
         // PUT: api/TestCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutTestCost(int id, TestCost testCost)
+        public async Task<IActionResult> PutTestCost(int id, TestCostViewModel model)
         {
-            if (id != testCost.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
+
+            var testCost = new TestCost
+            {
+                Id = id,
+                TestName = model.TestName,
+                TestCostValue = model.TestCost,
+                Year = model.Year
+            };
 
             _context.Entry(testCost).State = EntityState.Modified;
 
@@ -124,12 +139,20 @@ namespace HRD.WebApi.Controllers
         // POST: api/TestCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TestCost>> PostTestCost(TestCost testCost)
+        public async Task<ActionResult<TestCostViewModel>> PostTestCost(TestCostViewModel model)
         {
+            var testCost = new TestCost
+            {
+                TestName = model.TestName,
+                TestCostValue = model.TestCost,
+                Year = model.Year
+            };
+
             _context.TestCosts.Add(testCost);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTestCost", new { id = testCost.Id }, testCost);
+            model.Id = testCost.Id;
+            return CreatedAtAction("GetTestCost", new { id = model.Id }, model);
         }
 
         // DELETE: api/TestCosts/5

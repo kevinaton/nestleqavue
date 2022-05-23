@@ -32,7 +32,7 @@ namespace HRD.WebApi.Controllers
                 .Select(s => new LaborCostViewModel
                 {
                     Year = s.Year,
-                    LaborCosts = s.LaborCostValue
+                    LaborCost = s.LaborCostValue
                 });
 
             //Sorting
@@ -45,8 +45,8 @@ namespace HRD.WebApi.Controllers
                     break;
                 case "laborcost":
                     query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.LaborCosts)
-                        : query.OrderBy(o => o.LaborCosts);
+                        ? query.OrderByDescending(o => o.LaborCost)
+                        : query.OrderBy(o => o.LaborCost);
                     break;
             }
 
@@ -56,42 +56,53 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString));
             }
 
+            var totalRecords = await _context.Hrds.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
             //Pagination;
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                         .Take(validFilter.PageSize);
 
             var laborCostList = await query.ToListAsync();
 
-            var totalRecords = await _context.Hrds.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
-
-
             return Ok(new PagedResponse<List<LaborCostViewModel>>(laborCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
         // GET: api/LaborCosts/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<LaborCost>> GetLaborCost(string id)
+        [HttpGet("{year}")]
+        public async Task<ActionResult<LaborCostViewModel>> GetLaborCost(string year)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(id);
+            var laborCost = await _context.LaborCosts.FindAsync(year);
 
             if (laborCost == null)
             {
                 return NotFound();
             }
 
-            return laborCost;
+            var model = new LaborCostViewModel
+            {
+                Year = laborCost.Year,
+                LaborCost = laborCost.LaborCostValue
+            };
+
+            return model;
         }
 
         // PUT: api/LaborCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutLaborCost(string id, LaborCost laborCost)
+        [HttpPut("{year}")]
+        public async Task<IActionResult> PutLaborCost(string year, LaborCostViewModel model)
         {
-            if (id != laborCost.Year)
+            if (year != model.Year)
             {
                 return BadRequest();
             }
+
+            var laborCost = new LaborCost
+            {
+                Year = model.Year,
+                LaborCostValue   = model.LaborCost
+            };
 
             _context.Entry(laborCost).State = EntityState.Modified;
 
@@ -101,7 +112,7 @@ namespace HRD.WebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LaborCostExists(id))
+                if (!LaborCostExists(year))
                 {
                     return NotFound();
                 }
@@ -117,8 +128,14 @@ namespace HRD.WebApi.Controllers
         // POST: api/LaborCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<LaborCost>> PostLaborCost(LaborCost laborCost)
+        public async Task<ActionResult<LaborCostViewModel>> PostLaborCost(LaborCostViewModel model)
         {
+            var laborCost = new LaborCost
+            {
+                Year = model.Year,
+                LaborCostValue = model.LaborCost
+            };
+
             _context.LaborCosts.Add(laborCost);
             try
             {
@@ -136,14 +153,14 @@ namespace HRD.WebApi.Controllers
                 }
             }
 
-            return CreatedAtAction("GetLaborCost", new { id = laborCost.Year }, laborCost);
+            return CreatedAtAction("GetLaborCost", new { year = model.Year }, model);
         }
 
         // DELETE: api/LaborCosts/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLaborCost(string id)
+        [HttpDelete("{year}")]
+        public async Task<IActionResult> DeleteLaborCost(string year)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(id);
+            var laborCost = await _context.LaborCosts.FindAsync(year);
             if (laborCost == null)
             {
                 return NotFound();

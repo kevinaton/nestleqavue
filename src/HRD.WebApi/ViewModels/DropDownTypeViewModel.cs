@@ -1,4 +1,6 @@
-﻿namespace HRD.WebApi.ViewModels
+﻿using System.Collections.Generic;
+
+namespace HRD.WebApi.ViewModels
 {
     public class DropDownTypeViewModel
     {

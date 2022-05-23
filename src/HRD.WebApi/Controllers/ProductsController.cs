@@ -24,17 +24,16 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductsViewModel>>> GetProducts([FromQuery] PaginationFilter filter)
+        public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
 
             var query = _context.Products
-                        .Select(p => new ProductsViewModel
+                        .Select(p => new ProductViewModel
                         { 
                             Id = p.Id,
                             Year = p.Year,
-                            Fert = string.Empty, //TODO: Not mapped
-                            Gpn = p.Gpn,
+                            Fert = p.Gpn,
                             Description = p.Description,
                             CostPerCase = p.CostPerCase,
                             Country = p.Country,
@@ -85,20 +84,21 @@ namespace HRD.WebApi.Controllers
                                         || f.Country.Contains(filter.SearchString));
             }
 
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
             //Pagination
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
                 .Take(validFilter.PageSize);
 
             var productList = await query.ToListAsync();
-            var totalRecords = await _context.Products.CountAsync();
-            var totalPages = (totalRecords / validFilter.PageSize);
 
-            return Ok(new PagedResponse<List<ProductsViewModel>>(productList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+            return Ok(new PagedResponse<List<ProductViewModel>>(productList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
 
@@ -107,18 +107,42 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
-            return product;
+            var model = new ProductViewModel
+            {
+                Id = id,
+                Year = product.Year,
+                Fert = product.Gpn,
+                Description = product.Description,
+                Country = product.Country,
+                CostPerCase = product.CostPerCase,
+                Holiday = product.Holiday,
+                NoBbdate = product.NoBbdate,
+            };
+
+            return model;
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, ProductViewModel model)
         {
-            if (id != product.Id)
+            if (id != model.Id)
             {
                 return BadRequest();
             }
+
+            var product = new Product
+            {
+                Id = id,
+                Year = model.Year,
+                Gpn = model.Fert,
+                Description = model.Description,
+                Country = model.Country,
+                CostPerCase = model.CostPerCase,
+                Holiday = model.Holiday,
+                NoBbdate = model.NoBbdate,
+            };
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -144,12 +168,24 @@ namespace HRD.WebApi.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel model)
         {
+            var product = new Product
+            {
+                Year = model.Year,
+                Gpn = model.Fert,
+                Description = model.Description,
+                Country = model.Country,
+                CostPerCase = model.CostPerCase,
+                Holiday = model.Holiday,
+                NoBbdate = model.NoBbdate,
+            };
+
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            model.Id = product.Id;
+            return CreatedAtAction("GetProduct", new { id = model.Id }, model);
         }
 
         // DELETE: api/Products/5

@@ -22,8 +22,9 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
-        // GET: api/Lookup
-        [HttpGet]
+        // GET: api/Lookup/types
+
+        [HttpGet("types")]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
         {
             return await _context.DropDownTypes.Select(s => new DropDownTypeViewModel
@@ -33,27 +34,187 @@ namespace HRD.WebApi.Controllers
                                         }).ToListAsync();
         }
 
-        // GET: api/Lookup/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItem(int id)
-        {
-            var dropDownItem = await _context.DropDownItems.Where(a => a.DropDownTypeId == id)
-                                                            .Select(s => new DropDownItemViewModel { 
-                                                                        Id = s.Id,
-                                                                        DropDownTypeId = s.DropDownTypeId,
-                                                                        Value = s.Value,
-                                                                        SortOrder = s.SortOrder,
-                                                                        IsActive = s.IsActive
-                                                            })
-                                                            .OrderBy(o => o.SortOrder)
-                                                            .ToListAsync();
 
-            if (dropDownItem == null)
+        // GET: api/Lookup/items
+
+        [HttpGet("items")]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
+        {
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
+
+            var query = _context.DropDownItems
+                .Include(i => i.DropDownType)
+                .Select(s => new DropDownItemViewModel
+                {
+                    Id = s.Id,
+                    DropDownTypeId = s.DropDownTypeId,
+                    IsActive = s.IsActive,
+                    SortOrder = s.SortOrder,
+                    Value = s.Value,
+                    Type = new DropDownTypeViewModel
+                    {
+                        Id = s.DropDownType.Id,
+                        Name = s.DropDownType.Name
+                    }
+
+                });
+
+            //Sorting
+            switch (validFilter.SortColumn)
+            {
+                case "type":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Type.Name)
+                        : query.OrderBy(o => o.Type.Name);
+                    break;
+                case "value":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Value)
+                        : query.OrderBy(o => o.Value);
+                    break;
+            }
+
+            if (!string.IsNullOrEmpty(validFilter.SearchString))
+            {
+                query = query.Where(f => f.Value.Contains(filter.SearchString)
+                                        || f.Type.Name.Contains(filter.SearchString));
+            }
+
+            var totalRecords = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
+            //Pagination
+            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                .Take(validFilter.PageSize);
+
+            var itemList = await query.ToListAsync();
+
+            return Ok(new PagedResponse<List<DropDownItemViewModel>>(itemList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+        }
+
+        // GET: api/Lookup/items/typeid/5
+        [HttpGet("items/typeid/{id}")]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByTypeId(int id)
+        {
+            var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownTypeId == id)
+                .Select(s => new DropDownItemViewModel
+                {
+                    Id = s.Id,
+                    DropDownTypeId = s.DropDownTypeId,
+                    IsActive = s.IsActive,
+                    SortOrder = s.SortOrder,
+                    Value = s.Value,
+                }).ToListAsync();
+
+            if (dropDownItems == null)
             {
                 return NotFound();
             }
 
-            return dropDownItem;
+            return dropDownItems;
+        }
+
+        // GET: api/Lookup/items/5
+        [HttpGet("items/{id}")]
+        public async Task<ActionResult<DropDownItemViewModel>> GetDropDownItem(int id)
+        {
+            var ddItem = await _context.DropDownItems.FindAsync(id);
+
+            if (ddItem == null)
+            {
+                return NotFound();
+            }
+
+            var model = new DropDownItemViewModel
+            {
+                Id = id,
+                DropDownTypeId = ddItem.DropDownTypeId,
+                Value = ddItem.Value,
+                SortOrder = ddItem.SortOrder,
+                IsActive = ddItem.IsActive
+            };
+
+            return model;
+        }
+
+        //Put: api/Lookup/items/5
+        [HttpPut("items/{id}")]
+        public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
+            var dropdownitem = new DropDownItem
+            {
+                Id=id,
+                DropDownTypeId = model.DropDownTypeId,
+                IsActive = model.IsActive,
+                SortOrder = model.SortOrder,
+                Value = model.Value
+            };
+
+            _context.Entry(dropdownitem).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DropDownItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Lookup/items
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost("items/")]
+        public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
+        {
+            var dropdownitem = new DropDownItem
+            {
+                Id = model.Id,
+                DropDownTypeId = model.DropDownTypeId,
+                IsActive = model.IsActive,
+                SortOrder = model.SortOrder,
+                Value = model.Value
+            };
+
+            _context.DropDownItems.Add(dropdownitem);
+            await _context.SaveChangesAsync();
+
+            model.Id = dropdownitem.Id;
+            return CreatedAtAction("GetDropDownItem", new { id = model.Id }, model);
+        }
+
+        // DELETE: api/Lookup/items/5
+        [HttpDelete("items/{id}")]
+        public async Task<IActionResult> DeleteDropDownItem(int id)
+        {
+            var dropdownitem = await _context.DropDownItems.FindAsync(id);
+            if (dropdownitem == null)
+            {
+                return NotFound();
+            }
+
+            _context.DropDownItems.Remove(dropdownitem);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        private bool DropDownItemExists(int id)
+        {
+            return _context.DropDownItems.Any(e => e.Id == id);
         }
     }
 }
