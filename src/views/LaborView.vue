@@ -27,7 +27,10 @@
       <EditYearOnly 
         :table="props.item.year"
         :input="snackbar"
-        @change="(value) => { props.item.year = value }"
+        @change="(value) => { 
+          props.item.year = value;
+          selectedYear = value
+        }"
       />
     </template>
     <template v-slot:[`item.laborcost`]="props">
@@ -52,6 +55,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
@@ -101,7 +105,7 @@
           sortable: true,
           value: 'year',
         },
-        { text: 'Labor Cost', sortable: true, value: 'laborcost' },
+        { text: 'Labor Cost', sortable: true, value: 'laborCost' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
       ],
       labors: [],
@@ -116,6 +120,7 @@
           href: '',
         },
       ],
+      selectedYear: null
     }),
 
     computed: {
@@ -125,34 +130,55 @@
     },
 
     created () {
-      this.initialize()
+      // this.initialize()
+      this.fetchLabors()
     },
 
     methods: {
-      initialize () {
-        this.labors = [
-        {
-          year: 2019,
-          laborcost: "29.67"
-        },
-        {
-          year: 2018,
-          laborcost: "27.74"
-        },
-        {
-          year: 2021,
-          laborcost: "26.46"
-        },
-        {
-          year: 2019,
-          laborcost: "27.45"
-        },
-        {
-          year: 2020,
-          laborcost: "28.23"
-        }
-      ]
-      },
+      // initialize () {
+      //   this.labors = [
+      //     {
+      //       year: 2019,
+      //       laborcost: "29.67"
+      //     },
+      //     {
+      //       year: 2018,
+      //       laborcost: "27.74"
+      //     },
+      //     {
+      //       year: 2021,
+      //       laborcost: "26.46"
+      //     },
+      //     {
+      //       year: 2019,
+      //       laborcost: "27.45"
+      //     },
+      //     {
+      //       year: 2020,
+      //       laborcost: "28.23"
+      //     }
+      //   ]
+      // },
+
+      fetchLabors () {
+        let vm = this 
+        axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts`)
+          .then((res) => {
+            console.log(res)
+            vm.labors = res.data.data
+          })
+
+        // var params = {
+        //   year: vm.selectedYear,
+        //   laborCost: 0
+        // }
+
+        // axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${vm.selectedYear}`, params)
+        //   .then((res) => {
+        //     console.log(res)
+        //     vm.labors = res.data.data
+        //   })
+      }
     },
   }
 </script>
