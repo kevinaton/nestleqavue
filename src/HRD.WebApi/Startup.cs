@@ -53,7 +53,7 @@ namespace HRD.WebApi
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors(options => options.AllowAnyOrigin());
 
             app.UseAuthorization();
 

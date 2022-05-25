@@ -33,12 +33,13 @@
         }"
       />
     </template>
-    <template v-slot:[`item.laborcost`]="props">
+    <template v-slot:[`item.laborCost`]="props">
       <EditTable 
-        :table="props.item.laborcost"
+        :table="props.item.laborCost"
         :input="snackbar"
+        :editNum="labors.laborCost"
         type="number"
-        @change="(value) => { props.item.laborcost = value }"
+        @change="(inputValue) => { props.item.laborCost = inputValue }"
       />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
@@ -49,7 +50,7 @@
       />
     </template>
     
-    <ResetTable  @click="initialize" />
+    <ResetTable  @click="fetchLabors" />
     
   </v-data-table>
 </template>
@@ -90,11 +91,11 @@
         selectedItem: 1,
         editedItem: {
           year: '',
-          laborcost: '',
+          laborCost: '',
         },
         defaultItem: {
           year: '',
-          laborcost: '',
+          laborCost: '',
         },
       },
       
@@ -130,54 +131,16 @@
     },
 
     created () {
-      // this.initialize()
       this.fetchLabors()
     },
 
     methods: {
-      // initialize () {
-      //   this.labors = [
-      //     {
-      //       year: 2019,
-      //       laborcost: "29.67"
-      //     },
-      //     {
-      //       year: 2018,
-      //       laborcost: "27.74"
-      //     },
-      //     {
-      //       year: 2021,
-      //       laborcost: "26.46"
-      //     },
-      //     {
-      //       year: 2019,
-      //       laborcost: "27.45"
-      //     },
-      //     {
-      //       year: 2020,
-      //       laborcost: "28.23"
-      //     }
-      //   ]
-      // },
-
       fetchLabors () {
         let vm = this 
         axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts`)
           .then((res) => {
-            console.log(res)
             vm.labors = res.data.data
           })
-
-        // var params = {
-        //   year: vm.selectedYear,
-        //   laborCost: 0
-        // }
-
-        // axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${vm.selectedYear}`, params)
-        //   .then((res) => {
-        //     console.log(res)
-        //     vm.labors = res.data.data
-        //   })
       }
     },
   }
