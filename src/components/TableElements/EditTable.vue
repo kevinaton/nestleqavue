@@ -9,8 +9,8 @@
         <template v-slot:input>
             <v-text-field
                 :value="table"
-                @input="updateValue($event)"
-                :rules="[max50chars, required]"
+                @input="updateValue(parseInt($event))"
+                :rules="[required]"
                 :type="type"
                 label="Edit"
                 single-line
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
     name:'EditTable',
     props: {
@@ -30,20 +32,25 @@ export default {
             required: false,
         },
         table: {
-            type:String,
-            default: '',
+            type:Number,
+            default: 0,
             required: false
         },
         type: {
             type:String,
             default: '',
             required: false
+        },
+        editNum: {
+            type:Number,
+            default:0,
+            required:false
         }
     },
     data: () => ({
         max50chars: v => v.length <= 50 || 'Input too long!',
         required: value => !!value || 'Required.',
-        tempValue:'',
+        inputValue:0,
     }),
     emits: ['change'],
     methods: {
@@ -58,10 +65,14 @@ export default {
             this.input.snackText = 'Canceled'
         },
         updateValue(value) {
-            this.tempValue = value
-            this.$emit('change', value)
+            let vm = this 
+            vm.$emit('change', value)
+            
+            // axios.post(`${process.env.VUE_APP_API_URL}/LaborCosts`)
+            // .then((res) => {
+            //     vm.editNum = res.data.data.laborCost
+            // })
         }
-
     }
 }
 </script>

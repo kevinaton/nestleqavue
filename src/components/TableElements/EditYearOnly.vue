@@ -10,9 +10,10 @@
         {{ table }}
         <template v-slot:input>
             <v-autocomplete
-                :value="table"
+                :value="table.toString()"
                 @input="updateValue($event)"
                 @keypress="filter(event)"
+                :placeholder="currentDate"
                 :items="years"
                 label="Edit"
                 single-line
@@ -33,15 +34,18 @@ export default {
             required: false,
         },
         table: {
-            type:Number,
-            default:0,
+            type:String,
+            default:'',
             required: false
         },
     },
     computed : {
+        currentDate () {
+            return new Date().getFullYear().toString()
+        },
         years () {
-            const year = new Date().getFullYear()
-            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear() - index)
+            const year = new Date().getFullYear().toString()
+            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear().toString() - index)
         },
     },
     data: () => ({
@@ -64,7 +68,7 @@ export default {
             this.input.snack = true
             this.input.snackColor = 'success'
             this.input.snackText = 'Data saved'
-            var value = this.tempValue
+            var value = this.tempValue.toString()
             this.$emit('change', value)
         },
         cancel () {
