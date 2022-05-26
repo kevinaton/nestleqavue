@@ -72,21 +72,71 @@ namespace HRD.WebApi.Data
             {
                 entity.ToTable("HRD");
 
+                entity.Property(e => e.AdditionalDescription).HasMaxLength(75);
+
+                entity.Property(e => e.ApprovedByDistroyedWhen).HasColumnType("datetime");
+
+                entity.Property(e => e.ApprovedByDistroyedWho).HasMaxLength(50);
+
+                entity.Property(e => e.ApprovedByPlantControllerWhen).HasColumnType("datetime");
+
+                entity.Property(e => e.ApprovedByPlantControllerWho).HasMaxLength(50);
+
+                entity.Property(e => e.ApprovedByPlantManagerWho).HasMaxLength(50);
+
+                entity.Property(e => e.ApprovedByQawhen)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ApprovedByQAWhen");
+
+                entity.Property(e => e.ApprovedByQawho)
+                    .HasMaxLength(50)
+                    .HasColumnName("ApprovedByQAWho");
+
+                entity.Property(e => e.ApprovedPlantManagerQawhen)
+                    .HasColumnType("datetime")
+                    .HasColumnName("ApprovedPlantManagerQAWhen");
+
+                entity.Property(e => e.Area).HasMaxLength(50);
+
+                entity.Property(e => e.AreaIfOther).HasMaxLength(50);
+
+                entity.Property(e => e.BatchLot).HasMaxLength(50);
+
+                entity.Property(e => e.Bumanager)
+                    .HasMaxLength(50)
+                    .HasColumnName("BUManager");
+
+                entity.Property(e => e.CasesHeld).HasMaxLength(50);
+
                 entity.Property(e => e.Classification).HasMaxLength(50);
 
                 entity.Property(e => e.CodingDetails).HasMaxLength(10);
 
                 entity.Property(e => e.CodingType).HasMaxLength(20);
 
+                entity.Property(e => e.Comments).HasMaxLength(50);
+
+                entity.Property(e => e.ContinuousRun).HasMaxLength(10);
+
                 entity.Property(e => e.CostofProductonHold).HasColumnType("money");
 
+                entity.Property(e => e.Date).HasColumnType("datetime");
+
+                entity.Property(e => e.DateCompleted).HasColumnType("datetime");
+
                 entity.Property(e => e.DateHeld).HasColumnType("datetime");
+
+                entity.Property(e => e.DateOfResample).HasColumnType("datetime");
+
+                entity.Property(e => e.DateReceived).HasColumnType("datetime");
 
                 entity.Property(e => e.DateReleased).HasColumnType("datetime");
 
                 entity.Property(e => e.DateofDisposition).HasColumnType("datetime");
 
                 entity.Property(e => e.DayCode).HasMaxLength(7);
+
+                entity.Property(e => e.DayOfWeek).HasMaxLength(50);
 
                 entity.Property(e => e.Dcdate)
                     .HasColumnType("datetime")
@@ -96,6 +146,12 @@ namespace HRD.WebApi.Data
                     .HasMaxLength(50)
                     .HasColumnName("DCUser");
 
+                entity.Property(e => e.DetailedDescription).HasMaxLength(75);
+
+                entity.Property(e => e.Equipment).HasMaxLength(50);
+
+                entity.Property(e => e.EquipmentIfOther).HasMaxLength(50);
+
                 entity.Property(e => e.Fcdate)
                     .HasColumnType("datetime")
                     .HasColumnName("FCDate");
@@ -103,6 +159,12 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.Fcuser)
                     .HasMaxLength(50)
                     .HasColumnName("FCUser");
+
+                entity.Property(e => e.FertDescription).HasMaxLength(50);
+
+                entity.Property(e => e.Fmtype)
+                    .HasMaxLength(50)
+                    .HasColumnName("FMType");
 
                 entity.Property(e => e.Ftqcases).HasColumnName("FTQCases");
 
@@ -112,7 +174,11 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.Gstdrequired).HasColumnName("GSTDRequired");
 
+                entity.Property(e => e.HazardousSize).HasMaxLength(50);
+
                 entity.Property(e => e.HoldCategory).HasMaxLength(50);
+
+                entity.Property(e => e.HoldConcern).HasMaxLength(50);
 
                 entity.Property(e => e.HoldSubCategory).HasMaxLength(50);
 
@@ -121,6 +187,10 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.HrdcompletedBy)
                     .HasMaxLength(50)
                     .HasColumnName("HRDCompletedBy");
+
+                entity.Property(e => e.IfYesAffectedProduct).HasMaxLength(50);
+
+                entity.Property(e => e.InspectorsName).HasMaxLength(50);
 
                 entity.Property(e => e.IsFm).HasColumnName("IsFM");
 
@@ -142,7 +212,21 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.Line).HasMaxLength(50);
 
+                entity.Property(e => e.LineSupervisor).HasMaxLength(50);
+
+                entity.Property(e => e.MaterialNumber).HasMaxLength(50);
+
+                entity.Property(e => e.MeatComponent).HasMaxLength(50);
+
+                entity.Property(e => e.MonthHeld).HasMaxLength(10);
+
                 entity.Property(e => e.NonFtqcases).HasColumnName("NonFTQCases");
+
+                entity.Property(e => e.NonHazardousSize).HasMaxLength(50);
+
+                entity.Property(e => e.Nrcategory)
+                    .HasMaxLength(50)
+                    .HasColumnName("NRCategory");
 
                 entity.Property(e => e.Originator).HasMaxLength(50);
 
@@ -152,13 +236,37 @@ namespace HRD.WebApi.Data
                     .HasMaxLength(50)
                     .HasColumnName("OtherHRDNum");
 
+                entity.Property(e => e.PcocontactedImmediately)
+                    .HasMaxLength(50)
+                    .HasColumnName("PCOContactedImmediately");
+
+                entity.Property(e => e.PestType).HasMaxLength(50);
+
                 entity.Property(e => e.Physical5DaysGstd).HasColumnName("Physical5DaysGSTD");
+
+                entity.Property(e => e.PiecesTotal).HasMaxLength(50);
 
                 entity.Property(e => e.Plant)
                     .HasMaxLength(4)
                     .IsFixedLength();
 
+                entity.Property(e => e.Pos)
+                    .HasMaxLength(50)
+                    .HasColumnName("POs");
+
+                entity.Property(e => e.ProductAdultered).HasMaxLength(50);
+
                 entity.Property(e => e.Qacomments).HasColumnName("QAComments");
+
+                entity.Property(e => e.RawBatchLot).HasMaxLength(50);
+
+                entity.Property(e => e.RawMaterialDescription).HasMaxLength(50);
+
+                entity.Property(e => e.ReasonAction).HasMaxLength(50);
+
+                entity.Property(e => e.Response).HasMaxLength(50);
+
+                entity.Property(e => e.Responsibility).HasMaxLength(50);
 
                 entity.Property(e => e.ReworkApprovedBy).HasMaxLength(50);
 
@@ -170,17 +278,45 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.ReworkStarted).HasColumnType("datetime");
 
+                entity.Property(e => e.Rohmaterial)
+                    .HasMaxLength(50)
+                    .HasColumnName("ROHMaterial");
+
+                entity.Property(e => e.SauceType).HasMaxLength(50);
+
                 entity.Property(e => e.Schedule).HasMaxLength(50);
 
                 entity.Property(e => e.Shift).HasMaxLength(50);
 
                 entity.Property(e => e.ShortDescription).HasMaxLength(75);
 
+                entity.Property(e => e.Size).HasMaxLength(50);
+
+                entity.Property(e => e.StarchType).HasMaxLength(50);
+
+                entity.Property(e => e.TagNumber).HasMaxLength(50);
+
+                entity.Property(e => e.Tagged).HasMaxLength(50);
+
                 entity.Property(e => e.TestingCost).HasColumnType("money");
 
                 entity.Property(e => e.TlforFu)
                     .HasMaxLength(50)
                     .HasColumnName("TLforFU");
+
+                entity.Property(e => e.VeggieComponent).HasMaxLength(50);
+
+                entity.Property(e => e.VendorName).HasMaxLength(50);
+
+                entity.Property(e => e.VendorNumber).HasMaxLength(50);
+
+                entity.Property(e => e.VendorSiteNumber).HasMaxLength(50);
+
+                entity.Property(e => e.When).HasMaxLength(50);
+
+                entity.Property(e => e.WhenOther).HasMaxLength(50);
+
+                entity.Property(e => e.WhereFound).HasMaxLength(50);
 
                 entity.Property(e => e.YearHeld).HasMaxLength(4);
             });

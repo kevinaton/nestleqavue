@@ -9,29 +9,30 @@ namespace HRD.WebApi.ViewModels
         public int Id { get; set; }
 
         //Highlights
-        //public string TimeOfIncident { get; set; }
+        public DateTime? Date { get; set; }
+        public DateTime? TimeOfIncident { get; set; }
         public string YearHeld { get; set; }
         public string DayCode { get; set; }
         public string Originator { get; set; }
         public string Plant { get; set; }
 
-        //public string BUManager { get; set; }
+        public string BUManager { get; set; }
         public string Type { get; set; }
         public string Fert { get; set; }
+        public string FertDescription { get; set; }
         public string Line { get; set; }
-
-        //public string LineSupervisor { get; set; }
-        //public string Area { get; set; }
-        //public string AreaIfOther { get; set; }
+        public string LineSupervisor { get; set; }
+        public string Area { get; set; }
+        public string AreaIfOther { get; set; }
         public string Shift { get; set; }
         public string ShortDescription { get; set; }
-        //public string AdditionalDescription { get; set; }
-        //public string DetailedDescription { get; set; }
+        public string AdditionalDescription { get; set; }
+        public string DetailedDescription { get; set; }
 
         //DETAILS
         public bool? Gstdrequired { get; set; }
         public string HourCode { get; set; }
-        //public string ContinuousRun { get; set; }
+        public string ContinuousRun { get; set; }
         public List<HrdDCViewModel> HrdDc { get; set; }
         public List<HrdFCViewModel> HrdFc { get; set; }
         public List<HrdNoteViewModel> HrdNote { get; set; }
@@ -46,8 +47,8 @@ namespace HRD.WebApi.ViewModels
         public bool? Complete { get; set; }
         public bool? Cancelled { get; set; }
         public int? Samples { get; set; }
-        public int NumberOfDaysHeld { get; set; }
-        public int? Donate { get; set; }//
+        public int? NumberOfDaysHeld { get; set; }
+        public int? Donate { get; set; }
         public bool? AllCasesAccountedFor { get; set; }
         public int? Cases { get; set; }
         public bool? OtherHrdAffected { get; set; }
@@ -64,16 +65,17 @@ namespace HRD.WebApi.ViewModels
         public string HoldSubCategory { get; set; }
         public DateTime? DateHeld { get; set; }
 
-        public int WeekHeld { get; set; }//
+        public string MonthHeld { get; set; }
+        public int? WeekHeld { get; set; }
         public decimal? CostofProductonHold { get; set; }
         public bool? ReworkApproved { get; set; }
-        public bool? NumberOfDaysToReworkApproval { get; set; }
+        public int? NumberOfDaysToReworkApproval { get; set; }
         public bool? ApprovalRequestByQa { get; set; }
         public int? CaseCount { get; set; }
         public string ReasonAction { get; set; }
-        public bool? PlantManagerAprpoval { get; set; }
-        public bool? PlantControllerApproval { get; set; }
-        public bool? Destroyed { get; set; }
+        public bool? IsPlantManagerAprpoval { get; set; }
+        public bool? IsPlantControllerApproval { get; set; }
+        public bool? IsDestroyed { get; set; }
         public string ApprovedByQAWho { get; set; }
         public DateTime? ApprovedByQAWhen { get; set; }
         public string ApprovedByPlantManagerWho { get; set; }

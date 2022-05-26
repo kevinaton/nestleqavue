@@ -14,23 +14,23 @@ namespace HRD.WebApi.ViewModels
         public bool? IsMicro { get; set; }
 
         //Highlights
-        //public string TimeOfIncident { get; set; }
+        public DateTime? Date { get; set; }        
+        public DateTime? TimeOfIncident { get; set; }
         public string YearHeld { get; set; }
         public string DayCode { get; set; }
         public string Originator { get; set; }
-
-        //public string BUManager { get; set; }
+        public string BUManager { get; set; }
         public string Type { get; set; }
         public string Fert { get; set; }
+        public string FertDescription { get; set; }
         public string Line { get; set; }
-
-        //public string LineSupervisor { get; set; }
-        //public string Area { get; set; }
-        //public string AreaIfOther { get; set; }
+        public string LineSupervisor { get; set; }
+        public string Area { get; set; }
+        public string AreaIfOther { get; set; }
         public string Shift { get; set; }
         public string ShortDescription { get; set; }
-        //public string AdditionalDescription { get; set; }
-        //public string DetailedDescription { get; set; }
+        public string AdditionalDescription { get; set; }
+        public string DetailedDescription { get; set; }
 
         //FileUploadDocument
 
@@ -62,7 +62,7 @@ namespace HRD.WebApi.ViewModels
         public string FMType { get; set; }
         public string Size { get; set; }
         public string Equipment { get; set; }
-        public string IfOther { get; set; }
+        public string EquipmentIfOther { get; set; }
         public string ROHMaterial { get; set; }
 
         public string FMMaterial { get; set; }
@@ -74,18 +74,19 @@ namespace HRD.WebApi.ViewModels
         public string NonHazardousSize { get; set; }
 
         //NR
-        public DateTime DateReceived { get; set; }
+        public DateTime? DateReceived { get; set; }
         public string InspectorsName { get; set; }
         public string NRCategory { get; set; }
         public string Tagged { get; set; }
+        public string TagNumber { get; set; }
         public string Response { get; set; }
 
         //MICRO
         public string HoldConcern { get; set; }
         public string DayOfWeek { get; set; }
         public string When { get; set; }
-        public string Other { get; set; }
-        public DateTime DateOfResample { get; set; }
+        public string WhenOther { get; set; }
+        public DateTime? DateOfResample { get; set; }
         public string MeatComponent { get; set; }
         public string VeggieComponent { get; set; }
         public string SauceType { get; set; }
