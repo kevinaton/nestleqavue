@@ -47,13 +47,13 @@ namespace HRD.WebApi
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRD.WebApi v1"));
+
+                app.UseCors(options => options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()); //TO DO: to remove
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors(options => options.AllowAnyOrigin());
 
             app.UseAuthorization();
 

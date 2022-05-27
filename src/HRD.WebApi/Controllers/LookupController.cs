@@ -51,21 +51,21 @@ namespace HRD.WebApi.Controllers
                     IsActive = s.IsActive,
                     SortOrder = s.SortOrder,
                     Value = s.Value,
-                    Type = new DropDownTypeViewModel
-                    {
-                        Id = s.DropDownType.Id,
-                        Name = s.DropDownType.Name
-                    }
-
+                    TypeName = s.DropDownType.Name
+                    //Type = new DropDownTypeViewModel
+                    //{
+                    //    Id = s.DropDownType.Id,
+                    //    Name = s.DropDownType.Name
+                    //}
                 });
 
             //Sorting
             switch (validFilter.SortColumn)
             {
-                case "type":
+                case "typename":
                     query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Type.Name)
-                        : query.OrderBy(o => o.Type.Name);
+                        ? query.OrderByDescending(o => o.TypeName)
+                        : query.OrderBy(o => o.TypeName);
                     break;
                 case "value":
                     query = validFilter.SortOrder == "desc"
@@ -77,7 +77,7 @@ namespace HRD.WebApi.Controllers
             if (!string.IsNullOrEmpty(validFilter.SearchString))
             {
                 query = query.Where(f => f.Value.Contains(filter.SearchString)
-                                        || f.Type.Name.Contains(filter.SearchString));
+                                        || f.TypeName.Contains(filter.SearchString));
             }
 
             var totalRecords = await query.CountAsync();
@@ -148,7 +148,7 @@ namespace HRD.WebApi.Controllers
 
             var dropdownitem = new DropDownItem
             {
-                Id=id,
+                Id = id,
                 DropDownTypeId = model.DropDownTypeId,
                 IsActive = model.IsActive,
                 SortOrder = model.SortOrder,
