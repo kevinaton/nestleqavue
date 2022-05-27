@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name:'EditYearOnly',
     props: {
@@ -38,6 +39,16 @@ export default {
             default:'',
             required: false
         },
+        year: {
+            type:String,
+            default:'',
+            required:false
+        },
+        lcInput: {
+            type:Number,
+            default:0,
+            required:false
+        }
     },
     computed : {
         currentDate () {
@@ -68,8 +79,18 @@ export default {
             this.input.snack = true
             this.input.snackColor = 'success'
             this.input.snackText = 'Data saved'
-            var value = this.tempValue.toString()
+            let value = this.tempValue.toString()
             this.$emit('change', value)
+            let stringyear = this.year.toString()
+            console.log('stringyear: ' + stringyear)
+            console.log('value: ' + value)
+            console.log('lcInput: ' + this.lcInput)
+            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
+                year:value,
+                laborCost:this.lcInput
+            })
+            .then(response => response.status)
+            .catch(err => console.warn(err))
         },
         cancel () {
             this.input.snack = true

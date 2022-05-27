@@ -14,6 +14,7 @@
       />
       <RowDelete 
         :input='labortoolbar'
+        :year='deleteItem'
         :table="labors"
         :snackbar="snackbar"
       />
@@ -23,21 +24,11 @@
         :table="labors"
       />
     </template>
-    <template v-slot:[`item.year`]="props">
-      <EditYearOnly 
-        :table="props.item.year"
-        :input="snackbar"
-        @change="(value) => { 
-          props.item.year = value;
-          selectedYear = value
-        }"
-      />
-    </template>
     <template v-slot:[`item.laborCost`]="props">
-      <EditTable 
+      <EditTableLabor
         :table="props.item.laborCost"
         :input="snackbar"
-        :editNum="labors.laborCost"
+        :string1="props.item.year"
         type="number"
         @change="(inputValue) => { props.item.laborCost = inputValue }"
       />
@@ -47,6 +38,7 @@
         :item="item"
         :tableItem="labors"
         :input="labortoolbar"
+        @change="(value) => { deleteItem = value}"
       />
     </template>
     
@@ -63,7 +55,7 @@
   import SnackBar from '@/components/TableElements/SnackBar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-  import EditTable from '@/components/TableElements/EditTable.vue'
+  import EditTableLabor from '@/components/TableElements/EditTableLabor.vue'
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
 
   export default {
@@ -74,7 +66,7 @@
       SnackBar,
       RowDelete,
       DeleteAction,
-      EditTable,
+      EditTableLabor,
       EditYearOnly,
     },
     data: () => ({
@@ -91,11 +83,11 @@
         selectedItem: 1,
         editedItem: {
           year: '',
-          laborCost: '',
+          laborCost: 0,
         },
         defaultItem: {
           year: '',
-          laborCost: '',
+          laborCost: 0,
         },
       },
       
@@ -121,7 +113,8 @@
           href: '',
         },
       ],
-      selectedYear: null
+      selectedYear: null,
+      deleteItem:''
     }),
 
     computed: {

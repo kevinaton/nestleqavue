@@ -25,14 +25,18 @@ export default {
             type: Object,
             default: () => {},
             required: false
-        }
+        },
     },
+    emits:['change'],
     
     methods: {
         deleteItem (item) {
+            console.log(item.year)
         this.input.editedIndex = this.tableItem.indexOf(item)
         this.input.editedItem = Object.assign({}, item)
         this.input.dialogDelete = true
+        let value = item.year
+        this.$emit('change', value)
         },
     }
 }

@@ -360,7 +360,7 @@ import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
 import SnackBar from '@/components/TableElements/SnackBar.vue'
-import EditTable from '@/components/TableElements/EditTable.vue'
+import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 

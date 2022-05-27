@@ -61,7 +61,7 @@
     import DeleteAction from '@/components/TableElements/DeleteAction.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
-    import EditTable from '@/components/TableElements/EditTable.vue'
+    import EditTable from '@/components/TableElements/EditTableNumber.vue'
 
     export default {
         components: {
@@ -86,12 +86,12 @@
             editedIndex: -1,
             selectedItem: 1,
             editedItem: {
-            roleid:'',
-            testcost:0,
+                roleid:'',
+                testcost:0,
             },
             defaultItem: {
-            roleid: '',
-            testcost:0,
+                roleid: '',
+                testcost:0,
             },
         },
         

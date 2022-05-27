@@ -57,7 +57,7 @@ import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-import EditTable from '@/components/TableElements/EditTable.vue'
+import EditTable from '@/components/TableElements/EditTableNumber.vue'
 
 export default {
     components: {

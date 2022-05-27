@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     name:'RowDelete',
     props: {
@@ -28,6 +29,11 @@ export default {
             type:Object,
             default: () => {},
             required: false
+        },
+        year: {
+            type:String,
+            default:'',
+            required:false
         }
     },
     watch: {
@@ -49,6 +55,16 @@ export default {
             this.snackbar.snackText = 'Successfully deleted'
             this.table.splice(this.input.editedIndex, 1)
             this.closeDelete()
+            
+            let stringyear = this.year.toString()
+            axios.delete(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`)
+            .then(response => response.status)
+            .catch( err => { console.warn(err)}) 
+
+            axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts`)
+            .then((res) => {
+                this.labors = res.data.data
+            })
         },
     }
 }

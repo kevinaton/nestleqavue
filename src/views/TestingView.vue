@@ -70,7 +70,7 @@
     import DeleteAction from '@/components/TableElements/DeleteAction.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
-    import EditTable from '@/components/TableElements/EditTable.vue'
+    import EditTable from '@/components/TableElements/EditTableNumber.vue'
     import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
 
     export default {

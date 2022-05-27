@@ -2,7 +2,7 @@
     <v-edit-dialog
         :return-value.sync="table"
         light
-        @save="save"
+        @save="save($event)"
         @cancel="cancel"
     >
         {{ table }}
@@ -22,9 +22,8 @@
 
 <script>
 import axios from 'axios'
-
 export default {
-    name:'EditTable',
+    name:'EditTableNumber',
     props: {
         input: {
             type:Object,
@@ -41,9 +40,9 @@ export default {
             default: '',
             required: false
         },
-        editNum: {
-            type:Number,
-            default:0,
+        string1: {
+            type:String,
+            default:'',
             required:false
         }
     },
@@ -58,6 +57,12 @@ export default {
             this.input.snack = true
             this.input.snackColor = 'success'
             this.input.snackText = 'Data saved'
+            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
+                year:this.string1,
+                laborCost:this.inputValue
+            })
+            .then(response => response.status)
+            .catch(err => console.warn(err)) 
         },
         cancel () {
             this.input.snack = true
@@ -66,13 +71,9 @@ export default {
         },
         updateValue(value) {
             let vm = this 
+            vm.inputValue = value
             vm.$emit('change', value)
-            
-            // axios.post(`${process.env.VUE_APP_API_URL}/LaborCosts`)
-            // .then((res) => {
-            //     vm.editNum = res.data.data.laborCost
-            // })
-        }
+            }
     }
 }
 </script>

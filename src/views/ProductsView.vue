@@ -34,14 +34,16 @@
     </template>
 
     <template v-slot:[`item.fert`]="props">
-      <EditTable 
+      <EditTableProduct
         :table="props.item.fert"
+        editData="fert"
         :input="snackbar"
+        :data="props.item"
         @change="(value) => { props.item.fert = value }"
       />
     </template>
 
-    <template v-slot:[`item.description`]="props">
+    <!-- <template v-slot:[`item.description`]="props">
       <EditTable 
         :table="props.item.description"
         :input="snackbar"
@@ -82,20 +84,21 @@
         :tableItem="products"
         :input="prodtoolbar"
       />
-    </template>
+    </template> -->
 
-    <ResetTable  @click="initialize" />
+    <ResetTable  @click="fetchProducts" />
   
   </v-data-table>
   </div>
 </template>
 
 <script>
+  import axios from 'axios'
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import SnackBar from '@/components/TableElements/SnackBar.vue'
-  import EditTable from '@/components/TableElements/EditTable.vue'
+  import EditTableProduct from '@/components/TableElements/EditTableProduct.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
   import EditAutoComplete from '@/components/TableElements/EditAutoComplete.vue'
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
@@ -106,7 +109,7 @@
       SimpleToolbar,
       RowDelete,
       SnackBar,
-      EditTable,
+      EditTableProduct,
       DeleteAction,
       EditAutoComplete,
       EditYearOnly,
@@ -125,19 +128,21 @@
         selectedItem: 1,
         editedItem: {
           year:'',
-          fert: 0,
+          fert: '',
           description: '',
           costpercase: '',
           country: '',
-          nobestbeforedate: 0,
+          nobBdate: true,
+          holiday: true
         },
         defaultItem: {
           year: '',
-          fert: 0,
+          fert: '',
           description: '',
           costpercase: '',
           country: '',
-          nobestbeforedate: 0,
+          noBbdate: true,
+          holiday: true,
         },
       },
       country: [
@@ -152,9 +157,10 @@
         },
         { text: 'FERT', value: 'fert' },
         { text: 'Description', value: 'description'},
-        { text: 'Cost per Case', value: 'costpercase' },
+        { text: 'Cost per Case', value: 'costPerCase' },
         { text: 'Country', value: 'country' },
-        { text: 'No Best Before Date', value: 'nobestbeforedate' },
+        { text: 'No Best Before Date', value: 'noBbdate' },
+        { text: 'Holiday', value: 'holiday' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
       ],
       products: [],
@@ -178,54 +184,17 @@
     },
     
     created () {
-      this.initialize()
+      this.fetchProducts()
     },
 
     methods: {
-      initialize () {
-        this.products = [
-        {
-          year: 2019,
-          fert: "04397971",
-          description: "FG RL1810 Test SE Cauliflower Mac",
-          costpercase: "16",
-          country: "US",
-          nobestbeforedate: "0"
-        },
-        {
-          year: 2018,
-          fert: "11000263",
-          description: "Banana Split with chocholate and cream",
-          costpercase: "9.24",
-          country: "US",
-          nobestbeforedate: "0"
-        },
-        {
-          year: 2020,
-          fert: "11000341",
-          description: "Lorem ipsum dolor",
-          costpercase: "38.3",
-          country: "US",
-          nobestbeforedate: "0"
-        },
-        {
-          year: 2019,
-          fert: "11000349",
-          description: "Cream apple pie",
-          costpercase: "13.95",
-          country: "US",
-          nobestbeforedate: "0"
-        },
-        {
-          year: 2019,
-          fert: "11000851",
-          description: "Stouffers Macaroni and Cheese 12x340oz",
-          costpercase: "9.72",
-          country: "CA",
-          nobestbeforedate: "0"
-        }
-        ]
-      },
+      fetchProducts () {
+        let vm = this 
+        axios.get(`${process.env.VUE_APP_API_URL}/Products`)
+          .then((res) => {
+            vm.products = res.data.data
+          })
+      }
     },
   }
 </script>
