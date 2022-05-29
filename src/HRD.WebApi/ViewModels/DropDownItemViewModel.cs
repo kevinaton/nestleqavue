@@ -7,6 +7,6 @@
         public string Value { get; set; }
         public short SortOrder { get; set; }
         public bool IsActive { get; set; }  
-        public DropDownTypeViewModel Type { get; set; }
+        public string TypeName { get; set; }
     }
 }

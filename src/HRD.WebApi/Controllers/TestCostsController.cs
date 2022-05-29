@@ -143,6 +143,7 @@ namespace HRD.WebApi.Controllers
         {
             var testCost = new TestCost
             {
+                Id = model.Id,
                 TestName = model.TestName,
                 TestCostValue = model.TestCost,
                 Year = model.Year

@@ -36,7 +36,7 @@ namespace HRD.WebApi
 
             // Add framework services.
             services.AddDbContext<HRDContext>(options => options.
-               UseSqlServer(Configuration.GetConnectionString("Default")));
+                UseSqlServer(Configuration.GetConnectionString("Default")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,13 +47,13 @@ namespace HRD.WebApi
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRD.WebApi v1"));
+
+                app.UseCors(options => options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()); //TO DO: to remove
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseCors(options => options.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin());
 
             app.UseAuthorization();
 
