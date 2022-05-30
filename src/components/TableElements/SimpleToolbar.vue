@@ -33,7 +33,7 @@ export default {
         },
         table: {
             type: Array,
-            default: [],
+            default: () => [],
         },
         title: {
             type: String,

@@ -3,6 +3,7 @@
   <v-data-table
     :headers="headers"
     :items="products"
+    dense
     :search="prodtoolbar.search"
   >
     <template v-slot:top>
@@ -13,6 +14,9 @@
         :input='prodtoolbar'
         :table="products"
         :snackbar="snackbar"
+        editData="id"
+        :data="delItem"
+        url="Products"
       />
       <Breadcrumbs 
         class="mt-3"
@@ -25,56 +29,66 @@
       />
     </template>
 
-    <template v-slot:[`item.year`]="props">
-      <EditYearOnly
-        :table="props.item.year"
-        :input="snackbar"
-        @change="(value) => { props.item.year = value }"
-      />
-    </template>
-
     <template v-slot:[`item.fert`]="props">
       <EditTableProduct
         :table="props.item.fert"
         editData="fert"
-        :input="snackbar"
         :data="props.item"
+        :input="snackbar"
         @change="(value) => { props.item.fert = value }"
       />
     </template>
 
-    <!-- <template v-slot:[`item.description`]="props">
-      <EditTable 
+    <template v-slot:[`item.description`]="props">
+      <EditTableProduct 
         :table="props.item.description"
+        editData="description"
+        :data="props.item"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
     </template>
 
-    <template v-slot:[`item.costpercase`]="props">
-      <EditTable 
-        :table="props.item.costpercase"
+    <template v-slot:[`item.costPerCase`]="props">
+      <EditTableProduct
+        :table="props.item.costPerCase"
+        editData="description"
+        :data="props.item"
         :input="snackbar"
-        @change="(value) => { props.item.costpercase = value }"
+        @change="(value) => { props.item.costPerCase = value }"
         type="number"
       />
     </template>
 
     <template v-slot:[`item.country`]="props">
-      <EditAutoComplete 
+      <EditTableProduct
         :table="props.item.country"
+        editData="country"
+        :data="props.item"
         :input="snackbar"
-        :options="country"
         @change="(value) => { props.item.country = value }"
       />
     </template>
 
-    <template v-slot:[`item.nobestbeforedate`]="props">
-      <EditTable 
-        :table="props.item.nobestbeforedate"
+    <template v-slot:[`item.noBbdate`]="props">
+      <EditCheckboxProduct
+        :table="props.item.noBbdate"
+        v-model="props.item.noBbdate"
         :input="snackbar"
-        @change="(value) => { props.item.nobestbeforedate = value }"
-        type="number"
+        editData="noBbdate"
+        :data="props.item"
+        @change="(value) => { props.item.noBbdate = value }"
+      />
+    </template>
+
+    <template v-slot:[`item.holiday`]="props">
+      <EditCheckboxProduct
+        :table="props.item.holiday"
+        v-model="props.item.holiday"
+        :input="snackbar"
+        editData="holiday"
+        :data="props.item"
+        @change="(value) => { props.item.holiday = value }"
       />
     </template>
 
@@ -83,8 +97,10 @@
         :item="item"
         :tableItem="products"
         :input="prodtoolbar"
+        durl="id"
+        @change="(value) => { delItem = value}"
       />
-    </template> -->
+    </template>
 
     <ResetTable  @click="fetchProducts" />
   
@@ -100,9 +116,10 @@
   import SnackBar from '@/components/TableElements/SnackBar.vue'
   import EditTableProduct from '@/components/TableElements/EditTableProduct.vue'
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-  import EditAutoComplete from '@/components/TableElements/EditAutoComplete.vue'
+  import EditAutoCompleteProduct from '@/components/TableElements/EditAutoCompleteProduct.vue'
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
-  
+  import EditCheckboxProduct from '@/components/TableElements/EditCheckboxProduct.vue'
+
   export default {
     components: {
       Breadcrumbs,
@@ -111,10 +128,12 @@
       SnackBar,
       EditTableProduct,
       DeleteAction,
-      EditAutoComplete,
+      EditAutoCompleteProduct,
       EditYearOnly,
+      EditCheckboxProduct,
     },
     data: () => ({
+      delItem:'',
       snackbar: {
         snack: false,
         snackColor: '',
@@ -132,7 +151,7 @@
           description: '',
           costpercase: '',
           country: '',
-          nobBdate: true,
+          noBbdate: true,
           holiday: true
         },
         defaultItem: {
@@ -145,8 +164,8 @@
           holiday: true,
         },
       },
-      country: [
-        'US', 'CA', 'NZ', 'JP', 'CH', 'ISR', 'PH', 'AFR'
+      tf: [
+        'True', 'False'
       ],
       headers: [
         {

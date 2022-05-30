@@ -1,10 +1,16 @@
 <template>
-    <v-icon
-        small
-        @click="deleteItem(item)"
+    <v-hover
+        v-slot="{ hover }"
+        open-delay="200"
     >
-        mdi-delete
-    </v-icon>
+        <v-icon
+            @click="deleteItem(item)"
+            :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+            :class="{ 'on-hover': hover }"
+        >
+            mdi-delete
+        </v-icon>
+    </v-hover>
 </template>
 
 <script>
@@ -26,17 +32,21 @@ export default {
             default: () => {},
             required: false
         },
+        durl: {
+            type:String,
+            default:'',
+            required:false
+        }
     },
     emits:['change'],
     
     methods: {
         deleteItem (item) {
-            console.log(item.year)
-        this.input.editedIndex = this.tableItem.indexOf(item)
-        this.input.editedItem = Object.assign({}, item)
-        this.input.dialogDelete = true
-        let value = item.year
-        this.$emit('change', value)
+            this.input.editedIndex = this.tableItem.indexOf(item)
+            this.input.editedItem = Object.assign({}, item)
+            this.input.dialogDelete = true
+            let value = item[this.durl].toString()
+            this.$emit('change', value)
         },
     }
 }

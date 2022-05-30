@@ -16,6 +16,7 @@
                 :input='roletoolbar'
                 :table="roles"
                 :snackbar="snackbar"
+                url=""
             />
             <SimpleToolbar 
                 title="Roles"
@@ -24,7 +25,7 @@
             />
         </template>
 
-        <template v-slot:[`item.roleid`]="props">
+        <!-- <template v-slot:[`item.roleid`]="props">
             <EditTable 
                 :table="props.item.roleid"
                 :input="snackbar"
@@ -32,6 +33,7 @@
                 @change="(value) => { props.item.roleid = value }"
             />
         </template>
+        
         <template v-slot:[`item.testcost`]="props">
             <EditTable 
                 :table="props.item.testcost"
@@ -39,7 +41,7 @@
                 type="number"
                 @change="(value) => { props.item.testcost = value }"
             />
-        </template>
+        </template> -->
         
         <template v-slot:[`item.actions`]="{ item }">
             <DeleteAction 

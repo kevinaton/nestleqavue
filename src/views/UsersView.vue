@@ -5,67 +5,77 @@
     :search="usertoolbar.search"
 >
     <template v-slot:top>
-    <SnackBar 
-        :input="snackbar"
-    />
-    <Breadcrumbs
-        class="mt-3"
-        :items="bcrumbs"
-    />
-    <RowDelete 
-        :input='usertoolbar'
-        :table="users"
-        :snackbar="snackbar"
-    />
-    <SimpleToolbar 
-        title="Users"
-        :input="usertoolbar"
-        :table="users"
-    />
+        <SnackBar 
+            :input="snackbar"
+        />
+        <Breadcrumbs
+            class="mt-3"
+            :items="bcrumbs"
+        />
+        <RowDelete 
+            :input='usertoolbar'
+            :table="users"
+            editData="id"
+            :data="delItem"
+            url="Users"
+            :snackbar="snackbar"
+        />
+        <SimpleToolbar 
+            title="Users"
+            :input="usertoolbar"
+            :table="users"
+        />
     </template>
-    <template v-slot:[`item.usersid`]="props">
-    <EditTable 
-        :table="props.item.usersid"
-        :input="snackbar"
-        type="number"
-        @change="(value) => { props.item.usersid = value }"
-    />
+    <template v-slot:[`item.name`]="props">
+        <EditTableUser
+            :table="props.item.name"
+            editData="name"
+            :data="props.item"
+            :input="snackbar"
+            @change="(value) => { props.item.name = value }"
+        />
     </template>
-    <template v-slot:[`item.userid`]="props">
-    <EditTable 
-        :table="props.item.userid"
-        :input="snackbar"
-        @change="(value) => { props.item.userid = value }"
-    />
+    <template v-slot:[`item.userId`]="props">
+        <EditTableUser
+            :table="props.item.userId"
+            editData="userId"
+            :data="props.item"
+            :input="snackbar"
+            @change="(value) => { props.item.userId = value }"
+        />
     </template>
-    <template v-slot:[`item.username`]="props">
-    <EditTable 
-        :table="props.item.username"
-        :input="snackbar"
-        @change="(value) => { props.item.username = value }"
-    />
-    </template>
+    <!-- <template v-slot:[`item.userid`]="props">
+        <EditTable 
+            :table="props.item.userid"
+            :input="snackbar"
+            @change="(value) => { props.item.userid = value }"
+        />
+    </template> -->
+
     <template v-slot:[`item.actions`]="{ item }">
-    <DeleteAction 
-        :item="item"
-        :tableItem="users"
-        :input="usertoolbar"
-    />
+        <DeleteAction 
+            :item="item"
+            :tableItem="users"
+            :input="usertoolbar"
+            durl="id"
+            @change="(value) => { delItem = value }"
+        />
     </template>
     
-    <ResetTable  @click="initialize" />
+    <ResetTable  @click="fetchUsers()" />
     
 </v-data-table>
 </template>
 
 <script>
+import axios from 'axios'
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-import EditTable from '@/components/TableElements/EditTableNumber.vue'
+import EditTableUser from '@/components/TableElements/EditTableUser.vue'
 
 export default {
     components: {
@@ -75,9 +85,10 @@ export default {
     SnackBar,
     RowDelete,
     DeleteAction,
-    EditTable,
+    EditTableUser,
     },
     data: () => ({
+    delItem:'',
     snackbar: {
         snack: false,
         snackColor: '',
@@ -106,10 +117,10 @@ export default {
         text: 'ID',
         align: 'start',
         sortable: true,
-        value: 'usersid',
+        value: 'id',
         },
-        { text: 'User ID', sortable: true, value: 'userid' },
-        { text: 'Name', sortable: true, value: 'username' },
+        { text: 'Name', sortable: true, value: 'name' },
+        { text: 'User ID', sortable: true, value: 'userId' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],
@@ -133,44 +144,17 @@ export default {
     },
 
     created () {
-    this.initialize()
+    this.fetchUsers()
     },
 
     methods: {
-    initialize () {
-        this.users = [
-        {
-        usersid: "1",
-        userid: "DHASAIWS123",
-        username: "Mark Broderick"
-        },
-        {
-        usersid: "2",
-        userid: "IJSQWWD1812",
-        username: "Mindy Aguilar"
-        },
-        {
-        usersid: "3",
-        userid: "LDASDAN473",
-        username: "David Rubow"
-        },
-        {
-        usersid: "4",
-        userid: "ANAKXAW9123",
-        username: "Kizze Posey"
-        },
-        {
-        usersid: "5",
-        userid: "HCOAWICE12312",
-        username: "Glenda Sruggs"
-        },
-        {
-        usersid: "6",
-        userid: "8DLWDWADWD123",
-        username: "Scott Westcott"
-        }
-    ]
-    },
+    fetchUsers() {
+        let vm = this 
+        axios.get(`${process.env.VUE_APP_API_URL}/Users`)
+            .then((res) => {
+                vm.users = res.data.data
+            })
+    }
     },
 }
 </script>

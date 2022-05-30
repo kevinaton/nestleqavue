@@ -9,7 +9,7 @@
         <template v-slot:input>
             <v-text-field
                 :value="table"
-                @input="updateValue(parseInt($event))"
+                @input="updateValue($event)"
                 :rules="[required]"
                 :type="type"
                 label="Edit"
@@ -31,8 +31,6 @@ export default {
             required: false,
         },
         table: {
-            type:Number,
-            default: 0,
             required: false
         },
         type: {
@@ -40,7 +38,12 @@ export default {
             default: '',
             required: false
         },
-        string1: {
+        data: {
+            type:Object,
+            default: () => {},
+            required:false
+        },
+        editData: {
             type:String,
             default:'',
             required:false
@@ -49,17 +52,21 @@ export default {
     data: () => ({
         max50chars: v => v.length <= 50 || 'Input too long!',
         required: value => !!value || 'Required.',
-        inputValue:0,
+        origVal:[],
     }),
     created () {
         this.saveOriginalValue()
     },
     emits: ['change'],
     methods: {
-        save () {
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
-                year:this.string1,
-                laborCost:this.inputValue
+        save () {            
+            let ed = this.editData
+            this.data.ed = this.table
+
+            axios.put(`${process.env.VUE_APP_API_URL}/TestCosts/${this.data.id}`,  {
+                id:this.data.id,
+                name:this.data.name,
+                userId:this.data.userId,
             })
             .then(response => 
             {
@@ -71,7 +78,7 @@ export default {
             .catch(err => {
                 this.input.snack = true
                 this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later.'
+                this.input.snackText = 'Something went wrong. Please try again later. ' + err
                 console.warn(err)
             }) 
         },
@@ -85,7 +92,6 @@ export default {
         },
         updateValue(value) {
             let vm = this 
-            vm.inputValue = value
             vm.$emit('change', value)
         },
         saveOriginalValue() {
