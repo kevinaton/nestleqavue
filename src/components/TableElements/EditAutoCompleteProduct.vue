@@ -2,20 +2,23 @@
     <v-edit-dialog
         :return-value.sync="table"
         light
-        @save="save($event)"
+        persistent
+        large
+        @save="save"
         @cancel="cancel"
     >
         {{ table }}
         <template v-slot:input>
-            <v-text-field
+            <v-autocomplete
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[required]"
-                :type="type"
+                :items="options"
                 label="Edit"
                 single-line
                 persistent
-            ></v-text-field>
+                required
+            >
+            </v-autocomplete>
         </template>
     </v-edit-dialog>
 </template>
@@ -23,7 +26,7 @@
 <script>
 import axios from 'axios'
 export default {
-    name:'EditTableNumber',
+    name:'EditAutoComplete',
     props: {
         input: {
             type:Object,
@@ -43,6 +46,11 @@ export default {
             default: () => {},
             required:false
         },
+        options: {
+            type:Array,
+            default: () => [],
+            required: false,
+        },
         editData: {
             type:String,
             default:'',
@@ -50,18 +58,15 @@ export default {
         }
     },
     data: () => ({
-        max50chars: v => v.length <= 50 || 'Input too long!',
-        required: value => !!value || 'Required.',
-        origVal:[],
-        inputValue:0,
+        tempValue:'',
     }),
-    created () {
-        this.saveOriginalValue()
-    },
     emits: ['change'],
     methods: {
         save () {
-            
+            this.input.snack = true
+            this.input.snackColor = 'success'
+            this.input.snackText = 'Data saved'
+
             let ed = this.editData
             this.data.ed = this.table
 
@@ -75,35 +80,24 @@ export default {
                 noBdate:this.data.noBdate,
                 holiday:this.data.holiday
             })
-            .then(response => 
-            {
-                response.status
-                this.input.snack = true
-                this.input.snackColor = 'success'
-                this.input.snackText = 'Data saved'
-            })
-            .catch(err => {
-                this.input.snack = true
-                this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            }) 
+            .then(response => response.status)
+            .catch(err => console.warn(err)) 
         },
         cancel () {
             this.input.snack = true
             this.input.snackColor = 'error'
             this.input.snackText = 'Canceled'
-            let vm = this 
-            let value = this.origVal
-            vm.$emit('change', value)
         },
         updateValue(value) {
-            let vm = this 
-            vm.inputValue = value
-            vm.$emit('change', value)
-        },
-        saveOriginalValue() {
-            this.origVal = this.table
+            if (value = true) {
+                value = true
+                this.tempValue = true
+                this.$emit('change', value)
+            } else {
+                value = false
+                this.tempValue = false
+                this.$emit('change', value)
+            }
         }
     }
 }

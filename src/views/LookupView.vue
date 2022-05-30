@@ -8,14 +8,17 @@
     <SnackBar 
         :input="snackbar"
     />
-    <Breadcrumbs
-        class="mt-3"
-        :items="bcrumbs"
-    />
     <RowDelete 
         :input='lookuptoolbar'
         :table="lookups"
         :snackbar="snackbar"
+        editData="id"
+        :data="delItem"
+        url="Lookup/items"
+    />
+    <Breadcrumbs
+        class="mt-3"
+        :items="bcrumbs"
     />
     <SimpleToolbar 
         title="Lookup Lists"
@@ -23,7 +26,7 @@
         :table="lookups"
     />
     </template>
-    <template v-slot:[`item.lookuptype`]="props">
+    <!-- <template v-slot:[`item.lookuptype`]="props">
     <EditTable 
         :table="props.item.lookuptype"
         :input="snackbar"
@@ -36,21 +39,34 @@
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
     />
+    </template> -->
+    <template v-slot:[`item.isActive`]="props">
+        <EditCheckboxLookup
+            :table="props.item.isActive"
+            v-model="props.item.isActive"
+            :input="snackbar"
+            editData="isActive"
+            :data="props.item"
+            @change="(value) => { props.item.isActive = value }"
+        />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
     <DeleteAction 
         :item="item"
         :tableItem="lookups"
         :input="lookuptoolbar"
+        durl="id"
+        @change="(value) => { delItem = value}"
     />
     </template>
     
-    <ResetTable  @click="initialize" />
+    <ResetTable  @click="fetchLookupTypes" />
     
 </v-data-table>
 </template>
 
 <script>
+import axios from 'axios'
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
@@ -58,6 +74,7 @@ import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditTable from '@/components/TableElements/EditTableNumber.vue'
+import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 
 export default {
     components: {
@@ -68,8 +85,10 @@ export default {
     RowDelete,
     DeleteAction,
     EditTable,
+    EditCheckboxLookup
     },
     data: () => ({
+    delItem:'',
     snackbar: {
         snack: false,
         snackColor: '',
@@ -82,23 +101,26 @@ export default {
         editedIndex: -1,
         selectedItem: 1,
         editedItem: {
-            lookuptype: '',
-            value: '',
+            id: 0,
+            name: '',
         },
         defaultItem: {
-            lookuptype: '',
-            value: '',
+            id: 0,
+            name: '',
         },
     },
-    
     headers: [
         {
-        text: 'Lookup Type',
+        text: 'ID',
         align: 'start',
         sortable: true,
-        value: 'lookuptype',
+        value: 'id',
         },
+        { text: 'Dropdown Type ID', sortable: true, value: 'dropDownTypeId' },
         { text: 'Value', sortable: true, value: 'value' },
+        { text: 'Sort Order', sortable: true, value: 'sortOrder' },
+        { text: 'Is Active', sortable: true, value: 'isActive' },
+        { text: 'Type', sortable: true, value: 'typeName' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     lookups: [],
@@ -122,50 +144,17 @@ export default {
     },
 
     created () {
-    this.initialize()
+    this.fetchLookupTypes()
     },
 
-    methods: {
-    initialize () {
-        this.lookups = [
-        {
-            lookuptype: "Line",
-            value: "1",
-        },
-        {
-            lookuptype: "Line",
-            value: "4",
-        },
-        {
-            lookuptype: "Line",
-            value: "6",
-        },
-        {
-            lookuptype: "Line",
-            value: "9",
-        },
-        {
-            lookuptype: "Line",
-            value: "10",
-        },
-        {
-            lookuptype: "Line",
-            value: "Base/18",
-        },
-        {
-            lookuptype: "Line",
-            value: 'WH',
-        },
-        {
-            lookuptype: "Line",
-            value: 'CP',
-        },
-        {
-            lookuptype: "Line",
-            value: 'Grounds',
+    methods: {    
+        fetchLookupTypes () {
+            let vm = this 
+            axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items`)
+            .then((res) => {
+                vm.lookups = res.data.data
+            })
         }
-    ]
-    },
     },
 }
 </script>

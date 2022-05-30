@@ -23,17 +23,23 @@ export default {
         },
         table: {
             type: Array,
-            default: [],
+            default: () => [],
+            required:false
         },
         snackbar: {
             type:Object,
             default: () => {},
             required: false
         },
-        year: {
+        data: {
             type:String,
             default:'',
             required:false
+        },
+        url: {
+            type:String,
+            default:'',
+            required:true
         }
     },
     watch: {
@@ -50,21 +56,22 @@ export default {
         })
         },
         deleteItemConfirm () {
-            this.snackbar.snack = true
-            this.snackbar.snackColor = 'success'
-            this.snackbar.snackText = 'Successfully deleted'
             this.table.splice(this.input.editedIndex, 1)
             this.closeDelete()
             
-            let stringyear = this.year.toString()
-            axios.delete(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`)
-            .then(response => response.status)
-            .catch( err => { console.warn(err)}) 
-
-            axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts`)
-            .then((res) => {
-                this.labors = res.data.data
+            axios.delete(`${process.env.VUE_APP_API_URL}/${this.url}/${this.data}`)
+            .then(response => {
+                response.status
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'success'
+                this.snackbar.snackText = 'Successfully deleted'
             })
+            .catch( err => { 
+                console.warn(err)
+                this.input.snack = true
+                this.input.snackColor = 'error'
+                this.input.snackText = 'Something went wrong. Please try again later.'
+            }) 
         },
     }
 }

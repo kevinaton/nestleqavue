@@ -14,9 +14,11 @@
       />
       <RowDelete 
         :input='labortoolbar'
-        :year='deleteItem'
         :table="labors"
         :snackbar="snackbar"
+        editData="year"
+        :data="delItem"
+        url="LaborCosts"
       />
       <SimpleToolbar 
         title="Labor"
@@ -30,7 +32,7 @@
         :input="snackbar"
         :string1="props.item.year"
         type="number"
-        @change="(inputValue) => { props.item.laborCost = inputValue }"
+      @change="(inputValue) => { props.item.laborCost = inputValue }"
       />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
@@ -38,11 +40,12 @@
         :item="item"
         :tableItem="labors"
         :input="labortoolbar"
-        @change="(value) => { deleteItem = value}"
+        durl="year"
+        @change="(value) => { delItem = value}"
       />
     </template>
     
-    <ResetTable  @click="fetchLabors" />
+    <ResetTable  @click="fetchLabors()" />
     
   </v-data-table>
 </template>
@@ -70,6 +73,7 @@
       EditYearOnly,
     },
     data: () => ({
+      delItem:'',
       snackbar: {
         snack: false,
         snackColor: '',
@@ -114,7 +118,6 @@
         },
       ],
       selectedYear: null,
-      deleteItem:''
     }),
 
     computed: {

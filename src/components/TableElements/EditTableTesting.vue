@@ -9,7 +9,7 @@
         <template v-slot:input>
             <v-text-field
                 :value="table"
-                @input="updateValue(parseInt($event))"
+                @input="updateValue($event)"
                 :rules="[required]"
                 :type="type"
                 label="Edit"
@@ -31,8 +31,6 @@ export default {
             required: false,
         },
         table: {
-            type:Number,
-            default: 0,
             required: false
         },
         type: {
@@ -40,7 +38,12 @@ export default {
             default: '',
             required: false
         },
-        string1: {
+        data: {
+            type:Object,
+            default: () => {},
+            required:false
+        },
+        editData: {
             type:String,
             default:'',
             required:false
@@ -49,6 +52,7 @@ export default {
     data: () => ({
         max50chars: v => v.length <= 50 || 'Input too long!',
         required: value => !!value || 'Required.',
+        origVal:[],
         inputValue:0,
     }),
     created () {
@@ -56,10 +60,15 @@ export default {
     },
     emits: ['change'],
     methods: {
-        save () {
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
-                year:this.string1,
-                laborCost:this.inputValue
+        save () {            
+            let ed = this.editData
+            this.data.ed = this.table
+
+            axios.put(`${process.env.VUE_APP_API_URL}/TestCosts/${this.data.id}`,  {
+                id:this.data.id,
+                year:this.data.year,
+                testName:this.data.testName,
+                testCost:this.data.testCost,
             })
             .then(response => 
             {

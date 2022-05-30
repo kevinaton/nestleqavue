@@ -13,6 +13,9 @@
         :input='qatoolbar'
         :table="qa"
         :snackbar="snackbar"
+        editData="id"
+        :data="delItem"
+        url="Hrds"
       />
       <Breadcrumbs 
         class="mt-3"
@@ -40,11 +43,12 @@
       />
     </template>
 
-    <ResetTable  @click="initialize" />
+    <ResetTable  @click="fetchHrds" />
   </v-data-table>
 </template>
 
 <script>
+  import axios from 'axios'
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import QaToolbar from '@/components/TableElements/QaToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -64,6 +68,7 @@
       SnackBar,
     },
     data: () => ({
+      delItem:'',
       snackbar: {
         snack: false,
         snackColor: '',
@@ -117,17 +122,17 @@
           text: 'Report #',
           align: 'start',
           sortable: true,
-          value: 'report',
+          value: 'id',
         },
-        { text: 'Daycode', value: 'daycode' },
+        { text: 'Daycode', value: 'dayCode' },
         { text: 'Type', value: 'type'},
         { text: 'FERT', value: 'fert' },
-        { text: 'Product Description', value: 'productdesc' },
+        { text: 'Product Description', value: 'productDescription' },
         { text: 'Line', value: 'line' },
         { text: 'Shift', value: 'shift' },
-        { text: 'Hour Code', value: 'hourcode'},
+        { text: 'Hour Code', value: 'hourCode'},
         { text: 'Cases', value:'cases'},
-        { text: 'Short Description', value:'shortdescription'},
+        { text: 'Short Description', value:'shortDescription'},
         { text: 'Originator', value:'originator'},
         { text: 'Actions', value: 'actions', sortable: false },
       ],
@@ -142,105 +147,17 @@
     }),
 
     created () {
-      this.initialize()
+      this.fetchHrds()
     },
 
     methods: {
-      initialize () {
-        this.qa = [
-          {
-            report: "1",
-            daycode: "9274",
-            type: {icon: "mdi-timer-off-outline", name: "HRD", color:'light-blue darken-4'},
-            fert: '892172',
-            productdesc: "Stouffers 5 Cheese Lasagna",
-            line: "1",
-            shift: "1",
-            hourcode: "G",
-            cases: "88",
-            shortdescription: "Leakers",
-            originator: "John Martin"
-          },
-          {
-            report: "2",
-            daycode: "9274",
-            type: {icon: "", name: "", color:''},
-            fert: '82312',
-            productdesc: "LC CMCL Herb Roasted Chkn",
-            line: "1",
-            shift: "1",
-            hourcode: "G",
-            cases: "111",
-            shortdescription: "Coding - Best before",
-            originator: "Candie Williams"
-          },
-          {
-            report: "3",
-            daycode: "9273",
-            fert: '2931238',
-            type: {icon: "mdi-store-outline", name: "SMI", color:'light-blue darken-4'},
-            productdesc: "Stouffers Npro Mac & Cheese",
-            line: "1",
-            shift: "2",
-            hourcode: "Q-C",
-            cases: "7636",
-            shortdescription: "Micro hold - E Coli",
-            originator: "Elain Coleman"
-          },
-          {
-            report: "4",
-            daycode: "9270",
-            type: "",
-            fert: '112842',
-            productdesc: "Stfr Spinach Souffle",
-            line: "2",
-            shift: "3",
-            hourcode: "A",
-            cases: "1234",
-            shortdescription: "Hi Core",
-            originator: "Jane Smith"
-          },
-          {
-            report: "5",
-            daycode: "9210",
-            type: {icon: "mdi-bug-outline", name: "Pest", color:'light-blue darken-4'},
-            fert: "82394234",
-            productdesc: "Stfr Bf Steak & mash potato",
-            line: "2",
-            shift: "3",
-            hourcode: "B",
-            cases: "987",
-            shortdescription: "Leakers",
-            originator: "John Doe",
-          },
-          {
-            report: "6",
-            daycode: "9270",
-            type: {icon: "mdi-cancel", name: "HRD", color:'light-blue darken-4'},
-            fert: '2312355',
-            productdesc: "Stouffers 5 Cheese Lasagna",
-            line: "3",
-            shift: "2",
-            hourcode: "T-X",
-            cases: "5684",
-            shortdescription: "Sensory - KSA(sauce coverage)",
-            originator: "Fred Flintstone"
-          },
-          {
-            report: "7",
-            daycode: "12382",
-            type: {icon: "mdi-virus-outline", name: "Micro", color:'light-blue darken-4'},
-            fert: "192123",
-            productdesc: "Lorem ipsum dolor",
-            line: "7",
-            shift: "10",
-            hourcode: "Z",
-            cases: "0821",
-            shortdescription: "Sensory - KSA(sauce coverage)",
-            originator: "John Doe"
-          }
-        ]
-      },
+      fetchHrds () {
+        let vm = this 
+        axios.get(`${process.env.VUE_APP_API_URL}/Hrds`)
+          .then((res) => {
+            vm.qa = res.data.data
+        })
+      }
     },
   }
 </script>
