@@ -22,12 +22,10 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
-        private string GetQAType(bool isHrd, bool isPest, bool isSmi, bool isNr, bool isFm, bool isMicro)
+        private static string GetQAType(bool isHrd, bool isPest, bool isSmi, bool isNr, bool isFm, bool isMicro)
         {
             string type;
-            if (isHrd)
-                type = "hrd";
-            else if (isPest)
+            if (isPest)
                 type = "pest";
             else if (isSmi)
                 type = "smi";
@@ -38,7 +36,7 @@ namespace HRD.WebApi.Controllers
             else if (isMicro)
                 type = "micro";
             else
-                type = "";
+                type = "hrd";
 
             return type;
         }
@@ -54,7 +52,7 @@ namespace HRD.WebApi.Controllers
                 {
                     Id = s.Id,
                     DayCode = s.DayCode,
-                    Type = GetQAType((bool)s.IsHrd, (bool)s.IsPest, (bool)s.IsSmi, (bool)s.IsNr, (bool)s.IsFm, (bool)s.IsMicro),
+                    Type = GetQAType(s.IsHrd ?? false, s.IsPest ?? false, s.IsSmi ?? false, s.IsNr ?? false, s.IsFm ?? false, s.IsMicro ?? false),
                     Fert = s.Globenum, //TODO: Not mapped
                     ProductDescription = s.ShortDescription, //TODO: Confirm if correct
                     Line = s.Line,
@@ -73,11 +71,11 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.DayCode)
                         : query.OrderBy(o => o.DayCode);
                     break;
-                case "type":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Type)
-                        : query.OrderBy(o => o.Type);
-                    break;
+                //case "type":
+                //    query = validFilter.SortOrder == "desc"
+                //        ? query.OrderByDescending(o => o.Type)
+                //        : query.OrderBy(o => o.Type);
+                //    break;
                 case "fert":
                     query = validFilter.SortOrder == "desc"
                         ? query.OrderByDescending(o => o.Fert)
