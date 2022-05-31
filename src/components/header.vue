@@ -133,7 +133,7 @@
           { title:'REPORTS', name:'reports' },
           { title:'ADMINISTRATION', name:'administration' }
         ],
-        qa: { title:'QA', name:'qa', to:'/' }
+        qa: { title:'QA', name:'qa' }
         ,
         reports: [
           { title:'Cases & Cost Held by Category', name:'casecost' },
@@ -173,7 +173,7 @@
             this.initialValue = false
         },
         verify(value) {          
-          if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail') {
+          if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail' ) {
             this.initialValue = true
             this.redirectvalue = value
           } else {

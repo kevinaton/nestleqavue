@@ -113,7 +113,6 @@
                 return pattern.test(value) || 'Invalid e-mail.'
             },
         },
-        yn: ['Yes', 'No'],
         highlights: {
             calendar: {
                 time: null,
@@ -661,7 +660,16 @@
             snackColor: '',
             snackText: '',
         },
+        yn: ['Yes', 'No'],
     }),
+    created () {
+        this.getIdSelect()
+    },
+    methods: {
+        getIdSelect() {
+            console.log('qa page')
+        }
+    }
     }
     
 </script>

@@ -52,26 +52,33 @@ export default {
             type: Array,
             default: () => [],
             required: false,
+        },
+        durl: {
+            type:String,
+            default:'',
+            required:false
         }
+    },
+    created () {
+        this.getItem()
     },
     methods: {
         menuActionClick(action, item) {
             if (action === "vqa") {
-                this.input.editedIndex = this.table.indexOf(item)
-                this.input.editedItem = Object.assign({}, item)
-                this.input.dialog = true
+                this.$router.push({ name:'new_qa' });
+                console.log(item.id)
             }
             else if (action === "vhrd") {
-                this.input.editedIndex = this.table.indexOf(item)
-                this.input.editedItem = Object.assign({}, item)
-                this.input.dialog = true
+                this.$router.push({ name:'hrd_detail' });
             }
             else if (action === "delete") {
-                this.input.editedIndex = this.table.indexOf(item)
-                this.input.editedItem = Object.assign({}, item)
-                this.input.dialogDelete = true
+                let value = this.item[this.durl]
+                this.$emit('change', value)
             }
         },
+        getItem() {
+            // console.log(this.item)
+        }
     },
 }
 </script>

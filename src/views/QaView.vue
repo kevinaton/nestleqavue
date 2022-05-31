@@ -1,5 +1,7 @@
 <template>
   <v-data-table
+    :loading="loading"
+    loading-text="Loading... Please wait"
     :headers="headers"
     :items="qa"
     :search="qatoolbar.search"
@@ -14,8 +16,8 @@
         :table="qa"
         :snackbar="snackbar"
         editData="id"
-        :data="delItem"
-        url="Hrds"
+        :data="delItem.toString()"
+        url="Hrds/Hrd"
       />
       <Breadcrumbs 
         class="mt-3"
@@ -28,18 +30,35 @@
       />
     </template>
 
+    <template max-width="200px" v-slot:[`item.productDescription`]="{ value }">
+      <TextTruncate 
+        :input="value"
+        style="max-width: 250px"
+      />
+    </template>
+
+    <template v-slot:[`item.shortDescription`]="{ value }">
+      <TextTruncate 
+        :input="value"
+        style="max-width: 250px"
+      />
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <TableMenu 
-        :input="qatoolbar"
         :item="item"
         :table="qa"
+        :input="qatoolbar"
+        durl="id"
+        @change="(value) => { delItem = value}"
       />
     </template>
 
     <template v-slot:[`item.type`]="{ item }">
       <TypeIcons 
-        :item="item"
+        :item="item.type"
         :input="qatoolbar"
+        @change="(value) => { delItem = value}"
       />
     </template>
 
@@ -48,7 +67,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import QaToolbar from '@/components/TableElements/QaToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -56,6 +74,7 @@
   import SnackBar from '@/components/TableElements/SnackBar.vue'
   import TableMenu from '@/components/TableElements/TableMenu.vue'
   import TypeIcons from '@/components/TableElements/TypeIcons.vue'
+  import TextTruncate from '@/components/TableElements/TextTruncate.vue'
   
   export default {
     components: {
@@ -66,8 +85,10 @@
       TableMenu,
       TypeIcons,
       SnackBar,
+      TextTruncate,
     },
     data: () => ({
+      loading:true,
       delItem:'',
       snackbar: {
         snack: false,
@@ -81,8 +102,8 @@
         editedIndex: -1,
         selectedItem: 1,
         options: [
-          {text: 'View QA', icon: 'mdi-eye', action: 'vqa', to:'/qa/newqa'},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd', to:'/viewhrd'},
+          {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
+          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
           {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
         ],
         editedItem: {
@@ -112,11 +133,6 @@
           originator: 'originator',
         },
       },
-      selectType: [
-        { title: 'HRD', icon:'' },
-        { title: 'HSI', icon:'' },
-        { title: 'Pest', icon: '' }
-      ],
       headers: [
         {
           text: 'Report #',
@@ -149,13 +165,13 @@
     created () {
       this.fetchHrds()
     },
-
     methods: {
       fetchHrds () {
         let vm = this 
-        axios.get(`${process.env.VUE_APP_API_URL}/Hrds`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds`)
           .then((res) => {
             vm.qa = res.data.data
+            this.loading=false
         })
       }
     },
