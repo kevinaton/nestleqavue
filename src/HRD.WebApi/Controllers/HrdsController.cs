@@ -440,13 +440,34 @@ namespace HRD.WebApi.Controllers
         [HttpDelete("Hrd/{id}")]
         public async Task<IActionResult> DeleteHrd(int id)
         {
-            var hrd = await _context.Hrds.FindAsync(id);
+            var hrd = await _context.Hrds
+                            .Include(i => i.Hrdpos)
+                            .Include(i => i.Hrddcs)
+                            .Include(i => i.Hrdfcs)
+                            .Include(i => i.Hrdnotes)
+                            .Include(i => i.HrdtestCosts)
+                            .FirstOrDefaultAsync(f => f.Id == id);
+            
             if (hrd == null)
-            {
                 return NotFound();
-            }
+
+            if(hrd.Hrdpos.Count > 0)
+                _context.Hrdpos.RemoveRange(hrd.Hrdpos);
+
+            if (hrd.Hrddcs.Count > 0)
+                _context.Hrddcs.RemoveRange(hrd.Hrddcs);
+
+            if (hrd.Hrdfcs.Count > 0)
+                _context.Hrdfcs.RemoveRange(hrd.Hrdfcs);
+
+            if (hrd.Hrdnotes.Count > 0)
+                _context.Hrdnotes.RemoveRange(hrd.Hrdnotes);
+            
+            if (hrd.HrdtestCosts.Count > 0)
+                _context.HrdtestCosts.RemoveRange(hrd.HrdtestCosts);
 
             _context.Hrds.Remove(hrd);
+
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -725,5 +746,41 @@ namespace HRD.WebApi.Controllers
             return CreatedAtAction("GetQARecord", new { id = model.Id }, model);
         }
 
+        // DELETE: api/Hrds/5
+        [HttpDelete("Qa/{id}")]
+        public async Task<IActionResult> DeleteQARecord(int id)
+        {
+            var hrd = await _context.Hrds
+                            .Include(i => i.Hrdpos)
+                            .Include(i => i.Hrddcs)
+                            .Include(i => i.Hrdfcs)
+                            .Include(i => i.Hrdnotes)
+                            .Include(i => i.HrdtestCosts)
+                            .FirstOrDefaultAsync(f => f.Id == id);
+
+            if (hrd == null)
+                return NotFound();
+
+            if (hrd.Hrdpos.Count > 0)
+                _context.Hrdpos.RemoveRange(hrd.Hrdpos);
+
+            if (hrd.Hrddcs.Count > 0)
+                _context.Hrddcs.RemoveRange(hrd.Hrddcs);
+
+            if (hrd.Hrdfcs.Count > 0)
+                _context.Hrdfcs.RemoveRange(hrd.Hrdfcs);
+
+            if (hrd.Hrdnotes.Count > 0)
+                _context.Hrdnotes.RemoveRange(hrd.Hrdnotes);
+
+            if (hrd.HrdtestCosts.Count > 0)
+                _context.HrdtestCosts.RemoveRange(hrd.HrdtestCosts);
+
+            _context.Hrds.Remove(hrd);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
