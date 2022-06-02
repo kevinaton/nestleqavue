@@ -96,6 +96,7 @@
         BackBtn,
     },
     data: () => ({
+        loading:true,
         panel: [0,1,2,3,4,5],
         visible: [
             { label:"HRD", value:false },
@@ -663,11 +664,17 @@
         yn: ['Yes', 'No'],
     }),
     created () {
-        this.getIdSelect()
+        this.fetchQaRecords()
     },
     methods: {
-        getIdSelect() {
-            console.log('qa page')
+        fetchQaRecords () {
+            let vm = this 
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${this.$route.params.id}`)
+                .then((res) => {
+                vm.qa = res.data.data
+                this.loading=false
+                console.log
+            })
         }
     }
     }

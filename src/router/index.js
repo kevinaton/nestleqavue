@@ -54,7 +54,7 @@ const routes = [
     component: ChangePasswordView
   },
   {
-    path: '/qa/newqa',
+    path: '/qa/newqa/:id',
     name: 'new_qa',
     component: NewQARecords
   },

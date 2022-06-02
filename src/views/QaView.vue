@@ -1,69 +1,83 @@
 <template>
-  <v-data-table
-    :loading="loading"
-    loading-text="Loading... Please wait"
-    :headers="headers"
-    :items="qa"
-    :search="qatoolbar.search"
-    sort-by="report"
-  >
-    <template v-slot:top>
-      <SnackBar 
-        :input="snackbar"
-      />
-      <RowDelete 
-        :input='qatoolbar'
-        :table="qa"
-        :snackbar="snackbar"
-        editData="id"
-        :data="delItem.toString()"
-        url="Hrds/Hrd"
-      />
-      <Breadcrumbs 
-        class="mt-3"
-        :items="bcrumbs"
-      />
-      <QaToolbar 
-        title="QA Records"
-        :input="qatoolbar"
-        :table="qa"
-      />
-    </template>
+  <div>
+    <v-data-table
+      :loading="loading"
+      loading-text="Loading... Please wait"
+      :headers="headers"
+      :page.sync="tableOptions.page"
+      :items="qa"
+      :search="qatoolbar.search"
+      sort-by="report"
+      :options="tableOptions"
+      hide-default-footer
+    >
+      <template v-slot:top>
+        <SnackBar 
+          :input="snackbar"
+        />
+        <RowDelete 
+          :input='qatoolbar'
+          :table="qa"
+          :snackbar="snackbar"
+          editData="id"
+          :data="delItem.toString()"
+          url="Hrds/Hrd"
+        />
+        <Breadcrumbs 
+          class="mt-3"
+          :items="bcrumbs"
+        />
+        <QaToolbar 
+          title="QA Records"
+          :input="qatoolbar"
+          :table="qa"
+        />
+      </template>
 
-    <template max-width="200px" v-slot:[`item.productDescription`]="{ value }">
-      <TextTruncate 
-        :input="value"
-        style="max-width: 250px"
-      />
-    </template>
+      <template max-width="200px" v-slot:[`item.productDescription`]="{ value }">
+        <TextTruncate 
+          :input="value"
+          style="max-width: 250px"
+        />
+      </template>
 
-    <template v-slot:[`item.shortDescription`]="{ value }">
-      <TextTruncate 
-        :input="value"
-        style="max-width: 250px"
-      />
-    </template>
+      <template v-slot:[`item.shortDescription`]="{ value }">
+        <TextTruncate 
+          :input="value"
+          style="max-width: 250px"
+        />
+      </template>
 
-    <template v-slot:[`item.actions`]="{ item }">
-      <TableMenu 
-        :item="item"
-        :table="qa"
-        :input="qatoolbar"
-        durl="id"
-        @change="(value) => { delItem = value}"
-      />
-    </template>
+      <template v-slot:[`item.actions`]="{ item }">
+        <TableMenu 
+          :item="item"
+          :table="qa"
+          :input="qatoolbar"
+          durl="id"
+          @change="(value) => { delItem = value}"
+        />
+      </template>
 
-    <template v-slot:[`item.type`]="{ item }">
-      <TypeIcons 
-        :item="item.type"
-        :input="qatoolbar"
-        @change="(value) => { delItem = value}"
-      />
-    </template>
+      <template v-slot:[`item.type`]="{ item }">
+        <TypeIcons 
+          :item="item.type"
+          :input="qatoolbar"
+          @change="(value) => { delItem = value}"
+        />
+      </template>
 
-    <ResetTable  @click="fetchHrds" />
-  </v-data-table>
+      <ResetTable  @click="fetchHrds" />
+    </v-data-table>
+    <v-divider></v-divider>
+    <div class="mt-3 mb-12 d-flex justify-end">
+    <v-pagination
+      v-model="tableOptions.page"
+      :length="tableOptions.totalPages"
+      :total-visible="7"
+      @input="updatePage($event)"
+    ></v-pagination>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -88,8 +102,14 @@
       TextTruncate,
     },
     data: () => ({
-      loading:true,
+      loading:true, 
       delItem:'',
+      tableOptions: {
+          page: 1,
+          itemsPerPage:20,
+          totalPages:10,
+          totalRecords:100
+      },
       snackbar: {
         snack: false,
         snackColor: '',
@@ -165,12 +185,23 @@
     created () {
       this.fetchHrds()
     },
+
     methods: {
       fetchHrds () {
         let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds`)
-          .then((res) => {
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20`)
+        .then((res) => {
             vm.qa = res.data.data
+            this.loading=false
+            vm.tableOptions.totalPages = res.data.totalPages
+            console.log('totalPages: ' + vm.tableOptions.totalPages)
+            console.log('totalRecordst: ' + vm.tableOptions.totalRecords)
+        })
+      },
+      updatePage (value) {
+        this.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
+        .then((res) => {
+            this.qa = res.data.data
             this.loading=false
         })
       }

@@ -65,8 +65,7 @@ export default {
     methods: {
         menuActionClick(action, item) {
             if (action === "vqa") {
-                this.$router.push({ name:'new_qa' });
-                console.log(item.id)
+                this.$router.push({ name:'new_qa', params: { id: item.id } });
             }
             else if (action === "vhrd") {
                 this.$router.push({ name:'hrd_detail' });
