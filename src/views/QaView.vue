@@ -68,15 +68,13 @@
 
       <ResetTable  @click="fetchHrds" />
     </v-data-table>
-    <v-divider></v-divider>
-    <div class="mt-3 mb-12 d-flex justify-end">
-    <v-pagination
-      v-model="tableOptions.page"
-      :length="tableOptions.totalPages"
-      :total-visible="7"
-      @input="updatePage($event)"
-    ></v-pagination>
-    </div>
+
+    <TablePagination 
+      :tableOptions="tableOptions"
+      totalVisible="7"
+      :table="qa"
+      @change="updateTable($event)"
+    />
   </div>
 </template>
 
@@ -89,6 +87,7 @@
   import TableMenu from '@/components/TableElements/TableMenu.vue'
   import TypeIcons from '@/components/TableElements/TypeIcons.vue'
   import TextTruncate from '@/components/TableElements/TextTruncate.vue'
+  import TablePagination from '@/components/TableElements/TablePagination.vue'
   
   export default {
     components: {
@@ -100,6 +99,7 @@
       TypeIcons,
       SnackBar,
       TextTruncate,
+      TablePagination,
     },
     data: () => ({
       loading:true, 
@@ -194,14 +194,13 @@
             vm.qa = res.data.data
             this.loading=false
             vm.tableOptions.totalPages = res.data.totalPages
-            console.log('totalPages: ' + vm.tableOptions.totalPages)
-            console.log('totalRecordst: ' + vm.tableOptions.totalRecords)
         })
       },
-      updatePage (value) {
+      updateTable(value) { 
         this.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
         .then((res) => {
             this.qa = res.data.data
+            this.tableOptions.page = value
             this.loading=false
         })
       }
