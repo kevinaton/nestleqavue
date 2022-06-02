@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import QaView from '../views/QaView.vue'
 import LaborView from '../views/LaborView.vue'
 import ProductsView from '../views/ProductsView.vue'
@@ -55,7 +54,7 @@ const routes = [
     component: ChangePasswordView
   },
   {
-    path: '/qa/newqa',
+    path: '/qa/newqa/:id',
     name: 'new_qa',
     component: NewQARecords
   },

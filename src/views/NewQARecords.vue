@@ -96,6 +96,7 @@
         BackBtn,
     },
     data: () => ({
+        loading:true,
         panel: [0,1,2,3,4,5],
         visible: [
             { label:"HRD", value:false },
@@ -113,7 +114,6 @@
                 return pattern.test(value) || 'Invalid e-mail.'
             },
         },
-        yn: ['Yes', 'No'],
         highlights: {
             calendar: {
                 time: null,
@@ -661,7 +661,22 @@
             snackColor: '',
             snackText: '',
         },
+        yn: ['Yes', 'No'],
     }),
+    created () {
+        this.fetchQaRecords()
+    },
+    methods: {
+        fetchQaRecords () {
+            let vm = this 
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${this.$route.params.id}`)
+                .then((res) => {
+                vm.qa = res.data.data
+                this.loading=false
+                console.log
+            })
+        }
+    }
     }
     
 </script>
