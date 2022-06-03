@@ -56,7 +56,7 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString));
             }
 
-            var totalRecords = await _context.Hrds.CountAsync();
+            var totalRecords = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
 
             //Pagination;
