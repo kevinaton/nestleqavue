@@ -32,20 +32,35 @@
         :table="lookups"
     />
     </template>
-    <!-- <template v-slot:[`item.lookuptype`]="props">
-    <EditTable 
-        :table="props.item.lookuptype"
+    <template v-slot:[`item.dropDownTypeId`]="props">
+    <EditTableLookup
+        :table="props.item.dropDownTypeId"
+        editData="dropDownTypeId"
+        :data="props.item"
         :input="snackbar"
-        @change="(value) => { props.item.lookuptype = value }"
+        @change="(value) => { props.item.dropDownTypeId = value }"
+        type="number"
     />
     </template>
     <template v-slot:[`item.value`]="props">
-    <EditTable 
+    <EditTableLookup
         :table="props.item.value"
+        editData="value"
+        :data="props.item"
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
     />
-    </template> -->
+    </template>
+    <template v-slot:[`item.sortOrder`]="props">
+    <EditTableLookup
+        :table="props.item.sortOrder"
+        editData="value"
+        :data="props.item"
+        :input="snackbar"
+        @change="(value) => { props.item.sortOrder = value }"
+        type="number"
+    />
+    </template>
     <template v-slot:[`item.isActive`]="props">
         <EditCheckboxLookup
             :table="props.item.isActive"
@@ -55,6 +70,15 @@
             :data="props.item"
             @change="(value) => { props.item.isActive = value }"
         />
+    </template>
+    <template v-slot:[`item.typeName`]="props">
+    <EditTableLookup
+        :table="props.item.typeName"
+        editData="typeName"
+        :data="props.item"
+        :input="snackbar"
+        @change="(value) => { props.item.typeName = value }"        
+    />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
     <DeleteAction 
@@ -88,6 +112,7 @@ import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
+import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
 
 export default {
     components: {
@@ -99,6 +124,7 @@ export default {
     DeleteAction,
     EditTable,
     EditCheckboxLookup,
+    EditTableLookup,
     TablePagination,
     },
     data: () => ({

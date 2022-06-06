@@ -49,6 +49,7 @@ export default {
     data: () => ({
         max50chars: v => v.length <= 50 || 'Input too long!',
         required: value => !!value || 'Required.',
+        origVal:[],
         inputValue:0,
     }),
     created () {
@@ -57,12 +58,15 @@ export default {
     emits: ['change'],
     methods: {
         save () {
+            let value
+            value = this.origVal = this.inputValue
             axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
                 year:this.string1,
                 laborCost:this.inputValue
             })
             .then(response => 
             {
+                this.$emit('change', value)
                 response.status
                 this.input.snack = true
                 this.input.snackColor = 'success'
