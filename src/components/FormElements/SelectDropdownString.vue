@@ -1,9 +1,9 @@
 <template>
     <v-select
         outlined
-        :value="inValue"
-        :items="items"
+        :value="inpValue"
         :label="label"
+        :items="items"
         @input="selectoption($event)"
     ></v-select>
 </template>
@@ -22,17 +22,19 @@ export default {
             default: () => [],
             required: false,
         },
-        inValue: {
-            type: Object,
-            default: () => {},
+        inpValue: {
+            type: String,
+            default: '',
             required: false
         }
     },
+    data: () => ({
+    }),
     emits: ["change"],
     methods: {
         selectoption: function (value) {
             this.$emit('change', value)
-        }
+        },
     }
 }
 </script>

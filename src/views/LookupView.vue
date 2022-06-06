@@ -109,7 +109,6 @@ import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
 import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
@@ -122,7 +121,6 @@ export default {
     SnackBar,
     RowDelete,
     DeleteAction,
-    EditTable,
     EditCheckboxLookup,
     EditTableLookup,
     TablePagination,

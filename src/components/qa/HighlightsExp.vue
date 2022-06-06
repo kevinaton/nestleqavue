@@ -4,14 +4,18 @@
             <v-expansion-panel-content>
                 <v-row class="mt-0">
                     <v-col>
-                        <SimpleDatePicker 
-                            :items="input.calendar"
-                            label="Date"
+                        <DateTimePicker
+                            :items1="input.calendar"
+                            :items2="input.clock1"
+                            :inpValue="getInpValue"
+                            :rules="rules"
+                            label1="Date"
+                            label2="Time"
                         />
                     </v-col>
                     <v-col>
                         <SimpleTimePicker 
-                            :items="input.clock"
+                            :items="input.clock2"
                             :rules="rules"
                             label="Time of incident*" 
                         />
@@ -22,17 +26,17 @@
                         <YearOnly
                             v-model="input.calendar.yearonly"
                             label="Year"
-                            :disabled= input.calendar.allow
+                            :disabled="input.calendar.allow"
                             @change="(value) => { input.calendar.yearonly = value }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field :rules="[rules.required]" label="Day Code*" type="number" outlined></v-text-field>
+                        <v-text-field :value="inpValue.dayCode" :rules="[rules.required]" label="Day Code*" outlined></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field outlined label="Originator"></v-text-field>
+                        <v-text-field :value="inpValue.originator" outlined label="Originator"></v-text-field>
                     </v-col>
                     <v-col>
                     </v-col>
@@ -54,12 +58,13 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
+                        <SelectDropdownString 
                             :items="input.lines" 
-                            v-model="input.lineSelect" 
+                            :inpValue="inpValue.line"
+                            v-model="input.line" 
                             label="Line" 
                             @change="(value) => {
-                                this.input.lineSelect = value   
+                                this.input.line = value   
                             }"
                         />
                     </v-col>
@@ -86,12 +91,12 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
+                        <SelectDropdownString 
                             :items="input.shifts" 
-                            v-model="input.shiftSelect" 
+                            :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
-                                this.input.shiftSelect = value   
+                                this.input.shift = value   
                             }"
                         />
                     </v-col>
@@ -100,12 +105,13 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.short_description" 
-                            v-model="input.shortSelect" 
+                        <SelectDropdownString 
+                            :items="getShortDesc"
+                            v-model="inpValue.shortDescription"
+                            :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
-                                this.input.shortSelect = value   
+                                this.inpValue.shortDescription = value   
                             }"
                         />
                     </v-col>
@@ -180,6 +186,8 @@ import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
+import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 
 export default {
     components: {
@@ -187,7 +195,9 @@ export default {
         SimpleTimePicker,
         YearOnly,
         SelectDropdown,
-        SelectDropdownObj
+        SelectDropdownObj,
+        SelectDropdownString,
+        DateTimePicker
 
     },
     props: {
@@ -195,12 +205,40 @@ export default {
         input: {
             type: Object,
             default: () => {},
+            required: false,
+        },
+        inpValue: {
+            type:Object,
+            default: () => {},
+            required: false
         },
         rules: {
             type: Object,
             default: {},
             required: false,
         },
+        temp: {
+            type:Array,
+            default: () => [],
+            required: false,
+        }
+    },
+    data: () => ({
+
+    }),
+    computed: {
+        getShortDesc(){
+            let arr = []
+            if(this.temp){
+                arr = this.temp
+            }
+            return arr
+        },
+        getInpValue(){
+            let obj = {}
+            obj = this.inpValue
+            return obj
+        }
     },
 }
 </script>

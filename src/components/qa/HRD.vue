@@ -32,7 +32,7 @@ export default {
         input: {
             type: Object,
             default: () => {},
-        },
+        }
     },
 }
 </script>

@@ -23,11 +23,14 @@
         class="expanHeight"
         >
             <HighlightsExp 
-                :input="highlights"
+                :input="qaOptions"
+                :inpValue="qaRec"
+                :temp="lookup"
                 :rules="rules"
             />
             <HRD 
-                :input="hrd"
+                :input="qaOptions"
+                :inpValue="qaRec"
                 v-if="visible[0].value" 
             />
             <Pest
@@ -97,7 +100,7 @@
     },
     data: () => ({
         loading:true,
-        panel: [0,1,2,3,4,5],
+        panel: [0,1,2,3,4,5,6],
         visible: [
             { label:"HRD", value:false },
             { label:"Pest", value:false },
@@ -114,7 +117,10 @@
                 return pattern.test(value) || 'Invalid e-mail.'
             },
         },
-        highlights: {
+        qaRec:{},
+        qaOptions:{
+            lines: ['1','2','3','4','5','6','7','8','9'],
+            shifts: ['1','2','3'],
             calendar: {
                 time: null,
                 date: null,
@@ -125,15 +131,6 @@
                 allow: true,
                 yearonly: '',
             },
-            clock: {
-                time: null,
-                menu1: false,
-                label: ''
-            },
-            types: ['Pre-op','Operational', 'USDA', 'Other'],
-            typeSelect:'',
-            lineSelect: [],
-            lines: [1,2,3,4,5,6,7,8,9],
             area: { text: 'area', disabled: false },
             areas: [
                 { text: 'Pre-op', disabled: false },
@@ -156,20 +153,32 @@
                 { text: 'Stovex Room', disabled: false },
                 { text: '...Other', disabled: false },
             ],
-            shiftSelect: [],
-            shifts: [1,2,3],
-            shortSelect:'',
+            clock1: {
+                time: null,
+                menu1: false,
+                label: ''
+            },
+            clock2: {
+                time: null,
+                menu1: false,
+                label: ''
+            },
+            types: ['Pre-op','Operational', 'USDA', 'Other'],
             short_description: [
                 'Ammonia', 'Coding', 'Film/Film Seals', 'Foreign Body',
                 'GMP', 'HACCP(CPP/OPRP)', 'Hi Core', 'Housekeeping', 'Net Weight', 'Packaging', 'Pest Sighting',
                 'Recipe Deviation', 'Sanitation (not housekeeping)', 'Sensory', 'Other'
             ],
         },
+        lookup:[],
+        highlights: {
+            typeSelect:'',
+            shortSelect:'',
+        },
         hrd: {
             caseHeld:'',
             hourCodes:'',
             pos:'',
-            reworkInstructions:'',
         },
         pest: {
             pestSelect: "",
@@ -665,18 +674,30 @@
     }),
     created () {
         this.fetchQaRecords()
+        this.getItems()
     },
     methods: {
         fetchQaRecords () {
             let vm = this 
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${this.$route.params.id}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`)
                 .then((res) => {
-                vm.qa = res.data.data
+                vm.qaRec = res.data
+                vm.qaRec.id = vm.$route.params.id
                 this.loading=false
-                console.log
+            })
+        },
+        getItems() {
+            let vm = this
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typeid/${vm.$route.params.id}`)
+                .then((res) => {
+                    let arr = []
+                    res.data.forEach(item => {
+                        arr.push(item.value)
+                    });   
+                vm.lookup = arr
             })
         }
-    }
+    },
     }
     
 </script>
