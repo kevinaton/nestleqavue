@@ -23,7 +23,7 @@
 <script>
 import axios from 'axios'
 export default {
-    name:'EditTableNumber',
+    name:'EditTableLookup',
     props: {
         input: {
             type:Object,
@@ -53,22 +53,25 @@ export default {
         max50chars: v => v.length <= 50 || 'Input too long!',
         required: value => !!value || 'Required.',
         origVal:[],
+        inputValue:0,
     }),
     created () {
         this.saveOriginalValue()
     },
     emits: ['change'],
     methods: {
-        save() {            
+        save () { 
             let ed = this.editData
             let value
             value = this.data.ed = this.origVal = this.table
 
-
-            axios.put(`${process.env.VUE_APP_API_URL}/Users/${this.data.id}`,  {
+            axios.put(`${process.env.VUE_APP_API_URL}/Lookup/items/${this.data.id}`,  {
                 id:this.data.id,
-                name:this.data.name,
-                userId:this.data.userId,
+                dropDownTypeId:this.data.dropDownTypeId,
+                value:this.data.value,
+                sortOrder:this.data.sortOrder,
+                isActive:this.data.isActive,
+                typeName:this.data.typeName
             })
             .then(response => 
             {
@@ -81,11 +84,11 @@ export default {
             .catch(err => {
                 this.input.snack = true
                 this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later. ' + err
+                this.input.snackText = 'Something went wrong. Please try again later.'
                 console.warn(err)
             }) 
         },
-        cancel() {
+        cancel () {
             this.input.snack = true
             this.input.snackColor = 'error'
             this.input.snackText = 'Canceled'
@@ -95,6 +98,7 @@ export default {
         },
         updateValue(value) {
             let vm = this 
+            vm.inputValue = value
             vm.$emit('change', value)
         },
         saveOriginalValue() {

@@ -1,8 +1,14 @@
 <template>
+  <div>
   <v-data-table
+    :loading="loading"
+    loading-text="Loading... Please wait"
     :headers="headers"
+    :page.sync="tableOptions.page"
     :items="labors"
     :search="labortoolbar.search"
+    :options="tableOptions"
+    hide-default-footer
   >
     <template v-slot:top>
       <SnackBar 
@@ -48,10 +54,16 @@
     <ResetTable  @click="fetchLabors()" />
     
   </v-data-table>
+  <TablePagination 
+    :tableOptions="tableOptions"
+    totalVisible="7"
+    :table="labors"
+    @change="updateTable($event)"
+  />
+  </div>
 </template>
 
 <script>
-  import axios from 'axios'
   import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
@@ -60,6 +72,7 @@
   import DeleteAction from '@/components/TableElements/DeleteAction.vue'
   import EditTableLabor from '@/components/TableElements/EditTableLabor.vue'
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
+  import TablePagination from '@/components/TableElements/TablePagination.vue'
 
   export default {
     components: {
@@ -71,9 +84,17 @@
       DeleteAction,
       EditTableLabor,
       EditYearOnly,
+      TablePagination,
     },
     data: () => ({
+      loading:true,
       delItem:'',
+      tableOptions: {
+          page: 1,
+          itemsPerPage:20,
+          totalPages:10,
+          totalRecords:100
+      },
       snackbar: {
         snack: false,
         snackColor: '',
@@ -133,10 +154,23 @@
     methods: {
       fetchLabors () {
         let vm = this 
-        axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts?PageNumber=1&PageSize=20`)
           .then((res) => {
             vm.labors = res.data.data
+            vm.loading=false
+            vm.tableOptions.totalPages = res.data.totalPages
           })
+      },
+      updateTable(value) { 
+        if (value != this.tableOptions.page) {
+          let vm = this 
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts?PageNumber=${value}&PageSize=20`)
+          .then((res) => {
+              vm.labors = res.data.data
+              vm.tableOptions.page = value
+              vm.loading=false
+          })
+        }
       }
     },
   }

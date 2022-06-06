@@ -23,7 +23,7 @@
 <script>
 import axios from 'axios'
 export default {
-    name:'EditTableNumber',
+    name:'EditTableProduct',
     props: {
         input: {
             type:Object,
@@ -60,10 +60,10 @@ export default {
     },
     emits: ['change'],
     methods: {
-        save () {
-            
+        save () { 
             let ed = this.editData
-            this.data.ed = this.table
+            let value
+            value = this.data.ed = this.origVal = this.table
 
             axios.put(`${process.env.VUE_APP_API_URL}/Products/${this.data.id}`,  {
                 id:this.data.id,
@@ -77,6 +77,7 @@ export default {
             })
             .then(response => 
             {
+                this.$emit('change', value)
                 response.status
                 this.input.snack = true
                 this.input.snackColor = 'success'

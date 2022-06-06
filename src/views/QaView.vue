@@ -62,7 +62,6 @@
         <TypeIcons 
           :item="item.type"
           :input="qatoolbar"
-          @change="(value) => { delItem = value}"
         />
       </template>
 
@@ -197,12 +196,15 @@
         })
       },
       updateTable(value) { 
-        this.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
+        if (value != this.tableOptions.page) {
+          let vm = this
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
         .then((res) => {
-            this.qa = res.data.data
-            this.tableOptions.page = value
-            this.loading=false
+            vm.qa = res.data.data
+            vm.tableOptions.page = value
+            vm.loading=false
         })
+        }
       }
     },
   }

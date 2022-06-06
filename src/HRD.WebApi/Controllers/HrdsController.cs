@@ -145,10 +145,10 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
-                                         .Include(i => i.Hrdfcs)
-                                         .Include(i => i.Hrdnotes)
-                                         .Include(i => i.Hrdpos)
-                                         .FirstOrDefaultAsync(f => f.Id == id);
+                                        .Include(i => i.Hrdfcs)
+                                        .Include(i => i.Hrdnotes)
+                                        .Include(i => i.Hrdpos)
+                                        .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
             {
@@ -483,7 +483,7 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
-                                         .FirstOrDefaultAsync(f => f.Id == id);
+                                        .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
             {

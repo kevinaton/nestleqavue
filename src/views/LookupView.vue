@@ -1,9 +1,15 @@
 <template>
-<v-data-table
+    <div>
+    <v-data-table
+    :loading="loading"
+    loading-text="Loading... Please wait"
     :headers="headers"
+    :page.sync="tableOptions.page"
     :items="lookups"
     :search="lookuptoolbar.search"
->
+    :options="tableOptions"
+    hide-default-footer
+    >
     <template v-slot:top>
     <SnackBar 
         :input="snackbar"
@@ -26,20 +32,35 @@
         :table="lookups"
     />
     </template>
-    <!-- <template v-slot:[`item.lookuptype`]="props">
-    <EditTable 
-        :table="props.item.lookuptype"
+    <template v-slot:[`item.dropDownTypeId`]="props">
+    <EditTableLookup
+        :table="props.item.dropDownTypeId"
+        editData="dropDownTypeId"
+        :data="props.item"
         :input="snackbar"
-        @change="(value) => { props.item.lookuptype = value }"
+        @change="(value) => { props.item.dropDownTypeId = value }"
+        type="number"
     />
     </template>
     <template v-slot:[`item.value`]="props">
-    <EditTable 
+    <EditTableLookup
         :table="props.item.value"
+        editData="value"
+        :data="props.item"
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
     />
-    </template> -->
+    </template>
+    <template v-slot:[`item.sortOrder`]="props">
+    <EditTableLookup
+        :table="props.item.sortOrder"
+        editData="value"
+        :data="props.item"
+        :input="snackbar"
+        @change="(value) => { props.item.sortOrder = value }"
+        type="number"
+    />
+    </template>
     <template v-slot:[`item.isActive`]="props">
         <EditCheckboxLookup
             :table="props.item.isActive"
@@ -50,6 +71,15 @@
             @change="(value) => { props.item.isActive = value }"
         />
     </template>
+    <template v-slot:[`item.typeName`]="props">
+    <EditTableLookup
+        :table="props.item.typeName"
+        editData="typeName"
+        :data="props.item"
+        :input="snackbar"
+        @change="(value) => { props.item.typeName = value }"        
+    />
+    </template>
     <template v-slot:[`item.actions`]="{ item }">
     <DeleteAction 
         :item="item"
@@ -59,14 +89,20 @@
         @change="(value) => { delItem = value}"
     />
     </template>
-    
+
     <ResetTable  @click="fetchLookupTypes" />
-    
-</v-data-table>
+
+    </v-data-table>
+    <TablePagination 
+        :tableOptions="tableOptions"
+        totalVisible="7"
+        :table="lookups"
+        @change="updateTable($event)"
+    />
+    </div>
 </template>
 
 <script>
-import axios from 'axios'
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
@@ -75,6 +111,8 @@ import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
+import TablePagination from '@/components/TableElements/TablePagination.vue'
+import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
 
 export default {
     components: {
@@ -85,10 +123,19 @@ export default {
     RowDelete,
     DeleteAction,
     EditTable,
-    EditCheckboxLookup
+    EditCheckboxLookup,
+    EditTableLookup,
+    TablePagination,
     },
     data: () => ({
+    loading:true,
     delItem:'',
+    tableOptions: {
+        page: 1,
+        itemsPerPage:20,
+        totalPages:10,
+        totalRecords:100
+    },
     snackbar: {
         snack: false,
         snackColor: '',
@@ -150,10 +197,23 @@ export default {
     methods: {    
         fetchLookupTypes () {
             let vm = this 
-            axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items?PageNumber=1&PageSize=20`)
             .then((res) => {
                 vm.lookups = res.data.data
+                vm.loading=false
+                vm.tableOptions.totalPages = res.data.totalPages
             })
+        },
+        updateTable(value) { 
+            if (value != this.tableOptions.page) {
+                let vm = this 
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items?PageNumber=${value}&PageSize=20`)
+                .then((res) => {
+                    vm.lookups = res.data.data
+                    vm.tableOptions.page = value
+                    vm.loading=false
+                }) 
+            }
         }
     },
 }

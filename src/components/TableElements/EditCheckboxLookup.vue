@@ -14,6 +14,11 @@ import axios from 'axios'
 export default {
     name:'EditCheckboxLookup',
     props: {
+        input: {
+            type:Object,
+            default: () => {},
+            required: false,
+        },
         table: {
             type:Boolean,
             default:false,
@@ -58,7 +63,14 @@ export default {
                 isActive:this.data.isActive,
                 typeName:this.data.typeName,
             })
-            .then(response => response.status)
+            .then(response => 
+            {
+                response.statusv
+                this.input.snack = true
+                this.input.snackColor = 'success'
+                this.input.snackText = 'Data saved'
+            }
+            )
             .catch(err => console.warn(err))
         },
         checkValue() {

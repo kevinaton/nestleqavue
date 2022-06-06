@@ -62,6 +62,7 @@ export default {
     created () {
         this.getItem()
     },
+    emits:['change'],
     methods: {
         menuActionClick(action, item) {
             if (action === "vqa") {
@@ -71,7 +72,10 @@ export default {
                 this.$router.push({ name:'hrd_detail' });
             }
             else if (action === "delete") {
-                let value = this.item[this.durl]
+                this.input.editedIndex = this.table.indexOf(item)
+                this.input.editedItem = Object.assign({}, item)
+                this.input.dialogDelete = true
+                let value = this.item[this.durl].toString()
                 this.$emit('change', value)
             }
         },
