@@ -24,10 +24,10 @@
                 <v-row class="mt-0">
                     <v-col>
                         <YearOnly
-                            v-model="input.calendar.yearonly"
+                            :inpValue="inpValue.yearHeld"
                             label="Year"
                             :disabled="input.calendar.allow"
-                            @change="(value) => { input.calendar.yearonly = value }"
+                            @change="(value) => { input.calendar.year = value }"
                         />
                     </v-col>
                     <v-col>
@@ -59,12 +59,11 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :items="input.lines" 
+                            :dropdownValue=4
                             :inpValue="inpValue.line"
-                            v-model="input.line" 
                             label="Line" 
                             @change="(value) => {
-                                this.input.line = value   
+                                this.inpvalue.line = value   
                             }"
                         />
                     </v-col>
@@ -74,26 +73,22 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdownObj 
-                            :items="input.areas" 
-                            v-model="input.area" 
-                            name="area" 
-                            item-text="text"
+                        <SelectDropdownString 
+                            :dropdownValue=11
+                            :inpValue="this.inpValue.area" 
                             label="Area" 
-                            @change="(value) => {
-                                this.input.area = value   
-                            }"
+                            @change="getArea($event)"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-if="input.area.text == '...Other'" outlined label="If other"></v-text-field>
+                        <v-text-field v-if="this.ifOthers" outlined label="If other"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :items="input.shifts" 
-                            :inpValue="inpValue.shift" 
+                            :dropdownValue=5
+                            :inpValue="this.inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
                                 this.input.shift = value   
@@ -106,8 +101,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :items="getShortDesc"
-                            v-model="inpValue.shortDescription"
+                            :dropdownValue=1
                             :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
@@ -116,12 +110,12 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined label="Additional Description"></v-text-field>
+                        <v-text-field v-model="inpValue.additionalDescription" outlined label="Additional Description"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea outlined label="Detailed Description"></v-textarea>
+                        <v-textarea v-model="inpValue.detailedDescription" outlined label="Detailed Description"></v-textarea>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -208,7 +202,7 @@ export default {
             required: false,
         },
         inpValue: {
-            type:Object,
+            type: Object,
             default: () => {},
             required: false
         },
@@ -217,29 +211,37 @@ export default {
             default: {},
             required: false,
         },
-        temp: {
-            type:Array,
-            default: () => [],
-            required: false,
-        }
+
     },
     data: () => ({
-
+        ifOthers:false
     }),
     computed: {
-        getShortDesc(){
-            let arr = []
-            if(this.temp){
-                arr = this.temp
-            }
-            return arr
-        },
         getInpValue(){
             let obj = {}
             obj = this.inpValue
+            if(obj){
+                this.input.calendar.allow=false
+                this.input.calendar.menu1=false
+            }
             return obj
+        },
+        showIfOther() {
+            if(this.inpValue.area == 'Other...') {
+                this.ifOthers = true
+                console.log(this.inpValue.area)
+            }
         }
     },
+    methods: {
+        getArea(value){
+            this.inpValue.area = value
+            if(value == "Other...") {
+                this.ifOthers = true
+                console.log(value)
+            } 
+        }
+    }
 }
 </script>
 

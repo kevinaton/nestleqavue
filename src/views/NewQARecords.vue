@@ -25,7 +25,6 @@
             <HighlightsExp 
                 :input="qaOptions"
                 :inpValue="qaRec"
-                :temp="lookup"
                 :rules="rules"
             />
             <HRD 
@@ -129,7 +128,7 @@
                 modal: false,
                 menu1: false,
                 allow: true,
-                yearonly: '',
+                year:'2017'
             },
             area: { text: 'area', disabled: false },
             areas: [
@@ -170,7 +169,6 @@
                 'Recipe Deviation', 'Sanitation (not housekeeping)', 'Sensory', 'Other'
             ],
         },
-        lookup:[],
         highlights: {
             typeSelect:'',
             shortSelect:'',
@@ -674,7 +672,6 @@
     }),
     created () {
         this.fetchQaRecords()
-        this.getItems()
     },
     methods: {
         fetchQaRecords () {
@@ -686,17 +683,6 @@
                 this.loading=false
             })
         },
-        getItems() {
-            let vm = this
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typeid/${vm.$route.params.id}`)
-                .then((res) => {
-                    let arr = []
-                    res.data.forEach(item => {
-                        arr.push(item.value)
-                    });   
-                vm.lookup = arr
-            })
-        }
     },
     }
     
