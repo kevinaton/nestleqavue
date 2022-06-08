@@ -85,15 +85,15 @@ import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
 
 export default {
     components: {
-    Breadcrumbs,
-    SimpleToolbar,
-    ResetTable,
-    SnackBar,
-    RowDelete,
-    DeleteAction,
-    EditCheckboxLookup,
-    EditTableLookup,
-    TablePagination,
+        Breadcrumbs,
+        SimpleToolbar,
+        ResetTable,
+        SnackBar,
+        RowDelete,
+        DeleteAction,
+        EditCheckboxLookup,
+        EditTableLookup,
+        TablePagination,
     },
     data: () => ({
     loading:true,
@@ -142,11 +142,7 @@ export default {
         },
     ],
     }),
-
     computed: {
-    formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    },
     },
 
     created () {
