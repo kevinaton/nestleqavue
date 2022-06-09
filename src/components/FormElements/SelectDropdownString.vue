@@ -5,7 +5,7 @@
         :value="inpValue"
         :label="label"
         :items="lookup"
-        :search-input.sync="inp"
+        @click="inp"
         @input="selectOption($event)"
         return-object
     ></v-combobox>
@@ -34,14 +34,17 @@ export default {
     data: () => ({
         lookup:[],
         loading:false,
-        inp:null
     }),
     watch: {
+    },    
+    emits: ["change"],
+    methods: {
+        selectOption(value) {
+            this.$emit('change', value)
+        },
         inp() {
-            if(this.loading) return
-            this.loading = true
-
             let vm = this
+            vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typeid/${vm.dropdownValue}`)
                 .then((res) => {
                     let arr = []
@@ -55,12 +58,6 @@ export default {
                 })
                 .finally(() => (this.loading = false))
         }
-    },    
-    emits: ["change"],
-    methods: {
-        selectOption(value) {
-            this.$emit('change', value)
-        },
     }
 }
 </script>

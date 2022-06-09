@@ -4,21 +4,21 @@
         <v-expansion-panel-content>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field v-model="input.caseHeld" outlined label="Cases Held"></v-text-field>
+                        <v-text-field :value="inpValue.casesHeld" outlined label="Cases Held"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="input.hourCodes" outlined label="Hour Codes" type="number"></v-text-field>
+                        <v-text-field :value="inpValue.hourCode" outlined label="Hour Codes"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field v-model="input.pos" outlined label="POs"></v-text-field>
+                        <v-text-field :value="inpValue.pOs" outlined label="POs"></v-text-field>
                     </v-col>
                     <v-col></v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea v-model="input.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
+                        <v-textarea :value="inpValue.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
                     </v-col>
                 </v-row>
         </v-expansion-panel-content>
@@ -32,6 +32,12 @@ export default {
         input: {
             type: Object,
             default: () => {},
+            required: false
+        },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false
         }
     },
 }

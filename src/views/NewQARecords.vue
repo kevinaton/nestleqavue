@@ -24,17 +24,16 @@
         >
             <HighlightsExp 
                 :input="qaOptions"
-                :inpValue="qaRec"
+                :inpValue="getQaRec"
                 :rules="rules"
             />
             <HRD 
                 :input="qaOptions"
-                :inpValue="qaRec"
+                :inpValue="getQaRec"
                 v-if="visible[0].value" 
             />
             <Pest
-                :input="pest"
-                :yn="yn"
+                :inpValue="getQaRec"
                 v-if="visible[1].value"
             />
 
@@ -101,8 +100,8 @@
         loading:true,
         panel: [0,1,2,3,4,5,6],
         visible: [
-            { label:"HRD", value:false },
-            { label:"Pest", value:false },
+            { label:"HRD", value:true },
+            { label:"Pest", value:true },
             { label:"SMI", value:false },
             { label:"FM", value:false },
             { label:"NR", value:false },
@@ -118,8 +117,6 @@
         },
         qaRec:{},
         qaOptions:{
-            lines: ['1','2','3','4','5','6','7','8','9'],
-            shifts: ['1','2','3'],
             calendar: {
                 time: null,
                 date: null,
@@ -130,28 +127,6 @@
                 allow: true,
                 year:'2017'
             },
-            area: { text: 'area', disabled: false },
-            areas: [
-                { text: 'Pre-op', disabled: false },
-                { text: 'Operational', disabled: false },
-                { text: 'USDA', disabled: false },
-                { text: 'Base Room', disabled: false },
-                { text: 'Can Opening', disabled: false },
-                { text: 'Cooler Prep', disabled: false },
-                { text: 'Dries', disabled: false },
-                { text: 'Fish Prep', disabled: false },
-                { text: 'Liquid Prep', disabled: false },
-                { text: 'NAP Room', disabled: false },
-                { text: 'New Rice Room', disabled: false },
-                { text: 'Old Rice Room', disabled: false },
-                { text: 'Old Wine Cooler Room', disabled: false },
-                { text: 'Oven Room', disabled: false },
-                { text: 'Pan Room', disabled: false },
-                { text: 'Raw Meat Room', disabled: false },
-                { text: 'Steam Room', disabled: false },
-                { text: 'Stovex Room', disabled: false },
-                { text: '...Other', disabled: false },
-            ],
             clock1: {
                 time: null,
                 menu1: false,
@@ -162,30 +137,6 @@
                 menu1: false,
                 label: ''
             },
-            types: ['Pre-op','Operational', 'USDA', 'Other'],
-            short_description: [
-                'Ammonia', 'Coding', 'Film/Film Seals', 'Foreign Body',
-                'GMP', 'HACCP(CPP/OPRP)', 'Hi Core', 'Housekeeping', 'Net Weight', 'Packaging', 'Pest Sighting',
-                'Recipe Deviation', 'Sanitation (not housekeeping)', 'Sensory', 'Other'
-            ],
-        },
-        highlights: {
-            typeSelect:'',
-            shortSelect:'',
-        },
-        hrd: {
-            caseHeld:'',
-            hourCodes:'',
-            pos:'',
-        },
-        pest: {
-            pestSelect: "",
-            pests: [
-                "Insect - Ant", "Insect - Bee", "Insect - Beetle", "Insect - Fly", "Insect - Generic",
-                "Insect - Roach" ,"Insect - Stink Bug/Kudzu Bug", "Rodent", "Bird", "Mammal", "Other"
-            ],
-            pcoSelect: '',
-            paSelect: '',
         },
         smi: {
             mNum: '',
@@ -684,6 +635,13 @@
             })
         },
     },
+    computed: {
+        getQaRec(){
+            let obj = {}
+            obj = this.qaRec
+            return obj
+        },
+    }
     }
     
 </script>

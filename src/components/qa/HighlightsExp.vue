@@ -15,7 +15,7 @@
                     </v-col>
                     <v-col>
                         <SimpleTimePicker 
-                            :items="input.clock2"
+                            :items="inpValue.timeOfIncident"
                             :rules="rules"
                             label="Time of incident*" 
                         />
@@ -31,27 +31,40 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field :value="inpValue.dayCode" :rules="[rules.required]" label="Day Code*" outlined></v-text-field>
+                        <v-text-field 
+                            outlined
+                            :value="inpValue.dayCode"
+                            :rules="[rules.required]"
+                            label="Day Code*"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field :value="inpValue.originator" outlined label="Originator"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            :value="inpValue.originator" 
+                            label="Originator"
+                        ></v-text-field>
                     </v-col>
                     <v-col>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field outlined :rules="[rules.required]" label="BU Manager*"></v-text-field>
+                        <v-text-field 
+                            outlined 
+                            :value="inpValue.buManager"
+                            :rules="[rules.required]"
+                            label="BU Manager*"></v-text-field>
                     </v-col>
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.types" 
-                            v-model="input.typeSelect" 
+                        <SelectDropdownString
+                            :dropdownValue=9
+                            :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => {
-                                this.typeSelect = value   
+                                this.inpValue.type = value   
                             }"
                         />
                     </v-col>
@@ -63,35 +76,47 @@
                             :inpValue="inpValue.line"
                             label="Line" 
                             @change="(value) => {
-                                this.inpvalue.line = value   
+                                this.inpValue.line = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined :rules="[rules.required]" label="Line Supervisor*"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.lineSupervisor"
+                            :rules="[rules.required]"
+                            label="Line Supervisor*"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
                             :dropdownValue=11
-                            :inpValue="this.inpValue.area" 
+                            :inpValue="inpValue.area" 
                             label="Area" 
-                            @change="getArea($event)"
+                            @change="(value) => {
+                                this.inpValue.area = value   
+                            }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-if="this.ifOthers" outlined label="If other"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.areaIfOther"
+                            v-if="showIfOther" 
+                            label="If other"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
                             :dropdownValue=5
-                            :inpValue="this.inpValue.shift" 
+                            :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
-                                this.input.shift = value   
+                                this.inpValue.shift = value   
                             }"
                         />
                     </v-col>
@@ -110,12 +135,20 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="inpValue.additionalDescription" outlined label="Additional Description"></v-text-field>
+                        <v-text-field 
+                            outlined 
+                            v-model="inpValue.additionalDescription" 
+                            label="Additional Description"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea v-model="inpValue.detailedDescription" outlined label="Detailed Description"></v-textarea>
+                        <v-textarea 
+                            outlined
+                            v-model="inpValue.detailedDescription"
+                            label="Detailed Description"
+                        ></v-textarea>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -214,8 +247,10 @@ export default {
 
     },
     data: () => ({
-        ifOthers:false
+        
     }),
+    created() {
+    },
     computed: {
         getInpValue(){
             let obj = {}
@@ -227,20 +262,16 @@ export default {
             return obj
         },
         showIfOther() {
-            if(this.inpValue.area == 'Other...') {
-                this.ifOthers = true
-                console.log(this.inpValue.area)
+            let show
+            if(this.inpValue?.area?.indexOf("Other") != 0){
+                show = false
+            } else {
+                show = true
             }
+            return show
         }
     },
     methods: {
-        getArea(value){
-            this.inpValue.area = value
-            if(value == "Other...") {
-                this.ifOthers = true
-                console.log(value)
-            } 
-        }
     }
 }
 </script>
