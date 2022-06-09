@@ -1,10 +1,9 @@
 <template>
     <v-row>
-
         <!-- DATE -->
         <v-col>
             <v-menu
-                v-model="items1.menu1"
+                v-model="items1.menu"
                 :close-on-content-click="false"
                 :nudge-right="40"
                 transition="scale-transition"
@@ -16,6 +15,7 @@
                     outlined
                     :value="getDate"
                     :label="label1"
+                    :rules="[rules.required]"
                     prepend-inner-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -23,8 +23,8 @@
                 ></v-text-field>
                 </template>
                 <v-date-picker
-                    v-model="tempDate"
-                    @change="items1.menu1 = false, items1.allow = false, setDate($event)"
+                    no-title
+                    @change="items1.menu = false, items1.allow = false, setDate($event)"
                 ></v-date-picker>
             </v-menu>
         </v-col>
@@ -32,11 +32,10 @@
         <!-- TIME -->
         <v-col>
             <v-menu
-                ref="menu"
-                v-model="items2.menu1"
+                v-model="items2.menu"
                 :close-on-content-click="false"
                 :nudge-right="40"
-                :return-value.sync="inpValue.date"
+                :return-value.sync="tempDate"
                 transition="scale-transition"
                 offset-y
                 min-width="290px"
@@ -54,9 +53,10 @@
                 ></v-text-field>
                 </template>
                 <v-time-picker
-                    v-if="items2.menu1"
-                    v-model="items2.time"
-                    @click:minute="$refs.menu.save(items2.time)"
+                    v-if="items2.menu"
+                    :value="tempTime"
+                    use-seconds
+                    @change="items2.menu=false, setDateTime($event)"
                 ></v-time-picker>
             </v-menu>
         </v-col>
@@ -89,8 +89,8 @@ export default {
             required: false,
         },
         inpValue: {
-            type: Object,
-            default: () => {},
+            type: String,
+            default: '',
             required: false,
         },
         rules: {
@@ -100,23 +100,36 @@ export default {
         }
     },
     data: () => ({
-        tempDate: ''
+        tempDate:'',
+        tempTime:'',
     }),
+    created() {
+    },
     computed: {
         getDate() {
-            let value = this.inpValue.date
-            return value ? moment(String(value)).format('MM/DD/YYYY'): ''
+            let value = this.inpValue
+            let d = this.tempDate = moment(value).format('MM-DD-YYYY')
+            return d
         },
         getTime() {
-            let value = this.inpValue.date
-            return value ? moment(String(value)).format('HH:mm Z'): ''
-        }
+            let value = this.inpValue
+            let t = this.tempTime = moment(value).format('hh:mm:ss')
+            return t
+        },
     },
+    emits: ["change"],
     methods: {
-        setDate(value) {
-            console.log('from API: ' + this.inpValue.date)
-            console.log('inputted: ' + value)
-        }
+        setDate(y) {
+            this.tempDate = moment(y).format("YYYY-MM-DD")
+            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            this.$emit('change', value)
+        },
+        setDateTime(x) { 
+            this.tempDate = moment(this.inpValue).format("YYYY-MM-DD")
+            this.tempTime = x
+            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            this.$emit('change', value)
+        },
     }
 }
 </script>

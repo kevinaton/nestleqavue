@@ -5,19 +5,24 @@
                 <v-row class="mt-0">
                     <v-col>
                         <DateTimePicker
-                            :items1="input.calendar"
+                            :items1="input.calendar1"
                             :items2="input.clock1"
-                            :inpValue="getInpValue"
+                            :inpValue="getDate"
                             :rules="rules"
                             label1="Date"
                             label2="Time"
+                            @change="(value) => { inpValue.date = value }"
                         />
                     </v-col>
                     <v-col>
-                        <SimpleTimePicker 
-                            :items="inpValue.timeOfIncident"
+                        <DateTimePicker
+                            :items1="input.calendar2"
+                            :items2="input.clock2"
+                            :inpValue="getTimeofIncident"
                             :rules="rules"
-                            label="Time of incident*" 
+                            label1="Date of Incident"
+                            label2="Time of Incident"
+                            @change="(value) => { inpValue.timeOfIncident = value }"
                         />
                     </v-col>
                 </v-row>
@@ -26,14 +31,14 @@
                         <YearOnly
                             :inpValue="inpValue.yearHeld"
                             label="Year"
-                            :disabled="input.calendar.allow"
-                            @change="(value) => { input.calendar.year = value }"
+                            :disabled="input.calendar1.allow"
+                            @change="(value) => { inpValue.yearHeld = value }"
                         />
                     </v-col>
                     <v-col>
                         <v-text-field 
                             outlined
-                            :value="inpValue.dayCode"
+                            v-model="inpValue.dayCode"
                             :rules="[rules.required]"
                             label="Day Code*"
                         ></v-text-field>
@@ -43,7 +48,7 @@
                     <v-col>
                         <v-text-field 
                             outlined
-                            :value="inpValue.originator" 
+                            v-model="inpValue.originator" 
                             label="Originator"
                         ></v-text-field>
                     </v-col>
@@ -54,7 +59,7 @@
                     <v-col>
                         <v-text-field 
                             outlined 
-                            :value="inpValue.buManager"
+                            v-model="inpValue.buManager"
                             :rules="[rules.required]"
                             label="BU Manager*"></v-text-field>
                     </v-col>
@@ -247,17 +252,25 @@ export default {
 
     },
     data: () => ({
-        
     }),
     created() {
     },
     computed: {
-        getInpValue(){
-            let obj = {}
-            obj = this.inpValue
+        getDate(){
+            let obj
+            obj = this.inpValue.date
             if(obj){
-                this.input.calendar.allow=false
-                this.input.calendar.menu1=false
+                this.input.calendar1.allow=false
+                this.input.calendar1.menu=false
+            }
+            return obj
+        },
+        getTimeofIncident() {
+            let obj
+            obj = this.inpValue.timeOfIncident
+            if(obj){
+                this.input.calendar2.allow=false
+                this.input.calendar2.menu=false
             }
             return obj
         },

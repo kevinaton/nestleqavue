@@ -1,6 +1,6 @@
 <template>
     <v-autocomplete
-        v-model="inpValue"
+        :value="inpValue"
         outlined
         :items="years"
         @input="updateValue($event)"

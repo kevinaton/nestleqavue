@@ -3,7 +3,10 @@
         elevation="0"
         class="mx-auto mt-6 pa-8"
         width="90%"
-    >
+    >   
+        <SnackBar 
+        :input="snackbar"
+        />
         <v-row class="mb-0">
             <v-col>
                 <BackBtn 
@@ -64,25 +67,27 @@
         </v-expansion-panels>
         
         <SubmitDiscard 
-        :input="submitdiscard"
+            :input="submitdiscard"
+            @change="submitQA($event)"
         />
     </v-card>
 </template>
 
 <script>
-    import HighlightsExp from '@/components/qa/HighlightsExp.vue'
-    import HRD from '@/components/qa/HRD.vue'
-    import Pest from '@/components/qa/Pest.vue'
-    import SMI from '@/components/qa/SMI.vue'
-    import FM from '@/components/qa/FM.vue'
-    import NR from '@/components/qa/NR.vue'
-    import Micro from '@/components/qa/Micro.vue'
+import HighlightsExp from '@/components/qa/HighlightsExp.vue'
+import HRD from '@/components/qa/HRD.vue'
+import Pest from '@/components/qa/Pest.vue'
+import SMI from '@/components/qa/SMI.vue'
+import FM from '@/components/qa/FM.vue'
+import NR from '@/components/qa/NR.vue'
+import Micro from '@/components/qa/Micro.vue'
+import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
+import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
+import BackBtn from '@/components/FormElements/BackBtn.vue'
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 
-    import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
-    import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
-    import BackBtn from '@/components/FormElements/BackBtn.vue'
-
-    export default {
+export default {
+    name:'NewQARecords',
     components: {
         HighlightsExp,
         HRD,
@@ -95,10 +100,12 @@
         Newqacheckbox,
         SubmitDiscard,
         BackBtn,
+        SnackBar
     },
     data: () => ({
         loading:true,
         panel: [0,1,2,3,4,5,6],
+        subTrig:false,
         visible: [
             { label:"HRD", value:true },
             { label:"Pest", value:true },
@@ -117,24 +124,34 @@
         },
         qaRec:{},
         qaOptions:{
-            calendar: {
+            calendar1: {
                 time: null,
                 date: null,
                 date2: null,
                 menu: false,
                 modal: false,
-                menu1: false,
+                menu: false,
                 allow: true,
+            },
+            yearOnly: {
                 year:'2017'
+            },
+            calendar2: {
+                time: null,
+                date: null,
+                menu: false,
+                modal: false,
+                menu: false,
+                allow: true,
             },
             clock1: {
                 time: null,
-                menu1: false,
+                menu: false,
                 label: ''
             },
             clock2: {
                 time: null,
-                menu1: false,
+                menu: false,
                 label: ''
             },
         },
@@ -634,6 +651,101 @@
                 this.loading=false
             })
         },
+        submitQA(value) {
+            let vm = this
+            let d = this.qaRec
+            vm.subTrig = value
+            if(vm.subTrig == true) {
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`,  {
+                    additionalComments: d.additionalComments,
+                    additionalDescription: d.additionalDescription,
+                    area: d.area,
+                    areaIfOther: d.areaIfOther,
+                    batchLot: d.batchLot,
+                    buManager: d.buManager,
+                    casesHeld: d.casesHeld,
+                    date: d.date,
+                    dateOfResample: d.dateOfResample,
+                    dateReceived: d.dateReceived,
+                    dayCode: d.dayCode,
+                    dayOfWeek: d.dayOfWeek,
+                    detailedDescription: d.detailedDescription,
+                    equipment: d.equipment,
+                    equipmentIfOther: d.equipmentIfOther,
+                    fert: d.fert,
+                    fertDescription: d.fertDescription,
+                    fmDescription: d.fmDescription,
+                    fmMaterial: d.fmMaterial,
+                    fmType: d.fmType,
+                    hazardousSize: d.hazardousSize,
+                    holdConcern: d.holdConcern,
+                    hourCode: d.hourCode,
+                    hrdTestCosts: d.hrdTestCosts,
+                    id: d.id,
+                    ifYesAffectedProduct: d.ifYesAffectedProduct,
+                    inspectorsName: d.inspectorsName,
+                    isFM: d.isFM,
+                    isHRD: d.isHRD,
+                    isInspections: d.isInspections,
+                    isMetalDetector: d.isMetalDetector,
+                    isMicro: d.isMicro,
+                    isNR: d.isNR,
+                    isPest: d.isPest,
+                    isSMI: d.isSMI,
+                    isXray: d.isXray,
+                    line: d.line,
+                    lineSupervisor: d.lineSupervisor,
+                    materialNumber: d.materialNumber,
+                    meatComponent: d.meatComponent,
+                    nonHazardousSize: d.nonHazardousSize,
+                    nrCategory: d.nrCategory,
+                    originator: d.originator,
+                    pOs: d.pOs,
+                    pcoContactedImmediately: d.pcoContactedImmediately,
+                    pestType: d.pestType,
+                    piecesTotal: d.piecesTotal,
+                    productAdultered: d.productAdultered,
+                    rawBatchLot: d.rawBatchLot,
+                    rawMaterialDescription: d.rawMaterialDescription,
+                    response: d.response,
+                    responsibility: d.responsibility,
+                    reworkInstructions: d.reworkInstructions,
+                    rohMaterial: d.rohMaterial,
+                    sauceType: d.sauceType,
+                    shift: d.shift,
+                    shortDescription: d.shortDescription,
+                    size: d.size,
+                    starchType: d.starchType,
+                    tagNumber: d.tagNumber,
+                    tagged: d.tagged,
+                    timeOfIncident: d.timeOfIncident,
+                    type: d.type,
+                    veggieComponent: d.veggieComponent,
+                    vendorName: d.vendorName,
+                    vendorNumber: d.vendorNumber,
+                    vendorSiteNumber: d.vendorSiteNumber,
+                    when: d.when,
+                    whenOther: d.whenOther,
+                    whereFound: d.whereFound,
+                    yearHeld: d.yearHeld
+                })
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                    console.log('OK')
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (this.subTrig = false))
+            }
+        }
     },
     computed: {
         getQaRec(){
@@ -642,6 +754,5 @@
             return obj
         },
     }
-    }
-    
+}    
 </script>
