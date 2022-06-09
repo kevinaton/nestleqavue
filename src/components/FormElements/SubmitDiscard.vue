@@ -29,7 +29,7 @@
                     color="primary"
                     text
                     large
-                    @click="input.submitDialog = false"
+                    @click="input.submitDialog = false, submitUpdate()"
                 >
                     Submit
                 </v-btn>
@@ -87,5 +87,12 @@ export default {
     data: () => ({
 
     }),
+    emits: ["change"],
+    methods: {
+        submitUpdate() {
+            let value = true
+            this.$emit('change', value)
+        }
+    }
 }
 </script>

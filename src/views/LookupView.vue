@@ -32,14 +32,13 @@
         :table="lookups"
     />
     </template>
-    <template v-slot:[`item.dropDownTypeId`]="props">
+    <template v-slot:[`item.typeName`]="props">
     <EditTableLookup
-        :table="props.item.dropDownTypeId"
-        editData="dropDownTypeId"
+        :table="props.item.typeName"
+        editData="typeName"
         :data="props.item"
         :input="snackbar"
-        @change="(value) => { props.item.dropDownTypeId = value }"
-        type="number"
+        @change="(value) => { props.item.typeName = value }"        
     />
     </template>
     <template v-slot:[`item.value`]="props">
@@ -49,35 +48,6 @@
         :data="props.item"
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
-    />
-    </template>
-    <template v-slot:[`item.sortOrder`]="props">
-    <EditTableLookup
-        :table="props.item.sortOrder"
-        editData="value"
-        :data="props.item"
-        :input="snackbar"
-        @change="(value) => { props.item.sortOrder = value }"
-        type="number"
-    />
-    </template>
-    <template v-slot:[`item.isActive`]="props">
-        <EditCheckboxLookup
-            :table="props.item.isActive"
-            v-model="props.item.isActive"
-            :input="snackbar"
-            editData="isActive"
-            :data="props.item"
-            @change="(value) => { props.item.isActive = value }"
-        />
-    </template>
-    <template v-slot:[`item.typeName`]="props">
-    <EditTableLookup
-        :table="props.item.typeName"
-        editData="typeName"
-        :data="props.item"
-        :input="snackbar"
-        @change="(value) => { props.item.typeName = value }"        
     />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
@@ -109,23 +79,21 @@ import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
-import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
 import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
 
 export default {
     components: {
-    Breadcrumbs,
-    SimpleToolbar,
-    ResetTable,
-    SnackBar,
-    RowDelete,
-    DeleteAction,
-    EditTable,
-    EditCheckboxLookup,
-    EditTableLookup,
-    TablePagination,
+        Breadcrumbs,
+        SimpleToolbar,
+        ResetTable,
+        SnackBar,
+        RowDelete,
+        DeleteAction,
+        EditCheckboxLookup,
+        EditTableLookup,
+        TablePagination,
     },
     data: () => ({
     loading:true,
@@ -157,17 +125,8 @@ export default {
         },
     },
     headers: [
-        {
-        text: 'ID',
-        align: 'start',
-        sortable: true,
-        value: 'id',
-        },
-        { text: 'Dropdown Type ID', sortable: true, value: 'dropDownTypeId' },
+        { text: 'Lookup Type', sortable: true, value: 'typeName' },
         { text: 'Value', sortable: true, value: 'value' },
-        { text: 'Sort Order', sortable: true, value: 'sortOrder' },
-        { text: 'Is Active', sortable: true, value: 'isActive' },
-        { text: 'Type', sortable: true, value: 'typeName' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     lookups: [],
@@ -183,11 +142,7 @@ export default {
         },
     ],
     }),
-
     computed: {
-    formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
-    },
     },
 
     created () {

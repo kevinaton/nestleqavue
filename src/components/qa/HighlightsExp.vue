@@ -4,94 +4,124 @@
             <v-expansion-panel-content>
                 <v-row class="mt-0">
                     <v-col>
-                        <SimpleDatePicker 
-                            :items="input.calendar"
-                            label="Date"
+                        <DateTimePicker
+                            :items1="input.calendar1"
+                            :items2="input.clock1"
+                            :inpValue="getDate"
+                            :rules="rules"
+                            label1="Date"
+                            label2="Time"
+                            @change="(value) => { inpValue.date = value }"
                         />
                     </v-col>
                     <v-col>
-                        <SimpleTimePicker 
-                            :items="input.clock"
+                        <DateTimePicker
+                            :items1="input.calendar2"
+                            :items2="input.clock2"
+                            :inpValue="getTimeofIncident"
                             :rules="rules"
-                            label="Time of incident*" 
+                            label1="Date of Incident"
+                            label2="Time of Incident"
+                            @change="(value) => { inpValue.timeOfIncident = value }"
                         />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
                         <YearOnly
-                            v-model="input.calendar.yearonly"
+                            :inpValue="inpValue.yearHeld"
                             label="Year"
-                            :disabled= input.calendar.allow
-                            @change="(value) => { input.calendar.yearonly = value }"
+                            :disabled="input.calendar1.allow"
+                            @change="(value) => { inpValue.yearHeld = value }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field :rules="[rules.required]" label="Day Code*" type="number" outlined></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.dayCode"
+                            :rules="[rules.required]"
+                            label="Day Code*"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field outlined label="Originator"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.originator" 
+                            label="Originator"
+                        ></v-text-field>
                     </v-col>
                     <v-col>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field outlined :rules="[rules.required]" label="BU Manager*"></v-text-field>
+                        <v-text-field 
+                            outlined 
+                            v-model="inpValue.buManager"
+                            :rules="[rules.required]"
+                            label="BU Manager*"></v-text-field>
                     </v-col>
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.types" 
-                            v-model="input.typeSelect" 
+                        <SelectDropdownString
+                            :dropdownValue=9
+                            :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => {
-                                this.typeSelect = value   
+                                this.inpValue.type = value   
                             }"
                         />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.lines" 
-                            v-model="input.lineSelect" 
+                        <SelectDropdownString 
+                            :dropdownValue=4
+                            :inpValue="inpValue.line"
                             label="Line" 
                             @change="(value) => {
-                                this.input.lineSelect = value   
+                                this.inpValue.line = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined :rules="[rules.required]" label="Line Supervisor*"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.lineSupervisor"
+                            :rules="[rules.required]"
+                            label="Line Supervisor*"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdownObj 
-                            :items="input.areas" 
-                            v-model="input.area" 
-                            name="area" 
-                            item-text="text"
+                        <SelectDropdownString 
+                            :dropdownValue=11
+                            :inpValue="inpValue.area" 
                             label="Area" 
                             @change="(value) => {
-                                this.input.area = value   
+                                this.inpValue.area = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-if="input.area.text == '...Other'" outlined label="If other"></v-text-field>
+                        <v-text-field 
+                            outlined
+                            v-model="inpValue.areaIfOther"
+                            v-if="showIfOther" 
+                            label="If other"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.shifts" 
-                            v-model="input.shiftSelect" 
+                        <SelectDropdownString 
+                            :dropdownValue=5
+                            :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
-                                this.input.shiftSelect = value   
+                                this.inpValue.shift = value   
                             }"
                         />
                     </v-col>
@@ -100,22 +130,30 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.short_description" 
-                            v-model="input.shortSelect" 
+                        <SelectDropdownString 
+                            :dropdownValue=1
+                            :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
-                                this.input.shortSelect = value   
+                                this.inpValue.shortDescription = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined label="Additional Description"></v-text-field>
+                        <v-text-field 
+                            outlined 
+                            v-model="inpValue.additionalDescription" 
+                            label="Additional Description"
+                        ></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea outlined label="Detailed Description"></v-textarea>
+                        <v-textarea 
+                            outlined
+                            v-model="inpValue.detailedDescription"
+                            label="Detailed Description"
+                        ></v-textarea>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -180,6 +218,8 @@ import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
+import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 
 export default {
     components: {
@@ -187,7 +227,9 @@ export default {
         SimpleTimePicker,
         YearOnly,
         SelectDropdown,
-        SelectDropdownObj
+        SelectDropdownObj,
+        SelectDropdownString,
+        DateTimePicker
 
     },
     props: {
@@ -195,13 +237,55 @@ export default {
         input: {
             type: Object,
             default: () => {},
+            required: false,
+        },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false
         },
         rules: {
             type: Object,
             default: {},
             required: false,
         },
+
     },
+    data: () => ({
+    }),
+    created() {
+    },
+    computed: {
+        getDate(){
+            let obj
+            obj = this.inpValue.date
+            if(obj){
+                this.input.calendar1.allow=false
+                this.input.calendar1.menu=false
+            }
+            return obj
+        },
+        getTimeofIncident() {
+            let obj
+            obj = this.inpValue.timeOfIncident
+            if(obj){
+                this.input.calendar2.allow=false
+                this.input.calendar2.menu=false
+            }
+            return obj
+        },
+        showIfOther() {
+            let show
+            if(this.inpValue?.area?.indexOf("Other") != 0){
+                show = false
+            } else {
+                show = true
+            }
+            return show
+        }
+    },
+    methods: {
+    }
 }
 </script>
 

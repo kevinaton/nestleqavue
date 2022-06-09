@@ -318,7 +318,7 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <template v-slot:[`item.hrddid`]="props">
+                                <!-- <template v-slot:[`item.hrddid`]="props">
                                     <EditTable 
                                         :table="props.item.hrddid"
                                         :input="snackbar"
@@ -340,7 +340,7 @@
                                         @change="(value) => { props.item.quantity = value }"
                                         type="number"
                                     />
-                                </template>
+                                </template> -->
                                 <template v-slot:[`item.actions`]="{ item }">
                                     <DeleteAction 
                                         :item="item"
@@ -360,7 +360,6 @@ import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
 import SnackBar from '@/components/TableElements/SnackBar.vue'
-import EditTable from '@/components/TableElements/EditTableNumber.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
 
@@ -370,7 +369,6 @@ export default {
         SimpleDatePicker,
 
         SnackBar,
-        EditTable,
         DeleteAction,
         RowDelete,
     },

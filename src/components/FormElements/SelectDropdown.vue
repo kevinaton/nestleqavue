@@ -1,6 +1,7 @@
 <template>
     <v-select
         outlined
+        :value="inValue"
         :items="items"
         :label="label"
         @input="selectoption($event)"
@@ -20,6 +21,11 @@ export default {
             type: Array,
             default: () => [],
             required: false,
+        },
+        inValue: {
+            type: Object,
+            default: () => {},
+            required: false
         }
     },
     emits: ["change"],

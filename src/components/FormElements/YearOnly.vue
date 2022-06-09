@@ -1,10 +1,12 @@
 <template>
     <v-autocomplete
+        :value="inpValue"
         outlined
         :items="years"
         @input="updateValue($event)"
         :label="label"
         :disabled="disabled"
+        return-object
     ></v-autocomplete>
 </template>
 
@@ -12,27 +14,40 @@
 export default {
     name: 'YearOnly',
     props: {
-        label: String,
-        disabled: Boolean,
+        label: {
+            type: String,
+            default: '',
+            required: false
+        },
+        disabled: {
+            type: Boolean,
+            default: true,
+            required: false
+        },
         items: {
             type: Array,
             default: () => {},
             required: false,
         },
-        data: () => ({
-            tempValue:'',
-        }),
+        inpValue: {
+            type: String,
+            default: '',
+            required: false
+        }
     },
+    data: () => ({
+    }),
     computed : {
-        years () {
+        years() {
             const year = new Date().getFullYear()
-            return Array.from({length: year - 1900}, (value, index) => new Date().getFullYear() - index)
+            let obj = Array.from({length: year - 1900}, (value, index) => (new Date().getFullYear() - index).toString())
+            return obj
         },
     },
     emits: ['change'],
     methods: {
-        updateValue(value) {
-            this.tempValue = value
+        updateValue(inp) {
+            let value = inp.toString()
             this.$emit('change', value)
         }
     }

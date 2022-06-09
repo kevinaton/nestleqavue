@@ -12,7 +12,7 @@
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
             outlined
-            v-model="items.time"
+            v-model="items"
             :rules="[rules.required]"
             :label="label"
             prepend-inner-icon="mdi-clock-time-four-outline"
@@ -23,7 +23,7 @@
         </template>
         <v-time-picker
         v-if="items.menu1"
-        v-model="items.time"
+        v-model="items"
         @click:minute="$refs.menu.save(items.time)"
         ></v-time-picker>
     </v-menu>
@@ -36,8 +36,8 @@ export default {
         label: String,
         rules: Object,
         items: {
-            type: Object,
-            default: () => {},
+            type: String,
+            default: '',
             required: false,
         }
     }

@@ -10,7 +10,7 @@
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
             outlined
-            v-model="items.date"
+            v-model="inpValue.date"
             :label="label"
             prepend-inner-icon="mdi-calendar"
             readonly
@@ -19,7 +19,7 @@
         ></v-text-field>
         </template>
         <v-date-picker
-            v-model="items.date"
+            v-model="inpValue.date"
             show-adjacent-months
             @input="items.menu1 = false, items.allow = false"
         ></v-date-picker>
@@ -35,7 +35,11 @@ export default {
             type: Object,
             default: () => {},
             required: false,
-        }
+        },
+        inpValue: {
+            type: Object,
+
+        },
     }
 }
 </script>
