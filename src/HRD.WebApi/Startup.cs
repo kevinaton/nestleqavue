@@ -13,6 +13,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using HRD.WebApi.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using NLog.Web;
+using HRD.WebApi.Logging;
+using HRD.WebApi.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using HRD.WebApi.Services;
+using Microsoft.AspNetCore.Server.IISIntegration;
 
 namespace HRD.WebApi
 {
@@ -28,6 +38,16 @@ namespace HRD.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add application services.
+            services.AddTransient<IUserService, UserService>();
+            
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = IISDefaults.AuthenticationScheme;
+
+            });
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -37,11 +57,27 @@ namespace HRD.WebApi
             // Add framework services.
             services.AddDbContext<HRDContext>(options => options.
                 UseSqlServer(Configuration.GetConnectionString("Default")));
+            ////Authorization
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(PolicyNames.EditUsers, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin));
+                options.AddPolicy(PolicyNames.EditHRDs, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin, RoleNames.DataEntry));
+                options.AddPolicy(PolicyNames.ViewHRDs, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin, RoleNames.DataEntry, RoleNames.ReportViewer));
+            });
+            services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
+            
+            logger.LogInformation("Configure Application");
+            var builder = WebApplication.CreateBuilder();
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -50,11 +86,16 @@ namespace HRD.WebApi
 
                 app.UseCors(options => options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()); //TO DO: to remove
             }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
+            }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
+using HRD.WebApi.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HRD.WebApi.Controllers
 {
@@ -25,6 +27,7 @@ namespace HRD.WebApi.Controllers
         // GET: api/Lookup/types
 
         [HttpGet("types")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
         {
             return await _context.DropDownTypes.Select(s => new DropDownTypeViewModel
@@ -38,6 +41,7 @@ namespace HRD.WebApi.Controllers
         // GET: api/Lookup/items
 
         [HttpGet("items")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -94,6 +98,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/typeid/5
         [HttpGet("items/typeid/{id}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByTypeId(int id)
         {
             var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownTypeId == id)
@@ -116,6 +121,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/5
         [HttpGet("items/{id}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> GetDropDownItem(int id)
         {
             var ddItem = await _context.DropDownItems.FindAsync(id);
@@ -139,6 +145,7 @@ namespace HRD.WebApi.Controllers
 
         //Put: api/Lookup/items/5
         [HttpPut("items/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
         {
             if (id != model.Id)
@@ -179,6 +186,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Lookup/items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("items/")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
         {
             var dropdownitem = new DropDownItem
@@ -199,6 +207,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Lookup/items/5
         [HttpDelete("items/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteDropDownItem(int id)
         {
             var dropdownitem = await _context.DropDownItems.FindAsync(id);

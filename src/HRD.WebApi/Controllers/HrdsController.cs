@@ -1,6 +1,8 @@
-﻿using HRD.WebApi.Data;
+﻿using HRD.WebApi.Authorization;
+using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -43,6 +45,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds
         [HttpGet]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -142,13 +145,14 @@ namespace HRD.WebApi.Controllers
         
         // GET: api/Hrds/5
         [HttpGet("Hrd/{id}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
-                                        .Include(i => i.Hrdfcs)
-                                        .Include(i => i.Hrdnotes)
-                                        .Include(i => i.Hrdpos)
-                                        .FirstOrDefaultAsync(f => f.Id == id);
+                                         .Include(i => i.Hrdfcs)
+                                         .Include(i => i.Hrdnotes)
+                                         .Include(i => i.Hrdpos)
+                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
             {
@@ -239,10 +243,11 @@ namespace HRD.WebApi.Controllers
             return model;
         }
 
-        [EnableCors("AllowOrigin")]
+        //[EnableCors("AllowOrigin")]
         // PUT: api/Hrds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Hrd/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutHrd(int id, HRDDetailViewModel model)
         {
             if (id != model.Id)
@@ -348,9 +353,10 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
-        [EnableCors("AllowOrigin")]
+        //[EnableCors("AllowOrigin")]
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         [HttpPost("Hrd")]
         public async Task<ActionResult<HRDDetailViewModel>> PostHrd(HRDDetailViewModel model)
         {
@@ -438,6 +444,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Hrd/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteHrd(int id)
         {
             var hrd = await _context.Hrds
@@ -480,10 +487,11 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Qa/{id}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
-                                        .FirstOrDefaultAsync(f => f.Id == id);
+                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
             {
@@ -566,6 +574,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/Qa/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Qa/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutQARecord(int id, QARecordViewModel model)
         {
             if (id != model.Id)
@@ -668,6 +677,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Qa")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<QARecordViewModel>> PostQARecord(QARecordViewModel model)
         {
             var hrd = new Hrd
@@ -748,6 +758,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Qa/{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteQARecord(int id)
         {
             var hrd = await _context.Hrds
