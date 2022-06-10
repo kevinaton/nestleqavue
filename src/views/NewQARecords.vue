@@ -735,7 +735,6 @@ export default {
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'success'
                     this.snackbar.snackText = 'Data saved'
-                    console.log('OK')
                 })
                 .catch(err => {
                     this.snackbar.snack = true
