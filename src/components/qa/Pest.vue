@@ -5,44 +5,44 @@
             <v-form class="mt-6">
                 <v-row>
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.pests" 
-                            v-model="input.pestSelect" 
+                        <SelectDropdownString
+                            :dropdownValue=17
+                            :inpValue="inpValue.pestType" 
                             label="Pest Type" 
                             @change="(value) => {
-                                this.input.pestSelect = value   
+                                this.inpValue.pestType = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <SelectDropdown 
-                            :items="yn" 
-                            v-model="input.pcoSelect" 
+                        <SelectDropdownString
+                            :dropdownValue=7
+                            :inpValue="inpValue.pcoContactedImmediately" 
                             label="PCO Contacted Immediately" 
                             @change="(value) => {
-                                this.input.pcoSelect = value   
+                                this.inpValue.pcoContactedImmediately = value   
                             }"
                         />
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <SelectDropdown 
-                            :items="yn" 
-                            v-model="input.paSelect" 
+                        <SelectDropdownString
+                            :dropdownValue=7
+                            :inpValue="inpValue.productAdultered" 
                             label="Product Adultered" 
                             @change="(value) => {
-                                this.input.paSelect = value   
+                                this.inpValue.productAdultered = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined label="Where found"></v-text-field>
+                        <v-text-field v-model="inpValue.whereFound" outlined label="Where found"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-textarea v-if="input.paSelect == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-textarea>
+                        <v-textarea v-model="inpValue.ifYesAffectedProduct" v-if="inpValue.productAdultered == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-textarea>
                     </v-col>
                 </v-row>
             </v-form>
@@ -51,25 +51,19 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 
 export default {
     components: {
-        SelectDropdown,
+        SelectDropdownString,
     },
     name: 'Pest',
     props: {
-        input: {
+        inpValue: {
             type: Object,
             default: () => {},
             required: false
         },
-        yn: {
-            type: Array,
-            default: '',
-            requried: false,
-        },
-
     },
 }
 </script>

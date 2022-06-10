@@ -54,6 +54,21 @@ namespace HRD.WebApi
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HRD.WebApi", Version = "v1" });
             });
 
+            var corsOrigins = GetCorsOrigins();
+            if (corsOrigins.Any())
+            {
+                services.AddCors(options =>
+                {
+                    options.AddPolicy("default", policy =>
+                    {
+                        policy.WithOrigins(corsOrigins)
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();
+                    });
+                });
+            }
+
             // Add framework services.
             services.AddDbContext<HRDContext>(options => options.
                 UseSqlServer(Configuration.GetConnectionString("Default")));
@@ -84,13 +99,14 @@ namespace HRD.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRD.WebApi v1"));
 
-                app.UseCors(options => options.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader()); //TO DO: to remove
             }
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            app.UseCors("default");
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -102,6 +118,11 @@ namespace HRD.WebApi
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private string[] GetCorsOrigins()
+        {
+            return Configuration["CorsOrigins"]?.Split(";").Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim()).ToArray() ?? new string[0];
         }
     }
 }

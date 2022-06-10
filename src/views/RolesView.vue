@@ -63,7 +63,6 @@
     import DeleteAction from '@/components/TableElements/DeleteAction.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
-    import EditTable from '@/components/TableElements/EditTableNumber.vue'
 
     export default {
         components: {
@@ -73,7 +72,6 @@
         DeleteAction,
         SnackBar,
         RowDelete,
-        EditTable
         },
         data: () => ({
         snackbar: {
