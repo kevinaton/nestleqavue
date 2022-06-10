@@ -43,7 +43,8 @@ namespace HRD.WebApi
                     {
                         policy.WithOrigins(corsOrigins)
                             .AllowAnyHeader()
-                            .AllowAnyMethod();
+                            .AllowAnyMethod()
+                            .AllowCredentials();
                     });
                 });
             }
