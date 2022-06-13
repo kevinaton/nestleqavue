@@ -13,6 +13,12 @@
         public int? Cases { get; set; }
         public string ShortDescription { get; set; }
         public string Originator { get; set; }
+        public bool? IsHRD { get; set; }
+        public bool? IsPest { get; set; }
+        public bool? IsSMI { get; set; }
+        public bool? IsNR { get; set; }
+        public bool? IsFM { get; set; }
+        public bool? IsMicro { get; set; }
 
     }
 }

@@ -24,25 +24,6 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
-        private static string GetQAType(bool isHrd, bool isPest, bool isSmi, bool isNr, bool isFm, bool isMicro)
-        {
-            string type;
-            if (isPest)
-                type = "pest";
-            else if (isSmi)
-                type = "smi";
-            else if (isNr)
-                type = "nr";
-            else if (isFm)
-                type = "fm";
-            else if (isMicro)
-                type = "micro";
-            else
-                type = "hrd";
-
-            return type;
-        }
-
         // GET: api/Hrds
         [HttpGet]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
@@ -55,7 +36,12 @@ namespace HRD.WebApi.Controllers
                 {
                     Id = s.Id,
                     DayCode = s.DayCode,
-                    Type = GetQAType(s.IsHrd ?? false, s.IsPest ?? false, s.IsSmi ?? false, s.IsNr ?? false, s.IsFm ?? false, s.IsMicro ?? false),
+                    IsHRD = s.IsHrd,
+                    IsPest = s.IsPest,
+                    IsSMI = s.IsSmi,
+                    IsNR = s.IsNr,
+                    IsFM = s.IsFm,
+                    IsMicro = s.IsMicro,
                     Fert = s.Globenum, //TODO: Not mapped
                     ProductDescription = s.ShortDescription, //TODO: Confirm if correct
                     Line = s.Line,
@@ -216,11 +202,11 @@ namespace HRD.WebApi.Controllers
                 HoldSubCategory = hrd.HoldSubCategory,
                 DateHeld = hrd.DateHeld,
 
-                MonthHeld = hrd.MonthHeld, //not mapped
-                WeekHeld = hrd.WeekHeld, //not mapped
+                MonthHeld = hrd.MonthHeld,
+                WeekHeld = hrd.WeekHeld,
                 CostofProductonHold = hrd.CostofProductonHold,
                 ReworkApproved = hrd.ReworkApproved,
-                //not mapped
+
                 NumberOfDaysToReworkApproval = hrd.NumberOfDayToReworkApproval,
                 CaseCount = hrd.CaseCount,
                 ReasonAction = hrd.ReasonAction,
@@ -501,6 +487,13 @@ namespace HRD.WebApi.Controllers
             var model = new QARecordViewModel
             {
                 Id = id,
+                IsHRD = qa.IsHrd,
+                IsPest = qa.IsPest,
+                IsSMI = qa.IsSmi,
+                IsNR = qa.IsNr,
+                IsFM = qa.IsFm,
+                IsMicro = qa.IsMicro,
+              
                 Date = qa.Date,
                 TimeOfIncident = qa.TimeOfIncident,
                 YearHeld = qa.YearHeld,
@@ -508,7 +501,7 @@ namespace HRD.WebApi.Controllers
                 Originator = qa.Originator,
                 BUManager = qa.Bumanager,
                 Type = qa.CodingType,
-                Fert = qa.Globenum,
+                Fert = qa.FertDescription,
                 FertDescription = qa.FertDescription,
                 Line = qa.Line,
                 LineSupervisor = qa.LineSupervisor,
@@ -519,23 +512,28 @@ namespace HRD.WebApi.Controllers
                 AdditionalDescription = qa.AdditionalDescription,
                 DetailedDescription = qa.DetailedDescription,
 
+                //HRD                                  
                 CasesHeld = qa.CasesHeld,
-                HourCode = qa.HourCode,//not mapped
-
-                //not mapped
+                HourCode = qa.HourCode,
                 POs = qa.Pos,
                 ReworkInstructions = qa.ReworkInstructions,
+
+                //PEST                                     
                 PestType = qa.PestType,
                 PCOContactedImmediately = qa.PcocontactedImmediately,
                 ProductAdultered = qa.ProductAdultered,
                 WhereFound = qa.WhereFound,
                 IfYesAffectedProduct = qa.IfYesAffectedProduct,
+                                                    
+                //SMI                                               
                 MaterialNumber = qa.MaterialNumber,
                 RawMaterialDescription = qa.RawMaterialDescription,
                 BatchLot = qa.BatchLot,
                 VendorNumber = qa.VendorNumber,
                 VendorName = qa.VendorName,
                 VendorSiteNumber = qa.VendorSiteNumber,
+                                                    
+                //FM                                                
                 IsInspections = qa.IsInspections,
                 IsXray = qa.IsXray,
                 IsMetalDetector = qa.IsMetalDetector,
@@ -544,17 +542,24 @@ namespace HRD.WebApi.Controllers
                 Equipment = qa.Equipment,
                 EquipmentIfOther = qa.EquipmentIfOther,
                 ROHMaterial = qa.Rohmaterial,
+
+                //FMMaterial = qa.FMMaterial,
+                //FMDescription = qa.FMDescription,
                 PiecesTotal = qa.PiecesTotal,
                 RawBatchLot = qa.RawBatchLot,
                 HazardousSize = qa.HazardousSize,
                 Responsibility = qa.Responsibility,
                 NonHazardousSize = qa.NonHazardousSize,
+
+                //NR                                                
                 DateReceived = qa.DateReceived,
                 InspectorsName = qa.InspectorsName,
                 NRCategory = qa.Nrcategory,
                 Tagged = qa.Tagged,
                 TagNumber = qa.TagNumber,
                 Response = qa.Response,
+
+                //MICRO                                             
                 HoldConcern = qa.HoldConcern,
                 DayOfWeek = qa.DayOfWeek,
                 When = qa.When,
