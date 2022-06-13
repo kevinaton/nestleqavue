@@ -51,12 +51,12 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="inpValue.equipmentIfOther" v-if="inpValue.equipment == 'NA'" outlined label="If other"></v-text-field>
+                        <v-text-field v-model="inpValue.equipmentIfOther" v-if="inpValue.equipment == 'Other'" outlined label="If other"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-autocomplete
+                        <!-- <v-autocomplete
                             outlined
                             v-model="input.rohSelect" 
                             :items="input.rohmaterials" 
@@ -64,7 +64,18 @@
                             label="ROH Material"
                             return-object
                             @input="checkroh"
-                        ></v-autocomplete>
+                        ></v-autocomplete> -->
+
+                        <SelectDropdownString
+                            :dropdownValue=24
+                            :inpValue="inpValue.rohMaterial"
+                            @input="checkroh"
+                            item-text="text"
+                            label="ROH Material" 
+                            @change="(value) => {
+                                inpValue.rohMaterial = value   
+                            }"
+                        />
                     </v-col>
                     <v-col>
                     </v-col>
@@ -74,7 +85,7 @@
                         <v-data-table
                             v-if="rohTable"
                             :headers="input.rohHeaders"
-                            :items="input.rohSelect.value"
+                            :items="input.rohmaterials[1].value"
                             :items-per-page="5"
                             class="mb-6 pt-0 elevation-1"
                         ></v-data-table>
@@ -140,7 +151,7 @@ export default {
     },
     name:'FM',
     data: () => ({
-        rohTable: false,
+        rohTable: true,
         radioValue:'',
         radio: [],
         tempValue: ['isInspections', 'isXray', 'isMetalDetector']

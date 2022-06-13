@@ -8,7 +8,7 @@
                         :items1="input.calendarDateReceived"
                         :items2="input.clockDateReceived"
                         :inpValue="getDate"
-                        :rules="rules"
+                        :rules="[rules.required]"
                         label1="Date Received"
                         label2="Time Received"
                         @change="(value) => { inpValue.dateReceived = value }"

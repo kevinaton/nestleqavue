@@ -1,8 +1,10 @@
 <template>
-    <v-card
+    <v-form
+        ref="form"
+        v-model="valid"
         elevation="0"
         class="mx-auto mt-6 pa-8"
-        width="90%"
+        lazy-validation
     >   
         <SnackBar 
         :input="snackbar"
@@ -33,15 +35,18 @@
             <HRD 
                 :input="qaOptions"
                 :inpValue="getQaRec"
+                :rules="rules"
                 v-if="visible[0].value" 
             />
             <Pest
                 :inpValue="getQaRec"
+                :rules="rules"
                 v-if="visible[1].value"
             />
 
             <SMI
                 :input="getQaRec"
+                :rules="rules"
                 v-if="visible[2].value"
             />
             <FM 
@@ -71,9 +76,10 @@
         
         <SubmitDiscard 
             :input="submitdiscard"
+            :valid="valid"
             @change="submitQA($event)"
         />
-    </v-card>
+    </v-form>
 </template>
 
 <script>
@@ -107,11 +113,10 @@ export default {
     data: () => ({
         loading:true,
         panel: [0,1,2,3,4,5,6],
-        subTrig:false,
         visible: [
-            { label:"HRD", value:false },
-            { label:"Pest", value:false },
-            { label:"SMI", value:false },
+            { label:"HRD", value:true },
+            { label:"Pest", value:true },
+            { label:"SMI", value:true },
             { label:"FM", value:true },
             { label:"NR", value:true },
             { label:"Micro", value:true },
@@ -290,6 +295,7 @@ export default {
             snackColor: '',
             snackText: '',
         },
+        valid:false,
     }),
     created () {
         this.fetchQaRecords()
@@ -307,8 +313,8 @@ export default {
         submitQA(value) {
             let vm = this
             let d = this.qaRec
-            vm.subTrig = value
-            if(vm.subTrig == true) {
+            vm.valid = value
+            if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`,  {
                     additionalComments: d.additionalComments,
                     additionalDescription: d.additionalDescription,
@@ -395,7 +401,7 @@ export default {
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (this.subTrig = false))
+                .finally(() => (this.valid = false))
             }
         }
     },

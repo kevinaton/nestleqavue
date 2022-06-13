@@ -5,14 +5,14 @@
                     <v-row class="mt-0">
                         <v-col>
                             <v-checkbox
-                                v-model="input.gstd"
+                                v-model="inpValue.gstdrequired"
                                 label="GSTD Required"
                             ></v-checkbox>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
                         <v-col class="mt-0">
-                            <v-text-field outlined label="Hour Codes"></v-text-field>
+                            <v-text-field outlined v-model="inpValue.hourCode" label="Hour Codes"></v-text-field>
                         </v-col>
                         <v-col class="mt-0">
                             <SelectDropdown 
@@ -70,8 +70,11 @@
                     <v-row class="mt-0">
                         <v-col>
                             <SimpleDatePicker 
-                                :items="input.calendar"
+                                :items="input.calendarCompleted"
+                                :inpValue="getDateCompleted"
+                                :rules="[rules.required]"
                                 label="Date Completion"
+                                @change="(value) => { inpValue.dateCompleted = value }"
                             />
                         </v-col>
                         <v-col>
@@ -89,8 +92,11 @@
                     <v-row class="mt-0">
                         <v-col>
                             <SimpleDatePicker 
-                                :items="input.calendar"
+                                :items="input.calendarDisposition"
+                                :inpValue="getDateDisposition"
+                                :rules="[rules.required]"
                                 label="Date of Disposition"
+                                @change="(value) => { inpValue.dateofDisposition = value }"
                             />
                         </v-col>
                         <v-col>
@@ -258,6 +264,26 @@ export default {
             default: () => {},
             required: false,
         }
+    },
+    computed: {
+        getDateCompleted(){
+            let obj
+            obj = this.inpValue.dateCompleted
+            if(obj){
+                this.input.calendarCompleted.allow=false
+                this.input.calendarCompleted.menu=false
+            }
+            return obj
+        },
+        getDateDisposition(){
+            let obj
+            obj = this.inpValue.dateofDisposition
+            if(obj){
+                this.input.calendarDisposition.allow=false
+                this.input.calendarDisposition.menu=false
+            }
+            return obj
+        },
     }
 }
 </script>

@@ -137,7 +137,17 @@
                 conRun:'',
                 chips:['chip1', 'chip2'],
                 chipInfo:[],
-                calendar: {
+                calendarCompleted: {
+                    time: null,
+                    date: null,
+                    date2: null,
+                    menu: false,
+                    modal: false,
+                    menu1: false,
+                    allow: true,
+                    yearonly: '',
+                },
+                calendarDisposition: {
                     time: null,
                     date: null,
                     date2: null,

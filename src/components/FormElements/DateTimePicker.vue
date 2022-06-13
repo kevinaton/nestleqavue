@@ -15,7 +15,7 @@
                     outlined
                     :value="getDate"
                     :label="label1"
-                    :rules="[rules.required]"
+                    :rules="rules"
                     prepend-inner-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -44,7 +44,7 @@
                 <v-text-field
                     outlined
                     :value="getTime"
-                    :rules="[rules.required]"
+                    :rules="rules"
                     :label="label2"
                     prepend-inner-icon="mdi-clock-time-four-outline"
                     readonly
@@ -94,8 +94,8 @@ export default {
             required: false,
         },
         rules: {
-            type: Object,
-            default: () => {},
+            type: Array,
+            default: () => [],
             required: false,
         }
     },
@@ -108,23 +108,40 @@ export default {
     computed: {
         getDate() {
             let value = this.inpValue
-            let d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
+            let d
+            if(value != null) {
+                d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
+            } else {
+                
+            }
             return d
         },
         getTime() {
             let value = this.inpValue
-            let t = this.tempTime = moment.utc(value).format('hh:mm:ss')
+            let t
+            if(value != null) {
+                t = this.tempTime = moment.utc(value).format('hh:mm:ss')
+            } else {
+                
+            }
             return t
         },
     },
     emits: ["change"],
     methods: {
         setDate(y) {
+            let e = new Date().toISOString()
             this.tempDate = moment.utc(y).format("YYYY-MM-DD")
+            if(this.tempTime == null || '') {
+                this.tempDate = moment.utc(e).format('hh:mm:ss')
+            }
             let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
         setDateTime(x) { 
+            if(this.tempDate == null || '') {
+
+            }
             this.tempDate = moment.utc(this.inpValue).format("YYYY-MM-DD")
             this.tempTime = x
             let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()

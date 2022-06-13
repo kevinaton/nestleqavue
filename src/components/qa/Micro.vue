@@ -44,7 +44,7 @@
                             <SimpleDatePicker 
                             :items="input.calendarMicro"
                             :inpValue="getDate"
-                            :rules="rules"
+                            :rules="[rules.required]"
                             label="Date of Resample"
                             @change="(value) => { inpValue.dateOfResample = value }"
                             />

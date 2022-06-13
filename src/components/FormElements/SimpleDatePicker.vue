@@ -12,7 +12,7 @@
             outlined
             v-model="getDate"
             :label="label"
-            :rules="[rules.required]"
+            :rules="rules"
             prepend-inner-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -45,8 +45,8 @@ export default {
 
         },
         rules: {
-            type: Object,
-            default: () => {},
+            type: Array,
+            default: [],
             required: false,
         }
     },
@@ -58,16 +58,21 @@ export default {
     computed: {
         getDate() {
             let value = this.inpValue
-            let d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
-            this.tempTime = moment.utc(value).format('hh:mm:ss')
+            let d
+            let e = new Date().toISOString()
+            if (value != null) {
+                d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
+            } else {
+                this.tempTime = moment.utc(e).format('hh:mm:ss')
+            }
             return d
         },
     },
     methods: {
         setDate(y) {
-        this.tempDate = moment.utc(y).format("YYYY-MM-DD")
-        let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
-        this.$emit('change', value)
+            this.tempDate = moment.utc(y).format("YYYY-MM-DD")
+            let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
+            this.$emit('change', value)
     },
     }
 }
