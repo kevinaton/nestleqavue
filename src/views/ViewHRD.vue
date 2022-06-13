@@ -4,6 +4,9 @@
         class="mx-auto mt-6 pa-8"
         width="90%"
     >
+        <SnackBar 
+        :input="snackbar"
+        />
         <v-row class="mb-0">
             <v-col>
                 <BackBtn 
@@ -22,33 +25,36 @@
         >
             <HighlightsExp 
                 :input="highlights"
+                :inpValue="getHRD"
                 :rules="rules"
             />
 
             <Details
                 :input="details"
+                :inpValue="getHRD"
                 :rules="rules"
             />
 
-            <HoldClassification 
+            <!-- <HoldClassification 
                 :input="holdclass"
-            />
+            /> -->
 
-            <Rework 
+            <!-- <Rework 
                 :input="rework"    
-            />
+            /> -->
 
-            <IncidentReport
+            <!-- <IncidentReport
                 :input="incirep"
-            />
+            /> -->
             
-            <Scrap 
+            <!-- <Scrap 
                 :input="scrap"    
-            />
+            /> -->
         </v-expansion-panels>
 
         <SubmitDiscard 
             :input="submitdiscard"
+            @change="submitHRD($event)"
         />
     </v-card>
 </template>
@@ -63,6 +69,7 @@
 
     import BackBtn from '@/components/FormElements/BackBtn.vue'
     import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
+    import SnackBar from '@/components/TableElements/SnackBar.vue'
 
     export default {
         components: {
@@ -74,9 +81,11 @@
             Details,
 
             BackBtn,
-            SubmitDiscard
+            SubmitDiscard,
+            SnackBar
         },
         data: () => ({
+            subTrig:false,
             backbtn:false,
             panel: [0,1,2,3,4,5],
             rules: {
@@ -87,60 +96,40 @@
                     return pattern.test(value) || 'Invalid e-mail.'
                 },
             },
+            loading:true,
             submitdiscard: {
                 submitDialog: false,
                 discardDialog: false,
             },
             highlights: {
-                calendar: {
+                calendar1: {
+                time: null,
+                date: null,
+                date2: null,
+                modal: false,
+                menu: false,
+                allow: true,
+                },
+                yearOnly: {
+                    year:'2017'
+                },
+                calendar2: {
                     time: null,
                     date: null,
-                    date2: null,
-                    menu: false,
                     modal: false,
-                    menu1: false,
+                    menu: false,
                     allow: true,
-                    yearonly: '',
                 },
-                clock: {
+                clock1: {
                     time: null,
-                    menu1: false,
+                    menu: false,
                     label: ''
                 },
-                types: ['Pre-op','Operational', 'USDA', 'Other'],
-                typeSelect:'',
-                lineSelect: [],
-                lines: [1,2,3,4,5,6,7,8,9],
-                area: { text: 'area', disabled: false },
-                areas: [
-                    { text: 'Pre-op', disabled: false },
-                    { text: 'Operational', disabled: false },
-                    { text: 'USDA', disabled: false },
-                    { text: 'Base Room', disabled: false },
-                    { text: 'Can Opening', disabled: false },
-                    { text: 'Cooler Prep', disabled: false },
-                    { text: 'Dries', disabled: false },
-                    { text: 'Fish Prep', disabled: false },
-                    { text: 'Liquid Prep', disabled: false },
-                    { text: 'NAP Room', disabled: false },
-                    { text: 'New Rice Room', disabled: false },
-                    { text: 'Old Rice Room', disabled: false },
-                    { text: 'Old Wine Cooler Room', disabled: false },
-                    { text: 'Oven Room', disabled: false },
-                    { text: 'Pan Room', disabled: false },
-                    { text: 'Raw Meat Room', disabled: false },
-                    { text: 'Steam Room', disabled: false },
-                    { text: 'Stovex Room', disabled: false },
-                    { text: '...Other', disabled: false },
-                ],
-                shiftSelect: [],
-                shifts: [1,2,3],
-                shortSelect:'',
-                short_description: [
-                    'Ammonia', 'Coding', 'Film/Film Seals', 'Foreign Body',
-                    'GMP', 'HACCP(CPP/OPRP)', 'Hi Core', 'Housekeeping', 'Net Weight', 'Packaging', 'Pest Sighting',
-                    'Recipe Deviation', 'Sanitation (not housekeeping)', 'Sensory', 'Other'
-                ],
+                clock2: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
             },
             details: {
                 gstd:false,
@@ -239,10 +228,133 @@
                     { label:"Plant Controller Approval", value:true },
                     { label:"Destroyed", value:true },
                 ],
-            }
+            },
+            hrd:{},
+            snackbar: {
+                snack: false,
+                snackColor: '',
+                snackText: '',
+            },
         }),
+        created() {
+            this.fetchHRD()
+        },
+        computed: {
+            getHRD(){
+            let obj = {}
+            obj = this.hrd
+            return obj
+        },
+        },
         methods: {
-
+            fetchHRD () {
+            let vm = this 
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
+                .then((res) => {
+                vm.hrd = res.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (this.loading = false))
+            },
+            submitHRD(value) {
+            let vm = this
+            let d = vm.hrd
+            vm.subTrig = value
+            if(vm.subTrig == true) {
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {
+                    additionalDescription: d.additionalDescription,
+                    allCasesAccountedFor: d.allCasesAccountedFor,
+                    approvalRequestByQa: d.approvalRequestByQa,
+                    approvedByDistroyedWhen: d.approvedByDistroyedWhen,
+                    approvedByDistroyedWho: d.approvedByDistroyedWho,
+                    approvedByPlantControllerWhen: d.approvedByPlantControllerWhen,
+                    approvedByPlantControllerWho: d.approvedByPlantControllerWho,
+                    approvedByPlantManagerWho: d.approvedByPlantManagerWho,
+                    approvedByQAWhen: d.approvedByQAWhen,
+                    approvedByQAWho: d.approvedByQAWho,
+                    approvedPlantManagerQAWhen: d.approvedPlantManagerQAWhen,
+                    area: d.area,
+                    areaIfOther: d.areaIfOther,
+                    buManager: d.buManager,
+                    cancelled: d.cancelled,
+                    caseCount: d.caseCount,
+                    cases: d.cases,
+                    classification: d.classification,
+                    clear: d.clear,
+                    comments: d.comments,
+                    complete: d.complete,
+                    continuousRun: d.continuousRun,
+                    costofProductonHold: d.costofProductonHold,
+                    date: d.date,
+                    dateCompleted: d.dateCompleted,
+                    dateHeld: d.dateHeld,
+                    dateofDisposition: d.dateofDisposition,
+                    dayCode: d.dayCode,
+                    dcDate: d.dcDate,
+                    dcUser: d.dcUser,
+                    detailedDescription: d.detailedDescription,
+                    donate: d.donate,
+                    fcDate: d.fcDate,
+                    fcUser: d.fcUser,
+                    fert: d.fert,
+                    fertDescription: d.fertDescription,
+                    gstdrequired: d.gstdrequired,
+                    highRisk: d.highRisk,
+                    holdCategory: d.holdCategory,
+                    holdSubCategory: d.holdSubCategory,
+                    hourCode: d.hourCode,
+                    hrdDc: d.hrdDc,
+                    hrdFc: d.hrdFc,
+                    hrdNote: d.hrdNote,
+                    hrdPo: d.hrdPo,
+                    hrdcompletedBy: d.hrdcompletedBy,
+                    id: d.id,
+                    isDestroyed: d.isDestroyed,
+                    isPlantControllerApproval: d.isPlantControllerApproval,
+                    isPlantManagerAprpoval: d.isPlantManagerAprpoval,
+                    line: d.line,
+                    lineSupervisor: d.lineSupervisor,
+                    monthHeld: d.monthHeld,
+                    numberOfDaysHeld: d.numberOfDaysHeld,
+                    numberOfDaysToReworkApproval: d.numberOfDaysToReworkApproval,
+                    originator: d.originator,
+                    otherHrdAffected: d.otherHrdAffected,
+                    otherHrdNum: d.otherHrdNum,
+                    plant: d.plant,
+                    qaComments: d.qaComments,
+                    reasonAction: d.reasonAction,
+                    reworkApproved: d.reworkApproved,
+                    samples: d.samples,
+                    scrap: d.scrap,
+                    shift: d.shift,
+                    shortDescription: d.shortDescription,
+                    thriftStore: d.thriftStore,
+                    timeOfIncident: d.timeOfIncident,
+                    type: d.type,
+                    weekHeld: d.weekHeld,
+                    yearHeld: d.yearHeld
+                })
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (this.subTrig = false))
+            }
+        }
         },
     }
 </script>

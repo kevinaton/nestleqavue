@@ -246,12 +246,18 @@ export default {
         input: {
             type: Object,
             default: () => {},
+            required: false,
         },
         rules: {
             type: Object,
             default: {},
             required: false,
         },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false,
+        }
     }
 }
 </script>
