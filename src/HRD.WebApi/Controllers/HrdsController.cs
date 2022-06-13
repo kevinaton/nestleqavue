@@ -477,7 +477,8 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
-                                         .FirstOrDefaultAsync(f => f.Id == id);
+                                        .Include(i => i.HrdrohMaterials)
+                                        .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
             {
@@ -571,6 +572,7 @@ namespace HRD.WebApi.Controllers
                 StarchType = qa.StarchType,
                 AdditionalComments = qa.AdditionalComments,
                 HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName}).ToList(),
+                HrdRohMaterials = qa.HrdrohMaterials.Select(s => new HRDROHMaterialViewModel { Id = s.Id, HrdId = s.Hrdid, DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description}).ToList(),
             };
 
             return model;
@@ -590,6 +592,13 @@ namespace HRD.WebApi.Controllers
             var hrd = new Hrd
             {
                 Id = id,
+                IsHrd = model.IsHRD,
+                IsPest = model.IsPest,
+                IsSmi = model.IsSMI,
+                IsNr = model.IsNR,
+                IsFm = model.IsFM,
+                IsMicro = model.IsMicro,
+
                 Date = model.Date,
                 TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
@@ -608,23 +617,28 @@ namespace HRD.WebApi.Controllers
                 AdditionalDescription = model.AdditionalDescription,
                 DetailedDescription = model.DetailedDescription,
 
+                //HRD                                  
                 CasesHeld = model.CasesHeld,
-                HourCode = model.HourCode,//not mapped
-
-                //not mapped
+                HourCode = model.HourCode,
                 Pos = model.POs,
                 ReworkInstructions = model.ReworkInstructions,
+
+                //PEST                                     
                 PestType = model.PestType,
                 PcocontactedImmediately = model.PCOContactedImmediately,
                 ProductAdultered = model.ProductAdultered,
                 WhereFound = model.WhereFound,
                 IfYesAffectedProduct = model.IfYesAffectedProduct,
+
+                //SMI                                               
                 MaterialNumber = model.MaterialNumber,
                 RawMaterialDescription = model.RawMaterialDescription,
                 BatchLot = model.BatchLot,
                 VendorNumber = model.VendorNumber,
                 VendorName = model.VendorName,
                 VendorSiteNumber = model.VendorSiteNumber,
+
+                //FM                                                
                 IsInspections = model.IsInspections,
                 IsXray = model.IsXray,
                 IsMetalDetector = model.IsMetalDetector,
@@ -633,17 +647,20 @@ namespace HRD.WebApi.Controllers
                 Equipment = model.Equipment,
                 EquipmentIfOther = model.EquipmentIfOther,
                 Rohmaterial = model.ROHMaterial,
+
                 PiecesTotal = model.PiecesTotal,
                 RawBatchLot = model.RawBatchLot,
                 HazardousSize = model.HazardousSize,
                 Responsibility = model.Responsibility,
                 NonHazardousSize = model.NonHazardousSize,
+               
                 DateReceived = model.DateReceived,
                 InspectorsName = model.InspectorsName,
                 Nrcategory = model.NRCategory,
                 Tagged = model.Tagged,
                 TagNumber = model.TagNumber,
                 Response = model.Response,
+                   
                 HoldConcern = model.HoldConcern,
                 DayOfWeek = model.DayOfWeek,
                 When = model.When,
@@ -656,6 +673,7 @@ namespace HRD.WebApi.Controllers
                 AdditionalComments = model.AdditionalComments,
 
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
+                HrdrohMaterials = model.HrdRohMaterials.Select(s => new HrdrohMaterial { DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description }).ToList(),
             };
 
             _context.Entry(hrd).State = EntityState.Modified;
@@ -687,6 +705,13 @@ namespace HRD.WebApi.Controllers
         {
             var hrd = new Hrd
             {
+                IsHrd = model.IsHRD,
+                IsPest = model.IsPest,
+                IsSmi = model.IsSMI,
+                IsNr = model.IsNR,
+                IsFm = model.IsFM,
+                IsMicro = model.IsMicro,
+
                 Date = model.Date,
                 TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
@@ -694,7 +719,7 @@ namespace HRD.WebApi.Controllers
                 Originator = model.Originator,
                 Bumanager = model.BUManager,
                 CodingType = model.Type,
-                Globenum = model.Fert,
+                Globenum = model.FertDescription,
                 FertDescription = model.FertDescription,
                 Line = model.Line,
                 LineSupervisor = model.LineSupervisor,
@@ -704,13 +729,12 @@ namespace HRD.WebApi.Controllers
                 ShortDescription = model.ShortDescription,
                 AdditionalDescription = model.AdditionalDescription,
                 DetailedDescription = model.DetailedDescription,
-
+                               
                 CasesHeld = model.CasesHeld,
-                HourCode = model.HourCode,//not mapped
-
-                //not mapped
+                HourCode = model.HourCode,
                 Pos = model.POs,
                 ReworkInstructions = model.ReworkInstructions,
+                                
                 PestType = model.PestType,
                 PcocontactedImmediately = model.PCOContactedImmediately,
                 ProductAdultered = model.ProductAdultered,
@@ -740,7 +764,7 @@ namespace HRD.WebApi.Controllers
                 Nrcategory = model.NRCategory,
                 Tagged = model.Tagged,
                 TagNumber = model.TagNumber,
-                Response = model.Response,
+                Response = model.Response,                                         
                 HoldConcern = model.HoldConcern,
                 DayOfWeek = model.DayOfWeek,
                 When = model.When,
@@ -752,6 +776,7 @@ namespace HRD.WebApi.Controllers
                 StarchType = model.StarchType,
                 AdditionalComments = model.AdditionalComments,
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
+                HrdrohMaterials = model.HrdRohMaterials.Select(s => new HrdrohMaterial { DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description }).ToList(),
             };
 
             _context.Hrds.Add(hrd);

@@ -93,5 +93,6 @@ namespace HRD.WebApi.ViewModels
         public string StarchType { get; set; }
         public string AdditionalComments { get; set; }
         public List<HrdTestCostViewModel> HrdTestCosts { get; set; }
+        public List<HRDROHMaterialViewModel> HrdRohMaterials { get; set; }
     }
 }
