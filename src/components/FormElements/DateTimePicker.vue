@@ -108,26 +108,26 @@ export default {
     computed: {
         getDate() {
             let value = this.inpValue
-            let d = this.tempDate = moment(value).format('MM-DD-YYYY')
+            let d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
             return d
         },
         getTime() {
             let value = this.inpValue
-            let t = this.tempTime = moment(value).format('hh:mm:ss')
+            let t = this.tempTime = moment.utc(value).format('hh:mm:ss')
             return t
         },
     },
     emits: ["change"],
     methods: {
         setDate(y) {
-            this.tempDate = moment(y).format("YYYY-MM-DD")
-            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            this.tempDate = moment.utc(y).format("YYYY-MM-DD")
+            let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
         setDateTime(x) { 
-            this.tempDate = moment(this.inpValue).format("YYYY-MM-DD")
+            this.tempDate = moment.utc(this.inpValue).format("YYYY-MM-DD")
             this.tempTime = x
-            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
     }

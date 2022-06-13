@@ -41,26 +41,29 @@
             />
 
             <SMI
-                :input="smi"
+                :input="getQaRec"
                 v-if="visible[2].value"
             />
             <FM 
                 :input="fm"
+                :inpValue="getQaRec"
                 :rules="rules"
                 v-if="visible[3].value"
             />
 
             <NR 
-                :input="nr"
+                :input="qaOptions"
+                :inpValue="getQaRec"
                 :rules="rules"
                 v-if="visible[4].value"
             />            
 
             <Micro 
-                :input="micro"
+                :input="qaOptions"
+                :inpValue="getQaRec"
                 :test="test"
+                :rules="rules"
                 :snackbar="snackbar"
-                :yn="yn"
                 v-if="visible[5].value"
             />
 
@@ -96,7 +99,6 @@ export default {
         FM,
         NR,
         Micro,
-
         Newqacheckbox,
         SubmitDiscard,
         BackBtn,
@@ -107,12 +109,12 @@ export default {
         panel: [0,1,2,3,4,5,6],
         subTrig:false,
         visible: [
-            { label:"HRD", value:true },
-            { label:"Pest", value:true },
+            { label:"HRD", value:false },
+            { label:"Pest", value:false },
             { label:"SMI", value:false },
-            { label:"FM", value:false },
-            { label:"NR", value:false },
-            { label:"Micro", value:false },
+            { label:"FM", value:true },
+            { label:"NR", value:true },
+            { label:"Micro", value:true },
         ],
         rules: {
             required: value => !!value || 'Required.',
@@ -128,7 +130,6 @@ export default {
                 time: null,
                 date: null,
                 date2: null,
-                menu: false,
                 modal: false,
                 menu: false,
                 allow: true,
@@ -139,7 +140,6 @@ export default {
             calendar2: {
                 time: null,
                 date: null,
-                menu: false,
                 modal: false,
                 menu: false,
                 allow: true,
@@ -154,343 +154,54 @@ export default {
                 menu: false,
                 label: ''
             },
-        },
-        smi: {
-            mNum: '',
-            rMD: '',
-            batchLot: '',
-            venNum: '',
-            venName: '',
-            venSiteNum: '',
-        },
-        fm: {
-            radiorow: '',
-            fmtypeSelect: '',
-            fmtypes: [
-            'Gasket', 'Contherm Blade', 'Glass', 'Metal', 'O-rin', 'Paper/Cardboard',
-            'Plastic - Hard', 'Plastif -Soft', 'Rubber', 'Scrapper Blade', 'Wood', 'Other...'
+            calendarDateReceived: {
+                time: null,
+                date: null,
+                modal: false,
+                menu: false,
+                allow: true,
+            },
+            clockDateReceived: {
+                time: null,
+                menu: false,
+                label: ''
+            },
+            calendarMicro: {
+                time: null,
+                date: null,
+                modal: false,
+                menu: false,
+                allow: true,
+            },
+
+            // Micro
+            dialog: false,
+            dialogDelete: false,
+            microheaders: [
+                { text:'Hour', value: 'hour' },
+                { text: 'Count', value: 'count' },
+                { text:'Organism', value: 'organism'},
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
-            equipmentSelect: '',
-            equipments: [
-                {
-                    text: "Stovex System"
-                },
-                {
-                    text: "Milk System"
-                },
-                {
-                    text: "Rietz Extructor "
-                },
-                {
-                    text: "Extruder w/ Wheat Gluten "
-                },
-                {
-                    text: "Blancher w/Wheat Gluten"
-                },
-                {
-                    text: "Fat Melter"
-                },
-                {
-                    text: "Cookstand"
-                },
-                {
-                    text: "Sauce Filler(s) C "
-                },
-                {
-                    text: "Graco Pump"
-                },
-                {
-                    text: "Rice Cooker "
-                },
-                {
-                    text: "Sauce Filler(s) B "
-                },
-                {
-                    text: "Kramer & Grebe "
-                },
-                {
-                    text: "Model D Dicer "
-                },
-                {
-                    text: "Kliklok"
-                },
-                {
-                    text: "Tote Dumper"
-                },
-                {
-                    text: "Colborne Blender "
-                },
-                {
-                    text: "Mondini "
-                },
-                {
-                    text: "Laser Coder(s)"
-                },
-                {
-                    text: "Scholle System"
-                },
-                {
-                    text: "Mepaco Blender"
-                },
-                {
-                    text: "Bridge Machine"
-                },
-                {
-                    text: "MPO - 52'"
-                },
-                {
-                    text: "Lightnin' Mixer"
-                },
-                {
-                    text: "Rietz Mixer w/o Steam "
-                },
-                {
-                    text: "Raque Topping Dispenser"
-                },
-                {
-                    text: "Bulk Tomatoes System"
-                },
-                {
-                    text: "Glaze Kettle"
-                },
-                {
-                    text: "Final Grinder "
-                },
-                {
-                    text: "Hi-Mech Meat Dicer"
-                },
-                {
-                    text: "Model M Dicer "
-                },
-                {
-                    text: "Extruder  "
-                },
-                {
-                    text: "Blancher  "
-                },
-                {
-                    text: "Pre-Breaker  "
-                },
-                {
-                    text: "Sauce Filler(s) A "
-                },
-                {
-                    text: "Shear Pump"
-                },
-                {
-                    text: "Model L Dicer  "
-                },
-                {
-                    text: "Model CC Shredder  "
-                },
-                {
-                    text: "Extruder "
-                },
-                {
-                    text: "Watson-Marlow Pump"
-                },
-                {
-                    text: "Risco Dispenser"
-                },
-                {
-                    text: "Tu-Way Cheese Cutter "
-                },
-                {
-                    text: "Pasta / Rice Mixer"
-                },
-                {
-                    text: "Tray Dispenser"
-                },
-                {
-                    text: "Prepweigh Tables"
-                },
-                {
-                    text: "Deville Cheese Shredder"
-                },
-                {
-                    text: "Cookstand 10"
-                },
-                {
-                    text: "Cookstand 2"
-                },
-                {
-                    text: "Blancher w/Wheat Gluten  "
-                },
-                {
-                    text: "Pasta Oil Spray System"
-                },
-                {
-                    text: "Rotary Dispensers"
-                },
-                {
-                    text: "Net Weigh Fillers "
-                },
-                {
-                    text: "Potato System"
-                },
-                {
-                    text: "Potato Pump"
-                },
-                {
-                    text: "Potato Fillers "
-                },
-                {
-                    text: "Rotary Dispensers - B"
-                },
-                {
-                    text: "AVF's"
-                },
-                {
-                    text: "10A Cookstand"
-                },
-                {
-                    text: "Cookstand 6"
-                },
-                {
-                    text: "MPO - 35' or 52'"
-                },
-                {
-                    text: "Rotary Dispensers - A"
-                },
-                {
-                    text: "Auto Canopener"
-                },
-                {
-                    text: "Automated Ketchup Dispenser"
-                },
-                {
-                    text: "Tilt Kettle"
-                },
-                {
-                    text: "Semi-Auto Canopener"
-                },
-                {
-                    text: "Sauce Filler B Settings"
-                },
-                {
-                    text: "Extruder w/Wht Gltn & Garlic"
-                },
-                {
-                    text: "Blancher w/Wht Gltn & Garlic "
-                },
-                {
-                    text: "Drain Conveyor or Table"
-                },
-                {
-                    text: "Sauce Filler A Settings"
-                },
-                {
-                    text: "ABCO Blancher"
-                },
-                {
-                    text: "10A Fat Melter"
-                },
-                {
-                    text: "Potato Pump Settings"
-                },
-                {
-                    text: "Sauce Filler C Settings"
-                },
-                {
-                    text: "Cookstand 5"
-                },
-                {
-                    text: "Extruder w/Cyclone WW System "
-                },
-                {
-                    text: "Blancher w/Whole Wheat Blend"
-                },
-                {
-                    text: "Sauce Filler Settings - Production"
-                },
-                {
-                    text: "Rotary Dispensers - C"
-                },
-                {
-                    text: "Rietz Mixer w/ Steam "
-                },
-                {
-                    text: "Urschel Diversacut 2110"
-                },
-                {
-                    text: "Twister AT Dicer"
-                },
-                {
-                    text: "Paprika Dispensers"
-                },
-                {
-                    text: "Fryer"
-                },
-                {
-                    text: "Breddo Mixer"
-                }, 
-                {
-                    text: "Roller before Heatseal - L8"
-                },
-                {
-                    text: "Cookstand 8 (Steam Jacketed Kettle)"
-                },
-                {
-                    text: "Blancher w/ Egg   "
-                },
-                {
-                    text: "Sauce Filler - Foodservice  "
-                },
-                {
-                    text: "Crimper"
-                },
-                {
-                    text: "Quadrel Label Machine"
-                },
-                {
-                    text: "Videojet Printer"
-                },
-                {
-                    text: "Extruder w/ Egg "
-                },
-                {
-                    text: "Blancher w/ Egg  "
-                },
-                {
-                    text: "Steamer"
-                },
-                {
-                    text: "MPO - 35'"
-                },
-                {
-                    text: "Syntron"
-                },
-                {
-                    text: "Murzan Pump - Large"
-                },
-                {
-                    text: "Small Seydelmann  "
-                },
-                {
-                    text: "Base Pump System"
-                },
-                {
-                    text: "ADCO FoodService Cartoner"
-                },
-                {
-                    text: "Delkor Box Former"
-                },
-                {
-                    text: "Hayssen Pouch Machine"
-                },
-                {
-                    text: "X Ray Machine"
-                },
-                {
-                    text: "Small Portion Dispenser"
-                },
-                {
-                    text: "Portable Traveling Head"
-                },
-                {
-                    text: "Other"
-                }
+            microtable: [
+                { hour:'0', count:'22', organism:'E. Coli' },
+                { hour:'2', count:'38', organism:'E. Coli' },
+                { hour:'3', count:'145', organism:'E. Coli'},
+                { hour:'5', count:'162', organism:'E. Coli'},
             ],
+            editedIndex: -1,
+            editedItem: {
+                hour:'0',
+                count:'0',
+                organism:'',
+            },
+            defaultItem: {
+                hour:'0',
+                count:'0',
+                organism:'',
+            },
+        },
+        fm: {          
             rohSelect: [],
             rohHeaders: [
                 {text:"Material", value:'material'},
@@ -520,62 +231,8 @@ export default {
                 ], 
                 },
             ],
-            responsibilityInp: '',
-            responsibilities: [
-                'In-House', 'Vendor',
-            ],
-        },
-        nr: {
-            datereceived: {
-                time: null,
-                date: null,
-                date2: null,
-                menu: false,
-                modal: false,
-                menu1: false,
-                allow: true
-            },
-            nrCat: '',
-            nrcategories: [
-                'Pre-Op SSOP', 'SPS', 'HACCP', 'Currently not Available',
-            ],
         },
         micro: {
-            dialog: false,
-            dialogDelete: false,
-            calendar: {
-                time: null,
-                date: null,
-                date2: null,
-                menu: false,
-                modal: false,
-                menu1: false,
-                allow: true,
-                yearonly: '',
-            },
-            microheaders: [
-                { text:'Hour', value: 'hour' },
-                { text: 'Count', value: 'count' },
-                { text:'Organism', value: 'organism'},
-                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
-            ],
-            microtable: [
-                { hour:'0', count:'22', organism:'E. Coli' },
-                { hour:'2', count:'38', organism:'E. Coli' },
-                { hour:'3', count:'145', organism:'E. Coli'},
-                { hour:'5', count:'162', organism:'E. Coli'},
-            ],
-            editedIndex: -1,
-            editedItem: {
-                hour:'0',
-                count:'0',
-                organism:'',
-            },
-            defaultItem: {
-                hour:'0',
-                count:'0',
-                organism:'',
-            },
             hcSelect: '',
             holdconcerns: [
                 'Hold', 'Concern',
@@ -623,20 +280,16 @@ export default {
                 quantity:''
             },
         },
-        tagSelect: '',
         submitdiscard: {
             submitDialog: false,
             discardDialog: false,
         },
         backbtn:false,
-        readonly: false,
-        allowYear: false,
         snackbar: {
             snack: false,
             snackColor: '',
             snackText: '',
         },
-        yn: ['Yes', 'No'],
     }),
     created () {
         this.fetchQaRecords()

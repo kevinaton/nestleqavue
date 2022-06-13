@@ -4,21 +4,21 @@
         <v-expansion-panel-content>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field :value="inpValue.casesHeld" outlined label="Cases Held"></v-text-field>
+                        <v-text-field v-model="inpValue.casesHeld" outlined label="Cases Held"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field :value="inpValue.hourCode" outlined label="Hour Codes"></v-text-field>
+                        <v-text-field v-model="inpValue.hourCode" outlined label="Hour Codes"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field :value="inpValue.pOs" outlined label="POs"></v-text-field>
+                        <v-text-field v-model="inpValue.pOs" outlined label="POs"></v-text-field>
                     </v-col>
                     <v-col></v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea :value="inpValue.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
+                        <v-textarea v-model="inpValue.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
                     </v-col>
                 </v-row>
         </v-expansion-panel-content>

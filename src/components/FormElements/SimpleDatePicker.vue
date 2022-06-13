@@ -1,6 +1,6 @@
 <template>
     <v-menu
-        v-model="items.menu1"
+        v-model="items.menu"
         :close-on-content-click="false"
         :nudge-right="40"
         transition="scale-transition"
@@ -10,8 +10,9 @@
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
             outlined
-            v-model="inpValue.date"
+            v-model="getDate"
             :label="label"
+            :rules="[rules.required]"
             prepend-inner-icon="mdi-calendar"
             readonly
             v-bind="attrs"
@@ -19,14 +20,15 @@
         ></v-text-field>
         </template>
         <v-date-picker
-            v-model="inpValue.date"
+            no-title
             show-adjacent-months
-            @input="items.menu1 = false, items.allow = false"
+            @change="items.menu = false, items.allow = false, setDate($event)"
         ></v-date-picker>
     </v-menu>
 </template>
 
 <script>
+import moment from 'moment'
 export default {
     name: 'SimpleDatePicker',
     props: {
@@ -37,9 +39,36 @@ export default {
             required: false,
         },
         inpValue: {
-            type: Object,
+            type: String,
+            default: '',
+            required: false
 
         },
+        rules: {
+            type: Object,
+            default: () => {},
+            required: false,
+        }
+    },
+    data: () => ({
+        tempDate:'',
+        tempTime:'',
+    }),
+    emits: ["change"],
+    computed: {
+        getDate() {
+            let value = this.inpValue
+            let d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
+            this.tempTime = moment.utc(value).format('hh:mm:ss')
+            return d
+        },
+    },
+    methods: {
+        setDate(y) {
+        this.tempDate = moment.utc(y).format("YYYY-MM-DD")
+        let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
+        this.$emit('change', value)
+    },
     }
 }
 </script>
