@@ -5,10 +5,11 @@
 
         <!-- Search input -->
         <v-text-field
-            v-model="input.search"
+            :value="searchInput"
             append-icon="mdi-magnify"
             label="Search"
             single-line
+            @change="searchVal($event)"
             hide-details
         ></v-text-field>
 
@@ -51,5 +52,15 @@ export default {
             required: false
         }
     },
+    data: () => ({
+        searchInput:''
+    }),
+    emits: ["change"],
+    methods: {
+        searchVal(value) {
+            this.searchInput = value
+            this.$emit('change', value)
+        }
+    }
 }
 </script>

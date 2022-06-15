@@ -6,7 +6,6 @@
       :headers="headers"
       :page.sync="tableOptions.page"
       :items="qa"
-      :search="qatoolbar.search"
       sort-by="report"
       :options="tableOptions"
       hide-default-footer
@@ -31,6 +30,7 @@
           title="QA Records"
           :input="qatoolbar"
           :table="qa"
+          @change="getSearch($event)"
         />
       </template>
 
@@ -103,11 +103,14 @@
     data: () => ({
       loading:true, 
       delItem:'',
+      searchMode:false,
       tableOptions: {
           page: 1,
           itemsPerPage:20,
           totalPages:10,
-          totalRecords:100
+          totalRecords:100,
+          numToSearch:0,
+          searchValue:''
       },
       snackbar: {
         snack: false,
@@ -184,26 +187,99 @@
     created () {
       this.fetchHrds()
     },
-
     methods: {
       fetchHrds () {
         let vm = this 
+        vm.loading = true
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20`)
         .then((res) => {
-            vm.qa = res.data.data
-            this.loading=false
             vm.tableOptions.totalPages = res.data.totalPages
-        })
-      },
-      updateTable(value) { 
-        if (value != this.tableOptions.page) {
-          let vm = this
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
-        .then((res) => {
+            vm.tableOptions.itemsPerPage = res.data.pageSize
+            vm.tableOptions.totalRecords = res.data.totalRecords
+            vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.qa = res.data.data
-            vm.tableOptions.page = value
-            vm.loading=false
         })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => {vm.loading = false})
+      },
+      updateTable(value) {
+        let vm = this
+        if(vm.searchMode == false) {
+          if (value != this.tableOptions.page) {
+          vm.loading=true
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
+          .then((res) => {
+              vm.qa = res.data.data
+              vm.tableOptions.page = value
+          })
+          .catch(err => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'error'
+              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => (vm.loading = false))
+          }
+        }
+        if(vm.searchMode == true) {
+          if (value != this.tableOptions.page) {
+            vm.loading = true
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+            .then((res) => {
+                vm.qa = res.data.data
+                vm.tableOptions.page = value
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => (vm.loading = false))
+          }
+        }
+      },
+      getSearch(value) {
+        let vm = this
+        if(value != '') { 
+          vm.loading=true
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+          .then((res) => {
+              vm.tableOptions.itemsPerPage = 20
+              vm.tableOptions.page = 1
+              vm.searchMode = true
+              vm.tableOptions.searchValue = value
+
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+              .then((res) => {
+                vm.qa = res.data.data
+                vm.tableOptions.totalPages = res.data.totalPages
+                vm.tableOptions.totalRecords = res.data.totalRecords
+              })
+              .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+              })
+          })
+          .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+          })
+          .finally(() => (vm.loading = false))
+        }
+        if(value == ''){
+          vm.searchMode = false
+          vm.tableOptions.page = 1
+          vm.fetchHrds()
         }
       }
     },

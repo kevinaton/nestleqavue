@@ -216,7 +216,6 @@
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
@@ -226,7 +225,6 @@ export default {
         SimpleDatePicker,
         SimpleTimePicker,
         YearOnly,
-        SelectDropdown,
         SelectDropdownObj,
         SelectDropdownString,
         DateTimePicker

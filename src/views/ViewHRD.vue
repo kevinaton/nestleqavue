@@ -36,21 +36,21 @@
                 :rules="rules"
             />
 
-            <!-- <HoldClassification 
-                :input="holdclass"
-            /> -->
+            <HoldClassification
+                :inpValue="getHRD"
+            />
 
-            <!-- <Rework 
-                :input="rework"    
-            /> -->
+            <Rework 
+                :inpValue="getHRD"    
+            />
 
-            <!-- <IncidentReport
+            <IncidentReport
                 :input="incirep"
-            /> -->
+            />
             
-            <!-- <Scrap 
-                :input="scrap"    
-            /> -->
+            <Scrap 
+                :inpValue="getHRD"    
+            />
         </v-expansion-panels>
 
         <SubmitDiscard 
@@ -196,25 +196,6 @@
                 useract: [
                     { userlog:'kevinaton', datelog:'04/20/22'},
                     { userlog:'jovanismith', datelog:'05/01/22'},
-                ]
-            },
-            holdclass: {
-                selectClass:'',
-                selectHoldCat:'',
-                selectHoldSub:'',
-                classification: ['FTQ1', 'FTQ2', 'FTQ3'],
-                holdCat: [
-                    'Pre-Op SSOP', 'SPS', 'HACCP', 'Currently Not Available'
-                ],
-                holdSub: [
-                    'Cieling Tiles', 'Documentation', 'EPSU', 'Facilities', 'GMP Product Handling',
-                    'GMP Storage', 'GMP Tool Hanlding', 'Housekeeping', 'Labeling', 'Multiple', 'Overspray',
-                    'Condensation',
-                ],
-                alertInfo: [
-                    { label:'Month Held:', value:'October' },
-                    { label:'Week held:', value:'40' },
-                    { label:'Cost of Product on Hold:', value:'$1390.50' }
                 ]
             },
             rework: {
