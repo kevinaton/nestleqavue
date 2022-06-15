@@ -15,13 +15,13 @@
                             <v-text-field outlined v-model="inpValue.hourCode" label="Hour Codes"></v-text-field>
                         </v-col>
                         <v-col class="mt-0">
-                            <SelectDropdown 
-                                :items="input.yn" 
-                                v-model="input.contRun" 
-                                label="Continuous Run" 
-                                @change="(value) => {
-                                    this.input.contRun = value   
-                                }"
+                            <SelectDropdownString 
+                            :dropdownValue=7
+                            :inpValue="inpValue.continuousRun" 
+                            label="Continuous Run" 
+                            @change="(value) => {
+                                inpValue.continuousRun = value   
+                            }"
                             />
                         </v-col>
                     </v-row>
@@ -35,23 +35,24 @@
                     <v-row class="mt-0">
                         <v-col>
                             <v-combobox
-                                v-model="input.chips"
+                                :value="getPO"
                                 chips
                                 multiple
                                 outlined
                                 class="remarr"
+                                @input="inputPO($event)"
                             >
-                                <template v-slot:selection="{ attrs, item, select, selected }">
-                                <v-chip
+                                <template v-slot:selection="{ attrs, item, index, select, selected }">
+                                <v-chip 
                                     v-bind="attrs"
                                     :input-value="selected"
                                     close
                                     color="info"
                                     text-color="white"
                                     @click="select"
-                                    @click:close="remove(item)"
+                                    @click:close="remove(index)"
                                 >
-                                    <strong>{{ item }}</strong>&nbsp;
+                                    <strong>{{ item.poNumber }}</strong>&nbsp;
                                 </v-chip>
                                 </template>
                             </v-combobox>
@@ -59,7 +60,7 @@
                     </v-row>
                     <v-row class="mt-0">
                         <v-col>
-                            <v-textarea outlined label="QA Comments"></v-textarea>
+                            <v-textarea v-model="inpValue.qaComments" outlined label="QA Comments"></v-textarea>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -78,15 +79,15 @@
                             />
                         </v-col>
                         <v-col>
-                            <v-text-field label="Clear" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.clear" label="Clear" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
                         <v-col>
-                            <v-text-field :rules="[rules.required]" label="Completed by*" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required]" label="Completed by*" outlined></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field label="Scrap" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.scrap" label="Scrap" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
@@ -100,29 +101,32 @@
                             />
                         </v-col>
                         <v-col>
-                            <v-text-field label="Thrift Store" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.thriftStore" label="Thrift Store" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
                         <v-col class="d-flex">
                             <v-checkbox
-                                v-for="(option, i) in input.checkstatus"
-                                :key="i"
-                                v-model="option.value"
-                                :label="option.label"
+                                v-model="inpValue.complete"
                                 class="mr-5"
+                                label="Complete?"
+                            ></v-checkbox>
+                            <v-checkbox
+                                v-model="inpValue.cancelled"
+                                class="mr-5"
+                                label="Canceled?"
                             ></v-checkbox>
                         </v-col>
                         <v-col>
-                            <v-text-field label="Samples" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.samples" label="Samples" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
                         <v-col>
-                            <v-text-field disabled label="Number of Days Held" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.numberOfDaysHeld" disabled label="Number of Days Held" outlined></v-text-field>
                         </v-col>
                         <v-col>
-                            <v-text-field label="Donate" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.donate" label="Donate" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
@@ -145,7 +149,7 @@
                         <v-col></v-col>
                         <v-col>
                             <v-checkbox
-                                v-model="input.gstd"
+                                v-model="inpValue.allCasesAccountedFor"
                                 label="All Cases Accounted for?"
                             ></v-checkbox>
                         </v-col>
@@ -153,15 +157,18 @@
                     <v-row class="mt-0">
                         <v-col class="d-flex">
                             <v-checkbox
-                                v-for="(option, i) in input.ohahr"
-                                :key="i"
-                                v-model="option.value"
-                                :label="option.label"
+                                v-model="inpValue.otherHrdAffected"
                                 class="mr-5"
+                                label="Other HRDs Affected?"
+                            ></v-checkbox>
+                            <v-checkbox
+                                v-model="inpValue.highRisk"
+                                class="mr-5"
+                                label="High Risk"
                             ></v-checkbox>
                         </v-col>
                         <v-col>
-                            <v-text-field label="Other HRD #s" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.otherHrdNum" label="Other HRD #s" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -176,10 +183,10 @@
                                             <v-col>
                                                 <v-row>
                                                     <v-col>
-                                                    <v-text-field label="Username" outlined readonly :value="input.useract[0].userlog"></v-text-field>
+                                                    <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
                                                     </v-col>
                                                     <v-col>
-                                                        <v-text-field label="Date logged in" outlined readonly :value="input.useract[0].datelog"></v-text-field>
+                                                        <v-text-field label="Date logged in" outlined readonly :value="inpValue.fcDate"></v-text-field>
                                                     </v-col>
                                                 </v-row>
                                             </v-col>
@@ -210,10 +217,10 @@
                                         <v-col>
                                             <v-row>
                                                 <v-col>
-                                                    <v-text-field label="Username" outlined readonly :value="input.useract[1].userlog"></v-text-field>
+                                                    <v-text-field label="Username" outlined readonly :value="inpValue.dcUser"></v-text-field>
                                                 </v-col>
                                                 <v-col>
-                                                    <v-text-field label="Date logged in" outlined readonly :value="input.useract[0].datelog"></v-text-field>
+                                                    <v-text-field label="Date logged in" outlined readonly :value="inpValue.dcDate"></v-text-field>
                                                 </v-col>
                                             </v-row>
                                         </v-col>
@@ -240,6 +247,7 @@
 
 <script>
 import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
 export default {
@@ -247,6 +255,7 @@ export default {
     components: {
         SimpleDatePicker,
         SelectDropdown,
+        SelectDropdownString
     },
     props: {
         input: {
@@ -265,6 +274,9 @@ export default {
             required: false,
         }
     },
+    data: () => ({
+        oPoLength: 0,
+    }),
     computed: {
         getDateCompleted(){
             let obj
@@ -284,6 +296,30 @@ export default {
             }
             return obj
         },
+        getPO() {
+            let vm = this
+            vm.oPoLength = vm.inpValue.hrdPo?.length
+            return vm.inpValue?.hrdPo
+        }
+    },
+    methods: {
+        inputPO(value) {
+        let vm = this,
+            lastObj = value[vm.oPoLength - 1],
+            nhrdId = lastObj.hrdId + 1,
+            nid = lastObj.id + 1,
+            npoNumber = value[vm.oPoLength]
+
+            vm.inpValue.hrdPo.push({
+                hrdId: nhrdId,
+                id: nid,
+                poNumber: npoNumber
+            })
+        },
+        remove(index) {
+            let vm = this
+            vm.inpValue.hrdPo.splice(index, 1)
+        }
     }
 }
 </script>

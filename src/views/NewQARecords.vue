@@ -18,7 +18,7 @@
                 
                 <h2 class="mb-4">New QA Record</h2>
                 <p class="mb-0">Check the following to show the form.</p>
-                <Newqacheckbox :items="visible" />
+                <Newqacheckbox :inpValue="qaRec" />
             </v-col>
         </v-row>
         <v-expansion-panels
@@ -32,35 +32,37 @@
                 :inpValue="getQaRec"
                 :rules="rules"
             />
+
             <HRD 
                 :input="qaOptions"
                 :inpValue="getQaRec"
                 :rules="rules"
-                v-if="visible[0].value" 
+                v-if="qaRec.isHRD" 
             />
+
             <Pest
                 :inpValue="getQaRec"
                 :rules="rules"
-                v-if="visible[1].value"
+                v-if="qaRec.isPest"
             />
 
             <SMI
                 :input="getQaRec"
                 :rules="rules"
-                v-if="visible[2].value"
+                v-if="qaRec.isSMI"
             />
+            
             <FM 
-                :input="fm"
                 :inpValue="getQaRec"
                 :rules="rules"
-                v-if="visible[3].value"
+                v-if="qaRec.isFM"
             />
 
             <NR 
                 :input="qaOptions"
                 :inpValue="getQaRec"
                 :rules="rules"
-                v-if="visible[4].value"
+                v-if="qaRec.isNR"
             />            
 
             <Micro 
@@ -69,7 +71,7 @@
                 :test="test"
                 :rules="rules"
                 :snackbar="snackbar"
-                v-if="visible[5].value"
+                v-if="qaRec.isMicro"
             />
 
         </v-expansion-panels>
@@ -113,14 +115,6 @@ export default {
     data: () => ({
         loading:true,
         panel: [0,1,2,3,4,5,6],
-        visible: [
-            { label:"HRD", value:true },
-            { label:"Pest", value:true },
-            { label:"SMI", value:true },
-            { label:"FM", value:true },
-            { label:"NR", value:true },
-            { label:"Micro", value:true },
-        ],
         rules: {
             required: value => !!value || 'Required.',
             counter: value => value.length <= 20 || 'Max 20 characters',
@@ -206,37 +200,7 @@ export default {
                 organism:'',
             },
         },
-        fm: {          
-            rohSelect: [],
-            rohHeaders: [
-                {text:"Material", value:'material'},
-                {text:'Description', value:'description'}
-            ],
-            rohmaterials: [
-                { 
-                text:'Select', 
-                value:[], 
-                },
-                { 
-                text:'Material 1', 
-                value:[
-                    {material:'Data1', description:'this is the information for Data1.'},
-                    {material:'Data2', description:'this is the information for Data2.'},
-                    {material:'Data3', description:'this is the information for Data3.'},
-                    {material:'Data4', description:'this is the information for Data4.'},
-                ], 
-                },
-                { 
-                text:'Material 2', 
-                value:[
-                    {material:'DataA', description:'this is the information for DataA.'},
-                    {material:'DataB', description:'this is the information for DataB.'},
-                    {material:'DataC', description:'this is the information for DataC.'},
-                    {material:'DataD', description:'this is the information for DataD.'},
-                ], 
-                },
-            ],
-        },
+
         micro: {
             hcSelect: '',
             holdconcerns: [
@@ -401,7 +365,7 @@ export default {
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (this.valid = false))
+                .finally(() => (vm.valid = false))
             }
         }
     },

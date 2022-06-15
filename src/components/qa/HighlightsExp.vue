@@ -69,7 +69,7 @@
                             :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => {
-                                this.inpValue.type = value   
+                                inpValue.type = value   
                             }"
                         />
                     </v-col>
@@ -121,7 +121,7 @@
                             :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
-                                this.inpValue.shift = value   
+                                inpValue.shift = value   
                             }"
                         />
                     </v-col>
@@ -135,7 +135,7 @@
                             :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
-                                this.inpValue.shortDescription = value   
+                                inpValue.shortDescription = value   
                             }"
                         />
                     </v-col>

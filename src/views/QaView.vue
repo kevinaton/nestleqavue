@@ -119,7 +119,7 @@
         dialogDelete: false,
         dialog: false,
         editedIndex: -1,
-        selectedItem: 1,
+        selectedItem:null,
         options: [
           {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
           {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},

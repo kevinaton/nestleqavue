@@ -56,16 +56,6 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <!-- <v-autocomplete
-                            outlined
-                            v-model="input.rohSelect" 
-                            :items="input.rohmaterials" 
-                            item-text="text"
-                            label="ROH Material"
-                            return-object
-                            @input="checkroh"
-                        ></v-autocomplete> -->
-
                         <SelectDropdownString
                             :dropdownValue=24
                             :inpValue="inpValue.rohMaterial"
@@ -78,17 +68,6 @@
                         />
                     </v-col>
                     <v-col>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
-                    <v-col class="pt-0">
-                        <v-data-table
-                            v-if="rohTable"
-                            :headers="input.rohHeaders"
-                            :items="input.rohmaterials[1].value"
-                            :items-per-page="5"
-                            class="mb-6 pt-0 elevation-1"
-                        ></v-data-table>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -133,11 +112,6 @@ export default {
         SelectDropdownString,
     },
     props: {
-        input: {
-            type: Object,
-            default: () => {},
-            required: false
-        },
         rules: {
             type: Object,
             default: {},

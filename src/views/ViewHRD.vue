@@ -1,8 +1,10 @@
 <template>
-    <v-card
+    <v-form
+        ref="form"
+        v-model="valid"
         elevation="0"
         class="mx-auto mt-6 pa-8"
-        width="90%"
+        lazy-validation
     >
         <SnackBar 
         :input="snackbar"
@@ -13,7 +15,6 @@
                 class="ma-0"
                 :input="backbtn" 
                 />
-                
                 <h2 class="mb-4">HRD Detail</h2>
             </v-col>
         </v-row>
@@ -54,9 +55,10 @@
 
         <SubmitDiscard 
             :input="submitdiscard"
+            :valid="valid"
             @change="submitHRD($event)"
         />
-    </v-card>
+    </v-form>
 </template>
 
 <script>
@@ -85,7 +87,6 @@
             SnackBar
         },
         data: () => ({
-            subTrig:false,
             backbtn:false,
             panel: [0,1,2,3,4,5],
             rules: {
@@ -97,6 +98,7 @@
                 },
             },
             loading:true,
+            valid:false,
             submitdiscard: {
                 submitDialog: false,
                 discardDialog: false,
@@ -135,7 +137,6 @@
                 gstd:false,
                 yn:['Yes', 'No'],
                 conRun:'',
-                chips:['chip1', 'chip2'],
                 chipInfo:[],
                 calendarCompleted: {
                     time: null,
@@ -157,14 +158,6 @@
                     allow: true,
                     yearonly: '',
                 },
-                checkstatus: [
-                    { label:"Complete?", value:false },
-                    { label:"Canceled?", value:false },
-                ],
-                ohahr: [
-                    { label:"Other HRDs Affected?", value:false },
-                    { label:"High Risk", value:false },
-                ],
                 firstHeader: [
                     { text:'Location', value: 'aLocation' },
                     { text: '# Cases', value: 'aCases' },
@@ -274,8 +267,8 @@
             submitHRD(value) {
             let vm = this
             let d = vm.hrd
-            vm.subTrig = value
-            if(vm.subTrig == true) {
+            vm.valid = value
+            if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {
                     additionalDescription: d.additionalDescription,
                     allCasesAccountedFor: d.allCasesAccountedFor,
@@ -362,7 +355,7 @@
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (this.subTrig = false))
+                .finally(() => (vm.valid = false))
             }
         }
         },
