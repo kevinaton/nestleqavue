@@ -172,11 +172,11 @@ namespace HRD.WebApi.Controllers
 
                 HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                //HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
 
                 QaComments = hrd.Qacomments,
-                DateCompleted = hrd.DateCompleted, //not mapped
+                DateCompleted = hrd.DateCompleted,
                 Clear = hrd.Clear,
                 HrdcompletedBy = hrd.HrdcompletedBy,
                 Scrap = hrd.Scrap,
@@ -185,8 +185,8 @@ namespace HRD.WebApi.Controllers
                 Complete = hrd.Complete,
                 Cancelled = hrd.Cancelled,
                 Samples = hrd.Samples,
-                NumberOfDaysHeld = hrd.NumberOfDaysHeld,//notmappep
-                Donate = hrd.Donate, //not mapped
+                NumberOfDaysHeld = hrd.NumberOfDaysHeld,
+                Donate = hrd.Donate,
                 AllCasesAccountedFor = hrd.AllCasesAccountedFor,
                 Cases = hrd.Cases,
                 OtherHrdAffected = hrd.OtherHrdaffected,
@@ -223,8 +223,8 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWho = hrd.ApprovedByDistroyedWho,
                 ApprovedByDistroyedWhen = hrd.ApprovedByDistroyedWhen,
                 Comments = hrd.Comments,
+                YearOfIncident = hrd.YearOfIncident,
             };
-
 
             return model;
         }
@@ -250,18 +250,17 @@ namespace HRD.WebApi.Controllers
                 Bumanager = model.BUManager,
                 CodingType = model.Type,
                 Plant = model.Plant,
-                Globenum = model.Fert,//not mapped
+                Globenum = model.Fert,
                 Line = model.Line,
-                LineSupervisor = model.LineSupervisor, //not mapped
-                Area = model.Area,//not mapped
-                AreaIfOther = model.AreaIfOther,//not mapped
+                LineSupervisor = model.LineSupervisor,
+                Area = model.Area,
+                AreaIfOther = model.AreaIfOther,
                 Shift = model.Shift,
                 ShortDescription = model.ShortDescription,
-                AdditionalDescription = model.AdditionalDescription, //not mapped
-                DetailedDescription = model.DetailedDescription, //not mapped
+                AdditionalDescription = model.AdditionalDescription,
+                DetailedDescription = model.DetailedDescription,
                 Gstdrequired = model.Gstdrequired,
                 HourCode = model.HourCode,
-                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
 
                 Qacomments = model.QaComments,
                 DateCompleted = model.DateCompleted,
@@ -283,7 +282,8 @@ namespace HRD.WebApi.Controllers
 
                 Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                //Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
 
                 Fcdate = model.FcDate,
                 Fcuser = model.FcUser,
@@ -295,7 +295,7 @@ namespace HRD.WebApi.Controllers
                 DateHeld = model.DateHeld,
 
                 MonthHeld = model.MonthHeld,
-                WeekHeld = model.WeekHeld, //not mapped
+                WeekHeld = model.WeekHeld,
                 CostofProductonHold = model.CostofProductonHold,
                 ReworkApproved = model.ReworkApproved,
 
@@ -316,6 +316,7 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
                 ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
+                YearOfIncident = model.YearOfIncident,
             };
 
             _context.Entry(hrd).State = EntityState.Modified;
@@ -352,17 +353,17 @@ namespace HRD.WebApi.Controllers
                 DayCode = model.DayCode,
                 Originator = model.Originator,
                 Bumanager = model.BUManager,
-                CodingType = model.Type, //not mapped
+                CodingType = model.Type, 
                 Plant = model.Plant,
-                Globenum = model.Fert,//not mapped
+                Globenum = model.Fert,
                 Line = model.Line,
-                LineSupervisor = model.LineSupervisor, //not mapped
-                Area = model.Area,//not mapped
-                AreaIfOther = model.AreaIfOther,//not mapped
+                LineSupervisor = model.LineSupervisor,
+                Area = model.Area,
+                AreaIfOther = model.AreaIfOther,
                 Shift = model.Shift,
                 ShortDescription = model.ShortDescription,
-                AdditionalDescription = model.AdditionalDescription, //not mapped
-                DetailedDescription = model.DetailedDescription, //not mapped
+                AdditionalDescription = model.AdditionalDescription,
+                DetailedDescription = model.DetailedDescription,
                 Gstdrequired = model.Gstdrequired,
                 HourCode = model.HourCode,
                 Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
@@ -386,7 +387,7 @@ namespace HRD.WebApi.Controllers
                 OtherHrdnum = model.OtherHrdNum,
                 Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                //Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
 
                 Fcdate = model.FcDate,
                 Fcuser = model.FcUser,
@@ -398,7 +399,7 @@ namespace HRD.WebApi.Controllers
                 DateHeld = model.DateHeld,
 
                 MonthHeld = model.MonthHeld,
-                WeekHeld = model.WeekHeld, //not mapped
+                WeekHeld = model.WeekHeld,
                 CostofProductonHold = model.CostofProductonHold,
                 ReworkApproved = model.ReworkApproved,
 
@@ -419,6 +420,7 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
                 ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
+                YearOfIncident = model.YearOfIncident,
             };
 
             _context.Hrds.Add(hrd);
@@ -477,7 +479,6 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
-                                        .Include(i => i.HrdrohMaterials)
                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
@@ -494,7 +495,7 @@ namespace HRD.WebApi.Controllers
                 IsNR = qa.IsNr,
                 IsFM = qa.IsFm,
                 IsMicro = qa.IsMicro,
-              
+
                 Date = qa.Date,
                 TimeOfIncident = qa.TimeOfIncident,
                 YearHeld = qa.YearHeld,
@@ -525,15 +526,15 @@ namespace HRD.WebApi.Controllers
                 ProductAdultered = qa.ProductAdultered,
                 WhereFound = qa.WhereFound,
                 IfYesAffectedProduct = qa.IfYesAffectedProduct,
-                                                    
+
                 //SMI                                               
                 MaterialNumber = qa.MaterialNumber,
                 RawMaterialDescription = qa.RawMaterialDescription,
-                BatchLot = qa.BatchLot,
+                SMIVendorBatch = qa.SMIVendorBatch,
                 VendorNumber = qa.VendorNumber,
                 VendorName = qa.VendorName,
                 VendorSiteNumber = qa.VendorSiteNumber,
-                                                    
+
                 //FM                                                
                 IsInspections = qa.IsInspections,
                 IsXray = qa.IsXray,
@@ -544,13 +545,9 @@ namespace HRD.WebApi.Controllers
                 EquipmentIfOther = qa.EquipmentIfOther,
                 ROHMaterial = qa.Rohmaterial,
 
-                //FMMaterial = qa.FMMaterial,
-                //FMDescription = qa.FMDescription,
                 PiecesTotal = qa.PiecesTotal,
-                RawBatchLot = qa.RawBatchLot,
-                HazardousSize = qa.HazardousSize,
-                Responsibility = qa.Responsibility,
-                NonHazardousSize = qa.NonHazardousSize,
+                FMVendorBatch = qa.FMVendorBatch,
+                FMSource = qa.FMSource,
 
                 //NR                                                
                 DateReceived = qa.DateReceived,
@@ -571,8 +568,7 @@ namespace HRD.WebApi.Controllers
                 SauceType = qa.SauceType,
                 StarchType = qa.StarchType,
                 AdditionalComments = qa.AdditionalComments,
-                HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName}).ToList(),
-                HrdRohMaterials = qa.HrdrohMaterials.Select(s => new HRDROHMaterialViewModel { Id = s.Id, HrdId = s.Hrdid, DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description}).ToList(),
+                HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
             };
 
             return model;
@@ -633,7 +629,7 @@ namespace HRD.WebApi.Controllers
                 //SMI                                               
                 MaterialNumber = model.MaterialNumber,
                 RawMaterialDescription = model.RawMaterialDescription,
-                BatchLot = model.BatchLot,
+                SMIVendorBatch = model.SMIVendorBatch,
                 VendorNumber = model.VendorNumber,
                 VendorName = model.VendorName,
                 VendorSiteNumber = model.VendorSiteNumber,
@@ -649,18 +645,16 @@ namespace HRD.WebApi.Controllers
                 Rohmaterial = model.ROHMaterial,
 
                 PiecesTotal = model.PiecesTotal,
-                RawBatchLot = model.RawBatchLot,
-                HazardousSize = model.HazardousSize,
-                Responsibility = model.Responsibility,
-                NonHazardousSize = model.NonHazardousSize,
-               
+                FMVendorBatch = model.FMVendorBatch,
+                FMSource = model.FMSource,
+
                 DateReceived = model.DateReceived,
                 InspectorsName = model.InspectorsName,
                 Nrcategory = model.NRCategory,
                 Tagged = model.Tagged,
                 TagNumber = model.TagNumber,
                 Response = model.Response,
-                   
+
                 HoldConcern = model.HoldConcern,
                 DayOfWeek = model.DayOfWeek,
                 When = model.When,
@@ -673,7 +667,6 @@ namespace HRD.WebApi.Controllers
                 AdditionalComments = model.AdditionalComments,
 
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
-                HrdrohMaterials = model.HrdRohMaterials.Select(s => new HrdrohMaterial { DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description }).ToList(),
             };
 
             _context.Entry(hrd).State = EntityState.Modified;
@@ -729,12 +722,12 @@ namespace HRD.WebApi.Controllers
                 ShortDescription = model.ShortDescription,
                 AdditionalDescription = model.AdditionalDescription,
                 DetailedDescription = model.DetailedDescription,
-                               
+
                 CasesHeld = model.CasesHeld,
                 HourCode = model.HourCode,
                 Pos = model.POs,
                 ReworkInstructions = model.ReworkInstructions,
-                                
+
                 PestType = model.PestType,
                 PcocontactedImmediately = model.PCOContactedImmediately,
                 ProductAdultered = model.ProductAdultered,
@@ -742,7 +735,7 @@ namespace HRD.WebApi.Controllers
                 IfYesAffectedProduct = model.IfYesAffectedProduct,
                 MaterialNumber = model.MaterialNumber,
                 RawMaterialDescription = model.RawMaterialDescription,
-                BatchLot = model.BatchLot,
+                SMIVendorBatch = model.SMIVendorBatch,
                 VendorNumber = model.VendorNumber,
                 VendorName = model.VendorName,
                 VendorSiteNumber = model.VendorSiteNumber,
@@ -755,16 +748,14 @@ namespace HRD.WebApi.Controllers
                 EquipmentIfOther = model.EquipmentIfOther,
                 Rohmaterial = model.ROHMaterial,
                 PiecesTotal = model.PiecesTotal,
-                RawBatchLot = model.RawBatchLot,
-                HazardousSize = model.HazardousSize,
-                Responsibility = model.Responsibility,
-                NonHazardousSize = model.NonHazardousSize,
+                FMVendorBatch = model.FMVendorBatch,
+                FMSource = model.FMSource,
                 DateReceived = model.DateReceived,
                 InspectorsName = model.InspectorsName,
                 Nrcategory = model.NRCategory,
                 Tagged = model.Tagged,
                 TagNumber = model.TagNumber,
-                Response = model.Response,                                         
+                Response = model.Response,
                 HoldConcern = model.HoldConcern,
                 DayOfWeek = model.DayOfWeek,
                 When = model.When,
@@ -776,7 +767,6 @@ namespace HRD.WebApi.Controllers
                 StarchType = model.StarchType,
                 AdditionalComments = model.AdditionalComments,
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
-                HrdrohMaterials = model.HrdRohMaterials.Select(s => new HrdrohMaterial { DropDownItemId = s.DropDownItemId, Material = s.Material, Description = s.Description }).ToList(),
             };
 
             _context.Hrds.Add(hrd);

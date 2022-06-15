@@ -33,7 +33,6 @@ namespace HRD.WebApi.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<HrdrohMaterial> HrdrohMaterials { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -103,7 +102,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.AreaIfOther).HasMaxLength(50);
 
-                entity.Property(e => e.BatchLot).HasMaxLength(50);
+                entity.Property(e => e.SMIVendorBatch).HasMaxLength(50);
 
                 entity.Property(e => e.Bumanager)
                     .HasMaxLength(50)
@@ -177,8 +176,6 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.Gstdrequired).HasColumnName("GSTDRequired");
 
-                entity.Property(e => e.HazardousSize).HasMaxLength(50);
-
                 entity.Property(e => e.HoldCategory).HasMaxLength(50);
 
                 entity.Property(e => e.HoldConcern).HasMaxLength(50);
@@ -225,8 +222,6 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.NonFtqcases).HasColumnName("NonFTQCases");
 
-                entity.Property(e => e.NonHazardousSize).HasMaxLength(50);
-
                 entity.Property(e => e.Nrcategory)
                     .HasMaxLength(50)
                     .HasColumnName("NRCategory");
@@ -261,7 +256,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.Qacomments).HasColumnName("QAComments");
 
-                entity.Property(e => e.RawBatchLot).HasMaxLength(50);
+                entity.Property(e => e.FMVendorBatch).HasMaxLength(50);
 
                 entity.Property(e => e.RawMaterialDescription).HasMaxLength(50);
 
@@ -269,7 +264,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.Response).HasMaxLength(50);
 
-                entity.Property(e => e.Responsibility).HasMaxLength(50);
+                entity.Property(e => e.FMSource).HasMaxLength(50);
 
                 entity.Property(e => e.ReworkApprovedBy).HasMaxLength(50);
 
@@ -322,6 +317,8 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.WhereFound).HasMaxLength(50);
 
                 entity.Property(e => e.YearHeld).HasMaxLength(4);
+
+                entity.Property(e => e.YearOfIncident).HasMaxLength(4);
             });
 
             modelBuilder.Entity<Hrddc>(entity =>
@@ -579,11 +576,6 @@ namespace HRD.WebApi.Data
                     .HasName("PK__UserRole__AF2760ADD67758F1");
 
                 entity.ToTable("UserRole");
-            });
-
-            modelBuilder.Entity<HrdrohMaterial>(entity =>
-            {
-                entity.ToTable("HRDROHMaterial");
             });
 
             OnModelCreatingPartial(modelBuilder);

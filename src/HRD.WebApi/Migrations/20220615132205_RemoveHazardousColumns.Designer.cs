@@ -4,6 +4,7 @@ using HRD.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRD.WebApi.Migrations
 {
     [DbContext(typeof(HRDContext))]
-    partial class HRDContextModelSnapshot : ModelSnapshot
+    [Migration("20220615132205_RemoveHazardousColumns")]
+    partial class RemoveHazardousColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +126,10 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("AreaIfOther")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("BatchLot")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -239,14 +245,6 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("EquipmentIfOther")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("FMSource")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("FMVendorBatch")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -460,6 +458,10 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("QAComments");
 
+                    b.Property<string>("RawBatchLot")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("RawMaterialDescription")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -472,6 +474,10 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Response")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Responsibility")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -505,10 +511,6 @@ namespace HRD.WebApi.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("ROHMaterial");
-
-                    b.Property<string>("SMIVendorBatch")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("Samples")
                         .HasColumnType("int");
@@ -603,10 +605,6 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("YearHeld")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
-
-                    b.Property<string>("YearOfIncident")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
