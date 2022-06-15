@@ -72,6 +72,7 @@ namespace HRD.WebApi.ViewModels
         public int? NumberOfDaysToReworkApproval { get; set; }
         public bool? ApprovalRequestByQa { get; set; }
         public int? CaseCount { get; set; }
+        public string YearOfIncident { get; set; }
         public string ReasonAction { get; set; }
         public bool? IsPlantManagerAprpoval { get; set; }
         public bool? IsPlantControllerApproval { get; set; }

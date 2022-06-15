@@ -8,11 +8,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NLog;
+using HRD.WebApi.Extensions;
 
 namespace HRD.WebApi
 {
     public class Program
-    {        
+    {
         public static void Main(string[] args)
         {
             var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
@@ -22,7 +23,7 @@ namespace HRD.WebApi
                 CreateHostBuilder(args).Build().Run();
                 logger.Debug("init main");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //NLog: catch setup errors
                 logger.Error(ex, "Stopped program because of exception");

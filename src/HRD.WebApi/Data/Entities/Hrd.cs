@@ -12,7 +12,6 @@ namespace HRD.WebApi.Data.Entities
             Hrdnotes = new HashSet<Hrdnote>();
             Hrdpos = new HashSet<Hrdpo>();
             HrdtestCosts = new HashSet<HrdtestCost>();
-            HrdrohMaterials = new HashSet<HrdrohMaterial>();
         }
 
         public int Id { get; set; }
@@ -127,7 +126,7 @@ namespace HRD.WebApi.Data.Entities
         public string IfYesAffectedProduct { get; set; }
         public string MaterialNumber { get; set; }
         public string RawMaterialDescription { get; set; }
-        public string BatchLot { get; set; }
+        public string SMIVendorBatch { get; set; }
         public string VendorNumber { get; set; }
         public string VendorName { get; set; }
         public string VendorSiteNumber { get; set; }
@@ -140,10 +139,8 @@ namespace HRD.WebApi.Data.Entities
         public string EquipmentIfOther { get; set; }
         public string Rohmaterial { get; set; }
         public string PiecesTotal { get; set; }
-        public string RawBatchLot { get; set; }
-        public string HazardousSize { get; set; }
-        public string Responsibility { get; set; }
-        public string NonHazardousSize { get; set; }
+        public string FMVendorBatch { get; set; }
+        public string FMSource { get; set; }
         public DateTime? DateReceived { get; set; }
         public string InspectorsName { get; set; }
         public string Nrcategory { get; set; }
@@ -160,12 +157,11 @@ namespace HRD.WebApi.Data.Entities
         public string SauceType { get; set; }
         public string StarchType { get; set; }
         public string AdditionalComments { get; set; }
-
+        public string YearOfIncident { get; set; }
         public virtual ICollection<Hrddc> Hrddcs { get; set; }
         public virtual ICollection<Hrdfc> Hrdfcs { get; set; }
         public virtual ICollection<Hrdnote> Hrdnotes { get; set; }
         public virtual ICollection<Hrdpo> Hrdpos { get; set; }
         public virtual ICollection<HrdtestCost> HrdtestCosts { get; set; }
-        public virtual ICollection<HrdrohMaterial> HrdrohMaterials { get; set; }
     }
 }
