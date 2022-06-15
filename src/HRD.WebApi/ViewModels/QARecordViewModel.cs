@@ -50,7 +50,7 @@ namespace HRD.WebApi.ViewModels
         //SMI
         public string MaterialNumber { get; set; }
         public string RawMaterialDescription { get; set; }
-        public string BatchLot { get; set; }
+        public string SMIVendorBatch { get; set; }
         public string VendorNumber { get; set; }
         public string VendorName { get; set; }
         public string VendorSiteNumber { get; set; }
@@ -68,10 +68,8 @@ namespace HRD.WebApi.ViewModels
         public string FMMaterial { get; set; }
         public string FMDescription { get; set; }
         public string PiecesTotal { get; set; }
-        public string RawBatchLot { get; set; }
-        public string HazardousSize { get; set; }
-        public string Responsibility { get; set; }
-        public string NonHazardousSize { get; set; }
+        public string FMVendorBatch { get; set; }
+        public string FMSource { get; set; }
 
         //NR
         public DateTime? DateReceived { get; set; }
@@ -93,6 +91,5 @@ namespace HRD.WebApi.ViewModels
         public string StarchType { get; set; }
         public string AdditionalComments { get; set; }
         public List<HrdTestCostViewModel> HrdTestCosts { get; set; }
-        public List<HRDROHMaterialViewModel> HrdRohMaterials { get; set; }
     }
 }
