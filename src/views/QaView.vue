@@ -6,7 +6,6 @@
       :headers="headers"
       :page.sync="tableOptions.page"
       :items="qa"
-      sort-by="report"
       :options="tableOptions"
       hide-default-footer
     >
@@ -107,8 +106,8 @@
       tableOptions: {
           page: 1,
           itemsPerPage:20,
-          totalPages:10,
-          totalRecords:100,
+          totalPages:1,
+          totalRecords:1,
           numToSearch:0,
           searchValue:''
       },
@@ -207,10 +206,11 @@
         })
         .finally(() => {vm.loading = false})
       },
+
       updateTable(value) {
         let vm = this
-        if(vm.searchMode == false) {
-          if (value != this.tableOptions.page) {
+        if (value != vm.tableOptions.page) {
+          if(vm.searchMode == false) {
           vm.loading=true
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
           .then((res) => {
@@ -225,25 +225,24 @@
           })
           .finally(() => (vm.loading = false))
           }
-        }
-        if(vm.searchMode == true) {
-          if (value != this.tableOptions.page) {
-            vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
-            .then((res) => {
-                vm.qa = res.data.data
-                vm.tableOptions.page = value
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => (vm.loading = false))
+          if(vm.searchMode == true) {
+              vm.loading = true
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+              .then((res) => {
+                  vm.qa = res.data.data
+                  vm.tableOptions.page = value
+              })
+              .catch(err => {
+                  vm.snackbar.snack = true
+                  vm.snackbar.snackColor = 'error'
+                  vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                  console.warn(err)
+              })
+              .finally(() => (vm.loading = false))
           }
         }
       },
+
       getSearch(value) {
         let vm = this
         if(value != '') { 
@@ -276,9 +275,8 @@
           })
           .finally(() => (vm.loading = false))
         }
-        if(value == ''){
+        else {
           vm.searchMode = false
-          vm.tableOptions.page = 1
           vm.fetchHrds()
         }
       }

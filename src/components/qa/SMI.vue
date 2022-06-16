@@ -12,7 +12,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="input.batchLot" outlined label="Batch Lot"></v-text-field>
+                    <v-text-field v-model="input.smiVendorBatch" outlined label="Vendor Batch"></v-text-field>
                 </v-col>
                 <v-col>
                     <v-text-field v-model="input.vendorNumber" outlined label="Vendor Number"></v-text-field>

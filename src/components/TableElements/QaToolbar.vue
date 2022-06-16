@@ -17,7 +17,7 @@
             :item="table"
         />
         
-        <v-btn
+        <!-- <v-btn
             large
             color="primary"
             dark
@@ -25,7 +25,7 @@
             to="/qa/newqa"
         >
             New QA Record
-        </v-btn>
+        </v-btn> -->
 
     </v-toolbar>
 </template>

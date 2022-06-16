@@ -36,7 +36,7 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="inpValue.size" outlined label="Size*" :rules="[rules.required]" type="number" suffix="mm"></v-text-field>
+                        <v-text-field v-model="inpValue.size" outlined label="Size*" :rules="[rules.required]"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -75,28 +75,22 @@
                         <v-text-field v-model="inpValue.piecesTotal" outlined label="Pieces Total" type="number" placeholder=0 suffix="pcs"></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field v-model="inpValue.rawBatchLot" outlined label="Raw Batch/Lot" type="number" placeholder=0></v-text-field>
+                        <v-text-field v-model="inpValue.fmVendorBatch" outlined label="Vendor Batch" type="number" placeholder=0></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field v-model="inpValue.hazardousSize" outlined label="Hazardous Size" type="number" placeholder=0 suffix="pcs"></v-text-field>
-                    </v-col>
-                    <v-col>
                         <SelectDropdownString
                             :dropdownValue=15
-                            :inpValue="inpValue.responsibility"
-                            label="Responsibility" 
+                            :inpValue="inpValue.fmSource"
+                            label="Source" 
                             @change="(value) => {
-                                inpValue.responsibility = value   
+                                inpValue.fmSource = value   
                             }"
                         />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
-                    <v-col>
-                        <v-text-field v-model="inpValue.nonHazardousSize" outlined label="Non-Hazardous" type="number" placeholder=0></v-text-field>
-                    </v-col>
                     <v-col>
                     </v-col>
                 </v-row>

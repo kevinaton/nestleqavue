@@ -55,7 +55,6 @@
                 <v-time-picker
                     v-if="items2.menu"
                     :value="tempTime"
-                    use-seconds
                     @change="items2.menu=false, setDateTime($event)"
                 ></v-time-picker>
             </v-menu>
@@ -132,15 +131,17 @@ export default {
         setDate(y) {
             let e = new Date().toISOString()
             this.tempDate = moment.utc(y).format("YYYY-MM-DD")
-            if(this.tempTime == null || '') {
-                this.tempDate = moment.utc(e).format('hh:mm:ss')
+            console.log(this.tempDate)
+            if(this.tempTime == null || '' || 'Invalid date') {
+                this.tempTime = '00:00:00'
             }
             let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
         setDateTime(x) { 
-            if(this.tempDate == null || '') {
-
+            let e = new Date().toISOString()
+            if(this.tempDate == null || '' || 'Invalid time') {
+                this.tempDate = moment.utc(e).format("YYYY-MM-DD")
             }
             this.tempDate = moment.utc(this.inpValue).format("YYYY-MM-DD")
             this.tempTime = x
