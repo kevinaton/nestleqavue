@@ -1,16 +1,20 @@
 <template>
-    <v-card
+    <v-form
+        ref="form"
+        v-model="valid"
         elevation="0"
         class="mx-auto mt-6 pa-8"
-        width="90%"
+        lazy-validation
     >
+        <SnackBar 
+        :input="snackbar"
+        />
         <v-row class="mb-0">
             <v-col>
                 <BackBtn 
                 class="ma-0"
                 :input="backbtn" 
                 />
-                
                 <h2 class="mb-4">HRD Detail</h2>
             </v-col>
         </v-row>
@@ -22,20 +26,22 @@
         >
             <HighlightsExp 
                 :input="highlights"
+                :inpValue="getHRD"
                 :rules="rules"
             />
 
             <Details
                 :input="details"
+                :inpValue="getHRD"
                 :rules="rules"
             />
 
-            <HoldClassification 
-                :input="holdclass"
+            <HoldClassification
+                :inpValue="getHRD"
             />
 
             <Rework 
-                :input="rework"    
+                :inpValue="getHRD"    
             />
 
             <IncidentReport
@@ -43,14 +49,16 @@
             />
             
             <Scrap 
-                :input="scrap"    
+                :inpValue="getHRD"    
             />
         </v-expansion-panels>
 
         <SubmitDiscard 
             :input="submitdiscard"
+            :valid="valid"
+            @change="submitHRD($event)"
         />
-    </v-card>
+    </v-form>
 </template>
 
 <script>
@@ -63,6 +71,7 @@
 
     import BackBtn from '@/components/FormElements/BackBtn.vue'
     import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
+    import SnackBar from '@/components/TableElements/SnackBar.vue'
 
     export default {
         components: {
@@ -74,7 +83,8 @@
             Details,
 
             BackBtn,
-            SubmitDiscard
+            SubmitDiscard,
+            SnackBar
         },
         data: () => ({
             backbtn:false,
@@ -87,68 +97,48 @@
                     return pattern.test(value) || 'Invalid e-mail.'
                 },
             },
+            loading:true,
+            valid:false,
             submitdiscard: {
                 submitDialog: false,
                 discardDialog: false,
             },
             highlights: {
-                calendar: {
+                calendar1: {
+                time: null,
+                date: null,
+                date2: null,
+                modal: false,
+                menu: false,
+                allow: true,
+                },
+                yearOnly: {
+                    year:'2017'
+                },
+                calendar2: {
                     time: null,
                     date: null,
-                    date2: null,
-                    menu: false,
                     modal: false,
-                    menu1: false,
+                    menu: false,
                     allow: true,
-                    yearonly: '',
                 },
-                clock: {
+                clock1: {
                     time: null,
-                    menu1: false,
+                    menu: false,
                     label: ''
                 },
-                types: ['Pre-op','Operational', 'USDA', 'Other'],
-                typeSelect:'',
-                lineSelect: [],
-                lines: [1,2,3,4,5,6,7,8,9],
-                area: { text: 'area', disabled: false },
-                areas: [
-                    { text: 'Pre-op', disabled: false },
-                    { text: 'Operational', disabled: false },
-                    { text: 'USDA', disabled: false },
-                    { text: 'Base Room', disabled: false },
-                    { text: 'Can Opening', disabled: false },
-                    { text: 'Cooler Prep', disabled: false },
-                    { text: 'Dries', disabled: false },
-                    { text: 'Fish Prep', disabled: false },
-                    { text: 'Liquid Prep', disabled: false },
-                    { text: 'NAP Room', disabled: false },
-                    { text: 'New Rice Room', disabled: false },
-                    { text: 'Old Rice Room', disabled: false },
-                    { text: 'Old Wine Cooler Room', disabled: false },
-                    { text: 'Oven Room', disabled: false },
-                    { text: 'Pan Room', disabled: false },
-                    { text: 'Raw Meat Room', disabled: false },
-                    { text: 'Steam Room', disabled: false },
-                    { text: 'Stovex Room', disabled: false },
-                    { text: '...Other', disabled: false },
-                ],
-                shiftSelect: [],
-                shifts: [1,2,3],
-                shortSelect:'',
-                short_description: [
-                    'Ammonia', 'Coding', 'Film/Film Seals', 'Foreign Body',
-                    'GMP', 'HACCP(CPP/OPRP)', 'Hi Core', 'Housekeeping', 'Net Weight', 'Packaging', 'Pest Sighting',
-                    'Recipe Deviation', 'Sanitation (not housekeeping)', 'Sensory', 'Other'
-                ],
+                clock2: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
             },
             details: {
                 gstd:false,
                 yn:['Yes', 'No'],
                 conRun:'',
-                chips:['chip1', 'chip2'],
                 chipInfo:[],
-                calendar: {
+                calendarCompleted: {
                     time: null,
                     date: null,
                     date2: null,
@@ -158,14 +148,16 @@
                     allow: true,
                     yearonly: '',
                 },
-                checkstatus: [
-                    { label:"Complete?", value:false },
-                    { label:"Canceled?", value:false },
-                ],
-                ohahr: [
-                    { label:"Other HRDs Affected?", value:false },
-                    { label:"High Risk", value:false },
-                ],
+                calendarDisposition: {
+                    time: null,
+                    date: null,
+                    date2: null,
+                    menu: false,
+                    modal: false,
+                    menu1: false,
+                    allow: true,
+                    yearonly: '',
+                },
                 firstHeader: [
                     { text:'Location', value: 'aLocation' },
                     { text: '# Cases', value: 'aCases' },
@@ -206,25 +198,6 @@
                     { userlog:'jovanismith', datelog:'05/01/22'},
                 ]
             },
-            holdclass: {
-                selectClass:'',
-                selectHoldCat:'',
-                selectHoldSub:'',
-                classification: ['FTQ1', 'FTQ2', 'FTQ3'],
-                holdCat: [
-                    'Pre-Op SSOP', 'SPS', 'HACCP', 'Currently Not Available'
-                ],
-                holdSub: [
-                    'Cieling Tiles', 'Documentation', 'EPSU', 'Facilities', 'GMP Product Handling',
-                    'GMP Storage', 'GMP Tool Hanlding', 'Housekeeping', 'Labeling', 'Multiple', 'Overspray',
-                    'Condensation',
-                ],
-                alertInfo: [
-                    { label:'Month Held:', value:'October' },
-                    { label:'Week held:', value:'40' },
-                    { label:'Cost of Product on Hold:', value:'$1390.50' }
-                ]
-            },
             rework: {
                 reworkApproved: false,
                 daystorework: 0,
@@ -239,10 +212,133 @@
                     { label:"Plant Controller Approval", value:true },
                     { label:"Destroyed", value:true },
                 ],
-            }
+            },
+            hrd:{},
+            snackbar: {
+                snack: false,
+                snackColor: '',
+                snackText: '',
+            },
         }),
+        created() {
+            this.fetchHRD()
+        },
+        computed: {
+            getHRD(){
+            let obj = {}
+            obj = this.hrd
+            return obj
+        },
+        },
         methods: {
-
+            fetchHRD () {
+            let vm = this 
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
+                .then((res) => {
+                vm.hrd = res.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (this.loading = false))
+            },
+            submitHRD(value) {
+            let vm = this
+            let d = vm.hrd
+            vm.valid = value
+            if(vm.valid == true) {
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {
+                    additionalDescription: d.additionalDescription,
+                    allCasesAccountedFor: d.allCasesAccountedFor,
+                    approvalRequestByQa: d.approvalRequestByQa,
+                    approvedByDistroyedWhen: d.approvedByDistroyedWhen,
+                    approvedByDistroyedWho: d.approvedByDistroyedWho,
+                    approvedByPlantControllerWhen: d.approvedByPlantControllerWhen,
+                    approvedByPlantControllerWho: d.approvedByPlantControllerWho,
+                    approvedByPlantManagerWho: d.approvedByPlantManagerWho,
+                    approvedByQAWhen: d.approvedByQAWhen,
+                    approvedByQAWho: d.approvedByQAWho,
+                    approvedPlantManagerQAWhen: d.approvedPlantManagerQAWhen,
+                    area: d.area,
+                    areaIfOther: d.areaIfOther,
+                    buManager: d.buManager,
+                    cancelled: d.cancelled,
+                    caseCount: d.caseCount,
+                    cases: d.cases,
+                    classification: d.classification,
+                    clear: d.clear,
+                    comments: d.comments,
+                    complete: d.complete,
+                    continuousRun: d.continuousRun,
+                    costofProductonHold: d.costofProductonHold,
+                    date: d.date,
+                    dateCompleted: d.dateCompleted,
+                    dateHeld: d.dateHeld,
+                    dateofDisposition: d.dateofDisposition,
+                    dayCode: d.dayCode,
+                    dcDate: d.dcDate,
+                    dcUser: d.dcUser,
+                    detailedDescription: d.detailedDescription,
+                    donate: d.donate,
+                    fcDate: d.fcDate,
+                    fcUser: d.fcUser,
+                    fert: d.fert,
+                    fertDescription: d.fertDescription,
+                    gstdrequired: d.gstdrequired,
+                    highRisk: d.highRisk,
+                    holdCategory: d.holdCategory,
+                    holdSubCategory: d.holdSubCategory,
+                    hourCode: d.hourCode,
+                    hrdDc: d.hrdDc,
+                    hrdFc: d.hrdFc,
+                    hrdNote: d.hrdNote,
+                    hrdPo: d.hrdPo,
+                    hrdcompletedBy: d.hrdcompletedBy,
+                    id: d.id,
+                    isDestroyed: d.isDestroyed,
+                    isPlantControllerApproval: d.isPlantControllerApproval,
+                    isPlantManagerAprpoval: d.isPlantManagerAprpoval,
+                    line: d.line,
+                    lineSupervisor: d.lineSupervisor,
+                    monthHeld: d.monthHeld,
+                    numberOfDaysHeld: d.numberOfDaysHeld,
+                    numberOfDaysToReworkApproval: d.numberOfDaysToReworkApproval,
+                    originator: d.originator,
+                    otherHrdAffected: d.otherHrdAffected,
+                    otherHrdNum: d.otherHrdNum,
+                    plant: d.plant,
+                    qaComments: d.qaComments,
+                    reasonAction: d.reasonAction,
+                    reworkApproved: d.reworkApproved,
+                    samples: d.samples,
+                    scrap: d.scrap,
+                    shift: d.shift,
+                    shortDescription: d.shortDescription,
+                    thriftStore: d.thriftStore,
+                    timeOfIncident: d.timeOfIncident,
+                    type: d.type,
+                    weekHeld: d.weekHeld,
+                    yearHeld: d.yearHeld
+                })
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (vm.valid = false))
+            }
+        }
         },
     }
 </script>

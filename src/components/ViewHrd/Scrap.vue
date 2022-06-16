@@ -14,24 +14,37 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-text-field label="Case Count" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.caseCount" label="Case Count" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field label="Case Count" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.reasonAction" label="Reason Action" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col class="d-flex justify-space-around">
                     <v-checkbox
-                        v-for="(option, i) in input.visible"
-                        :key="i"
-                        v-model="option.value"
-                        :label="option.label"
+                        v-model="inpValue.approvalRequestByQa"
+                        label="Approval Request by QA"
+                        class="mr-5"
+                    ></v-checkbox>
+                    <v-checkbox
+                        v-model="inpValue.isPlantManagerAprpoval"
+                        label="Plant Manager Approval"
+                        class="mr-5"
+                    ></v-checkbox>
+                    <v-checkbox
+                        v-model="inpValue.isPlantControllerApproval"
+                        label="Plant Controller Approval"
+                        class="mr-5"
+                    ></v-checkbox>
+                    <v-checkbox
+                        v-model="inpValue.isDestroyed"
+                        label="Destroyed"
                         class="mr-5"
                     ></v-checkbox>
                 </v-col>
             </v-row>
-            <v-row v-if="input.visible[0].value">
+            <v-row v-if="inpValue.approvalRequestByQa">
                 <v-col class="py-0">
                     <v-alert
                         color="info"
@@ -49,13 +62,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByQAWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="When" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByQAWhen" label="When" outlined></v-text-field>
                 </v-col>
             </v-row>
-            <v-row v-if="input.visible[1].value" class="mt-0">
+            <v-row v-if="inpValue.isPlantManagerAprpoval" class="mt-0">
                 <v-col class="py-0">
                     <v-alert
                         color="info"
@@ -73,13 +86,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantManagerWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="When" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedPlantManagerQAWhen" label="When" outlined></v-text-field>
                 </v-col>
             </v-row>
-            <v-row v-if="input.visible[2].value" class="mt-0">
+            <v-row v-if="inpValue.isPlantControllerApproval" class="mt-0">
                 <v-col class="py-0">
                     <v-alert
                         color="info"
@@ -97,13 +110,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantControllerWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="When" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantControllerWhen" label="When" outlined></v-text-field>
                 </v-col>
             </v-row>
-            <v-row v-if="input.visible[3].value" class="mt-0">
+            <v-row v-if="inpValue.isDestroyed" class="mt-0">
                 <v-col class="py-0">
                     <v-alert
                         color="info"
@@ -121,10 +134,10 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByDistroyedWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field label="When" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByDistroyedWhen" label="When" outlined></v-text-field>
                 </v-col>
             </v-row>
         </v-expansion-panel-content>
@@ -135,9 +148,10 @@
 export default {
     props: {
         name:'Scrap',
-        input: {
+        inpValue: {
             type: Object,
             default: () => {},
+            required: false
         },
     },
 }

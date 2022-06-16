@@ -4,34 +4,34 @@
         <v-expansion-panel-content>
             <v-row class="mt-0">
                 <v-col>
-                    <SelectDropdown 
-                        :items="input.classification" 
-                        v-model="input.selectClass" 
+                    <SelectDropdownString
+                        :dropdownValue=3
+                        :inpValue="inpValue.classification"
                         label="Classification" 
                         @change="(value) => {
-                            this.holdclass.selectClass = value   
+                            inpValue.classification = value   
                         }"
                     />
                 </v-col>
                 <v-col>
-                    <SelectDropdown 
-                        :items="input.holdCat" 
-                        v-model="input.selectHoldCat" 
+                    <SelectDropdownString
+                        :dropdownValue=1
+                        :inpValue="inpValue.holdCategory"
                         label="Hold Category" 
                         @change="(value) => {
-                            this.input.selectHoldCat = value   
+                            inpValue.holdCategory = value   
                         }"
                     />
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <SelectDropdown 
-                        :items="input.holdSub" 
-                        v-model="input.selectHoldSub" 
+                    <SelectDropdownString
+                        :dropdownValue=2
+                        :inpValue="inpValue.holdSubCategory"
                         label="Hold Sub-category" 
                         @change="(value) => {
-                            this.input.selectHoldSub = value   
+                            inpValue.holdSubCategory = value   
                         }"
                     />
                 </v-col>
@@ -41,18 +41,13 @@
                         light
                         rounded
                     >
-                        <div
-                            v-for="(info, i) in input.alertInfo"
-                            :key="i"
-                            :v-model="info.value"
-                            :label="info.label"
-                        >
-                            <v-list-item>
-                            <v-list-item-content class="pa-0">
-                                <v-list-item-title>{{ info.label }} {{ info.value }}</v-list-item-title>
-                            </v-list-item-content>
-                            </v-list-item>
-                        </div>
+                        <v-list-item>
+                        <v-list-item-content class="pa-0">
+                            <v-list-item-title class="mb-3">Month Held: {{ inpValue.monthHeld ? inpValue.monthHeld : 'No Data' }}</v-list-item-title>
+                            <v-list-item-title class="mb-3">Week held: {{ inpValue.weekHeld ? inpValue.weekHeld : 'No Data' }}</v-list-item-title>
+                            <v-list-item-title>Cost of Product on Hold: {{ inpValue.costofProductonHold ? inpValue.costofProductonHold : 'No Data' }}</v-list-item-title>
+                        </v-list-item-content>
+                        </v-list-item>
                     </v-alert>
                 </v-col>
             </v-row>
@@ -65,18 +60,19 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 
 export default {
     components: {
-        SelectDropdown,
+        SelectDropdownString
     },
     props: {
         name:'HoldClassification',
-        input: {
+        inpValue: {
             type: Object,
             default: () => {},
-        },
+            required: false,
+        }
     }
 }
 </script>

@@ -6,7 +6,7 @@
             max-width="290"
         >
             <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" class="mr-3" light large v-bind="attrs" v-on="on">
+                <v-btn color="primary" class="mr-3" :disabled="!valid" light large v-bind="attrs" v-on="on">
                     Submit
                 </v-btn>
             </template>
@@ -29,7 +29,7 @@
                     color="primary"
                     text
                     large
-                    @click="input.submitDialog = false, submitUpdate()"
+                    @click="input.submitDialog = false, submitUpdate(), Validate"
                 >
                     Submit
                 </v-btn>
@@ -82,13 +82,20 @@ export default {
             type: Object,
             default: () => [],
             required: false,
+        },
+        valid: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
     data: () => ({
-
     }),
     emits: ["change"],
     methods: {
+        Validate() {
+            this.$refs.form.submitUpdate()
+        },
         submitUpdate() {
             let value = true
             this.$emit('change', value)

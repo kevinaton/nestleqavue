@@ -8,7 +8,7 @@
                             :items1="input.calendar1"
                             :items2="input.clock1"
                             :inpValue="getDate"
-                            :rules="rules"
+                            :rules="[rules.required]"
                             label1="Date"
                             label2="Time"
                             @change="(value) => { inpValue.date = value }"
@@ -19,7 +19,7 @@
                             :items1="input.calendar2"
                             :items2="input.clock2"
                             :inpValue="getTimeofIncident"
-                            :rules="rules"
+                            :rules="[rules.required]"
                             label1="Date of Incident"
                             label2="Time of Incident"
                             @change="(value) => { inpValue.timeOfIncident = value }"
@@ -69,7 +69,7 @@
                             :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => {
-                                this.inpValue.type = value   
+                                inpValue.type = value   
                             }"
                         />
                     </v-col>
@@ -121,7 +121,7 @@
                             :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
-                                this.inpValue.shift = value   
+                                inpValue.shift = value   
                             }"
                         />
                     </v-col>
@@ -135,7 +135,7 @@
                             :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
-                                this.inpValue.shortDescription = value   
+                                inpValue.shortDescription = value   
                             }"
                         />
                     </v-col>
@@ -216,7 +216,6 @@
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
@@ -226,7 +225,6 @@ export default {
         SimpleDatePicker,
         SimpleTimePicker,
         YearOnly,
-        SelectDropdown,
         SelectDropdownObj,
         SelectDropdownString,
         DateTimePicker

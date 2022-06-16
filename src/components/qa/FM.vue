@@ -5,8 +5,9 @@
                 <v-row class="mt-0">
                     <v-col>
                         <v-radio-group
-                            v-model="input.radiorow"
                             row
+                            :value="getRadioValue"
+                            @change="setRadioValue($event)"
                             >
                             <v-radio
                                 label="Inspections"
@@ -25,87 +26,71 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdown 
-                            :items="input.fmtypes" 
-                            v-model="input.fmtypeSelect"
+                        <SelectDropdownString
+                            :dropdownValue=14
+                            :inpValue="inpValue.fmType"
                             label="FM Type" 
                             @change="(value) => {
-                                this.input.fmtypeSelect = value   
+                                inpValue.fmType = value   
                             }"
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field outlined label="Size*" :rules="[rules.required]" type="number" suffix="mm"></v-text-field>
+                        <v-text-field v-model="inpValue.size" outlined label="Size*" :rules="[rules.required]"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-autocomplete
-                            outlined
-                            v-model="input.equipmentSelect" 
-                            :items="input.equipments" 
-                            item-text="text"
-                            label="Equipment"
-                            return-object
-                        ></v-autocomplete>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-if="input.equipmentSelect.text == 'Other'" outlined label="If other"></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
-                    <v-col>
-                        <v-autocomplete
-                            outlined
-                            v-model="input.rohSelect" 
-                            :items="input.rohmaterials" 
-                            item-text="text"
-                            label="ROH Material"
-                            return-object
-                            @input="checkroh"
-                        ></v-autocomplete>
-                    </v-col>
-                    <v-col>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
-                    <v-col class="pt-0">
-                        <v-data-table
-                            v-if="rohTable"
-                            :headers="input.rohHeaders"
-                            :items="input.rohSelect.value"
-                            :items-per-page="5"
-                            class="mb-6 pt-0 elevation-1"
-                        ></v-data-table>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
-                    <v-col>
-                        <v-text-field outlined label="Pieces Total" type="number" placeholder=0 suffix="pcs"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <v-text-field outlined label="Raw Batch/Lot" type="number" placeholder=0></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
-                    <v-col>
-                        <v-text-field outlined label="Hazardous Size" type="number" placeholder=0 suffix="pcs"></v-text-field>
-                    </v-col>
-                    <v-col>
-                        <SelectDropdown 
-                            :items="input.responsibilities" 
-                            v-model="input.responsibilityInp"
-                            label="Responsibility" 
+                        <SelectDropdownString
+                            :dropdownValue=16
+                            :inpValue="inpValue.equipment"
+                            label="Equipment" 
                             @change="(value) => {
-                                this.input.responsibilityInp = value   
+                                inpValue.equipment = value   
+                            }"
+                        />
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="inpValue.equipmentIfOther" v-if="inpValue.equipment == 'Other'" outlined label="If other"></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <SelectDropdownString
+                            :dropdownValue=24
+                            :inpValue="inpValue.rohMaterial"
+                            @input="checkroh"
+                            item-text="text"
+                            label="ROH Material" 
+                            @change="(value) => {
+                                inpValue.rohMaterial = value   
+                            }"
+                        />
+                    </v-col>
+                    <v-col>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <v-text-field v-model="inpValue.piecesTotal" outlined label="Pieces Total" type="number" placeholder=0 suffix="pcs"></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field v-model="inpValue.fmVendorBatch" outlined label="Vendor Batch" type="number" placeholder=0></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <SelectDropdownString
+                            :dropdownValue=15
+                            :inpValue="inpValue.fmSource"
+                            label="Source" 
+                            @change="(value) => {
+                                inpValue.fmSource = value   
                             }"
                         />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
-                    <v-col>
-                        <v-text-field outlined label="Non-Hazardous" type="number" placeholder=0></v-text-field>
-                    </v-col>
                     <v-col>
                     </v-col>
                 </v-row>
@@ -114,29 +99,50 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 
 export default {
     components:{
-        SelectDropdown,
-
+        SelectDropdownString,
     },
     props: {
-        input: {
-            type: Object,
-            default: () => {},
-            required: false
-        },
         rules: {
             type: Object,
             default: {},
             required: false,
         },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false,
+        }
     },
     name:'FM',
     data: () => ({
-        rohTable: false,
+        rohTable: true,
+        radioValue:'',
+        radio: [],
+        tempValue: ['isInspections', 'isXray', 'isMetalDetector']
     }),
+    created() {
+    },
+    computed: {
+        getRadioValue() {
+            let vm = this
+            let r
+            vm.radio = [
+                { name:'inspections', value:vm.inpValue.isInspections },
+                { name:'xray', value:vm.inpValue.isXray },
+                { name:'metaldetector', value:vm.inpValue.isMetalDetector}
+            ]
+            for(var o in vm.radio) {
+                if(vm.radio[o].value == true) {
+                    r = vm.radio[o].name
+                } 
+            }
+            return r
+        },
+    },
     methods: {
         checkroh(value) {
             if(value.text=='Select') {
@@ -146,6 +152,21 @@ export default {
                 this.rohTable=true
             }
         },
+        setRadioValue(value) {
+            let vm = this
+            let i = null
+            for(var o in vm.radio) {
+                if(vm.radio[o].name == value) {
+                    i = o
+                    vm.inpValue[vm.tempValue[i]] = vm.radio[i].value = true
+                }
+                for(var x in vm.radio) {
+                    if(i != x) {
+                        vm.inpValue[vm.tempValue[x]] = vm.radio[x].value = false
+                    } 
+                }
+            }
+        }
     }    
 }
 </script>

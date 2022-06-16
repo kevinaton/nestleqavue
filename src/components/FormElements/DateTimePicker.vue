@@ -15,7 +15,7 @@
                     outlined
                     :value="getDate"
                     :label="label1"
-                    :rules="[rules.required]"
+                    :rules="rules"
                     prepend-inner-icon="mdi-calendar"
                     readonly
                     v-bind="attrs"
@@ -44,7 +44,7 @@
                 <v-text-field
                     outlined
                     :value="getTime"
-                    :rules="[rules.required]"
+                    :rules="rules"
                     :label="label2"
                     prepend-inner-icon="mdi-clock-time-four-outline"
                     readonly
@@ -55,7 +55,6 @@
                 <v-time-picker
                     v-if="items2.menu"
                     :value="tempTime"
-                    use-seconds
                     @change="items2.menu=false, setDateTime($event)"
                 ></v-time-picker>
             </v-menu>
@@ -94,8 +93,8 @@ export default {
             required: false,
         },
         rules: {
-            type: Object,
-            default: () => {},
+            type: Array,
+            default: () => [],
             required: false,
         }
     },
@@ -108,26 +107,45 @@ export default {
     computed: {
         getDate() {
             let value = this.inpValue
-            let d = this.tempDate = moment(value).format('MM-DD-YYYY')
+            let d
+            if(value != null) {
+                d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
+            } else {
+                
+            }
             return d
         },
         getTime() {
             let value = this.inpValue
-            let t = this.tempTime = moment(value).format('hh:mm:ss')
+            let t
+            if(value != null) {
+                t = this.tempTime = moment.utc(value).format('hh:mm:ss')
+            } else {
+                
+            }
             return t
         },
     },
     emits: ["change"],
     methods: {
         setDate(y) {
-            this.tempDate = moment(y).format("YYYY-MM-DD")
-            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            let e = new Date().toISOString()
+            this.tempDate = moment.utc(y).format("YYYY-MM-DD")
+            console.log(this.tempDate)
+            if(this.tempTime == null || '' || 'Invalid date') {
+                this.tempTime = '00:00:00'
+            }
+            let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
         setDateTime(x) { 
-            this.tempDate = moment(this.inpValue).format("YYYY-MM-DD")
+            let e = new Date().toISOString()
+            if(this.tempDate == null || '' || 'Invalid time') {
+                this.tempDate = moment.utc(e).format("YYYY-MM-DD")
+            }
+            this.tempDate = moment.utc(this.inpValue).format("YYYY-MM-DD")
             this.tempTime = x
-            let value = moment(`${this.tempDate} ${this.tempTime}`).toISOString()
+            let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
         },
     }

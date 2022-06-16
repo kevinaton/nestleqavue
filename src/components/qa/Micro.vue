@@ -4,46 +4,49 @@
                 <v-expansion-panel-content>
                     <v-row>
                         <v-col>
-                            <SelectDropdown 
-                                :items="input.holdconcerns" 
-                                v-model="input.hcSelect"
+                            <SelectDropdownString
+                                :dropdownValue=18
+                                :inpValue="inpValue.holdConcern"
                                 label="Hold/Concern" 
                                 @change="(value) => {
-                                    this.input.hcSelect = value   
+                                    inpValue.holdConcern = value   
                                 }"
                             />
                         </v-col>
                         <v-col>
-                            <SelectDropdown 
-                                :items="input.dayofweeks" 
-                                v-model="input.daySelect"
+                            <SelectDropdownString                                
+                                :dropdownValue=19
+                                :inpValue="inpValue.dayOfWeek"
                                 label="Day of Week" 
                                 @change="(value) => {
-                                    this.input.daySelect = value   
+                                    inpValue.dayOfWeek = value   
                                 }"
                             />
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
-                            <SelectDropdown 
-                                :items="input.whens" 
-                                v-model="input.whenSelect"
+                            <SelectDropdownString
+                                :dropdownValue=20
+                                :inpValue="inpValue.when"
                                 label="When" 
                                 @change="(value) => {
-                                    this.input.whenSelect = value   
+                                    inpValue.when = value   
                                 }"
                             />
                         </v-col>
                         <v-col>
-                            <v-text-field v-if="input.whenSelect == 'Other'" outlined label="Tag Number"></v-text-field>
+                            <v-text-field v-model="tagNumber" v-if="inpValue.when == 'Other'" outlined label="Tag Number"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
                             <SimpleDatePicker 
-                            :items="input.calendar"
+                            :items="input.calendarMicro"
+                            :inpValue="getDate"
+                            :rules="[rules.required]"
                             label="Date of Resample"
+                            @change="(value) => { inpValue.dateOfResample = value }"
                             />
                         </v-col>
                         <v-col>
@@ -51,51 +54,51 @@
                     </v-row>
                     <v-row>
                         <v-col>
-                            <SelectDropdown 
-                                :items="yn" 
-                                v-model="input.meatSelect"
+                            <SelectDropdownString
+                                :dropdownValue=7
+                                :inpValue="inpValue.meatComponent"
                                 label="Meat Component" 
                                 @change="(value) => {
-                                    this.input.tagSelect = value   
+                                    inpValue.meatComponent = value   
                                 }"
                             />
                         </v-col>
                         <v-col>
-                            <SelectDropdown 
-                                :items="yn" 
-                                v-model="input.vegSelect"
+                            <SelectDropdownString
+                                :dropdownValue=7
+                                :inpValue="inpValue.veggieComponent"
                                 label="Veggie Component" 
                                 @change="(value) => {
-                                    this.input.tagSelect = value   
+                                    inpValue.veggieComponent = value   
                                 }"
                             />
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
-                            <SelectDropdown 
-                                :items="input.sauces" 
-                                v-model="input.sauceSelect"
+                            <SelectDropdownString
+                                :dropdownValue=21
+                                :inpValue="inpValue.sauceType"
                                 label="Sauce Type" 
                                 @change="(value) => {
-                                    this.input.tagSelect = value   
+                                    inpValue.sauceType = value   
                                 }"
                             />
                         </v-col>
                         <v-col>
-                            <SelectDropdown 
-                                :items="input.starches" 
-                                v-model="input.starchSelect"
+                            <SelectDropdownString
+                                :dropdownValue=22
+                                :inpValue="inpValue.starchType"
                                 label="Starch Type" 
                                 @change="(value) => {
-                                    this.input.tagSelect = value   
+                                    inpValue.starchType = value   
                                 }"
                             />
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col>
-                            <v-textarea outlined rows="13" label="Additional Comments?"></v-textarea>
+                            <v-textarea v-model="inpValue.additionalComments" outlined rows="13" label="Additional Comments?"></v-textarea>
                         </v-col>
                         <v-col>
                             <v-data-table
@@ -107,11 +110,14 @@
                                     <SnackBar 
                                         :input="snackbar"
                                     />
-                                    <RowDelete 
-                                        :input="input"
+                                    <!-- <RowDelete 
+                                        :input='input'
                                         :table="input.microtable"
                                         :snackbar="snackbar"
-                                    />
+                                        editData="id"
+                                        :data="delItem"
+                                        url="Micro"
+                                    /> -->
                                     <v-toolbar flat>
                                         <v-toolbar-title>Micro</v-toolbar-title>
                                         <v-spacer></v-spacer>
@@ -192,7 +198,7 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <template v-slot:[`item.hour`]="props">
+                                <!-- <template v-slot:[`item.hour`]="props">
                                     <EditTable 
                                         :table="props.item.hour"
                                         :input="snackbar"
@@ -214,14 +220,14 @@
                                         :input="snackbar"
                                         @change="(value) => { props.item.organism = value }"
                                     />
-                                </template>
-                                <template v-slot:[`item.actions`]="{ item }">
+                                </template> -->
+                                <!-- <template v-slot:[`item.actions`]="{ item }">
                                     <DeleteAction 
                                         :item="item"
                                         :tableItem="input.microtable"
                                         :input="input"
                                     />
-                                </template>
+                                </template> -->
                             </v-data-table>
                         </v-col>
                     </v-row>
@@ -235,11 +241,11 @@
                                     <SnackBar 
                                         :input="snackbar"
                                     />
-                                    <RowDelete 
+                                    <!-- <RowDelete 
                                         :input="test"
                                         :table="test.testtable"
                                         :snackbar="snackbar"
-                                    />
+                                    /> -->
                                     <v-toolbar flat>
                                         <v-toolbar-title class="mr-6">Testing</v-toolbar-title>
                                         <v-dialog
@@ -341,13 +347,13 @@
                                         type="number"
                                     />
                                 </template> -->
-                                <template v-slot:[`item.actions`]="{ item }">
+                                <!-- <template v-slot:[`item.actions`]="{ item }">
                                     <DeleteAction 
                                         :item="item"
                                         :tableItem="test.testtable"
                                         :input="test"
                                     />
-                                </template>
+                                </template> -->
                             </v-data-table>
                         </v-col>
                     </v-row>
@@ -357,6 +363,7 @@
 
 <script>
 import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
 import SnackBar from '@/components/TableElements/SnackBar.vue'
@@ -366,6 +373,7 @@ import RowDelete from '@/components/TableElements/RowDelete.vue'
 export default {
     components: {
         SelectDropdown,
+        SelectDropdownString,
         SimpleDatePicker,
 
         SnackBar,
@@ -379,11 +387,6 @@ export default {
             default: () => {},
             required: false,
         },
-        yn: {
-            type: Array,
-            default: '',
-            requried: false,
-        },
         snackbar: {
             type:Object,
             default: () => {},
@@ -393,8 +396,31 @@ export default {
             type: Object,
             default: () => {},
             required: false,
-        }
-
+        },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        rules: {
+            type: Object,
+            default: {},
+            required: false,
+        },
+    },
+    data: () => ({
+        delItem:'',
+    }),
+    computed: {
+        getDate(){
+            let obj
+            obj = this.inpValue.dateOfResample
+            if(obj){
+                this.input.calendarMicro.allow=false
+                this.input.calendarMicro.menu=false
+            }
+            return obj
+        },
     },
     methods: {
         close () {
