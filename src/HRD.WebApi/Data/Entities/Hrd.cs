@@ -12,6 +12,7 @@ namespace HRD.WebApi.Data.Entities
             Hrdnotes = new HashSet<Hrdnote>();
             Hrdpos = new HashSet<Hrdpo>();
             HrdtestCosts = new HashSet<HrdtestCost>();
+            HrdMicros = new HashSet<HrdMicro>();
         }
 
         public int Id { get; set; }
@@ -163,5 +164,6 @@ namespace HRD.WebApi.Data.Entities
         public virtual ICollection<Hrdnote> Hrdnotes { get; set; }
         public virtual ICollection<Hrdpo> Hrdpos { get; set; }
         public virtual ICollection<HrdtestCost> HrdtestCosts { get; set; }
+        public virtual ICollection<HrdMicro> HrdMicros { get; set; }
     }
 }
