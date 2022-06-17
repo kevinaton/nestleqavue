@@ -6,6 +6,12 @@ namespace HRD.WebApi.ViewModels
 {
     public class HRDDetailViewModel
     {
+        public HRDDetailViewModel()
+        {
+            HrdDc = new List<HrdDCViewModel>();
+            HrdFc = new List<HrdFCViewModel>();
+            HrdPo = new List<HrdPoViewModel>();
+        }
         public int Id { get; set; }
 
         //Highlights
@@ -15,7 +21,6 @@ namespace HRD.WebApi.ViewModels
         public string DayCode { get; set; }
         public string Originator { get; set; }
         public string Plant { get; set; }
-
         public string BUManager { get; set; }
         public string Type { get; set; }
         public string Fert { get; set; }
@@ -35,7 +40,6 @@ namespace HRD.WebApi.ViewModels
         public string ContinuousRun { get; set; }
         public List<HrdDCViewModel> HrdDc { get; set; }
         public List<HrdFCViewModel> HrdFc { get; set; }
-        public List<HrdNoteViewModel> HrdNote { get; set; }
         public List<HrdPoViewModel> HrdPo { get; set; }
         public string QaComments { get; set; }
         public DateTime? DateCompleted { get; set; }

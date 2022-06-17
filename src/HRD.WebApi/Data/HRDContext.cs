@@ -33,6 +33,7 @@ namespace HRD.WebApi.Data
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<HrdMicro> HrdMicros { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -74,7 +75,7 @@ namespace HRD.WebApi.Data
             {
                 entity.ToTable("HRD");
 
-                entity.Property(e => e.AdditionalDescription).HasMaxLength(75);
+                entity.Property(e => e.AdditionalDescription).HasMaxLength(500);
 
                 entity.Property(e => e.ApprovedByDistroyedWhen).HasColumnType("datetime");
 
@@ -116,7 +117,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.CodingType).HasMaxLength(20);
 
-                entity.Property(e => e.Comments).HasMaxLength(50);
+                entity.Property(e => e.Comments).HasMaxLength(500);
 
                 entity.Property(e => e.ContinuousRun).HasMaxLength(10);
 
@@ -148,7 +149,7 @@ namespace HRD.WebApi.Data
                     .HasMaxLength(50)
                     .HasColumnName("DCUser");
 
-                entity.Property(e => e.DetailedDescription).HasMaxLength(75);
+                entity.Property(e => e.DetailedDescription).HasMaxLength(int.MaxValue);
 
                 entity.Property(e => e.Equipment).HasMaxLength(50);
 
@@ -576,6 +577,20 @@ namespace HRD.WebApi.Data
                     .HasName("PK__UserRole__AF2760ADD67758F1");
 
                 entity.ToTable("UserRole");
+            });
+
+            modelBuilder.Entity<HrdMicro>(entity =>
+            {
+                entity.ToTable("HRDMicro");
+
+                entity.Property(e => e.HrdId).HasColumnName("HRDId");
+
+                entity.Property(e => e.Organism).HasMaxLength(50);
+
+                entity.HasOne(d => d.Hrd)
+                    .WithMany(p => p.HrdMicros)
+                    .HasForeignKey(d => d.HrdId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             });
 
             OnModelCreatingPartial(modelBuilder);

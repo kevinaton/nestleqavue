@@ -56,11 +56,6 @@ namespace HRD.WebApi.Controllers
                     SortOrder = s.SortOrder,
                     Value = s.Value,
                     TypeName = s.DropDownType.Name
-                    //Type = new DropDownTypeViewModel
-                    //{
-                    //    Id = s.DropDownType.Id,
-                    //    Name = s.DropDownType.Name
-                    //}
                 });
 
             //Sorting

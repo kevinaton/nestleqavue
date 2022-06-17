@@ -136,7 +136,6 @@ namespace HRD.WebApi.Controllers
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
                                          .Include(i => i.Hrdfcs)
-                                         .Include(i => i.Hrdnotes)
                                          .Include(i => i.Hrdpos)
                                          .FirstOrDefaultAsync(f => f.Id == id);
 
@@ -172,7 +171,6 @@ namespace HRD.WebApi.Controllers
 
                 HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                //HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
 
                 QaComments = hrd.Qacomments,
@@ -244,6 +242,8 @@ namespace HRD.WebApi.Controllers
             var hrd = new Hrd
             {
                 Id = id,
+                Date = model.Date,
+                TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
                 DayCode = model.DayCode,
                 Originator = model.Originator,
@@ -280,11 +280,6 @@ namespace HRD.WebApi.Controllers
                 HighRisk = model.HighRisk,
                 OtherHrdnum = model.OtherHrdNum,
 
-                Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                //Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
-                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
-
                 Fcdate = model.FcDate,
                 Fcuser = model.FcUser,
                 Dcdate = model.DcDate,
@@ -319,6 +314,76 @@ namespace HRD.WebApi.Controllers
                 YearOfIncident = model.YearOfIncident,
             };
 
+            if (model.HrdDc != null)
+            {
+                foreach (var item in model.HrdDc)
+                {
+                    var hrdDc = _context.Hrddcs.FirstOrDefault(f => f.Id == item.Id);
+                    if (hrdDc != null)
+                    {
+                        hrdDc.Id = hrdDc.Id;
+                        hrdDc.Hrdid = id;
+                        hrdDc.Location = item.Location;
+                        hrdDc.NumberOfCases = item.NumberOfCases;
+                    }
+                    else
+                    {
+                        hrdDc = new Hrddc();
+                        hrdDc.Hrdid = id;
+                        hrdDc.Location = item.Location;
+                        hrdDc.NumberOfCases = item.NumberOfCases;
+                    }
+
+                    hrd.Hrddcs.Add(hrdDc);
+                }
+            }
+
+            if (model.HrdFc != null)
+            {
+                foreach (var item in model.HrdFc)
+                {
+                    var hrdFc = _context.Hrdfcs.FirstOrDefault(f => f.Id == item.Id);
+                    if (hrdFc != null)
+                    {
+                        hrdFc.Id = hrdFc.Id;
+                        hrdFc.Hrdid = id;
+                        hrdFc.Location = item.Location;
+                        hrdFc.NumberOfCases = item.NumberOfCases;
+                    }
+                    else
+                    {
+                        hrdFc = new Hrdfc();
+                        hrdFc.Hrdid = id;
+                        hrdFc.Location = item.Location;
+                        hrdFc.NumberOfCases = item.NumberOfCases;
+                    }
+
+                    hrd.Hrdfcs.Add(hrdFc);
+                }
+            }
+
+            if (model.HrdPo != null)
+            {
+                foreach (var item in model.HrdPo)
+                {
+                    var po = _context.Hrdpos.FirstOrDefault(f => f.Id == item.Id);
+                    if (po != null)
+                    {
+                        po.Id = po.Id;
+                        po.Hrdid = id;
+                        po.Ponumber = item.PONumber;
+                    }
+                    else
+                    {
+                        po = new Hrdpo();
+                        po.Hrdid = id;
+                        po.Ponumber = item.PONumber;
+                    }
+
+                    hrd.Hrdpos.Add(po);
+                }
+            }
+
             _context.Entry(hrd).State = EntityState.Modified;
 
             try
@@ -349,6 +414,8 @@ namespace HRD.WebApi.Controllers
         {
             var hrd = new Hrd
             {
+                Date = model.Date,
+                TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
                 DayCode = model.DayCode,
                 Originator = model.Originator,
@@ -366,7 +433,6 @@ namespace HRD.WebApi.Controllers
                 DetailedDescription = model.DetailedDescription,
                 Gstdrequired = model.Gstdrequired,
                 HourCode = model.HourCode,
-                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
 
                 Qacomments = model.QaComments,
                 DateCompleted = model.DateCompleted,
@@ -385,9 +451,9 @@ namespace HRD.WebApi.Controllers
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
                 HighRisk = model.HighRisk,
                 OtherHrdnum = model.OtherHrdNum,
+                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
                 Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                //Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
 
                 Fcdate = model.FcDate,
                 Fcuser = model.FcUser,
@@ -441,6 +507,7 @@ namespace HRD.WebApi.Controllers
                             .Include(i => i.Hrdfcs)
                             .Include(i => i.Hrdnotes)
                             .Include(i => i.HrdtestCosts)
+                            .Include(i => i.HrdMicros)
                             .FirstOrDefaultAsync(f => f.Id == id);
             
             if (hrd == null)
@@ -461,6 +528,9 @@ namespace HRD.WebApi.Controllers
             if (hrd.HrdtestCosts.Count > 0)
                 _context.HrdtestCosts.RemoveRange(hrd.HrdtestCosts);
 
+            if (hrd.HrdMicros.Count > 0)
+                _context.HrdMicros.RemoveRange(hrd.HrdMicros);
+
             _context.Hrds.Remove(hrd);
 
             await _context.SaveChangesAsync();
@@ -479,6 +549,8 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
+                                        .Include(i => i.Hrdnotes)
+                                        .Include(i => i.HrdMicros)
                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
@@ -569,6 +641,8 @@ namespace HRD.WebApi.Controllers
                 StarchType = qa.StarchType,
                 AdditionalComments = qa.AdditionalComments,
                 HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
+                HrdNote = qa.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                HrdMicros = qa.HrdMicros.Select(s => new HRDMicroViewModel { Id = s.Id, HrdId = s.HrdId, Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
             };
 
             return model;
@@ -665,9 +739,102 @@ namespace HRD.WebApi.Controllers
                 SauceType = model.SauceType,
                 StarchType = model.StarchType,
                 AdditionalComments = model.AdditionalComments,
-
-                HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
             };
+
+            if (model.HrdMicros != null)
+            {
+                foreach (var item in model.HrdMicros)
+                {
+                    var micro = _context.HrdMicros.FirstOrDefault(f => f.Id == item.Id);
+
+                    if (micro != null)
+                    {
+                        micro.Id = micro.Id;
+                        micro.HrdId = id;
+                        micro.Hour = item.Hour;
+                        micro.Count = item.Count;
+                        micro.Organism = item.Organism;
+                        _context.Entry(micro).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        micro = new HrdMicro();
+                        micro.HrdId = id;
+                        micro.Hour = item.Hour;
+                        micro.Count = item.Count;
+                        micro.Organism = item.Organism;
+                        _context.Entry(micro).State = EntityState.Added;
+                    }
+
+                    hrd.HrdMicros.Add(micro);
+                }
+            }
+
+            if (model.HrdTestCosts != null)
+            {
+                foreach (var item in model.HrdTestCosts)
+                {
+                    var testCost = _context.HrdtestCosts.FirstOrDefault(f => f.Id == item.Id);
+
+                    if (testCost != null)
+                    {
+                        testCost.Id = testCost.Id;
+                        testCost.Hrdid = id;
+                        testCost.Qty = item.Qty;
+                        testCost.Cost = item.Cost;
+                        testCost.TestName = item.TestName;
+                        _context.Entry(testCost).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        testCost = new HrdtestCost();
+                        testCost.Hrdid = id;
+                        testCost.Qty = item.Qty;
+                        testCost.Cost = item.Cost;
+                        testCost.TestName = item.TestName;
+                        _context.Entry(testCost).State = EntityState.Added;
+                    }
+
+                    hrd.HrdtestCosts.Add(testCost);
+                }
+            }
+
+            if (model.HrdNote != null)
+            {
+                foreach (var item in model.HrdNote)
+                {
+                    var note = _context.Hrdnotes.FirstOrDefault(f => f.Id == item.Id);
+
+                    if (note != null)
+                    {
+                        note.Id = item.Id;
+                        note.Hrdid = id;
+                        note.Category = item.Category;
+                        note.Date = item.Date;
+                        note.Description = item.Description;
+                        note.FileName = item.Filename;
+                        note.Path = item.Path;
+                        note.UserId = item.UserId;
+                        note.Size = item.Size;
+                        _context.Entry(note).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        note = new Hrdnote();
+                        note.Hrdid = id;
+                        note.Category = item.Category;
+                        note.Date = item.Date;
+                        note.Description = item.Description;
+                        note.FileName = item.Filename;
+                        note.Path = item.Path;
+                        note.UserId = item.UserId;
+                        note.Size = item.Size;
+                        _context.Entry(note).State = EntityState.Added;
+                    }
+
+                    hrd.Hrdnotes.Add(note);
+                }
+            }
 
             _context.Entry(hrd).State = EntityState.Modified;
 
@@ -767,6 +934,8 @@ namespace HRD.WebApi.Controllers
                 StarchType = model.StarchType,
                 AdditionalComments = model.AdditionalComments,
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
+                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                HrdMicros = model.HrdMicros.Select(s => new HrdMicro { Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
             };
 
             _context.Hrds.Add(hrd);
@@ -787,6 +956,7 @@ namespace HRD.WebApi.Controllers
                             .Include(i => i.Hrdfcs)
                             .Include(i => i.Hrdnotes)
                             .Include(i => i.HrdtestCosts)
+                            .Include(i => i.HrdMicros)
                             .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
@@ -803,6 +973,9 @@ namespace HRD.WebApi.Controllers
 
             if (hrd.Hrdnotes.Count > 0)
                 _context.Hrdnotes.RemoveRange(hrd.Hrdnotes);
+
+            if (hrd.HrdMicros.Count > 0)
+                _context.HrdMicros.RemoveRange(hrd.HrdMicros);
 
             if (hrd.HrdtestCosts.Count > 0)
                 _context.HrdtestCosts.RemoveRange(hrd.HrdtestCosts);

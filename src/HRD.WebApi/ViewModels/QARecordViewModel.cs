@@ -5,6 +5,13 @@ namespace HRD.WebApi.ViewModels
 {
     public class QARecordViewModel
     {
+        public QARecordViewModel()
+        {
+            HrdTestCosts = new List<HrdTestCostViewModel>();
+            HrdNote = new List<HrdNoteViewModel>();
+            HrdMicros = new List<HRDMicroViewModel>();
+        }
+
         public int Id { get; set; }
         public bool? IsHRD { get; set; }
         public bool? IsPest { get; set; }
@@ -91,5 +98,7 @@ namespace HRD.WebApi.ViewModels
         public string StarchType { get; set; }
         public string AdditionalComments { get; set; }
         public List<HrdTestCostViewModel> HrdTestCosts { get; set; }
+        public List<HrdNoteViewModel> HrdNote { get; set; }
+        public List<HRDMicroViewModel> HrdMicros { get; set; }
     }
 }
