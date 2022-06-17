@@ -4,23 +4,28 @@
         <v-expansion-panel-content>
             <v-row class="mt-0">
                 <v-col>
-                    <SimpleDatePicker 
-                        :items="input.datereceived"
-                        label="Date"
+                    <DateTimePicker 
+                        :items1="input.calendarDateReceived"
+                        :items2="input.clockDateReceived"
+                        :inpValue="getDate"
+                        :rules="[rules.required]"
+                        label1="Date Received"
+                        label2="Time Received"
+                        @change="(value) => { inpValue.dateReceived = value }"
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field outlined label="Inspector's Name" :rules="[rules.required]"></v-text-field>
+                    <v-text-field v-model="inpValue.inspectorsName" outlined label="Inspector's Name" :rules="[rules.required]"></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <SelectDropdown 
+                    <SelectDropdownString
+                        :dropdownValue=12
+                        :inpValue="inpValue.nrCategory"
                         label="NR Category" 
-                        :items="input.nrcategories" 
-                        v-model="input.nrCat"
                         @change="(value) => {
-                            this.input.nrCat = value   
+                            inpValue.nrCategory = value   
                         }"
                     />
                 </v-col>
@@ -29,16 +34,17 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <SelectDropdown 
-                        label="Tagged"
-                        :items="yesno" 
+                    <SelectDropdownString
+                        :dropdownValue=13
+                        :inpValue="inpValue.tagged"
+                        label="Tagged" 
                         @change="(value) => {
-                            resultValue = value   
+                            inpValue.tagged = value   
                         }"
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-if="resultValue == 'Yes'" outlined label="Tag Number"></v-text-field>
+                    <v-text-field v-if="inpValue.tagged == 'Yes'" v-model="inpValue.tagNumber" outlined label="Tag Number"></v-text-field>
                 </v-col>
             </v-row>
         </v-expansion-panel-content>
@@ -46,13 +52,13 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
-import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
+import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 
 export default {
     components: {
-        SimpleDatePicker,
-        SelectDropdown,
+        SelectDropdownString,
+        DateTimePicker
     },
     props: {
         name:'NR',
@@ -66,11 +72,25 @@ export default {
             default: {},
             required: false,
         },
+        inpValue: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
-
     data: () => ({
         resultValue:'',
         yesno: ['Yes', 'No']
     }),
+    computed: {
+        getDate(){
+            let obj = this.inpValue.dateReceived
+            if(obj){
+                this.input.calendarDateReceived.allow=false
+                this.input.calendarDateReceived.menu=false
+            }
+            return obj
+        },
+    }
 }
 </script>

@@ -6,7 +6,6 @@
         :headers="headers"
         :page.sync="tableOptions.page"
         :items="testings"
-        :search="testingtoolbar.search"
         :options="tableOptions"
         hide-default-footer
     >
@@ -30,6 +29,7 @@
                 title="Testing"
                 :input="testingtoolbar"
                 :table="testings"
+                @change="getSearch($event)"
             />
         </template>
 
@@ -67,6 +67,7 @@
         <ResetTable  @click="fetchTest()" />
         
     </v-data-table>
+
     <TablePagination 
         :tableOptions="tableOptions"
         totalVisible="7"
@@ -89,24 +90,27 @@
 
     export default {
         components: {
-        Breadcrumbs,
-        SimpleToolbar,
-        ResetTable,
-        DeleteAction,
-        SnackBar,
-        RowDelete,
-        EditTableTesting,
-        EditYearOnly,
-        TablePagination,
+            Breadcrumbs,
+            SimpleToolbar,
+            ResetTable,
+            DeleteAction,
+            SnackBar,
+            RowDelete,
+            EditTableTesting,
+            EditYearOnly,
+            TablePagination,
         },
         data: () => ({
         loading:true,
         delItem:'',
+        searchMode:false,
         tableOptions: {
             page: 1,
             itemsPerPage:20,
-            totalPages:10,
-            totalRecords:100
+            totalPages:1,
+            totalRecords:1,
+            numToSearch:0,
+            searchValue:''
         },
         snackbar: {
             snack: false,
@@ -172,25 +176,99 @@
 
         methods: {
         fetchTest () {
-        let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=1&PageSize=20`)
+            let vm = this 
+            vm.loading = true
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=1&PageSize=20`)
             .then((res) => {
-                vm.testings = res.data.data
-                vm.loading=false
                 vm.tableOptions.totalPages = res.data.totalPages
+                vm.tableOptions.itemsPerPage = res.data.pageSize
+                vm.tableOptions.totalRecords = res.data.totalRecords
+                vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
+                vm.testings = res.data.data
             })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => {vm.loading = false})
         },
+        
         updateTable(value) { 
-            if (value != this.tableOptions.page) {
-                let vm = this 
+            let vm = this
+            if (value != vm.tableOptions.page) {
+            if(vm.searchMode == false) {
+                vm.loading=true
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${value}&PageSize=20`)
                 .then((res) => {
                     vm.testings = res.data.data
                     vm.tableOptions.page = value
-                    vm.loading=false
-                }) 
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (vm.loading = false))
+            }
+            if(vm.searchMode == true) {
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+                .then((res) => {
+                    vm.testings = res.data.data
+                    vm.tableOptions.page = value
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => (vm.loading = false))
+            }
+            }
+        },
+
+        getSearch(value) {
+        let vm = this
+        if(value != '') { 
+            vm.loading=true
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+            .then((res) => {
+                vm.tableOptions.itemsPerPage = 20
+                vm.tableOptions.page = 1
+                vm.searchMode = true
+                vm.tableOptions.searchValue = value
+
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+                .then((res) => {
+                    vm.testings = res.data.data
+                    vm.tableOptions.totalPages = res.data.totalPages
+                    vm.tableOptions.totalRecords = res.data.totalRecords
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+            })
+            .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+            })
+            .finally(() => (vm.loading = false))
+            }
+            if(value == '') {
+            vm.searchMode = false
+            vm.fetchTest()
             }
         }
+
         },
     }
 </script>

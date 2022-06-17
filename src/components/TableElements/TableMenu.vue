@@ -69,7 +69,7 @@ export default {
                 this.$router.push({ name:'new_qa', params: { id: item.id } });
             }
             else if (action === "vhrd") {
-                this.$router.push({ name:'hrd_detail' });
+                this.$router.push({ name:'hrd_detail', params: { id: item.id } });
             }
             else if (action === "delete") {
                 this.input.editedIndex = this.table.indexOf(item)

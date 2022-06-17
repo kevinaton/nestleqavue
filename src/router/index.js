@@ -24,22 +24,22 @@ const routes = [
     component: QaView
   },
   {
-    path: '/casecost',
+    path: '/Casecost',
     name: 'casecost',
     component: CaseCost
   },
   {
-    path: '/microbecases',
+    path: '/Microbecases',
     name: 'microbecases',
     component: MicrobeCases
   },
   {
-    path: '/fmcases',
+    path: '/Fmcases',
     name: 'fmcases',
     component: FmCases
   },
   {
-    path: '/products',
+    path: '/Products',
     name: 'products',
     component: ProductsView
   },
@@ -49,42 +49,42 @@ const routes = [
     component: LaborView
   },
   {
-    path: '/changepassword',
+    path: '/Changepassword',
     name: 'change_password',
     component: ChangePasswordView
   },
   {
-    path: '/qa/newqa/:id',
+    path: '/Hrds/Qa/:id',
     name: 'new_qa',
     component: NewQARecords
   },
   {
-    path: '/testing',
+    path: '/TestCosts',
     name: 'testing',
     component: TestingView
   },
   {
-    path: '/roles',
+    path: '/Roles',
     name: 'roles',
     component: RolesView
   },
   {
-    path: '/users',
+    path: '/Users',
     name: 'users',
     component: UsersView
   },
   {
-    path: '/lookup',
+    path: '/Lookup',
     name: 'lookup',
     component: LookupView
   },
   {
-    path: '/viewhrd',
+    path: '/Hrds/hrd/:id',
     name: 'hrd_detail',
     component: ViewHRD
   },
   {
-    path: '/pestlog',
+    path: '/Pestlog',
     name: 'pestlog',
     component: PestLog
   }

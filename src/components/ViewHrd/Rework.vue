@@ -6,11 +6,11 @@
                 <v-col class="d-flex align-center">
                     <v-checkbox
                         class="mt-0 pt-0 mr-8"
-                        v-model="input.reworkApproved"
+                        v-model="inpValue.reworkApproved"
                         label="All Cases Accounted for?"
                     ></v-checkbox>
                     <v-alert class="mt-3" light>
-                        <p># of days to rework approval: {{input.daystorework}}</p>
+                        <p># of days to rework approval: {{inpValue.numberOfDaysToReworkApproval ? inpValue.numberOfDaysToReworkApproval : 'N/A'}}</p>
                     </v-alert>
                 </v-col>
             </v-row>
@@ -22,9 +22,10 @@
 export default {
     props: {
         name:'Rework',
-        input: {
+        inpValue: {
             type: Object,
             default: () => {},
+            required: false
         },
     }
 }

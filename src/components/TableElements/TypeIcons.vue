@@ -7,11 +7,11 @@
             v-on="on"
         >
         <v-icon :color="item ? 'gray' : 'error'">
-            {{ item ? iconType : "mdi-alert-circle-outline" }}
+            {{ iconType }}
         </v-icon>
         </v-btn>
         </template>
-        <span>{{ item ? iconName : "no data" }}</span>
+        <span>{{ iconName }}</span>
     </v-tooltip>
 </template>
 
@@ -45,8 +45,13 @@ export default {
     }),
     methods: {
         checkType() {
-            this.iconType = this[this.item].icon
-            this.iconName = this[this.item].name
+            if(this.item == null){
+                this.iconType = "mdi-alert-circle-outline"
+                this.iconName = "no data"
+            } else {
+                this.iconType = this[this.item].icon
+                this.iconName = this[this.item].name
+            }
         }
     },
 }

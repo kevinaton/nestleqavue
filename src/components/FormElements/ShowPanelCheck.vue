@@ -1,11 +1,34 @@
 <template>
     <div class="d-flex">
         <v-checkbox
-            v-for="(option, i) in items"
-            :key="i"
-            v-model="option.value"
-            :label="option.label"
+            v-model="inpValue.isHRD"
             class="mr-5"
+            label="HRD"
+        ></v-checkbox>
+        <v-checkbox
+            v-model="inpValue.isPest"
+            class="mr-5"
+            label="PEST"
+        ></v-checkbox>
+        <v-checkbox
+            v-model="inpValue.isSMI"
+            class="mr-5"
+            label="SMI"
+        ></v-checkbox>
+        <v-checkbox
+            v-model="inpValue.isFM"
+            class="mr-5"
+            label="FM"
+        ></v-checkbox>
+        <v-checkbox
+            v-model="inpValue.isNR"
+            class="mr-5"
+            label="NR"
+        ></v-checkbox>
+        <v-checkbox
+            v-model="inpValue.isMicro"
+            class="mr-5"
+            label="Micro"
         ></v-checkbox>
     </div>
 </template>
@@ -14,9 +37,9 @@
 export default {
     name: 'ShowPanelCheck',
     props: {     
-        items: {
-            type: Array,
-            default: () => [],
+        inpValue: {
+            type: Object,
+            default: () => {},
             required: false,
         }
     },
