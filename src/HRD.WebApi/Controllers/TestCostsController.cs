@@ -26,7 +26,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/TestCosts
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<TestCostViewModel>>> GetTestCosts([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -80,7 +80,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/TestCosts/5
         [HttpGet("{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<TestCostViewModel>> GetTestCost(int id)
         {
             var testCost = await _context.TestCosts.FindAsync(id);
@@ -104,7 +104,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/TestCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutTestCost(int id, TestCostViewModel model)
         {
             if (id != model.Id)
@@ -144,7 +144,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/TestCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<TestCostViewModel>> PostTestCost(TestCostViewModel model)
         {
             var testCost = new TestCost
@@ -164,7 +164,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/TestCosts/5
         [HttpDelete("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteTestCost(int id)
         {
             var testCost = await _context.TestCosts.FindAsync(id);
