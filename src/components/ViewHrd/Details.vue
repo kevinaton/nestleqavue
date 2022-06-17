@@ -79,7 +79,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.clear" label="Clear" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.clear" type="number" label="Clear" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -123,7 +123,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.numberOfDaysHeld" disabled label="Number of Days Held" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.numberOfDaysHeld" label="Number of Days Held" outlined></v-text-field>
                 </v-col>
                 <v-col>
                     <v-text-field v-model="inpValue.donate" label="Donate" outlined></v-text-field>
@@ -175,8 +175,8 @@
                 <v-col>
                     <v-card elevation="0" outlined>
                         <v-data-table
-                            :headers="input.firstHeader"
-                            :items="input.firstTable"
+                            :headers="input.fcHeader"
+                            :items="inpValue.hrdFc"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat class="text-h6">First Check</v-toolbar>
@@ -186,7 +186,7 @@
                                             <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
                                             </v-col>
                                             <v-col>
-                                                <v-text-field label="Date logged in" outlined readonly :value="inpValue.fcDate"></v-text-field>
+                                                <v-text-field label="Date logged in" outlined readonly :value="getFcDateTime"></v-text-field>
                                             </v-col>
                                         </v-row>
                                     </v-col>
@@ -209,8 +209,8 @@
                 <v-col>
                     <v-card elevation="0" outlined>
                         <v-data-table
-                            :headers="input.firstHeader"
-                            :items="input.firstTable"
+                            :headers="input.fcHeader"
+                            :items="inpValue.hrdDc"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat class="text-h6">Second Check</v-toolbar>
@@ -220,7 +220,7 @@
                                             <v-text-field label="Username" outlined readonly :value="inpValue.dcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field label="Date logged in" outlined readonly :value="inpValue.dcDate"></v-text-field>
+                                            <v-text-field label="Date logged in" outlined readonly :value="getDcDateTime"></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-col>
@@ -248,6 +248,7 @@
 <script>
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
+import moment from 'moment'
 
 export default {
     name:'Details',
@@ -298,7 +299,13 @@ export default {
             let vm = this
             vm.oPoLength = vm.inpValue.hrdPo?.length
             return vm.inpValue?.hrdPo
-        }
+        },
+        getFcDateTime() {
+            return moment.utc(this.inpValue.fcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
+        getDcDateTime() {
+            return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
     },
     methods: {
         inputPO(value) {

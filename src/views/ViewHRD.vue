@@ -45,7 +45,7 @@
             />
 
             <IncidentReport
-                :input="incirep"
+                :input="getHRD"
             />
             
             <Scrap 
@@ -158,37 +158,9 @@
                     allow: true,
                     yearonly: '',
                 },
-                firstHeader: [
-                    { text:'Location', value: 'aLocation' },
-                    { text: '# Cases', value: 'aCases' },
-                ],
-                firstTable: [
-                    { aLocation:'DC5070', aCases:'14' },
-                    { aLocation:'DC8821', aCases:'45' },
-                    { aLocation:'DC8329', aCases:'92' },
-                    { aLocation:'DC1029', aCases:'92' },
-                    { aLocation:'DC2123', aCases:'83' },
-                    { aLocation:'DC8392', aCases:'180' },
-                    { aLocation:'DC9382', aCases:'4' },
-                    { aLocation:'DC9009', aCases:'74' },
-                    { aLocation:'DC0001', aCases:'67' },
-                    { aLocation:'DC9381', aCases:'76' },
-                ],
-                secheader: [
-                    { text:'Location', value: 'bLocation' },
-                    { text: '# Cases', value: 'bCases' },
-                ],
-                secTable: [
-                    { bLocation:'DC5070', bCases:'14' },
-                    { bLocation:'DC8821', bCases:'45' },
-                    { bLocation:'DC8329', bCases:'92' },
-                    { bLocation:'DC1029', bCases:'92' },
-                    { bLocation:'DC2123', bCases:'83' },
-                    { bLocation:'DC8392', bCases:'180' },
-                    { bLocation:'DC9382', bCases:'4' },
-                    { bLocation:'DC9009', bCases:'74' },
-                    { bLocation:'DC0001', bCases:'67' },
-                    { bLocation:'DC9381', bCases:'76' },
+                fcHeader: [
+                    { text:'Location', value: 'location' },
+                    { text: '# Cases', value: 'numberOfCases' },
                 ],
                 totalCase: [
                     21323, 21323
@@ -223,19 +195,13 @@
         created() {
             this.fetchHRD()
         },
-        computed: {
-            getHRD(){
-            let obj = {}
-            obj = this.hrd
-            return obj
-        },
-        },
         methods: {
             fetchHRD () {
             let vm = this 
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
                 vm.hrd = res.data
+                console.log(vm.hrd)
                 })
                 .catch(err => {
                     this.snackbar.snack = true
@@ -248,6 +214,7 @@
             submitHRD(value) {
             let vm = this
             let d = vm.hrd
+            console.log(d)
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {
@@ -321,7 +288,8 @@
                     timeOfIncident: d.timeOfIncident,
                     type: d.type,
                     weekHeld: d.weekHeld,
-                    yearHeld: d.yearHeld
+                    yearHeld: d.yearHeld,
+                    yearOfIncident: d.yearOfIncident
                 })
                 .then(response => 
                 {
@@ -336,9 +304,15 @@
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (vm.valid = false))
             }
         }
+        },
+        computed: {
+            getHRD(){
+            let obj = {}
+            obj = this.hrd
+            return obj
+            },
         },
     }
 </script>

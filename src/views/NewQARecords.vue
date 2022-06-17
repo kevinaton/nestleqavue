@@ -97,6 +97,7 @@ import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 import BackBtn from '@/components/FormElements/BackBtn.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 
+
 export default {
     name:'NewQARecords',
     components: {
@@ -276,7 +277,8 @@ export default {
         },
         submitQA(value) {
             let vm = this
-            let d = this.qaRec
+            let d = vm.qaRec
+            console.log(d)
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`,  {
@@ -363,7 +365,6 @@ export default {
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (vm.valid = false))
             }
         }
     },

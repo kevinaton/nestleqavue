@@ -131,7 +131,6 @@ export default {
         setDate(y) {
             let e = new Date().toISOString()
             this.tempDate = moment.utc(y).format("YYYY-MM-DD")
-            console.log(this.tempDate)
             if(this.tempTime == null || '' || 'Invalid date') {
                 this.tempTime = '00:00:00'
             }
