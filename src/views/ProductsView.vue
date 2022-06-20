@@ -39,6 +39,7 @@
         :table="props.item.fert"
         editData="fert"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.fert = value }"
       />
@@ -49,6 +50,7 @@
         :table="props.item.description"
         editData="description"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
@@ -59,6 +61,7 @@
         :table="props.item.costPerCase"
         editData="description"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.costPerCase = value }"
         type="number"
@@ -70,6 +73,7 @@
         :table="props.item.country"
         editData="country"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.country = value }"
       />
@@ -187,6 +191,14 @@
           holiday: true,
         },
       },
+      rules: {
+          required: value => !!value || 'Required.',
+          counter: value => value.length <= 80 || 'Max 80 characters',
+          email: value => {
+              const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              return pattern.test(value) || 'Invalid e-mail.'
+          },
+      },
       tf: [
         'True', 'False'
       ],
@@ -194,7 +206,6 @@
         {
           text: 'Year',
           align: 'start',
-          sortable: true,
           value: 'year',
         },
         { text: 'FERT', value: 'fert' },

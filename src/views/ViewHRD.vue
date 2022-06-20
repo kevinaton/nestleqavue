@@ -214,7 +214,6 @@
             submitHRD(value) {
             let vm = this
             let d = vm.hrd
-            console.log(d)
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {

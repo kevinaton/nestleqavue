@@ -48,7 +48,8 @@
                     <v-col>
                         <v-text-field 
                             outlined
-                            v-model="inpValue.originator" 
+                            v-model="inpValue.originator"
+                            :rules="[rules.counter]"
                             label="Originator"
                         ></v-text-field>
                     </v-col>
@@ -60,7 +61,7 @@
                         <v-text-field 
                             outlined 
                             v-model="inpValue.buManager"
-                            :rules="[rules.required]"
+                            :rules="[rules.required, rules.counter]"
                             label="BU Manager*"></v-text-field>
                     </v-col>
                     <v-col>
@@ -89,7 +90,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.lineSupervisor"
-                            :rules="[rules.required]"
+                            :rules="[rules.required, rules.counter]"
                             label="Line Supervisor*"
                         ></v-text-field>
                     </v-col>
@@ -109,6 +110,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.areaIfOther"
+                            :rules="[rules.counter]"
                             v-if="showIfOther" 
                             label="If other"
                         ></v-text-field>
@@ -143,6 +145,7 @@
                         <v-text-field 
                             outlined 
                             v-model="inpValue.additionalDescription" 
+                            :rules="[rules.counter]"
                             label="Additional Description"
                         ></v-text-field>
                     </v-col>
@@ -152,21 +155,23 @@
                         <v-textarea 
                             outlined
                             v-model="inpValue.detailedDescription"
+                            :rules="[rules.counter]"
                             label="Detailed Description"
                         ></v-textarea>
                     </v-col>
                 </v-row>
-                <v-row class="mt-0">
+                <v-divider></v-divider>
+                <v-row class="mt-8">
                     <v-col class="mx-4">
                         <v-row>
                             <v-file-input
                             chips
                             counter
-                            outlined
+                            filled
                             multiple
                             cols="4"
                             class="mr-4"
-                            prepend-icon="mdi-camera"
+                            prepend-icon="mdi-file"
                             truncate-length="26"
                             label="Image files"
                             placeholder="Upload image"
@@ -177,35 +182,31 @@
                     <v-col></v-col>
                 </v-row>
                 <v-row class="mb-6"> 
-                    <v-col
-                        v-for="n in 4"
-                        :key="n"
-                        cols="1"
-                    >
-                        <v-img
-                            :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-                            :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-                            aspect-ratio="1"
-                            class="grey lighten-2"
-                            max-height="200"
-                            max-width="200"
+                    <v-col>
+                        <v-data-table
+                        :headers="input.fileHeaders"
+                        :items="inpValue.hrdNote"
+                        class="mb-6 pt-0 elevation-1"
                         >
-                            <v-btn x-small fab class="imgrem">
-                                <v-icon small dark>mdi-close</v-icon>
-                            </v-btn>
-                            <template v-slot:placeholder>
-                            <v-row
-                                class="fill-height ma-0"
-                                align="center"
-                                justify="center"
-                            >
-                                <v-progress-circular
-                                indeterminate
-                                color="grey lighten-5"
-                                ></v-progress-circular>
-                            </v-row>
+                            <template v-slot:[`item.date`]="{ item }">
+                                {{ getFormattedDate(item.date) }}
                             </template>
-                        </v-img>
+                            <template v-slot:[`item.actions`]="{ item }">
+                                <v-icon
+                                    small
+                                    class="mr-2"
+                                    @click="downloadItem(item)"
+                                >
+                                    mdi-download
+                                </v-icon>
+                                <v-icon
+                                    small
+                                    @click="deleteItem(item)"
+                                >
+                                    mdi-delete
+                                </v-icon>
+                            </template>
+                        </v-data-table>
                     </v-col>
                 </v-row>
         </v-expansion-panel-content>
@@ -219,6 +220,7 @@ import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
+import moment from 'moment'
 
 export default {
     components: {
@@ -244,10 +246,9 @@ export default {
         },
         rules: {
             type: Object,
-            default: {},
+            default: () => {},
             required: false,
         },
-
     },
     data: () => ({
     }),
@@ -283,6 +284,12 @@ export default {
         }
     },
     methods: {
+        getFormattedDate(date) {
+            return moment(date).format('MM-DD-YYYY; hh:mm')
+        },
+        downloadItem(item) {
+            console.log(item.path)
+        }
     }
 }
 </script>
