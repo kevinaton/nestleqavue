@@ -16,12 +16,12 @@
                 </v-col>
                 <v-col class="mt-0">
                     <SelectDropdownString 
-                    :dropdownValue=7
-                    :inpValue="inpValue.continuousRun" 
-                    label="Continuous Run" 
-                    @change="(value) => {
-                        inpValue.continuousRun = value   
-                    }"
+                        :dropdownValue=7
+                        :inpValue="inpValue.continuousRun" 
+                        label="Continuous Run" 
+                        @change="(value) => {
+                            inpValue.continuousRun = value   
+                        }"
                     />
                 </v-col>
             </v-row>
@@ -79,7 +79,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.clear" type="number" label="Clear" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.clear" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Clear" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -87,7 +87,7 @@
                     <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required]" label="Completed by*" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.scrap" label="Scrap" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.scrap" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Scrap" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -101,7 +101,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.thriftStore" label="Thrift Store" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.thriftStore" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Thrift Store" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -118,15 +118,15 @@
                     ></v-checkbox>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.samples" label="Samples" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.samples" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Samples" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.numberOfDaysHeld" label="Number of Days Held" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.donate" label="Donate" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.donate" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Donate" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">

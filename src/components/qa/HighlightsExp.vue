@@ -40,7 +40,7 @@
                             outlined
                             v-model="inpValue.dayCode"
                             :rules="[rules.required]"
-                            label="Day Code*"
+                            label="Day Code"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -62,7 +62,7 @@
                             outlined 
                             v-model="inpValue.buManager"
                             :rules="[rules.required, rules.counter]"
-                            label="BU Manager*"></v-text-field>
+                            label="BU Manager"></v-text-field>
                     </v-col>
                     <v-col>
                         <SelectDropdownString
@@ -91,7 +91,7 @@
                             outlined
                             v-model="inpValue.lineSupervisor"
                             :rules="[rules.required, rules.counter]"
-                            label="Line Supervisor*"
+                            label="Line Supervisor"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -155,7 +155,6 @@
                         <v-textarea 
                             outlined
                             v-model="inpValue.detailedDescription"
-                            :rules="[rules.counter]"
                             label="Detailed Description"
                         ></v-textarea>
                     </v-col>
@@ -171,10 +170,10 @@
                             multiple
                             cols="4"
                             class="mr-4"
-                            prepend-icon="mdi-file"
+                            prepend-icon=""
+                            prepend-inner-icon="mdi-paperclip"
                             truncate-length="26"
-                            label="Image files"
-                            placeholder="Upload image"
+                            placeholder="Upload file"
                             ></v-file-input>
                             <v-btn cols="4" x-large elevation="2">Upload</v-btn>
                         </v-row>

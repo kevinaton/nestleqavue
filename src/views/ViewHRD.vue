@@ -49,7 +49,9 @@
             />
             
             <Scrap 
-                :inpValue="getHRD"    
+                :inpValue="getHRD"   
+                :input="scrap" 
+                :rules="rules"
             />
         </v-expansion-panels>
 
@@ -90,12 +92,13 @@
             backbtn:false,
             panel: [0,1,2,3,4,5],
             rules: {
-                required: value => !!value || 'Required.',
-                counter: value => value.length <= 20 || 'Max 20 characters',
-                email: value => {
-                    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                    return pattern.test(value) || 'Invalid e-mail.'
-                },
+                    required: value => !!value || 'Required.',
+                    counter: value => value && value.length <= 80 || 'Max 80 characters',
+                    int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
+                    email: value => {
+                        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        return pattern.test(value) || 'Invalid e-mail.'
+                    }
             },
             loading:true,
             valid:false,
@@ -105,12 +108,12 @@
             },
             highlights: {
                 calendar1: {
-                time: null,
-                date: null,
-                date2: null,
-                modal: false,
-                menu: false,
-                allow: true,
+                    time: null,
+                    date: null,
+                    date2: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
                 },
                 yearOnly: {
                     year:'2017'
@@ -178,12 +181,54 @@
                 yearonly:''
             },
             scrap: {
-                visible: [
-                    { label:"Approval Request by QA", value:true },
-                    { label:"Plant Manager Approval", value:true },
-                    { label:"Plant Controller Approval", value:true },
-                    { label:"Destroyed", value:true },
-                ],
+                qaCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                qaClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                pmCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                pmClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                pcCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                pcClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                dCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                dClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
             },
             hrd:{},
             snackbar: {
@@ -201,7 +246,6 @@
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
                 vm.hrd = res.data
-                console.log(vm.hrd)
                 })
                 .catch(err => {
                     this.snackbar.snack = true

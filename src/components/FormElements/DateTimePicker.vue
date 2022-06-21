@@ -20,6 +20,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    clearable
                 ></v-text-field>
                 </template>
                 <v-date-picker
@@ -50,6 +51,7 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
+                    clearable
                 ></v-text-field>
                 </template>
                 <v-time-picker

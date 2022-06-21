@@ -5,8 +5,9 @@
             <v-row>
                 <v-col class="d-flex align-center">
                     <YearOnly
-                        v-model="input.yearOfIncident"
+                        :inpValue="input.yearOfIncident"
                         label="Year"
+                        :disabled="false"
                         @change="(value) => { input.yearOfIncident = value }"
                     />
                 </v-col>

@@ -197,6 +197,7 @@
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.qa = res.data.data
+            console.log(vm.qa)
         })
         .catch(err => {
             this.snackbar.snack = true
