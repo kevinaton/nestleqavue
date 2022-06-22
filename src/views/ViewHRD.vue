@@ -135,6 +135,13 @@
                     menu: false,
                     label: ''
                 },
+                fileHeaders: [
+                    { text:'File', value: 'filename' },
+                    { text:'Category', value: 'category' },
+                    { text:'Size', value: 'size' },
+                    { text:'Date', value: 'date' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+                ],
             },
             details: {
                 gstd:false,

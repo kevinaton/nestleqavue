@@ -10,13 +10,14 @@
         <template v-slot:activator="{ on, attrs }">
         <v-text-field
             outlined
-            v-model="getDate"
+            :value="getDate"
             :label="label"
             :rules="rules"
             prepend-inner-icon="mdi-calendar"
             readonly
             v-bind="attrs"
             v-on="on"
+            clearable
         ></v-text-field>
         </template>
         <v-date-picker
@@ -63,6 +64,7 @@ export default {
             if (value != null) {
                 d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
             } else {
+                d = moment.utc(e).format('MM-DD-YYYY')
                 this.tempTime = moment.utc(e).format('hh:mm:ss')
             }
             return d

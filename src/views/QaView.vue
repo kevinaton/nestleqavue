@@ -190,14 +190,13 @@
       fetchHrds () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20&SortColumn=id&SortOrder=desc`)
         .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.qa = res.data.data
-            console.log(vm.qa)
         })
         .catch(err => {
             this.snackbar.snack = true
@@ -213,7 +212,7 @@
         if (value != vm.tableOptions.page) {
           if(vm.searchMode == false) {
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SortColumn=id&SortOrder=desc`)
           .then((res) => {
               vm.qa = res.data.data
               vm.tableOptions.page = value

@@ -180,12 +180,12 @@
                     </v-col>
                     <v-col></v-col>
                 </v-row>
-                <v-row class="mb-6"> 
+                <v-row> 
                     <v-col>
                         <v-data-table
                         :headers="input.fileHeaders"
                         :items="inpValue.hrdNote"
-                        class="mb-6 pt-0 elevation-1"
+                        class="mb-6 pt-0"
                         >
                             <template v-slot:[`item.date`]="{ item }">
                                 {{ getFormattedDate(item.date) }}

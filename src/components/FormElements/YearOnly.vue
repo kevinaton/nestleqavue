@@ -47,7 +47,7 @@ export default {
     emits: ['change'],
     methods: {
         updateValue(inp) {
-            let value = inp.toString()
+            let value = inp?.toString() || ''
             this.$emit('change', value)
         }
     }
