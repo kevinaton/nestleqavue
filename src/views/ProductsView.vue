@@ -244,7 +244,7 @@
       fetchProducts () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=1&PageSize=20`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=1&PageSize=20&SortColumn=year&SortOrder=desc`)
           .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
@@ -266,7 +266,7 @@
         if (value != vm.tableOptions.page) {
           if(vm.searchMode == false) {
             vm.loading=true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=20`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=20&SortColumn=year&SortOrder=desc`)
             .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.page = value
@@ -281,7 +281,7 @@
           }
           if(vm.searchMode == true) {
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=year&SortOrder=desc`)
             .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.page = value
@@ -301,14 +301,14 @@
         let vm = this
         if(value != '') { 
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
           .then((res) => {
               vm.tableOptions.itemsPerPage = 20
               vm.tableOptions.page = 1
               vm.searchMode = true
               vm.tableOptions.searchValue = value
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
               .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages

@@ -118,6 +118,9 @@ export default {
         rules: {
             required: value => !!value || 'Required.',
             counter: value => (value || '').length <= 80 || 'Max 80 characters',
+            stringCount: value => (value || '').length <= 50 || 'Max 50 characters',
+            dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
+            int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 return pattern.test(value) || 'Invalid e-mail.'

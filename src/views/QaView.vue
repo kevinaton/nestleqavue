@@ -6,7 +6,7 @@
       :headers="headers"
       :page.sync="tableOptions.page"
       :items="qa"
-      :options="tableOptions"
+      :options.sync="tableOptions"
       hide-default-footer
     >
       <template v-slot:top>
@@ -186,6 +186,9 @@
     created () {
       this.fetchHrds()
     },
+
+    computed: {
+    },
     methods: {
       fetchHrds () {
         let vm = this 
@@ -227,7 +230,7 @@
           }
           if(vm.searchMode == true) {
               vm.loading = true
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=id&SortOrder=desc`)
               .then((res) => {
                   vm.qa = res.data.data
                   vm.tableOptions.page = value
@@ -247,14 +250,14 @@
         let vm = this
         if(value != '') { 
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
           .then((res) => {
               vm.tableOptions.itemsPerPage = 20
               vm.tableOptions.page = 1
               vm.searchMode = true
               vm.tableOptions.searchValue = value
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
               .then((res) => {
                 vm.qa = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages

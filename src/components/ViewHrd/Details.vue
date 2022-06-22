@@ -200,7 +200,7 @@
                         >
                             <v-list-item>
                             <v-list-item-content class="pa-0">
-                                <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[0]}}</v-list-item-title>
+                                <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-alert>
@@ -234,7 +234,7 @@
                         >
                             <v-list-item>
                             <v-list-item-content class="pa-0">
-                                <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[1]}}</v-list-item-title>
+                                <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdDcTotalCases}}</v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-alert>

@@ -39,7 +39,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.dayCode"
-                            :rules="[rules.required]"
+                            :rules="[rules.required, rules.dayCode]"
                             label="Day Code"
                         ></v-text-field>
                     </v-col>
@@ -62,7 +62,8 @@
                             outlined 
                             v-model="inpValue.buManager"
                             :rules="[rules.required, rules.counter]"
-                            label="BU Manager"></v-text-field>
+                            label="BU Manager">
+                        </v-text-field>
                     </v-col>
                     <v-col>
                         <SelectDropdownString
@@ -73,6 +74,24 @@
                                 inpValue.type = value   
                             }"
                         />
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        <v-text-field 
+                            outlined 
+                            v-model="inpValue.fert"
+                            :rules="[rules.counter]"
+                            label="FERT">
+                        </v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field 
+                            outlined 
+                            v-model="inpValue.fertDescription"
+                            :rules="[rules.counter]"
+                            label="FERT Description">
+                        </v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
