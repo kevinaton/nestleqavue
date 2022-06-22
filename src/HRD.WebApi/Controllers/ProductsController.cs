@@ -52,7 +52,7 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.Id)
                         : query.OrderBy(o => o.Id);
                     break;
-                case "daycode":
+                case "year":
                     query = validFilter.SortOrder == "desc"
                         ? query.OrderByDescending(o => o.Year)
                         : query.OrderBy(o => o.Year);
