@@ -220,6 +220,9 @@ namespace HRD.WebApi.Controllers
                 Comments = hrd.Comments,
                 YearOfIncident = hrd.YearOfIncident,
 
+                HrdDcTotalCases = hrd.Hrddcs.Sum(s => s.NumberOfCases),
+                HrdFcTotalCases = hrd.Hrdfcs.Sum(s => s.NumberOfCases),
+
                 HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
