@@ -55,16 +55,16 @@ namespace HRD.WebApi.Controllers
             //Sorting
             switch (validFilter.SortColumn)
             {
+                case "id":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Id)
+                        : query.OrderBy(o => o.Id);
+                    break;
                 case "daycode":
                     query = validFilter.SortOrder == "desc"
                         ? query.OrderByDescending(o => o.DayCode)
                         : query.OrderBy(o => o.DayCode);
                     break;
-                //case "type":
-                //    query = validFilter.SortOrder == "desc"
-                //        ? query.OrderByDescending(o => o.Type)
-                //        : query.OrderBy(o => o.Type);
-                //    break;
                 case "fert":
                     query = validFilter.SortOrder == "desc"
                         ? query.OrderByDescending(o => o.Fert)
@@ -137,6 +137,7 @@ namespace HRD.WebApi.Controllers
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
                                          .Include(i => i.Hrdfcs)
                                          .Include(i => i.Hrdpos)
+                                         .Include(i => i.Hrdnotes)
                                          .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
@@ -168,10 +169,6 @@ namespace HRD.WebApi.Controllers
                 Gstdrequired = hrd.Gstdrequired,
                 HourCode = hrd.HourCode,
                 ContinuousRun = hrd.ContinuousRun,
-
-                HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
 
                 QaComments = hrd.Qacomments,
                 DateCompleted = hrd.DateCompleted,
@@ -222,6 +219,11 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWhen = hrd.ApprovedByDistroyedWhen,
                 Comments = hrd.Comments,
                 YearOfIncident = hrd.YearOfIncident,
+
+                HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
+                HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
+                HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
             };
 
             return model;
@@ -261,6 +263,7 @@ namespace HRD.WebApi.Controllers
                 DetailedDescription = model.DetailedDescription,
                 Gstdrequired = model.Gstdrequired,
                 HourCode = model.HourCode,
+                ContinuousRun = model.ContinuousRun,
 
                 Qacomments = model.QaComments,
                 DateCompleted = model.DateCompleted,
@@ -277,6 +280,7 @@ namespace HRD.WebApi.Controllers
                 NumberOfDaysHeld = model.NumberOfDaysHeld,
                 Donate = model.Donate,
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
+                OtherHrdaffected = model.OtherHrdAffected,
                 HighRisk = model.HighRisk,
                 OtherHrdnum = model.OtherHrdNum,
 
@@ -296,6 +300,7 @@ namespace HRD.WebApi.Controllers
 
                 //not mapped
                 NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
+                YearOfIncident = model.YearOfIncident,
                 CaseCount = model.CaseCount,
                 ReasonAction = model.ReasonAction,
                 IsApprovalRequestByQa = model.ApprovalRequestByQa,
@@ -311,7 +316,6 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
                 ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
-                YearOfIncident = model.YearOfIncident,
             };
 
             if (model.HrdDc != null)
@@ -384,6 +388,43 @@ namespace HRD.WebApi.Controllers
                 }
             }
 
+            if (model.HrdNote != null)
+            {
+                foreach (var item in model.HrdNote)
+                {
+                    var note = _context.Hrdnotes.FirstOrDefault(f => f.Id == item.Id);
+
+                    if (note != null)
+                    {
+                        note.Id = item.Id;
+                        note.Hrdid = id;
+                        note.Category = item.Category;
+                        note.Date = item.Date;
+                        note.Description = item.Description;
+                        note.FileName = item.Filename;
+                        note.Path = item.Path;
+                        note.UserId = item.UserId;
+                        note.Size = item.Size;
+                        _context.Entry(note).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        note = new Hrdnote();
+                        note.Hrdid = id;
+                        note.Category = item.Category;
+                        note.Date = item.Date;
+                        note.Description = item.Description;
+                        note.FileName = item.Filename;
+                        note.Path = item.Path;
+                        note.UserId = item.UserId;
+                        note.Size = item.Size;
+                        _context.Entry(note).State = EntityState.Added;
+                    }
+
+                    hrd.Hrdnotes.Add(note);
+                }
+            }
+
             _context.Entry(hrd).State = EntityState.Modified;
 
             try
@@ -433,6 +474,7 @@ namespace HRD.WebApi.Controllers
                 DetailedDescription = model.DetailedDescription,
                 Gstdrequired = model.Gstdrequired,
                 HourCode = model.HourCode,
+                ContinuousRun = model.ContinuousRun,
 
                 Qacomments = model.QaComments,
                 DateCompleted = model.DateCompleted,
@@ -449,11 +491,9 @@ namespace HRD.WebApi.Controllers
                 NumberOfDaysHeld = model.NumberOfDaysHeld,
                 Donate = model.Donate,
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
+                OtherHrdaffected = model.OtherHrdAffected,
                 HighRisk = model.HighRisk,
                 OtherHrdnum = model.OtherHrdNum,
-                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
-                Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
-                Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
 
                 Fcdate = model.FcDate,
                 Fcuser = model.FcUser,
@@ -471,6 +511,7 @@ namespace HRD.WebApi.Controllers
 
                 //not mapped
                 NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
+                YearOfIncident = model.YearOfIncident,
                 CaseCount = model.CaseCount,
                 ReasonAction = model.ReasonAction,
                 IsApprovalRequestByQa = model.ApprovalRequestByQa,
@@ -486,7 +527,11 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
                 ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
-                YearOfIncident = model.YearOfIncident,
+
+                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
+                Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
+                Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
             };
 
             _context.Hrds.Add(hrd);
