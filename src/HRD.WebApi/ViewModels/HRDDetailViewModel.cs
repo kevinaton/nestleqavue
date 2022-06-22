@@ -92,5 +92,7 @@ namespace HRD.WebApi.ViewModels
         public string ApprovedByDistroyedWho { get; set; }
         public DateTime? ApprovedByDistroyedWhen { get; set; }
         public string Comments { get; set; }
+        public int HrdFcTotalCases { get; set; }
+        public int HrdDcTotalCases { get; set; }
     }
 }
