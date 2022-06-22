@@ -625,7 +625,7 @@ namespace HRD.WebApi.Controllers
                 Originator = qa.Originator,
                 BUManager = qa.Bumanager,
                 Type = qa.CodingType,
-                Fert = qa.FertDescription,
+                Fert = qa.Globenum,
                 FertDescription = qa.FertDescription,
                 Line = qa.Line,
                 LineSupervisor = qa.LineSupervisor,
