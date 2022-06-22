@@ -39,8 +39,6 @@ namespace HRD.WebApi.ViewModels
         public string AdditionalDescription { get; set; }
         public string DetailedDescription { get; set; }
 
-        //FileUploadDocument
-
         //HRD
         public string CasesHeld { get; set; }
         public string HourCode { get; set; }

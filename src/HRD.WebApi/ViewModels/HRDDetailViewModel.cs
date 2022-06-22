@@ -8,6 +8,7 @@ namespace HRD.WebApi.ViewModels
     {
         public HRDDetailViewModel()
         {
+            HrdNote = new List<HrdNoteViewModel>();
             HrdDc = new List<HrdDCViewModel>();
             HrdFc = new List<HrdFCViewModel>();
             HrdPo = new List<HrdPoViewModel>();
@@ -38,6 +39,7 @@ namespace HRD.WebApi.ViewModels
         public bool? Gstdrequired { get; set; }
         public string HourCode { get; set; }
         public string ContinuousRun { get; set; }
+        public List<HrdNoteViewModel> HrdNote { get; set; }
         public List<HrdDCViewModel> HrdDc { get; set; }
         public List<HrdFCViewModel> HrdFc { get; set; }
         public List<HrdPoViewModel> HrdPo { get; set; }
