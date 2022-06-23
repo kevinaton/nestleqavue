@@ -14,7 +14,7 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-text-field v-model="inpValue.caseCount" label="Case Count" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.caseCount" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
                 </v-col>
                 <v-col>
                     <v-text-field v-model="inpValue.reasonAction" label="Reason Action" outlined></v-text-field>
@@ -65,7 +65,15 @@
                     <v-text-field v-model="inpValue.approvedByQAWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByQAWhen" label="When" outlined></v-text-field>
+                    <DateTimePicker
+                        :items1="input.qaCalendar"
+                        :items2="input.qaClock"
+                        :inpValue="qaDate"
+                        :rules="[rules.required]"
+                        label1="Date"
+                        label2="Time"
+                        @change="(value) => { inpValue.approvedByQAWhen = value }"
+                    />
                 </v-col>
             </v-row>
             <v-row v-if="inpValue.isPlantManagerAprpoval" class="mt-0">
@@ -89,7 +97,15 @@
                     <v-text-field v-model="inpValue.approvedByPlantManagerWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedPlantManagerQAWhen" label="When" outlined></v-text-field>
+                    <DateTimePicker
+                        :items1="input.pmCalendar"
+                        :items2="input.pmClock"
+                        :inpValue="pmDate"
+                        :rules="[rules.required]"
+                        label1="Date"
+                        label2="Time"
+                        @change="(value) => { inpValue.approvedPlantManagerQAWhen = value }"
+                    />
                 </v-col>
             </v-row>
             <v-row v-if="inpValue.isPlantControllerApproval" class="mt-0">
@@ -113,7 +129,15 @@
                     <v-text-field v-model="inpValue.approvedByPlantControllerWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByPlantControllerWhen" label="When" outlined></v-text-field>
+                    <DateTimePicker
+                        :items1="input.pcCalendar"
+                        :items2="input.pcClock"
+                        :inpValue="pcDate"
+                        :rules="[rules.required]"
+                        label1="Date"
+                        label2="Time"
+                        @change="(value) => { inpValue.approvedByPlantControllerWhen = value }"
+                    />
                 </v-col>
             </v-row>
             <v-row v-if="inpValue.isDestroyed" class="mt-0">
@@ -137,7 +161,15 @@
                     <v-text-field v-model="inpValue.approvedByDistroyedWho" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByDistroyedWhen" label="When" outlined></v-text-field>
+                    <DateTimePicker
+                        :items1="input.dCalendar"
+                        :items2="input.dClock"
+                        :inpValue="dDate"
+                        :rules="[rules.required]"
+                        label1="Date"
+                        label2="Time"
+                        @change="(value) => { inpValue.approvedByDistroyedWhen = value }"
+                    />
                 </v-col>
             </v-row>
         </v-expansion-panel-content>
@@ -145,14 +177,66 @@
 </template>
 
 <script>
+import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 export default {
+    name:'Scrap',
+    components: {
+        DateTimePicker,
+    },
     props: {
-        name:'Scrap',
         inpValue: {
             type: Object,
             default: () => {},
             required: false
         },
+        input: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        rules: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
+    computed: {
+        qaDate(){
+            let obj
+            obj = this.inpValue.approvedByQAWhen
+            if(obj){
+                this.input.qaCalendar.allow=false
+                this.input.qaCalendar.menu=false
+            }
+            return obj
+        },
+        pmDate(){
+            let obj
+            obj = this.inpValue.approvedPlantManagerQAWhen
+            if(obj){
+                this.input.pmCalendar.allow=false
+                this.input.pmCalendar.menu=false
+            }
+            return obj
+        },
+        pcDate(){
+            let obj
+            obj = this.inpValue.approvedByPlantControllerWhen
+            if(obj){
+                this.input.pcCalendar.allow=false
+                this.input.pcCalendar.menu=false
+            }
+            return obj
+        },
+        dDate(){
+            let obj
+            obj = this.inpValue.approvedByDistroyedWhen
+            if(obj){
+                this.input.dCalendar.allow=false
+                this.input.dCalendar.menu=false
+            }
+            return obj
+        },
+    }
 }
 </script>

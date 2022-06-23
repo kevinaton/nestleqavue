@@ -29,7 +29,7 @@
                     color="primary"
                     text
                     large
-                    @click="input.submitDialog = false, submitUpdate(), Validate"
+                    @click="input.submitDialog = false, submitUpdate(), validate"
                 >
                     Submit
                 </v-btn>
@@ -93,8 +93,8 @@ export default {
     }),
     emits: ["change"],
     methods: {
-        Validate() {
-            this.$refs.form.submitUpdate()
+        validate() {
+            this.$refs.form.validate()
         },
         submitUpdate() {
             let value = true

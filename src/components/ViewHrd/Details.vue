@@ -16,12 +16,12 @@
                 </v-col>
                 <v-col class="mt-0">
                     <SelectDropdownString 
-                    :dropdownValue=7
-                    :inpValue="inpValue.continuousRun" 
-                    label="Continuous Run" 
-                    @change="(value) => {
-                        inpValue.continuousRun = value   
-                    }"
+                        :dropdownValue=7
+                        :inpValue="inpValue.continuousRun" 
+                        label="Continuous Run" 
+                        @change="(value) => {
+                            inpValue.continuousRun = value   
+                        }"
                     />
                 </v-col>
             </v-row>
@@ -79,7 +79,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.clear" label="Clear" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.clear" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Clear" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -87,7 +87,7 @@
                     <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required]" label="Completed by*" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.scrap" label="Scrap" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.scrap" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Scrap" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -101,7 +101,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.thriftStore" label="Thrift Store" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.thriftStore" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Thrift Store" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -118,15 +118,15 @@
                     ></v-checkbox>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.samples" label="Samples" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.samples" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Samples" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.numberOfDaysHeld" disabled label="Number of Days Held" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.donate" label="Donate" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.donate" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Donate" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -175,8 +175,8 @@
                 <v-col>
                     <v-card elevation="0" outlined>
                         <v-data-table
-                            :headers="input.firstHeader"
-                            :items="input.firstTable"
+                            :headers="input.fcHeader"
+                            :items="inpValue.hrdFc"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat class="text-h6">First Check</v-toolbar>
@@ -186,7 +186,7 @@
                                             <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
                                             </v-col>
                                             <v-col>
-                                                <v-text-field label="Date logged in" outlined readonly :value="inpValue.fcDate"></v-text-field>
+                                                <v-text-field label="Date logged in" outlined readonly :value="getFcDateTime"></v-text-field>
                                             </v-col>
                                         </v-row>
                                     </v-col>
@@ -200,7 +200,7 @@
                         >
                             <v-list-item>
                             <v-list-item-content class="pa-0">
-                                <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[0]}}</v-list-item-title>
+                                <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-alert>
@@ -209,8 +209,8 @@
                 <v-col>
                     <v-card elevation="0" outlined>
                         <v-data-table
-                            :headers="input.firstHeader"
-                            :items="input.firstTable"
+                            :headers="input.fcHeader"
+                            :items="inpValue.hrdDc"
                         >
                             <template v-slot:top>
                                 <v-toolbar flat class="text-h6">Second Check</v-toolbar>
@@ -220,7 +220,7 @@
                                             <v-text-field label="Username" outlined readonly :value="inpValue.dcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field label="Date logged in" outlined readonly :value="inpValue.dcDate"></v-text-field>
+                                            <v-text-field label="Date logged in" outlined readonly :value="getDcDateTime"></v-text-field>
                                         </v-col>
                                     </v-row>
                                 </v-col>
@@ -234,7 +234,7 @@
                         >
                             <v-list-item>
                             <v-list-item-content class="pa-0">
-                                <v-list-item-title class="font-weight-bold">Total Cases: {{input.totalCase[1]}}</v-list-item-title>
+                                <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdDcTotalCases}}</v-list-item-title>
                             </v-list-item-content>
                             </v-list-item>
                         </v-alert>
@@ -248,6 +248,7 @@
 <script>
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
+import moment from 'moment'
 
 export default {
     name:'Details',
@@ -298,7 +299,13 @@ export default {
             let vm = this
             vm.oPoLength = vm.inpValue.hrdPo?.length
             return vm.inpValue?.hrdPo
-        }
+        },
+        getFcDateTime() {
+            return moment.utc(this.inpValue.fcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
+        getDcDateTime() {
+            return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
     },
     methods: {
         inputPO(value) {

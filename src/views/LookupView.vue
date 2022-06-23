@@ -37,6 +37,7 @@
         :table="props.item.typeName"
         editData="typeName"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.typeName = value }"        
     />
@@ -46,6 +47,7 @@
         :table="props.item.value"
         editData="value"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
     />
@@ -127,6 +129,14 @@ export default {
         defaultItem: {
             typeName: 0,
             value: '',
+        },
+    },
+    rules: {
+        required: value => !!value || 'Required.',
+        counter: value => value.length <= 80 || 'Max 80 characters',
+        email: value => {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return pattern.test(value) || 'Invalid e-mail.'
         },
     },
     headers: [

@@ -39,6 +39,7 @@
         :table="props.item.fert"
         editData="fert"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.fert = value }"
       />
@@ -49,6 +50,7 @@
         :table="props.item.description"
         editData="description"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
@@ -59,6 +61,7 @@
         :table="props.item.costPerCase"
         editData="description"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.costPerCase = value }"
         type="number"
@@ -70,6 +73,7 @@
         :table="props.item.country"
         editData="country"
         :data="props.item"
+        :rules="rules"
         :input="snackbar"
         @change="(value) => { props.item.country = value }"
       />
@@ -187,6 +191,14 @@
           holiday: true,
         },
       },
+      rules: {
+          required: value => !!value || 'Required.',
+          counter: value => value.length <= 80 || 'Max 80 characters',
+          email: value => {
+              const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              return pattern.test(value) || 'Invalid e-mail.'
+          },
+      },
       tf: [
         'True', 'False'
       ],
@@ -194,7 +206,6 @@
         {
           text: 'Year',
           align: 'start',
-          sortable: true,
           value: 'year',
         },
         { text: 'FERT', value: 'fert' },
@@ -233,7 +244,7 @@
       fetchProducts () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=1&PageSize=20`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=1&PageSize=20&SortColumn=year&SortOrder=desc`)
           .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
@@ -255,7 +266,7 @@
         if (value != vm.tableOptions.page) {
           if(vm.searchMode == false) {
             vm.loading=true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=20`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=20&SortColumn=year&SortOrder=desc`)
             .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.page = value
@@ -270,7 +281,7 @@
           }
           if(vm.searchMode == true) {
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=year&SortOrder=desc`)
             .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.page = value
@@ -290,14 +301,14 @@
         let vm = this
         if(value != '') { 
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
           .then((res) => {
               vm.tableOptions.itemsPerPage = 20
               vm.tableOptions.page = 1
               vm.searchMode = true
               vm.tableOptions.searchValue = value
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
               .then((res) => {
                 vm.products = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages

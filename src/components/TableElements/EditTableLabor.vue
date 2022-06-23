@@ -10,7 +10,6 @@
             <v-text-field
                 :value="table"
                 @input="updateValue(parseInt($event))"
-                :rules="[required]"
                 :type="type"
                 label="Edit"
                 single-line
@@ -44,11 +43,14 @@ export default {
             type:String,
             default:'',
             required:false
-        }
+        },
+        rules: {
+            type: Object,
+            default: {},
+            required: false,
+        },
     },
     data: () => ({
-        max50chars: v => v.length <= 50 || 'Input too long!',
-        required: value => !!value || 'Required.',
         origVal:[],
         inputValue:0,
     }),

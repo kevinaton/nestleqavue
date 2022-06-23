@@ -45,11 +45,13 @@
             />
 
             <IncidentReport
-                :input="incirep"
+                :input="getHRD"
             />
             
             <Scrap 
-                :inpValue="getHRD"    
+                :inpValue="getHRD"   
+                :input="scrap" 
+                :rules="rules"
             />
         </v-expansion-panels>
 
@@ -90,12 +92,15 @@
             backbtn:false,
             panel: [0,1,2,3,4,5],
             rules: {
-                required: value => !!value || 'Required.',
-                counter: value => value.length <= 20 || 'Max 20 characters',
-                email: value => {
-                    const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                    return pattern.test(value) || 'Invalid e-mail.'
-                },
+                    required: value => !!value || 'Required.',
+                    counter: value => (value || '').length <= 80 || 'Max 80 characters',
+                    stringCount: value => (value || '').length <= 50 || 'Max 50 characters',
+                    dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
+                    int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
+                    email: value => {
+                        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                        return pattern.test(value) || 'Invalid e-mail.'
+                    }
             },
             loading:true,
             valid:false,
@@ -105,12 +110,12 @@
             },
             highlights: {
                 calendar1: {
-                time: null,
-                date: null,
-                date2: null,
-                modal: false,
-                menu: false,
-                allow: true,
+                    time: null,
+                    date: null,
+                    date2: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
                 },
                 yearOnly: {
                     year:'2017'
@@ -132,6 +137,13 @@
                     menu: false,
                     label: ''
                 },
+                fileHeaders: [
+                    { text:'File', value: 'filename' },
+                    { text:'Category', value: 'category' },
+                    { text:'Size', value: 'size' },
+                    { text:'Date', value: 'date' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+                ],
             },
             details: {
                 gstd:false,
@@ -158,37 +170,9 @@
                     allow: true,
                     yearonly: '',
                 },
-                firstHeader: [
-                    { text:'Location', value: 'aLocation' },
-                    { text: '# Cases', value: 'aCases' },
-                ],
-                firstTable: [
-                    { aLocation:'DC5070', aCases:'14' },
-                    { aLocation:'DC8821', aCases:'45' },
-                    { aLocation:'DC8329', aCases:'92' },
-                    { aLocation:'DC1029', aCases:'92' },
-                    { aLocation:'DC2123', aCases:'83' },
-                    { aLocation:'DC8392', aCases:'180' },
-                    { aLocation:'DC9382', aCases:'4' },
-                    { aLocation:'DC9009', aCases:'74' },
-                    { aLocation:'DC0001', aCases:'67' },
-                    { aLocation:'DC9381', aCases:'76' },
-                ],
-                secheader: [
-                    { text:'Location', value: 'bLocation' },
-                    { text: '# Cases', value: 'bCases' },
-                ],
-                secTable: [
-                    { bLocation:'DC5070', bCases:'14' },
-                    { bLocation:'DC8821', bCases:'45' },
-                    { bLocation:'DC8329', bCases:'92' },
-                    { bLocation:'DC1029', bCases:'92' },
-                    { bLocation:'DC2123', bCases:'83' },
-                    { bLocation:'DC8392', bCases:'180' },
-                    { bLocation:'DC9382', bCases:'4' },
-                    { bLocation:'DC9009', bCases:'74' },
-                    { bLocation:'DC0001', bCases:'67' },
-                    { bLocation:'DC9381', bCases:'76' },
+                fcHeader: [
+                    { text:'Location', value: 'location' },
+                    { text: '# Cases', value: 'numberOfCases' },
                 ],
                 totalCase: [
                     21323, 21323
@@ -206,12 +190,54 @@
                 yearonly:''
             },
             scrap: {
-                visible: [
-                    { label:"Approval Request by QA", value:true },
-                    { label:"Plant Manager Approval", value:true },
-                    { label:"Plant Controller Approval", value:true },
-                    { label:"Destroyed", value:true },
-                ],
+                qaCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                qaClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                pmCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                pmClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                pcCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                pcClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
+                dCalendar: {
+                    time: null,
+                    date: null,
+                    modal: false,
+                    menu: false,
+                    allow: true,
+                },
+                dClock: {
+                    time: null,
+                    menu: false,
+                    label: ''
+                },
             },
             hrd:{},
             snackbar: {
@@ -222,13 +248,6 @@
         }),
         created() {
             this.fetchHRD()
-        },
-        computed: {
-            getHRD(){
-            let obj = {}
-            obj = this.hrd
-            return obj
-        },
         },
         methods: {
             fetchHRD () {
@@ -321,7 +340,8 @@
                     timeOfIncident: d.timeOfIncident,
                     type: d.type,
                     weekHeld: d.weekHeld,
-                    yearHeld: d.yearHeld
+                    yearHeld: d.yearHeld,
+                    yearOfIncident: d.yearOfIncident
                 })
                 .then(response => 
                 {
@@ -336,9 +356,15 @@
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (vm.valid = false))
             }
         }
+        },
+        computed: {
+            getHRD(){
+            let obj = {}
+            obj = this.hrd
+            return obj
+            },
         },
     }
 </script>

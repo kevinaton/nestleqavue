@@ -36,7 +36,7 @@
                             />
                         </v-col>
                         <v-col>
-                            <v-text-field v-model="tagNumber" v-if="inpValue.when == 'Other'" outlined label="Tag Number"></v-text-field>
+                            <v-text-field v-model="inpValue.whenOther" v-if="inpValue.when == 'Other'" outlined label="Other" :rules="[rules.counter]"></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row>
@@ -102,8 +102,8 @@
                         </v-col>
                         <v-col>
                             <v-data-table
-                                :headers="input.microheaders"
-                                :items="input.microtable"
+                                :headers="input.microHeaders"
+                                :items="inpValue.hrdMicros"
                                 class="mb-6 pt-0 elevation-1"
                             >
                                 <template v-slot:top>
@@ -125,7 +125,7 @@
                                         v-model="input.dialog"
                                         max-width="500px"
                                         >
-                                        <template v-slot:activator="{ on, attrs }">
+                                        <!-- <template v-slot:activator="{ on, attrs }">
                                             <v-btn
                                             class="mb-2"
                                             v-bind="attrs"
@@ -133,7 +133,7 @@
                                             >
                                                 New Entry
                                             </v-btn>
-                                        </template>
+                                        </template> -->
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">New Micro</span>
@@ -147,7 +147,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.editedItem.hour"
+                                                    v-model="input.microEditedItem.hour"
                                                     label="Hour"
                                                     type="number"
                                                     ></v-text-field>
@@ -158,7 +158,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.editedItem.count"
+                                                    v-model="input.microEditedItem.count"
                                                     label="Count"
                                                     type="number"
                                                     ></v-text-field>
@@ -169,7 +169,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.editedItem.organism"
+                                                    v-model="input.microEditedItem.organism"
                                                     label="Organism"
                                                     placeholder="Organism"
                                                     ></v-text-field>
@@ -234,8 +234,8 @@
                     <v-row>
                         <v-col>
                             <v-data-table
-                                :headers="test.testheaders"
-                                :items="test.testtable"
+                                :headers="input.testHeaders"
+                                :items="inpValue.hrdTestCosts"
                             >
                                 <template v-slot:top>
                                     <SnackBar 
@@ -249,10 +249,10 @@
                                     <v-toolbar flat>
                                         <v-toolbar-title class="mr-6">Testing</v-toolbar-title>
                                         <v-dialog
-                                        v-model="test.dialog"
+                                        v-model="input.testDialog"
                                         max-width="500px"
                                         >
-                                        <template v-slot:activator="{ on, attrs }">
+                                        <!-- <template v-slot:activator="{ on, attrs }">
                                             <v-btn
                                             class="mb-2"
                                             v-bind="attrs"
@@ -260,7 +260,7 @@
                                             >
                                                 + Add Test
                                             </v-btn>
-                                        </template>
+                                        </template> -->
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">Testing</span>
@@ -274,18 +274,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="test.editedItem.hrddid"
-                                                    label="HRDDID"
-                                                    type="number"
-                                                    ></v-text-field>
-                                                </v-col>
-                                                <v-col
-                                                    cols="12"
-                                                    sm="6"
-                                                    md="4"
-                                                >
-                                                    <v-text-field
-                                                    v-model="test.editedItem.testname"
+                                                    v-model="input.testEditedItem.testName"
                                                     label="Test Name"
                                                     ></v-text-field>
                                                 </v-col>
@@ -295,8 +284,19 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="test.editedItem.quantity"
+                                                    v-model="input.testEditedItem.qty"
                                                     label="Quantity"
+                                                    type="number"
+                                                    ></v-text-field>
+                                                </v-col>
+                                                <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="4"
+                                                >
+                                                    <v-text-field
+                                                    v-model="input.testEditedItem.cost"
+                                                    label="Cost"
                                                     type="number"
                                                     ></v-text-field>
                                                 </v-col>
@@ -389,11 +389,6 @@ export default {
         },
         snackbar: {
             type:Object,
-            default: () => {},
-            required: false,
-        },
-        test: {
-            type: Object,
             default: () => {},
             required: false,
         },

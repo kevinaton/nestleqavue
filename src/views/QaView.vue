@@ -6,7 +6,7 @@
       :headers="headers"
       :page.sync="tableOptions.page"
       :items="qa"
-      :options="tableOptions"
+      :options.sync="tableOptions"
       hide-default-footer
     >
       <template v-slot:top>
@@ -186,11 +186,14 @@
     created () {
       this.fetchHrds()
     },
+
+    computed: {
+    },
     methods: {
       fetchHrds () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20&SortColumn=id&SortOrder=desc`)
         .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
@@ -212,7 +215,7 @@
         if (value != vm.tableOptions.page) {
           if(vm.searchMode == false) {
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SortColumn=id&SortOrder=desc`)
           .then((res) => {
               vm.qa = res.data.data
               vm.tableOptions.page = value
@@ -227,7 +230,7 @@
           }
           if(vm.searchMode == true) {
               vm.loading = true
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=id&SortOrder=desc`)
               .then((res) => {
                   vm.qa = res.data.data
                   vm.tableOptions.page = value
@@ -247,14 +250,14 @@
         let vm = this
         if(value != '') { 
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
           .then((res) => {
               vm.tableOptions.itemsPerPage = 20
               vm.tableOptions.page = 1
               vm.searchMode = true
               vm.tableOptions.searchValue = value
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
               .then((res) => {
                 vm.qa = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages

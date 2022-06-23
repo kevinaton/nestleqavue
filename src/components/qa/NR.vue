@@ -15,7 +15,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.inspectorsName" outlined label="Inspector's Name" :rules="[rules.required]"></v-text-field>
+                    <v-text-field v-model="inpValue.inspectorsName" :rules="[rules.required, rules.counter]" outlined label="Inspector's Name"></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -44,7 +44,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-if="inpValue.tagged == 'Yes'" v-model="inpValue.tagNumber" outlined label="Tag Number"></v-text-field>
+                    <v-text-field v-if="inpValue.tagged == 'Yes'" :rules="[rules.counter]" v-model="inpValue.tagNumber" outlined label="Tag Number"></v-text-field>
                 </v-col>
             </v-row>
         </v-expansion-panel-content>
@@ -69,7 +69,7 @@ export default {
         },
         rules: {
             type: Object,
-            default: {},
+            default: () => {},
             required: false,
         },
         inpValue: {

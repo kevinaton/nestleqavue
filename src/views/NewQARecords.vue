@@ -68,7 +68,6 @@
             <Micro 
                 :input="qaOptions"
                 :inpValue="getQaRec"
-                :test="test"
                 :rules="rules"
                 :snackbar="snackbar"
                 v-if="qaRec.isMicro"
@@ -97,6 +96,7 @@ import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 import BackBtn from '@/components/FormElements/BackBtn.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 
+
 export default {
     name:'NewQARecords',
     components: {
@@ -117,7 +117,10 @@ export default {
         panel: [0,1,2,3,4,5,6],
         rules: {
             required: value => !!value || 'Required.',
-            counter: value => value.length <= 20 || 'Max 20 characters',
+            counter: value => (value || '').length <= 80 || 'Max 80 characters',
+            stringCount: value => (value || '').length <= 50 || 'Max 50 characters',
+            dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
+            int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 return pattern.test(value) || 'Invalid e-mail.'
@@ -172,81 +175,64 @@ export default {
                 menu: false,
                 allow: true,
             },
+            fileHeaders: [
+                { text:'File', value: 'filename' },
+                { text:'Category', value: 'category' },
+                { text:'Size', value: 'size' },
+                { text:'Date', value: 'date' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+            ],
 
             // Micro
-            dialog: false,
-            dialogDelete: false,
-            microheaders: [
-                { text:'Hour', value: 'hour' },
-                { text: 'Count', value: 'count' },
+            microDialog: false,
+            microDialogDelete: false,
+            microHeaders: [
+                { text:'ID', value: 'id' },
+                { text:'Hour', value: 'hour'},
+                { text:'Count', value: 'count'},
                 { text:'Organism', value: 'organism'},
-                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
-            microtable: [
-                { hour:'0', count:'22', organism:'E. Coli' },
-                { hour:'2', count:'38', organism:'E. Coli' },
-                { hour:'3', count:'145', organism:'E. Coli'},
-                { hour:'5', count:'162', organism:'E. Coli'},
-            ],
-            editedIndex: -1,
-            editedItem: {
-                hour:'0',
-                count:'0',
+            microEditedIndex: -1,
+            microEditedItem: {
+                id:0,
+                hour:0,
+                count:0,
                 organism:'',
             },
-            defaultItem: {
-                hour:'0',
-                count:'0',
+            microDefaultItem: {
+                id:0,
+                hour:0,
+                count:0,
                 organism:'',
             },
-        },
 
-        micro: {
-            hcSelect: '',
-            holdconcerns: [
-                'Hold', 'Concern',
+            // Testing
+            testDialog: false,
+            testDialogDelete: false,
+            testHeaders: [
+                { text:'ID', value: 'id' },
+                { text: 'Test Name', value: 'testName' },
+                { text:'Quantity', value: 'qty'},
+                { text:'Cost', value: 'cost'},
+                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
-            dayofweeks: [
-            'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday',
-            ],
-            daySelect: '',
-            whens: [
-            'Startup', 'Changeover', 'Other',
-            ],
-            whenSelect: '',
-            meatSelect: '',
-            vegSelect: '',
-            sauceSelect: '',
-            sauces: [
-                'Water', 'Tomato', 'Milk'
-            ],
-            starchSelect: '',
-            starches: [
-                'Pasta', 'Rice', 'Potato', 'Quinoa',
-            ],
-        },
-        test: {
-            dialog: false,
-            dialogDelete: false,
-            testheaders: [
-                { text:'HRDDID', value: 'hrddid' },
-                { text: 'Test Name', value: 'testname' },
-                { text:'Quantity', value: 'quantity'},
-                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
-            ],
-            testtable: [
+            testTable: [
                 { hrddid:'0', testname:'select', quantity:'0' },
             ],
-            editedIndex: -1,
-            editedItem: {
-                hrddid:'',
-                testname:'',
-                quantity:''
+            testEditedIndex: -1,
+            testEditedItem: {
+                id:0,
+                hrdId:0,
+                testName:'',
+                qty:0,
+                cost:0,
             },
-            defaultItem: {
-                hrddid:'',
-                testname:'',
-                quantity:''
+            testDefaultItem: {
+                id:0,
+                testName:'',
+                qty:0,
+                cost:0,
             },
         },
         submitdiscard: {
@@ -276,7 +262,7 @@ export default {
         },
         submitQA(value) {
             let vm = this
-            let d = this.qaRec
+            let d = vm.qaRec
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`,  {
@@ -363,7 +349,6 @@ export default {
                     this.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
-                .finally(() => (vm.valid = false))
             }
         }
     },

@@ -3,6 +3,9 @@
         <v-toolbar-title>{{ title }}</v-toolbar-title>
         <v-spacer></v-spacer>
 
+        <!-- SORTING -->
+        
+
         <!-- Search input -->
         <v-text-field
             :value="searchInput"
