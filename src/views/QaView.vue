@@ -9,8 +9,8 @@
       :sort-by="tableOptions.sortBy"
       :sort-desc="tableOptions.sortDesc"
       :page.sync="tableOptions.page"
-      @update:sort-by="updateSort('by', $event)"
-      @update:sort-desc="updateSort('desc', $event)"
+      @update:sort-by="customSort('id',$event)"
+      @update:sort-desc="customSort('desc', $event)"
       hide-default-footer
     >
       <template v-slot:top>
@@ -72,9 +72,8 @@
     </v-data-table>
 
     <TablePagination 
-      :tableOptions="tableOptions"
+      :tableOptions="getPage"
       totalVisible="7"
-      :table="qa"
       @change="updateTable($event)"
     />
   </div>
@@ -107,6 +106,9 @@
       loading:true, 
       delItem:'',
       searchMode:false,
+      tempBy:'',
+      tempDesc:null,
+      firstload:0,
       tableOptions: {
           page: 1,
           itemsPerPage:20,
@@ -114,8 +116,9 @@
           totalRecords:1,
           numToSearch:0,
           searchValue:'',
-          sortBy: ['', ''],
-          sortDesc: [false, false],
+          sortBy: ['id'],
+          sortDesc: [false],
+          desc:'desc',
       },
       snackbar: {
         snack: false,
@@ -196,13 +199,15 @@
       fetchHrds () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20&SortColumn=id&SortOrder=desc`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
         .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
+            vm.tableOptions.page = 1
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.qa = res.data.data
+
         })
         .catch(err => {
             this.snackbar.snack = true
@@ -218,10 +223,15 @@
         if (value != vm.tableOptions.page) {
           if(vm.searchMode == false) {
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SortColumn=id&SortOrder=desc`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
           .then((res) => {
               vm.qa = res.data.data
-              vm.tableOptions.page = value
+              vm.tableOptions.page = res.data.pageNumber
+
+              if(vm.firstload == 0) {
+                vm.refetchPage(value)
+              }
+
           })
           .catch(err => {
               vm.snackbar.snack = true
@@ -233,10 +243,14 @@
           }
           if(vm.searchMode == true) {
               vm.loading = true
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=id&SortOrder=desc`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SearchString=${vm.tableOptions.searchValue}&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
               .then((res) => {
                   vm.qa = res.data.data
                   vm.tableOptions.page = value
+
+                  if(vm.firstload == 0) {
+                    vm.refetchPage(value)
+                  }
               })
               .catch(err => {
                   vm.snackbar.snack = true
@@ -246,21 +260,21 @@
               })
               .finally(() => (vm.loading = false))
           }
-        }
+        } 
       },
 
       getSearch(value) {
         let vm = this
         if(value != '') { 
           vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
           .then((res) => {
               vm.tableOptions.itemsPerPage = 20
               vm.tableOptions.page = 1
               vm.searchMode = true
               vm.tableOptions.searchValue = value
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=id&SortOrder=desc`)
+              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
               .then((res) => {
                 vm.qa = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages
@@ -287,16 +301,69 @@
         }
       },
 
-      updateSort(param, event) {
-        if(param == 'by') {
-          let a = this.tableOptions.sortBy = event
-          console.log('by: ' + a)
-        } 
-        else if (param == 'desc') {
-          let b = this.tableOptions.sortDesc = event
-          console.log('desc: ' + b)
+      customSort(par, event) {
+        let vm = this
+        let startSort = false
+        
+        if(event[0] != undefined) {
+          if(par == 'id') {
+            vm.tableOptions.sortBy = event[0]
+            startSort = true
+          }
+          if(par == 'desc') {
+            if(event == 'true') {
+              vm.tableOptions.desc = 'desc'
+              startSort = true
+            }
+            if(event == 'false') {
+              vm.tableOptions.desc = 'asc'
+              startSort = true
+            }
+          }
         }
-      }
+          
+        if(startSort == true) {
+          vm.loading = true
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=1&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+          .then((res) => {
+              vm.tableOptions.totalPages = res.data.totalPages
+              vm.tableOptions.itemsPerPage = res.data.pageSize
+              vm.tableOptions.totalRecords = res.data.totalRecords
+              vm.qa = res.data.data
+          })
+          .catch(err => {
+              this.snackbar.snack = true
+              this.snackbar.snackColor = 'error'
+              this.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => {vm.loading = false, startSort = false})
+        }
+        },
+
+        refetchPage(value) {
+          let vm = this
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${value}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+          .then((res) => {
+              vm.qa = res.data.data
+              vm.tableOptions.page = res.data.pageNumber
+          })
+          .catch(err => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'error'
+              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => (vm.loading = false, vm.firstload = 1))
+        }
     },
+
+    computed: {
+      getPage() {
+        let obj = {}
+        obj = this.tableOptions
+        return obj
+      },
+    }
   }
 </script>
