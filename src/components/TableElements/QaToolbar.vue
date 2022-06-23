@@ -4,7 +4,6 @@
         <v-spacer></v-spacer>
 
         <!-- SORTING -->
-        
 
         <!-- Search input -->
         <v-text-field

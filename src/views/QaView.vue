@@ -4,9 +4,13 @@
       :loading="loading"
       loading-text="Loading... Please wait"
       :headers="headers"
-      :page.sync="tableOptions.page"
       :items="qa"
       :options.sync="tableOptions"
+      :sort-by="tableOptions.sortBy"
+      :sort-desc="tableOptions.sortDesc"
+      :page.sync="tableOptions.page"
+      @update:sort-by="updateSort('by', $event)"
+      @update:sort-desc="updateSort('desc', $event)"
       hide-default-footer
     >
       <template v-slot:top>
@@ -109,7 +113,9 @@
           totalPages:1,
           totalRecords:1,
           numToSearch:0,
-          searchValue:''
+          searchValue:'',
+          sortBy: ['', ''],
+          sortDesc: [false, false],
       },
       snackbar: {
         snack: false,
@@ -185,9 +191,6 @@
 
     created () {
       this.fetchHrds()
-    },
-
-    computed: {
     },
     methods: {
       fetchHrds () {
@@ -281,6 +284,17 @@
         else {
           vm.searchMode = false
           vm.fetchHrds()
+        }
+      },
+
+      updateSort(param, event) {
+        if(param == 'by') {
+          let a = this.tableOptions.sortBy = event
+          console.log('by: ' + a)
+        } 
+        else if (param == 'desc') {
+          let b = this.tableOptions.sortDesc = event
+          console.log('desc: ' + b)
         }
       }
     },
