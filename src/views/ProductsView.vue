@@ -4,10 +4,14 @@
     :loading="loading"
     loading-text="Loading... Please wait"
     :headers="headers"
-    :page.sync="tableOptions.page"
     :items="products"
+    :options.sync="tableOptions"
+    :sort-by="tableOptions.sortBy"
+    :sort-desc="tableOptions.sortDesc"
+    :page.sync="tableOptions.page"
+    @update:sort-by="customSort('by',$event)"
+    @update:sort-desc="customSort('desc', $event)"
     dense
-    :options="tableOptions"
     hide-default-footer
   >
     <template v-slot:top>
@@ -116,9 +120,8 @@
   </v-data-table>
 
   <TablePagination 
-    :tableOptions="tableOptions"
+    :tableOptions="getPage"
     totalVisible="7"
-    :table="products"
     @change="updateTable($event)"
   />
   </div>
@@ -152,14 +155,17 @@
     data: () => ({
       loading:true,
       delItem:'',
-      searchMode:false,
+      firstload:true,
       tableOptions: {
         page: 1,
         itemsPerPage:20,
         totalPages:1,
         totalRecords:1,
         numToSearch:0,
-        searchValue:''
+        searchValue:'',
+        sortBy: ['year'],
+        sortDesc: [true],
+        desc:'desc',
       },
       snackbar: {
         snack: false,
@@ -199,9 +205,6 @@
               return pattern.test(value) || 'Invalid e-mail.'
           },
       },
-      tf: [
-        'True', 'False'
-      ],
       headers: [
         {
           text: 'Year',
@@ -231,8 +234,10 @@
     }),
 
     computed: {
-      formTitle () {
-        return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+      getPage() {
+        let obj = {}
+        obj = this.tableOptions
+        return obj
       },
     },
     
@@ -244,10 +249,11 @@
       fetchProducts () {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=1&PageSize=20&SortColumn=year&SortOrder=desc`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
           .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
+            vm.tableOptions.page = res.data.pageNumber
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.products = res.data.data
@@ -261,79 +267,67 @@
           .finally(() => {vm.loading = false})
       },
 
-      updateTable(value) { 
+      updateTable(value) {
         let vm = this
-        if (value != vm.tableOptions.page) {
-          if(vm.searchMode == false) {
-            vm.loading=true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=20&SortColumn=year&SortOrder=desc`)
-            .then((res) => {
-                vm.products = res.data.data
-                vm.tableOptions.page = value
-            })
-            .catch(err => {
-              vm.snackbar.snack = true
-              vm.snackbar.snackColor = 'error'
-              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-              console.warn(err)
-            })
-            .finally(() => (vm.loading = false))
+        vm.tableOptions.page = value          
+        vm.getData(value, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+
+          if(vm.firstload == true) {
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            vm.firstload = false
           }
-          if(vm.searchMode == true) {
-            vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}&SortColumn=year&SortOrder=desc`)
-            .then((res) => {
-                vm.products = res.data.data
-                vm.tableOptions.page = value
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => (vm.loading = false))
-          }
-        }
       },
 
       getSearch(value) {
         let vm = this
-        if(value != '') { 
-          vm.loading=true
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
-          .then((res) => {
-              vm.tableOptions.itemsPerPage = 20
-              vm.tableOptions.page = 1
-              vm.searchMode = true
-              vm.tableOptions.searchValue = value
+        vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+      },
 
-              vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}&SortColumn=year&SortOrder=desc`)
-              .then((res) => {
-                vm.products = res.data.data
-                vm.tableOptions.totalPages = res.data.totalPages
-                vm.tableOptions.totalRecords = res.data.totalRecords
-              })
-              .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-              })
-          })
-          .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-          })
-          .finally(() => (vm.loading = false))
+      customSort(par, event) {
+        let vm = this        
+        if(event[0] != undefined) {
+          if(par == 'by') {
+            vm.tableOptions.sortBy = event[0]
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+          }
+          if(par == 'desc') {
+            vm.tableOptions.sortDesc = event[0]
+            if(event == 'true') {
+              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], true, 'desc')
+            }
+            if(event == 'false') {
+              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], false, 'asc')
+            }
+          }
         }
-        if(value == '') {
-          vm.searchMode = false
-          vm.fetchProducts()
-        }
-      }
+      },
+
+      getData(pageInput, pageSize, searchInput, By, Desc, desc) {
+        let vm = this
+        vm.loading = true
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
+        .then((res) => {
+            vm.tableOptions.totalPages = res.data.totalPages,
+            vm.tableOptions.itemsPerPage = res.data.pageSize,
+            vm.tableOptions.page = pageInput,
+            vm.tableOptions.totalRecords = res.data.totalRecords,
+            vm.products = res.data.data,
+            vm.tableOptions.searchValue = searchInput,
+            vm.tableOptions.sortBy = By,
+            vm.tableOptions.sortDesc = Desc,
+            vm.tableOptions.desc = desc
+        })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => {
+          vm.loading = false, 
+          vm.tableOptions.page = pageInput
+        })
+      },
     },
   }
 </script>
