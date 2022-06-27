@@ -4,26 +4,26 @@
         <v-expansion-panel-content>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="input.materialNumber" :rules="[rules.stringCount]" outlined label="Material Number"></v-text-field>
+                    <v-text-field v-model="input.materialNumber" :rules="[rules.counter]" outlined label="Material Number"></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="input.rawMaterialDescription" :rules="[rules.stringCount]" outlined label="Raw Material Description"></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row class="mt-0">
-                <v-col>
-                    <v-text-field v-model="input.smiVendorBatch" :rules="[rules.stringCount]" outlined label="Vendor Batch"></v-text-field>
-                </v-col>
-                <v-col>
-                    <v-text-field v-model="input.vendorNumber" :rules="[rules.stringCount]" outlined label="Vendor Number"></v-text-field>
+                    <v-text-field v-model="input.rawMaterialDescription" :rules="[rules.counter]" outlined label="Raw Material Description"></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="input.vendorName" :rules="[rules.stringCount]" outlined label="Vendor Name"></v-text-field>
+                    <v-text-field v-model="input.smiVendorBatch" :rules="[rules.counter]" outlined label="Vendor Batch"></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="input.vendorSiteNumber" :rules="[rules.stringCount]" outlined label="Vendor Site Number"></v-text-field>
+                    <v-text-field v-model="input.vendorNumber" :rules="[rules.counter]" outlined label="Vendor Number"></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row class="mt-0">
+                <v-col>
+                    <v-text-field v-model="input.vendorName" :rules="[rules.counter]" outlined label="Vendor Name"></v-text-field>
+                </v-col>
+                <v-col>
+                    <v-text-field v-model="input.vendorSiteNumber" :rules="[rules.counter]" outlined label="Vendor Site Number"></v-text-field>
                 </v-col>
             </v-row>
         </v-expansion-panel-content>

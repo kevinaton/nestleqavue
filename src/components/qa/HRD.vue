@@ -18,7 +18,7 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-textarea v-model="inpValue.reworkInstructions" :rules="[rules.counter]" outlined label="Rework Instructions"></v-textarea>
+                        <v-textarea v-model="inpValue.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
                     </v-col>
                 </v-row>
         </v-expansion-panel-content>

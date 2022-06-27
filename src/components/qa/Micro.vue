@@ -110,14 +110,6 @@
                                     <SnackBar 
                                         :input="snackbar"
                                     />
-                                    <!-- <RowDelete 
-                                        :input='input'
-                                        :table="input.microtable"
-                                        :snackbar="snackbar"
-                                        editData="id"
-                                        :data="delItem"
-                                        url="Micro"
-                                    /> -->
                                     <v-toolbar flat>
                                         <v-toolbar-title>Micro</v-toolbar-title>
                                         <v-spacer></v-spacer>
@@ -125,15 +117,6 @@
                                         v-model="input.dialog"
                                         max-width="500px"
                                         >
-                                        <!-- <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                            class="mb-2"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            >
-                                                New Entry
-                                            </v-btn>
-                                        </template> -->
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">New Micro</span>
@@ -198,69 +181,22 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <!-- <template v-slot:[`item.hour`]="props">
-                                    <EditTable 
-                                        :table="props.item.hour"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.hour = value }"
-                                        type="number"
-                                    />
-                                </template>
-                                <template v-slot:[`item.count`]="props">
-                                    <EditTable 
-                                        :table="props.item.count"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.count = value }"
-                                        type="number"
-                                    />
-                                </template>
-                                <template v-slot:[`item.organism`]="props">
-                                    <EditTable 
-                                        :table="props.item.organism"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.organism = value }"
-                                    />
-                                </template> -->
-                                <!-- <template v-slot:[`item.actions`]="{ item }">
-                                    <DeleteAction 
-                                        :item="item"
-                                        :tableItem="input.microtable"
-                                        :input="input"
-                                    />
-                                </template> -->
                             </v-data-table>
                         </v-col>
                     </v-row>
-                    <v-row>
+                    <v-row class="mt-0">
                         <v-col>
                             <v-data-table
                                 :headers="input.testHeaders"
                                 :items="inpValue.hrdTestCosts"
                             >
                                 <template v-slot:top>
-                                    <SnackBar 
-                                        :input="snackbar"
-                                    />
-                                    <!-- <RowDelete 
-                                        :input="test"
-                                        :table="test.testtable"
-                                        :snackbar="snackbar"
-                                    /> -->
                                     <v-toolbar flat>
                                         <v-toolbar-title class="mr-6">Testing</v-toolbar-title>
                                         <v-dialog
                                         v-model="input.testDialog"
                                         max-width="500px"
                                         >
-                                        <!-- <template v-slot:activator="{ on, attrs }">
-                                            <v-btn
-                                            class="mb-2"
-                                            v-bind="attrs"
-                                            v-on="on"
-                                            >
-                                                + Add Test
-                                            </v-btn>
-                                        </template> -->
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">Testing</span>
@@ -324,36 +260,6 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <!-- <template v-slot:[`item.hrddid`]="props">
-                                    <EditTable 
-                                        :table="props.item.hrddid"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.hrddid = value }"
-                                        type="number"
-                                    />
-                                </template>
-                                <template v-slot:[`item.testname`]="props">
-                                    <EditTable 
-                                        :table="props.item.testname"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.testname = value }"
-                                    />
-                                </template>
-                                <template v-slot:[`item.quantity`]="props">
-                                    <EditTable 
-                                        :table="props.item.quantity"
-                                        :input="snackbar"
-                                        @change="(value) => { props.item.quantity = value }"
-                                        type="number"
-                                    />
-                                </template> -->
-                                <!-- <template v-slot:[`item.actions`]="{ item }">
-                                    <DeleteAction 
-                                        :item="item"
-                                        :tableItem="test.testtable"
-                                        :input="test"
-                                    />
-                                </template> -->
                             </v-data-table>
                         </v-col>
                     </v-row>

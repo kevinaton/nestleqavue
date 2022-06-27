@@ -117,8 +117,7 @@ export default {
         panel: [0,1,2,3,4,5,6],
         rules: {
             required: value => !!value || 'Required.',
-            counter: value => (value || '').length <= 80 || 'Max 80 characters',
-            stringCount: value => (value || '').length <= 50 || 'Max 50 characters',
+            counter: value => (value || '').length <= 50 || 'Max 50 characters',
             dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
             int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
             email: value => {

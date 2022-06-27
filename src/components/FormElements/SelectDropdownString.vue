@@ -5,8 +5,8 @@
         :value="inpValue"
         :label="label"
         :items="lookup"
-        @click="inp"
-        @input="selectOption($event)"
+        @focus="inp"
+        @change="selectOption($event)"
         return-object
     ></v-combobox>
 </template>

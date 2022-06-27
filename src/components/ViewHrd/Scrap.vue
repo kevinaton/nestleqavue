@@ -14,10 +14,10 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-text-field v-model="inpValue.caseCount" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.caseCount" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.reasonAction" label="Reason Action" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.reasonAction" :rules="[rules.counter]" label="Reason Action" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">

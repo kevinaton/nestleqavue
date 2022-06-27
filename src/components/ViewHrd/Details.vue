@@ -12,7 +12,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col class="mt-0">
-                    <v-text-field outlined v-model="inpValue.hourCode" label="Hour Codes"></v-text-field>
+                    <v-text-field outlined v-model="inpValue.hourCode" :rules="[rules.counter]" label="Hour Codes"></v-text-field>
                 </v-col>
                 <v-col class="mt-0">
                     <SelectDropdownString 
@@ -36,6 +36,7 @@
                 <v-col>
                     <v-combobox
                         :value="getPO"
+                        :rules="[rules.counter]"
                         chips
                         multiple
                         outlined
@@ -46,6 +47,7 @@
                         <v-chip 
                             v-bind="attrs"
                             :input-value="selected"
+                            :rules="[rules.counter]"
                             close
                             color="info"
                             text-color="white"
@@ -60,7 +62,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-textarea v-model="inpValue.qaComments" outlined label="QA Comments"></v-textarea>
+                    <v-textarea v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
                 </v-col>
             </v-row>
             <v-row>
@@ -84,7 +86,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required]" label="Completed by*" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required, rules.counter]" label="Completed by*" outlined></v-text-field>
                 </v-col>
                 <v-col>
                     <v-text-field v-model="inpValue.scrap" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Scrap" outlined></v-text-field>
