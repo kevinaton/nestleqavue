@@ -62,7 +62,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByQAWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByQAWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -94,7 +94,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByPlantManagerWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantManagerWho" :rules="[rules.counter]"  label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -126,7 +126,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByPlantControllerWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantControllerWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -158,7 +158,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByDistroyedWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByDistroyedWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
