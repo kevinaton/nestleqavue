@@ -14,8 +14,8 @@
 
 <script>
 export default {
+    name:'TablePagination',
     props: {
-        name:'TablePagination',
         tableOptions: {
             type:Object,
             default: () => {},
@@ -26,16 +26,6 @@ export default {
             default:'7',
             required: false
         },
-        table: {
-            type:Array,
-            default: () => [],
-            required: false
-        },
-        loading: {
-            type:Boolean,
-            default: true,
-            required: false
-        }
     },
     emits: ['change'],
     methods: {

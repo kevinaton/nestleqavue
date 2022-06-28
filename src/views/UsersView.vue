@@ -4,9 +4,13 @@
     :loading="loading"
     loading-text="Loading... Please wait"
     :headers="headers"
-    :page.sync="tableOptions.page"
     :items="users"
-    :options="tableOptions"
+    :options.sync="tableOptions"
+    :sort-by="tableOptions.sortBy"
+    :sort-desc="tableOptions.sortDesc"
+    :page.sync="tableOptions.page"
+    @update:sort-by="customSort('by',$event)"
+    @update:sort-desc="customSort('desc', $event)"
     hide-default-footer
     >
     <template v-slot:top>
@@ -69,9 +73,8 @@
     </v-data-table>
     
     <TablePagination 
-        :tableOptions="tableOptions"
+        :tableOptions="getPage"
         totalVisible="7"
-        :table="users"
         @change="updateTable($event)"
     />
     </div>
@@ -89,26 +92,29 @@ import TablePagination from '@/components/TableElements/TablePagination.vue'
 
 export default {
     components: {
-    Breadcrumbs,
-    SimpleToolbar,
-    ResetTable,
-    SnackBar,
-    RowDelete,
-    DeleteAction,
-    EditTableUser,
-    TablePagination,
+        Breadcrumbs,
+        SimpleToolbar,
+        ResetTable,
+        SnackBar,
+        RowDelete,
+        DeleteAction,
+        EditTableUser,
+        TablePagination,
     },
     data: () => ({
     loading:true,
     delItem:'',
-    searchMode:false,
+    firstload:true,
     tableOptions: {
         page: 1,
         itemsPerPage:20,
         totalPages:1,
         totalRecords:1,
         numToSearch:0,
-        searchValue:''
+        searchValue:'',
+        sortBy: ['id'],
+        sortDesc: [true],
+        desc:'desc',
     },
     snackbar: {
         snack: false,
@@ -166,6 +172,11 @@ export default {
     }),
 
     computed: {
+        getPage() {
+            let obj = {}
+            obj = this.tableOptions
+            return obj
+        },
     },
 
     created () {
@@ -176,10 +187,11 @@ export default {
     fetchUsers() {
         let vm = this 
         vm.loading = true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=1&PageSize=20`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
         .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
+            vm.tableOptions.page = res.data.pageNumber
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.users = res.data.data
@@ -193,79 +205,68 @@ export default {
         .finally(() => {vm.loading = false})
     },
 
-    updateTable(value) { 
+    updateTable(value) {
         let vm = this
-        if (value != vm.tableOptions.page) {
-        if(vm.searchMode == false) {
-            vm.loading=true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=${value}&PageSize=20`)
-            .then((res) => {
-                vm.users = res.data.data
-                vm.tableOptions.page = value
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => (vm.loading = false))
-        }
-        if(vm.searchMode == true) {
-            vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=${value}&PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${vm.tableOptions.searchValue}`)
-            .then((res) => {
-                vm.users = res.data.data
-                vm.tableOptions.page = value
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => (vm.loading = false))
-        }
+        vm.tableOptions.page = value          
+        vm.getData(value, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+
+        if(vm.firstload == true) {
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            vm.firstload = false
         }
     },
 
     getSearch(value) {
-    let vm = this
-    if(value != '') { 
-        vm.loading=true
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageSize=${vm.tableOptions.numToSearch}&SearchString=${value}`)
-        .then((res) => {
-            vm.tableOptions.itemsPerPage = 20
-            vm.tableOptions.page = 1
-            vm.searchMode = true
-            vm.tableOptions.searchValue = value
+        let vm = this
+        vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+    },
 
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageSize=${vm.tableOptions.itemsPerPage}&SearchString=${value}`)
-            .then((res) => {
-                vm.users = res.data.data
-                vm.tableOptions.totalPages = res.data.totalPages
-                vm.tableOptions.totalRecords = res.data.totalRecords
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
+    customSort(par, event) {
+        let vm = this        
+        if(event[0] != undefined) {
+            if(par == 'by') {
+            vm.tableOptions.sortBy = event[0]
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            }
+            if(par == 'desc') {
+            vm.tableOptions.sortDesc = event[0]
+            if(event == 'true') {
+                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], true, 'desc')
+            }
+            if(event == 'false') {
+                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], false, 'asc')
+            }
+            }
+        }
+    },
+
+    getData(pageInput, pageSize, searchInput, By, Desc, desc) {
+        let vm = this
+        vm.loading = true
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
+        .then((res) => {
+            vm.tableOptions.totalPages = res.data.totalPages,
+            vm.tableOptions.itemsPerPage = res.data.pageSize,
+            vm.tableOptions.page = pageInput,
+            vm.tableOptions.totalRecords = res.data.totalRecords,
+            vm.users = res.data.data,
+            vm.tableOptions.searchValue = searchInput,
+            vm.tableOptions.sortBy = By,
+            vm.tableOptions.sortDesc = Desc,
+            vm.tableOptions.desc = desc
         })
         .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
         })
-        .finally(() => (vm.loading = false))
-        }
-        if(value == '') {
-        vm.searchMode = false
-        vm.fetchUsers()
-        }
-    }
+        .finally(() => {
+            vm.loading = false, 
+            vm.tableOptions.page = pageInput
+        })
+    },
+    
 
     },
 }
