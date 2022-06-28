@@ -26,7 +26,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -43,7 +43,7 @@ namespace HRD.WebApi.Controllers
                     IsFM = s.IsFm,
                     IsMicro = s.IsMicro,
                     Fert = s.Globenum, //TODO: Not mapped
-                    ProductDescription = s.ShortDescription, //TODO: Confirm if correct
+                    ProductDescription = _context.Products.Where(x => x.Gpn == s.Globenum).Select(s => s.Description).First(),//s.ShortDescription, //TODO: Confirm if correct
                     Line = s.Line,
                     Shift = s.Shift,
                     HourCode = s.HourCode,
@@ -131,7 +131,7 @@ namespace HRD.WebApi.Controllers
         
         // GET: api/Hrds/5
         [HttpGet("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
@@ -236,7 +236,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutHrd(int id, HRDDetailViewModel model)
         {
             if (id != model.Id)
@@ -244,83 +244,85 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
-            var hrd = new Hrd
-            {
-                Id = id,
-                Date = model.Date,
-                TimeOfIncident = model.TimeOfIncident,
-                YearHeld = model.YearHeld,
-                DayCode = model.DayCode,
-                Originator = model.Originator,
-                Bumanager = model.BUManager,
-                CodingType = model.Type,
-                Plant = model.Plant,
-                Globenum = model.Fert,
-                FertDescription = model.FertDescription,
-                Line = model.Line,
-                LineSupervisor = model.LineSupervisor,
-                Area = model.Area,
-                AreaIfOther = model.AreaIfOther,
-                Shift = model.Shift,
-                ShortDescription = model.ShortDescription,
-                AdditionalDescription = model.AdditionalDescription,
-                DetailedDescription = model.DetailedDescription,
-                Gstdrequired = model.Gstdrequired,
-                HourCode = model.HourCode,
-                ContinuousRun = model.ContinuousRun,
+            var hrd = _context.Hrds.Include(i => i.HrdtestCosts)
+                                    .Include(i => i.HrdMicros)
+                                    .Include(i => i.Hrdnotes)
+                                    .Where(i => i.Id == id).FirstOrDefault();
 
-                Qacomments = model.QaComments,
-                DateCompleted = model.DateCompleted,
-                Clear = model.Clear,
+            hrd.Id = id;
+            hrd.Date = model.Date;
+            hrd.TimeOfIncident = model.TimeOfIncident;
+            hrd.YearHeld = model.YearHeld;
+            hrd.DayCode = model.DayCode;
+            hrd.Originator = model.Originator;
+            hrd.Bumanager = model.BUManager;
+            hrd.CodingType = model.Type;
+            hrd.Plant = model.Plant;
+            hrd.Globenum = model.Fert;
+            hrd.FertDescription = model.FertDescription;
+            hrd.Line = model.Line;
+            hrd.LineSupervisor = model.LineSupervisor;
+            hrd.Area = model.Area;
+            hrd.AreaIfOther = model.AreaIfOther;
+            hrd.Shift = model.Shift;
+            hrd.ShortDescription = model.ShortDescription;
+            hrd.AdditionalDescription = model.AdditionalDescription;
+            hrd.DetailedDescription = model.DetailedDescription;
+            hrd.Gstdrequired = model.Gstdrequired;
+            hrd.HourCode = model.HourCode;
+            hrd.ContinuousRun = model.ContinuousRun;
 
-                HrdcompletedBy = model.HrdcompletedBy,
-                Scrap = model.Scrap,
-                DateofDisposition = model.DateofDisposition,
-                ThriftStore = model.ThriftStore,
-                Complete = model.Complete,
-                Cancelled = model.Cancelled,
+            hrd.Qacomments = model.QaComments;
+            hrd.DateCompleted = model.DateCompleted;
+            hrd.Clear = model.Clear;
 
-                Samples = model.Samples,
-                NumberOfDaysHeld = model.NumberOfDaysHeld,
-                Donate = model.Donate,
-                AllCasesAccountedFor = model.AllCasesAccountedFor,
-                OtherHrdaffected = model.OtherHrdAffected,
-                HighRisk = model.HighRisk,
-                OtherHrdnum = model.OtherHrdNum,
+            hrd.HrdcompletedBy = model.HrdcompletedBy;
+            hrd.Scrap = model.Scrap;
+            hrd.DateofDisposition = model.DateofDisposition;
+            hrd.ThriftStore = model.ThriftStore;
+            hrd.Complete = model.Complete;
+            hrd.Cancelled = model.Cancelled;
 
-                Fcdate = model.FcDate,
-                Fcuser = model.FcUser,
-                Dcdate = model.DcDate,
-                Dcuser = model.DcUser,
-                Classification = model.Classification,
-                HoldCategory = model.HoldCategory,
-                HoldSubCategory = model.HoldSubCategory,
-                DateHeld = model.DateHeld,
+            hrd.Samples = model.Samples;
+            hrd.NumberOfDaysHeld = model.NumberOfDaysHeld;
+            hrd.Donate = model.Donate;
+            hrd.AllCasesAccountedFor = model.AllCasesAccountedFor;
+            hrd.OtherHrdaffected = model.OtherHrdAffected;
+            hrd.HighRisk = model.HighRisk;
+            hrd.OtherHrdnum = model.OtherHrdNum;
 
-                MonthHeld = model.MonthHeld,
-                WeekHeld = model.WeekHeld,
-                CostofProductonHold = model.CostofProductonHold,
-                ReworkApproved = model.ReworkApproved,
+            hrd.Fcdate = model.FcDate;
+            hrd.Fcuser = model.FcUser;
+            hrd.Dcdate = model.DcDate;
+            hrd.Dcuser = model.DcUser;
+            hrd.Classification = model.Classification;
+            hrd.HoldCategory = model.HoldCategory;
+            hrd.HoldSubCategory = model.HoldSubCategory;
+            hrd.DateHeld = model.DateHeld;
 
-                //not mapped
-                NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
-                YearOfIncident = model.YearOfIncident,
-                CaseCount = model.CaseCount,
-                ReasonAction = model.ReasonAction,
-                IsApprovalRequestByQa = model.ApprovalRequestByQa,
-                IsPlantManagerAprpoval = model.IsPlantManagerAprpoval,
-                IsPlantControllerApproval = model.IsPlantControllerApproval,
-                IsDestroyed = model.IsDestroyed,
-                ApprovedByQawho = model.ApprovedByQAWho,
-                ApprovedByQawhen = model.ApprovedByQAWhen,
-                ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho,
-                ApprovedPlantManagerQawhen = model.ApprovedPlantManagerQAWhen,
-                ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho,
-                ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen,
-                ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
-                ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
-                Comments = model.Comments,
-            };
+            hrd.MonthHeld = model.MonthHeld;
+            hrd.WeekHeld = model.WeekHeld;
+            hrd.CostofProductonHold = model.CostofProductonHold;
+            hrd.ReworkApproved = model.ReworkApproved;
+
+            //not mapped
+            hrd.NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval;
+            hrd.YearOfIncident = model.YearOfIncident;
+            hrd.CaseCount = model.CaseCount;
+            hrd.ReasonAction = model.ReasonAction;
+            hrd.IsApprovalRequestByQa = model.ApprovalRequestByQa;
+            hrd.IsPlantManagerAprpoval = model.IsPlantManagerAprpoval;
+            hrd.IsPlantControllerApproval = model.IsPlantControllerApproval;
+            hrd.IsDestroyed = model.IsDestroyed;
+            hrd.ApprovedByQawho = model.ApprovedByQAWho;
+            hrd.ApprovedByQawhen = model.ApprovedByQAWhen;
+            hrd.ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho;
+            hrd.ApprovedPlantManagerQawhen = model.ApprovedPlantManagerQAWhen;
+            hrd.ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho;
+            hrd.ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen;
+            hrd.ApprovedByDistroyedWho = model.ApprovedByDistroyedWho;
+            hrd.ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen;
+            hrd.Comments = model.Comments;
 
             if (model.HrdDc != null)
             {
@@ -453,8 +455,8 @@ namespace HRD.WebApi.Controllers
         //[EnableCors("AllowOrigin")]
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
         [HttpPost("Hrd")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> PostHrd(HRDDetailViewModel model)
         {
             var hrd = new Hrd
@@ -548,7 +550,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteHrd(int id)
         {
             var hrd = await _context.Hrds
@@ -595,7 +597,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
@@ -701,7 +703,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/Qa/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutQARecord(int id, QARecordViewModel model)
         {
             if (id != model.Id)
@@ -709,88 +711,91 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
-            var hrd = new Hrd
-            {
-                Id = id,
-                IsHrd = model.IsHRD,
-                IsPest = model.IsPest,
-                IsSmi = model.IsSMI,
-                IsNr = model.IsNR,
-                IsFm = model.IsFM,
-                IsMicro = model.IsMicro,
+            var hrd = _context.Hrds.Include(i => i.Hrdfcs)
+                                    .Include(i => i.Hrddcs)
+                                    .Include(i => i.Hrdpos)
+                                    .Include(i => i.Hrdnotes)
+                                    .Where(i => i.Id == id).FirstOrDefault();
 
-                Date = model.Date,
-                TimeOfIncident = model.TimeOfIncident,
-                YearHeld = model.YearHeld,
-                DayCode = model.DayCode,
-                Originator = model.Originator,
-                Bumanager = model.BUManager,
-                CodingType = model.Type,
-                Globenum = model.Fert,
-                FertDescription = model.FertDescription,
-                Line = model.Line,
-                LineSupervisor = model.LineSupervisor,
-                Area = model.Area,
-                AreaIfOther = model.AreaIfOther,
-                Shift = model.Shift,
-                ShortDescription = model.ShortDescription,
-                AdditionalDescription = model.AdditionalDescription,
-                DetailedDescription = model.DetailedDescription,
+            hrd.Id = id;
+            hrd.IsHrd = model.IsHRD;
+            hrd.IsPest = model.IsPest;
+            hrd.IsSmi = model.IsSMI;
+            hrd.IsNr = model.IsNR;
+            hrd.IsFm = model.IsFM;
+            hrd.IsMicro = model.IsMicro;
 
-                //HRD                                  
-                CasesHeld = model.CasesHeld,
-                HourCode = model.HourCode,
-                Pos = model.POs,
-                ReworkInstructions = model.ReworkInstructions,
+            hrd.Date = model.Date;
+            hrd.TimeOfIncident = model.TimeOfIncident;
+            hrd.YearHeld = model.YearHeld;
+            hrd.DayCode = model.DayCode;
+            hrd.Originator = model.Originator;
+            hrd.Bumanager = model.BUManager;
+            hrd.CodingType = model.Type;
+            hrd.Globenum = model.Fert;
+            hrd.FertDescription = model.FertDescription;
+            hrd.Line = model.Line;
+            hrd.LineSupervisor = model.LineSupervisor;
+            hrd.Area = model.Area;
+            hrd.AreaIfOther = model.AreaIfOther;
+            hrd.Shift = model.Shift;
+            hrd.ShortDescription = model.ShortDescription;
+            hrd.AdditionalDescription = model.AdditionalDescription;
+            hrd.DetailedDescription = model.DetailedDescription;
 
-                //PEST                                     
-                PestType = model.PestType,
-                PcocontactedImmediately = model.PCOContactedImmediately,
-                ProductAdultered = model.ProductAdultered,
-                WhereFound = model.WhereFound,
-                IfYesAffectedProduct = model.IfYesAffectedProduct,
+            //HRD                                  
+            hrd.CasesHeld = model.CasesHeld;
+            hrd.HourCode = model.HourCode;
+            hrd.Pos = model.POs;
+            hrd.ReworkInstructions = model.ReworkInstructions;
 
-                //SMI                                               
-                MaterialNumber = model.MaterialNumber,
-                RawMaterialDescription = model.RawMaterialDescription,
-                SMIVendorBatch = model.SMIVendorBatch,
-                VendorNumber = model.VendorNumber,
-                VendorName = model.VendorName,
-                VendorSiteNumber = model.VendorSiteNumber,
+            //PEST                                     
+            hrd.PestType = model.PestType;
+            hrd.PcocontactedImmediately = model.PCOContactedImmediately;
+            hrd.ProductAdultered = model.ProductAdultered;
+            hrd.WhereFound = model.WhereFound;
+            hrd.IfYesAffectedProduct = model.IfYesAffectedProduct;
 
-                //FM                                                
-                IsInspections = model.IsInspections,
-                IsXray = model.IsXray,
-                IsMetalDetector = model.IsMetalDetector,
-                Fmtype = model.FMType,
-                Size = model.Size,
-                Equipment = model.Equipment,
-                EquipmentIfOther = model.EquipmentIfOther,
-                Rohmaterial = model.ROHMaterial,
+            //SMI                                               
+            hrd.MaterialNumber = model.MaterialNumber;
+            hrd.RawMaterialDescription = model.RawMaterialDescription;
+            hrd.SMIVendorBatch = model.SMIVendorBatch;
+            hrd.VendorNumber = model.VendorNumber;
+                 hrd.VendorName = model.VendorName;
+            hrd.VendorSiteNumber = model.VendorSiteNumber;
 
-                PiecesTotal = model.PiecesTotal,
-                FMVendorBatch = model.FMVendorBatch,
-                FMSource = model.FMSource,
+            //FM                                                
+            hrd.IsInspections = model.IsInspections;
+            hrd.IsXray = model.IsXray;
+            hrd.IsMetalDetector = model.IsMetalDetector;
+            hrd.Fmtype = model.FMType;
+            hrd.Size = model.Size;
+            hrd.Equipment = model.Equipment;
+            hrd.EquipmentIfOther = model.EquipmentIfOther;
+            hrd.Rohmaterial = model.ROHMaterial;
 
-                DateReceived = model.DateReceived,
-                InspectorsName = model.InspectorsName,
-                Nrcategory = model.NRCategory,
-                Tagged = model.Tagged,
-                TagNumber = model.TagNumber,
-                Response = model.Response,
+            hrd.PiecesTotal = model.PiecesTotal;
+            hrd.FMVendorBatch = model.FMVendorBatch;
+            hrd.FMSource = model.FMSource;
 
-                HoldConcern = model.HoldConcern,
-                DayOfWeek = model.DayOfWeek,
-                When = model.When,
-                WhenOther = model.WhenOther,
-                DateOfResample = model.DateOfResample,
-                MeatComponent = model.MeatComponent,
-                VeggieComponent = model.VeggieComponent,
-                SauceType = model.SauceType,
-                StarchType = model.StarchType,
-                AdditionalComments = model.AdditionalComments,
-            };
+            hrd.DateReceived = model.DateReceived;
+            hrd.InspectorsName = model.InspectorsName;
+            hrd.Nrcategory = model.NRCategory;
+            hrd.Tagged = model.Tagged;
+            hrd.TagNumber = model.TagNumber;
+            hrd.Response = model.Response;
 
+            hrd.HoldConcern = model.HoldConcern;
+            hrd.DayOfWeek = model.DayOfWeek;
+            hrd.When = model.When;
+            hrd.WhenOther = model.WhenOther;
+            hrd.DateOfResample = model.DateOfResample;
+            hrd.MeatComponent = model.MeatComponent;
+            hrd.VeggieComponent = model.VeggieComponent;
+            hrd.SauceType = model.SauceType;
+            hrd.StarchType = model.StarchType;
+            hrd.AdditionalComments = model.AdditionalComments;
+            
             if (model.HrdMicros != null)
             {
                 foreach (var item in model.HrdMicros)
@@ -910,7 +915,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Qa")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<QARecordViewModel>> PostQARecord(QARecordViewModel model)
         {
             var hrd = new Hrd
@@ -997,7 +1002,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteQARecord(int id)
         {
             var hrd = await _context.Hrds
