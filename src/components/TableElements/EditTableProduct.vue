@@ -1,7 +1,7 @@
 <template>
     <v-edit-dialog
         :return-value.sync="table"
-        light
+        persistent
         @save="save($event)"
         @cancel="cancel"
     >
@@ -55,8 +55,6 @@ export default {
         },
     },
     data: () => ({
-        max50chars: v => v.length <= 50 || 'Input too long!',
-        required: value => !!value || 'Required.',
         origVal:[],
         inputValue:0,
     }),
@@ -97,10 +95,10 @@ export default {
         },
         cancel () {
             this.input.snack = true
-            this.input.snackColor = 'error'
+            this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
             let vm = this 
-            let value = this.origVal
+            let value = vm.origVal
             vm.$emit('change', value)
         },
         updateValue(value) {
@@ -110,7 +108,7 @@ export default {
         },
         saveOriginalValue() {
             this.origVal = this.table
-        }
+        },
     }
 }
 </script>

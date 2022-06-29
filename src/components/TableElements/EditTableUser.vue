@@ -10,7 +10,7 @@
             <v-text-field
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[rules.counter]"
+                :rules="rules"
                 :type="type"
                 label="Edit"
                 single-line
@@ -49,8 +49,8 @@ export default {
             required:false
         },
         rules: {
-            type: Object,
-            default: () => {},
+            type: Array,
+            default: () => [],
             required: false
         }
     },
@@ -92,7 +92,7 @@ export default {
         },
         cancel() {
             this.input.snack = true
-            this.input.snackColor = 'error'
+            this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
             let vm = this 
             let value = this.origVal

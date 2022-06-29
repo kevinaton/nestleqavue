@@ -42,7 +42,7 @@
             :table="props.item.name"
             editData="name"
             :data="props.item"
-            :rules="rules"
+            :rules="[rules.counter]"
             :input="snackbar"
             @change="(value) => { props.item.name = value }"
         />
@@ -52,7 +52,7 @@
             :table="props.item.userId"
             editData="userId"
             :data="props.item"
-            :rules="rules"
+            :rules="[rules.counter]"
             :input="snackbar"
             @change="(value) => { props.item.userId = value }"
         />
@@ -139,8 +139,9 @@ export default {
         },
     },
     rules: {
-            required: value => !!value || 'Required.',
-            counter: value => value.length <= 80 || 'Max 80 characters',
+            required: value => !!value || 'Required',
+            counter: value => value.length <= 50 || 'Input too long.',
+            int: value => value <= 2147483647 || 'Enter a lesser amount',
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 return pattern.test(value) || 'Invalid e-mail.'

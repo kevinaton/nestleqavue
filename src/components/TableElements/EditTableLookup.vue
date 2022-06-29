@@ -93,7 +93,7 @@ export default {
         },
         cancel () {
             this.input.snack = true
-            this.input.snackColor = 'error'
+            this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
             let vm = this 
             let value = this.origVal
