@@ -9,7 +9,7 @@
         <template v-slot:input>
             <v-text-field
                 :value="table"
-                @input="updateValue(parseInt($event))"
+                @input="updateValue(parseFloat($event, 10))"
                 :type="type"
                 label="Edit"
                 single-line

@@ -42,7 +42,7 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-textarea v-model="inpValue.ifYesAffectedProduct" v-if="inpValue.productAdultered == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-textarea>
+                        <v-text-field v-model="inpValue.ifYesAffectedProduct" :rules="[rules.counter]" v-if="inpValue.productAdultered == 'Yes'" outlined label="If yes, what was done with the affected product?"></v-text-field>
                     </v-col>
                 </v-row>
             </v-form>

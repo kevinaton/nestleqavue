@@ -14,10 +14,10 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-text-field v-model="inpValue.caseCount" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.caseCount" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.reasonAction" label="Reason Action" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.reasonAction" :rules="[rules.counter]" label="Reason Action" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -62,7 +62,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByQAWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByQAWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -94,7 +94,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByPlantManagerWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantManagerWho" :rules="[rules.counter]"  label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -126,7 +126,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByPlantControllerWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByPlantControllerWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
@@ -158,7 +158,7 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field v-model="inpValue.approvedByDistroyedWho" label="Who" outlined></v-text-field>
+                    <v-text-field v-model="inpValue.approvedByDistroyedWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker

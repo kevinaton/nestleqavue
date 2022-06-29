@@ -179,6 +179,10 @@
           } else {
             this.initialValue = false
             this.$router.push({name:value.name}).catch(()=>{})
+            if (this.selectedTab != 1 || 2) {
+              this.selectedAdmin = null
+              this.selectedReport = null
+            }
           }
         },
         redirect() {
