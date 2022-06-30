@@ -125,7 +125,7 @@
         currentPage:{},
         selectedTab:null,
         items: [
-          { title: 'Change Password', name:'change_password' },
+          // { title: 'Change Password', name:'change_password' },
           { title: 'Logout' },
         ],
         tabs: [

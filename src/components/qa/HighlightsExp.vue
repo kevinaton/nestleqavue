@@ -81,7 +81,7 @@
                         <v-text-field 
                             outlined 
                             v-model="inpValue.fert"
-                            :rules="[rules.counter]"
+                            :rules="[rules.fert]"
                             label="FERT">
                         </v-text-field>
                     </v-col>
