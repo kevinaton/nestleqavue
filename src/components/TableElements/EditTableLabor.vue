@@ -1,7 +1,7 @@
 <template>
     <v-edit-dialog
         :return-value.sync="table"
-        light
+        persistent
         @save="save($event)"
         @cancel="cancel"
     >
@@ -11,6 +11,7 @@
                 :value="table"
                 @input="updateValue(parseFloat($event, 10))"
                 :type="type"
+                :rules="[rules.int]"
                 label="Edit"
                 single-line
                 persistent
@@ -83,7 +84,7 @@ export default {
         },
         cancel () {
             this.input.snack = true
-            this.input.snackColor = 'error'
+            this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
             let vm = this 
             let value = this.origVal
