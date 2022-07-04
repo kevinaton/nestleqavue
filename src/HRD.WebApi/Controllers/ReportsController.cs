@@ -118,7 +118,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (string.IsNullOrWhiteSpace(input.WeekHeld)
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("dddd").ToLower())))
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("F").ToLower())))
                                         .GroupBy(g => new
                                         {
                                             g.HoldCategory,
@@ -164,7 +164,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (string.IsNullOrWhiteSpace(input.WeekHeld)
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("dddd").ToLower())))
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("F").ToLower())))
                                         .GroupBy(g => new
                                         {
                                             g.HoldCategory,
