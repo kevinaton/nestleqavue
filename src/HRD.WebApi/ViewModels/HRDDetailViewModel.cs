@@ -72,7 +72,7 @@ namespace HRD.WebApi.ViewModels
         public DateTime? DateHeld { get; set; }
 
         public string MonthHeld { get; set; }
-        public int? WeekHeld { get; set; }
+        public string WeekHeld { get; set; }
         public decimal? CostofProductonHold { get; set; }
         public bool? ReworkApproved { get; set; }
         public int? NumberOfDaysToReworkApproval { get; set; }

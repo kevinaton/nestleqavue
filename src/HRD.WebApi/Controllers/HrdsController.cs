@@ -197,8 +197,8 @@ namespace HRD.WebApi.Controllers
                 HoldSubCategory = hrd.HoldSubCategory,
                 DateHeld = hrd.DateHeld,
 
-                MonthHeld = hrd.MonthHeld,
-                WeekHeld = hrd.WeekHeld,
+                MonthHeld = hrd.DateHeld.Value.ToString("MMMM"),//MonthHeld,
+                WeekHeld = hrd.DateHeld.Value.DayOfWeek.ToString("F"),//hrd.WeekHeld,
                 CostofProductonHold = hrd.CostofProductonHold,
                 ReworkApproved = hrd.ReworkApproved,
 
@@ -300,8 +300,8 @@ namespace HRD.WebApi.Controllers
             hrd.HoldSubCategory = model.HoldSubCategory;
             hrd.DateHeld = model.DateHeld;
 
-            hrd.MonthHeld = model.MonthHeld;
-            hrd.WeekHeld = model.WeekHeld;
+            //hrd.MonthHeld = model.MonthHeld;
+            //hrd.WeekHeld = model.WeekHeld;
             hrd.CostofProductonHold = model.CostofProductonHold;
             hrd.ReworkApproved = model.ReworkApproved;
 
@@ -511,8 +511,8 @@ namespace HRD.WebApi.Controllers
                 HoldSubCategory = model.HoldSubCategory,
                 DateHeld = model.DateHeld,
 
-                MonthHeld = model.MonthHeld,
-                WeekHeld = model.WeekHeld,
+                //MonthHeld = model.MonthHeld,
+                //WeekHeld = model.WeekHeld,
                 CostofProductonHold = model.CostofProductonHold,
                 ReworkApproved = model.ReworkApproved,
 
