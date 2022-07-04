@@ -105,6 +105,98 @@ namespace HRD.WebApi.Controllers
         }
 
         // GET: api/Reports
+        [HttpGet("CostHeldByCategory")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
+        {
+
+            switch (input.CostGraphOption)
+            {
+                case EnumCostGraph.CostByCategory:
+                    var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (string.IsNullOrWhiteSpace(input.WeekHeld)
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("dddd").ToLower())))
+                                        .GroupBy(g => new
+                                        {
+                                            g.HoldCategory,
+                                        })
+                                        .Select(s => new
+                                        {
+                                            s.Key.HoldCategory,
+                                            TotalCost = s.Sum(a => a.CostofProductonHold),
+                                        }).ToListAsync();
+                    return Ok(queryByCategory);
+
+                case EnumCostGraph.CostByAllocation:
+                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
+                                        .GroupBy(g => new
+                                        {
+                                            g.HoldCategory,
+                                        })
+                                        .Select(s => new
+                                        {
+                                            s.Key.HoldCategory,
+                                            TotalCost = s.Sum(a => a.CostofProductonHold),
+                                        }).ToListAsync();
+                    return Ok(queryByInHouse);
+            }
+
+            return Ok();
+        }
+
+        // GET: api/Reports
+        [HttpGet("CasesHeldByCategory")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
+        {
+
+            switch (input.CostGraphOption)
+            {
+                case EnumCostGraph.CostByCategory:
+                    var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (string.IsNullOrWhiteSpace(input.WeekHeld)
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("dddd").ToLower())))
+                                        .GroupBy(g => new
+                                        {
+                                            g.HoldCategory,
+                                        })
+                                        .Select(s => new
+                                        {
+                                            s.Key.HoldCategory,
+                                            TotalCost = s.Sum(a => a.Cases),
+                                        }).ToListAsync();
+                    return Ok(queryByCategory);
+
+                case EnumCostGraph.CostByAllocation:
+                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
+                                        .GroupBy(g => new
+                                        {
+                                            g.HoldCategory,
+                                        })
+                                        .Select(s => new
+                                        {
+                                            s.Key.HoldCategory,
+                                            TotalCost = s.Sum(a => a.Cases),
+                                        }).ToListAsync();
+                    return Ok(queryByInHouse);
+            }
+
+            return Ok();
+        }
+
+        // GET: api/Reports
         [HttpGet("FMCases")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
@@ -115,7 +207,7 @@ namespace HRD.WebApi.Controllers
                 case EnumFMCasesOptions.ByCategory:
                     var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
                                                     && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && (x.Complete.HasValue && x.Complete.Value))
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
                                         .GroupBy(g => new
                                         {
@@ -123,7 +215,7 @@ namespace HRD.WebApi.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.Fmtype,
+                                            Type = s.Key.Fmtype,
                                             NumberOfCases = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByCategory);
@@ -131,7 +223,7 @@ namespace HRD.WebApi.Controllers
                 case EnumFMCasesOptions.ByInhouseVendor:
                     var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
                                                     && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && (x.Complete.HasValue && x.Complete.Value))
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
                                         .GroupBy(g => new
                                         {
@@ -139,7 +231,7 @@ namespace HRD.WebApi.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.FMSource,
+                                            Type = s.Key.FMSource,
                                             NumberOfCases = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByInHouse);
@@ -147,7 +239,7 @@ namespace HRD.WebApi.Controllers
                 case EnumFMCasesOptions.ByLine:
                     var queryByLine = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
                                                     && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && (x.Complete.HasValue && x.Complete.Value))
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
                                         .GroupBy(g => new
                                         {
@@ -155,7 +247,7 @@ namespace HRD.WebApi.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.Line,
+                                            Type = s.Key.Line,
                                             NumberOfCases = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByLine);
@@ -163,7 +255,7 @@ namespace HRD.WebApi.Controllers
                 case EnumFMCasesOptions.ByShift:
                     var queryByShift = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
                                                     && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && (x.Complete.HasValue && x.Complete.Value))
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
                                         .GroupBy(g => new
                                         {
@@ -171,14 +263,12 @@ namespace HRD.WebApi.Controllers
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.Shift,
+                                            Type = s.Key.Shift,
                                             NumberOfCases = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByShift);
             }
             
-
-
             return Ok();
         }
 
@@ -194,7 +284,7 @@ namespace HRD.WebApi.Controllers
                                                 })
                                                 .Select(s => new
                                                 {
-                                                    s.Key.PestType,
+                                                    Type = s.Key.PestType,
                                                     NumberOfPestLog = s.Count()
                                                 }).ToListAsync();
 
@@ -218,8 +308,8 @@ namespace HRD.WebApi.Controllers
                                                             })
                                                             .Select(s => new
                                                             {
-                                                                s.Key.HoldConcern,
-                                                                MicrobeCases = s.Sum(a => a.Cases)
+                                                                Type = s.Key.HoldConcern,
+                                                                NumberOfCases = s.Sum(a => a.Cases)
                                                             }).ToListAsync();
 
                     return Ok(queryByMicrobe);
@@ -235,8 +325,8 @@ namespace HRD.WebApi.Controllers
                                                         })
                                                         .Select(s => new
                                                         {
-                                                            s.Key.Line,
-                                                            lineCases = s.Sum(a => a.Cases)
+                                                            Type = s.Key.Line,
+                                                            NumberOfCases = s.Sum(a => a.Cases)
                                                         }).ToListAsync();
                     return Ok(queryByLine);
 
@@ -255,8 +345,8 @@ namespace HRD.WebApi.Controllers
                                                 } into cases
                                                 select new
                                                 {
-                                                    cases.Key.Description,
-                                                    NoCases = cases.Sum(s => s.p.CostPerCase)
+                                                    Type = cases.Key.Description,
+                                                    NumberOfCases = cases.Sum(s => s.p.CostPerCase)
                                                 }).Take(10).ToListAsync();
                                      
                     return Ok(queryByProduct);
@@ -272,8 +362,8 @@ namespace HRD.WebApi.Controllers
                                                     })
                                                     .Select(s => new
                                                     {
-                                                        s.Key.Shift,
-                                                        shiftCases = s.Sum(a => a.Cases)
+                                                        Type = s.Key.Shift,
+                                                        NumberOfCases = s.Sum(a => a.Cases)
                                                     }).ToListAsync();
                     return Ok(queryByShift);
             }
@@ -281,4 +371,3 @@ namespace HRD.WebApi.Controllers
         }
     }
 }
-    
