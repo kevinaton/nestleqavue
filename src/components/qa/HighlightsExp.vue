@@ -268,10 +268,6 @@ export default {
             required: false,
         },
     },
-    data: () => ({
-    }),
-    created() {
-    },
     computed: {
         getDate(){
             let obj

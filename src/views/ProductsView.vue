@@ -32,7 +32,6 @@
       />
       <SimpleToolbar 
         title="Products"
-        :input="prodtoolbar"
         :table="products"
         @change="getSearch($event)"
       />

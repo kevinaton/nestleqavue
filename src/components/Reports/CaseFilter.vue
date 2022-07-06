@@ -61,60 +61,58 @@
     </v-row>
     <v-row>
         <v-col>
-        <SelectDropdownObj 
-            :items="input.line"
-            :defaultValue="input.lineSelect"
-            v-model="input.lineSelect"
-            name="Line" 
-            item-text="text"
-            item-value="value"
-            label="Line" 
-            @change="(value) => {
-                this.input.lineSelect = value   
-            }"
-        />
+            <SelectDropdownObj 
+                :items="input.line"
+                :defaultValue="input.lineSelect"
+                v-model="input.lineSelect"
+                name="Line" 
+                item-text="text"
+                item-value="value"
+                label="Line" 
+                @change="(value) => {
+                    this.input.lineSelect = value   
+                }"
+            />
         </v-col>
         <v-col>
-        <SelectDropdownObj 
-            :items="input.weekheld" 
-            :defaultValue="input.weekheldSelect"
-            v-model="input.weekheldSelect" 
-            name="weekheld" 
-            item-text="text"
-            item-value="value"
-            label="Week Held" 
-            @change="(value) => {
-                this.input.weekheldSelect = value   
-            }"
-        />
-        </v-col>
-    </v-row>
-    <v-row>
-        <v-col>
-        <SelectDropdownObj 
-            item-text="text"
-            item-value="value"
-            label="Closed/Open"
-            v-model="input.closeopenSelect" 
-            :defaultValue="input.closeopenSelect"
-            :items="input.closeopen" 
-            @change="(value) => {
-                this.input.closeopenSelect = value   
-            }"
-        />
+            <SelectDropdownObj 
+                :items="input.weekheld" 
+                :defaultValue="input.weekheldSelect"
+                v-model="input.weekheldSelect" 
+                name="weekheld" 
+                item-text="text"
+                item-value="value"
+                label="Week Held" 
+                @change="(value) => {
+                    this.input.weekheldSelect = value   
+                }"
+            />
         </v-col>
         <v-col>
-        <SelectDropdownObj 
-            item-text="text"
-            item-value="value"
-            label="Cost Graph Modifier"
-            v-model="input.costgraphSelect" 
-            :defaultValue="input.costgraphSelect"
-            :items="input.costgraph" 
-            @change="(value) => {
-                this.input.costgraphSelect = value   
-            }"
-        />
+            <SelectDropdownObj 
+                item-text="text"
+                item-value="value"
+                label="Closed/Open"
+                v-model="input.closeopenSelect" 
+                :defaultValue="input.closeopenSelect"
+                :items="input.closeopen" 
+                @change="(value) => {
+                    this.input.closeopenSelect = value   
+                }"
+            />
+        </v-col>
+        <v-col>
+            <SelectDropdownObj 
+                item-text="text"
+                item-value="value"
+                label="Cost Graph Modifier"
+                v-model="input.costgraphSelect" 
+                :defaultValue="input.costgraphSelect"
+                :items="input.costgraph" 
+                @change="(value) => {
+                    this.input.costgraphSelect = value   
+                }"
+            />
         </v-col>
     </v-row>
     </v-col>

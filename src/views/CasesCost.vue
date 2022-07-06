@@ -9,31 +9,38 @@
     />
     <ReportTitle 
       titleContent="Cases & Cost Held by Category"
-      subContent="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     />
     <v-row>
       <CaseFilter 
         :input="filter"
       />
-      <CaseTable 
-        :input="table"
-      />
     </v-row>
-    <v-divider class="mt-8"></v-divider>
+    <v-divider class="mt-4"></v-divider>
     <v-row>
       <BarChart 
         barLabel="Cases Held by Category"
         barColor='#4DD0E1'
         barTitle="Cases Held by Category"
-        :xLabels="caseheldChart.xLabels"
+        :xValues="caseheldChart.xValues"
         :barData="caseheldChart.barData"
       />
+    </v-row>
+    <v-row>
       <BarChart 
         barLabel="Cost Held by Category"
         barColor='#AED581'
         barTitle="Cost Held by Category"
-        :xLabels="costheldChart.xLabels"
+        :xValues="costheldChart.xValues"
         :barData="costheldChart.barData"
+      />
+    </v-row>
+    <v-row>
+      <CaseTable 
+        :input="table"
+        :items="caseCostTable"
+        @change="(value) => {
+            caseCostTable = value   
+        }"
       />
     </v-row>
   </v-card>
@@ -83,34 +90,31 @@ export default {
           { text: '5', value:'5', disabled: false },
           { text: '6', value:'6', disabled: false },
         ],
-        lineSelect:{ text: '1', value:'1', disabled: false },
         weekheld: [
-          { text: 'Monday', value:'monday', disabled: false },
-          { text: 'Tuesday', value:'tuesday', disabled: false },
-          { text: 'Wednesday', value:'wednesday', disabled: false },
-          { text: 'Thursday', value:'thursday', disabled: false },
-          { text: 'Friday', value:'friday', disabled: false },
-          { text: 'Saturday', value:'saturday', disabled: false },
-          { text: 'Sunday', value:'sunday', disabled: false },
+          { text: 'None', value:'', disabled: false },
+          { text: 'Monday', value:'1', disabled: false },
+          { text: 'Tuesday', value:'2', disabled: false },
+          { text: 'Wednesday', value:'3', disabled: false },
+          { text: 'Thursday', value:'4', disabled: false },
+          { text: 'Friday', value:'5', disabled: false },
+          { text: 'Saturday', value:'6', disabled: false },
+          { text: 'Sunday', value:'7', disabled: false },
         ],
-        weekheldSelect:{ text: 'Monday', value:'monday', disabled: false },
         closeopen: [
-          { text: 'All', value:'all', disabled: false },
-          { text: 'Close', value:'close', disabled: false },
-          { text: 'Open', value:'open', disabled: false },
+          { text: 'All', value:'1', disabled: false },
+          { text: 'Close', value:'2', disabled: false },
+          { text: 'Open', value:'3', disabled: false },
         ],
-        closeopenSelect: {text:'All', value:'all'},
-        costgraphSelect: { text: 'Cost by Category', value:'costbycategory', disabled: false },
         costgraph: [
-          { text: 'Cost by Category', value:'costbycategory', disabled: false },
-          { text: 'Cost by Allocation', value:'costbyallocation', disabled: false },
+          { text: 'Cost by Category', value:'1', disabled: false },
+          { text: 'Cost by Allocation', value:'2', disabled: false },
         ],
       },
       table: {
         header: [
           { text:'Line', value: 'line' },
-          { text:'Total Cases', value: 'totalcases' },
-          { text:'Total Cost', value: 'totalcost' },
+          { text:'Total Cases', value: 'totalCases' },
+          { text:'Total Cost', value: 'totalCost' },
         ],
         linecasecost: [
           { line:'9', totalcases:'12234', totalcost:'$20235' },
@@ -121,18 +125,59 @@ export default {
         ],
       },
       caseheldChart: {
-          xLabels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul' ],
-          barData: [400, 203, 125, 583, 831, 349, 299]
+          xValues: [],
+          barData: []
       },
       costheldChart: {
-          xLabels: [ 'Cat1', 'Cat2', 'Cat3', 'Cat4', 'Cat5' ],
-          barData: [5030, 2345, 3921, 1923, 4224 ]
-      }
+          xValues: [],
+          barData: []
+      },
+      caseCostTable:[],
     }),
+
+    created() {
+      this.fetchCaseGraph()
+      this.fetchCostGraph()
+    },
+
     methods: {
       dateRangeText () {
         this.$refs.menu.save(this.filter.dates.join(' - '))
         console.log(this.filter.dates)
+      },
+
+      fetchCaseGraph() {
+        let vm = this 
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=1&CostGraphOption=1&PeriodBegin=2010-01-01T00%3A00%3A00&PeriodEnd=2022-12-30T00%3A00%3A00`)
+        .then((res) => {
+            vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+            console.log(vm.caseheldChart.xValues)
+        })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => { })
+      },
+
+      fetchCostGraph() {
+        let vm = this 
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=1&CostGraphOption=1&PeriodBegin=2010-01-01T00%3A00%3A00&PeriodEnd=2022-12-30T00%3A00%3A00`)
+        .then((res) => {
+            vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
+            console.log(vm.caseheldChart.xValues)
+        })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => { })
       },
     }
 }

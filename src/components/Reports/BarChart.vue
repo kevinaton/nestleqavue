@@ -1,5 +1,8 @@
 <template>
     <v-col class="mt-4">
+        <SnackBar 
+            :input="snackbar"
+        />
         <Bar
             :chart-options="chartOptions"
             :chart-data="chartData"
@@ -15,91 +18,140 @@
 </template>
 
 <script>
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 import { Bar } from 'vue-chartjs/legacy'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
-name: 'BarChart',
-components: { Bar },
-props: {
-    chartId: {
-        type: String,
-        default: 'bar-chart'
-    },
-    datasetIdKey: {
-        type: String,
-        default: 'label'
-    },
-        width: {
-        type: Number,
-    default: 400
-    },
-    height: {
-        type: Number,
-        default: 400
-    },
-    cssClasses: {
-        default: '',
-        type: String
-    },
-    styles: {
-        type: Object,
-        default: () => {}
-    },
-    plugins: {
-        type: Object,
-        default: () => {}
-    },
-    barLabel: {
-        type: String,
-        default: ''
-    },
-    xLabels: {
-        type: Array,
-        default:() => []
-    },
-    barData: {
-        type: Array,
-        default:() => []
-    },
-    barColor: {
-        type: String,
-        default:''
-    },
-    barTitle: {
-        type: String,
-        default:''
-    }
-},
-data() {
-    return {
-    chartData: {
-        labels: this.xLabels,
-        datasets: [{ 
-            label:this.barLabel,
-            backgroundColor:this.barColor,
-            data: this.barData
-        }]
-    },
-    chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            title: {
-                display: true,
-                text: this.barTitle,
-                align:'start',
-                color:'#212121',
-                font: {
-                    size:18,
-                    weight:'bold'
-                }
-            }
+    name: 'BarChart',
+    components: { Bar, SnackBar },
+    props: {
+        chartId: {
+            type: String,
+            default: 'bar-chart'
         },
+        datasetIdKey: {
+            type: String,
+            default: 'label'
+        },
+            width: {
+            type: Number,
+        default: 400
+        },
+        height: {
+            type: Number,
+            default: 400
+        },
+        cssClasses: {
+            default: '',
+            type: String
+        },
+        styles: {
+            type: Object,
+            default: () => {}
+        },
+        plugins: {
+            type: Object,
+            default: () => {}
+        },
+        barLabel: {
+            type: String,
+            default: ''
+        },
+        xValues: {
+            type: Array,
+            default:() => []
+        },
+        barData: {
+            type: Array,
+            default:() => []
+        },
+        barColor: {
+            type: String,
+            default:''
+        },
+        barTitle: {
+            type: String,
+            default:''
+        }
+    },
+
+    data: () => ({
+        snackbar: {
+            snack: false,
+            snackColor: '',
+            snackText: '',
+        },
+        chartKey: 1,
+    }),
+    
+
+    // data() {
+    // return {
+    //     chartData: {
+    //         labels: this.xValues,
+    //         datasets: [{ 
+    //             label: this.barLabel,
+    //             backgroundColor:this.barColor,
+    //             data: this.barData
+    //         }]
+    //     },
+    //     chartOptions: {
+    //         responsive: true,
+    //         maintainAspectRatio: false,
+    //         plugins: {
+    //             title: {
+    //                 display: true,
+    //                 text: this.barTitle,
+    //                 align:'start',
+    //                 color:'#212121',
+    //                 font: {
+    //                     size:18,
+    //                     weight:'bold'
+    //                 }
+    //             }
+    //         },
+    //     },
+    //     snackbar: {
+    //         snack: false,
+    //         snackColor: '',
+    //         snackText: '',
+    //     },
+    // }
+    // },
+
+    computed: {
+        chartData() {
+            return {
+                labels: this.xValues,
+                datasets: [{ 
+                    label: this.barLabel,
+                    backgroundColor:this.barColor,
+                    data: this.barData
+                }]
+            }   
+        },
+        chartOptions() {
+            return {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: this.barTitle,
+                        align:'start',
+                        color:'#212121',
+                        font: {
+                            size:18,
+                            weight:'bold'
+                        }
+                    }
+                },
+            }
+        }
     }
-    }
-}
+
 }
 </script>

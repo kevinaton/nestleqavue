@@ -28,10 +28,6 @@ export default {
         Export,
     },
     props: {
-        input: {
-            type: Object,
-            default: () => {},
-        },
         table: {
             type: Array,
             default: () => [],
