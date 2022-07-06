@@ -45,7 +45,6 @@ namespace HRD.WebApi
             {
                 options.DefaultAuthenticateScheme = IISDefaults.AuthenticationScheme;
                 options.DefaultForbidScheme = IISDefaults.AuthenticationScheme;
-
             });
 
             services.AddControllers();
@@ -106,11 +105,11 @@ namespace HRD.WebApi
                 app.UseHsts();
             }
 
-            app.UseCors("default");
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+
+            app.UseCors("default");
             app.UseAuthentication();
             app.UseAuthorization();
 

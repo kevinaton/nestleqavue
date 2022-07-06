@@ -317,7 +317,7 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.WhereFound).HasMaxLength(50);
 
-                entity.Property(e => e.YearHeld).HasMaxLength(4);,
+                entity.Property(e => e.YearHeld).HasMaxLength(4);
 
                 entity.Property(e => e.YearOfIncident).HasMaxLength(4);
             });

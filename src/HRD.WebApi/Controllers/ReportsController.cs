@@ -41,9 +41,9 @@ namespace HRD.WebApi.Controllers
         // GET: api/Reports
         [HttpGet("CasesCostByCategory")]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] PaginationFilter filter)
+        public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
+            var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder);
 
             var query = _context.Hrds
                             .GroupBy(g => new
@@ -52,19 +52,13 @@ namespace HRD.WebApi.Controllers
                                 g.YearHeld,
                                 g.HoldCategory,
                                 g.Line,
-                                g.WeekHeld,
                                 g.Complete
                             })
                             .Select(s => new CasesCostHeldByCategoryOutput
                             {
-                                MonthHeld = s.Key.DateHeld,
-                                HoldCategory = s.Key.HoldCategory,
                                 TotalCases = s.Sum(s => s.Cases),
                                 TotalCost = s.Sum(s => s.CostofProductonHold),
                                 Line = s.Key.Line,
-                                YearHeld = s.Key.YearHeld,
-                                WeekHeld = s.Key.WeekHeld,
-                                IsComplete = s.Key.Complete
                             });
 
             //Sorting
@@ -85,11 +79,6 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.TotalCost)
                         : query.OrderBy(o => o.TotalCost);
                     break;
-            }
-
-            if (!string.IsNullOrEmpty(validFilter.SearchString))
-            {
-                query = query.Where(f => f.Line.Contains(filter.SearchString));
             }
 
             var totalRecords = await query.CountAsync();
