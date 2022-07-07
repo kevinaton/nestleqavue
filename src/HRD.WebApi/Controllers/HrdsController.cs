@@ -148,7 +148,7 @@ namespace HRD.WebApi.Controllers
             var model = new HRDDetailViewModel
             {
                 Id = id,
-                Date = hrd.Date,
+                DateHeld = hrd.DateHeld,
                 TimeOfIncident = hrd.TimeOfIncident,
                 YearHeld = hrd.YearHeld,
                 DayCode = hrd.DayCode,
@@ -195,7 +195,6 @@ namespace HRD.WebApi.Controllers
                 Classification = hrd.Classification,
                 HoldCategory = hrd.HoldCategory,
                 HoldSubCategory = hrd.HoldSubCategory,
-                DateHeld = hrd.DateHeld,
 
                 MonthHeld = hrd.DateHeld.Value.ToString("MMMM"),//MonthHeld,
                 WeekHeld = hrd.DateHeld.Value.DayOfWeek.ToString("F"),//hrd.WeekHeld,
@@ -250,7 +249,7 @@ namespace HRD.WebApi.Controllers
                                     .Where(i => i.Id == id).FirstOrDefault();
 
             hrd.Id = id;
-            hrd.Date = model.Date;
+            hrd.DateHeld = model.DateHeld;
             hrd.TimeOfIncident = model.TimeOfIncident;
             hrd.YearHeld = model.YearHeld;
             hrd.DayCode = model.DayCode;
@@ -298,10 +297,7 @@ namespace HRD.WebApi.Controllers
             hrd.Classification = model.Classification;
             hrd.HoldCategory = model.HoldCategory;
             hrd.HoldSubCategory = model.HoldSubCategory;
-            hrd.DateHeld = model.DateHeld;
 
-            //hrd.MonthHeld = model.MonthHeld;
-            //hrd.WeekHeld = model.WeekHeld;
             hrd.CostofProductonHold = model.CostofProductonHold;
             hrd.ReworkApproved = model.ReworkApproved;
 
@@ -461,7 +457,7 @@ namespace HRD.WebApi.Controllers
         {
             var hrd = new Hrd
             {
-                Date = model.Date,
+                DateHeld = model.DateHeld,
                 TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
                 DayCode = model.DayCode,
@@ -509,10 +505,7 @@ namespace HRD.WebApi.Controllers
                 Classification = model.Classification,
                 HoldCategory = model.HoldCategory,
                 HoldSubCategory = model.HoldSubCategory,
-                DateHeld = model.DateHeld,
 
-                //MonthHeld = model.MonthHeld,
-                //WeekHeld = model.WeekHeld,
                 CostofProductonHold = model.CostofProductonHold,
                 ReworkApproved = model.ReworkApproved,
 
@@ -620,7 +613,7 @@ namespace HRD.WebApi.Controllers
                 IsFM = qa.IsFm,
                 IsMicro = qa.IsMicro,
 
-                Date = qa.Date,
+                DateHeld = qa.DateHeld,
                 TimeOfIncident = qa.TimeOfIncident,
                 YearHeld = qa.YearHeld,
                 DayCode = qa.DayCode,
@@ -725,7 +718,7 @@ namespace HRD.WebApi.Controllers
             hrd.IsFm = model.IsFM;
             hrd.IsMicro = model.IsMicro;
 
-            hrd.Date = model.Date;
+            hrd.DateHeld = model.DateHeld;
             hrd.TimeOfIncident = model.TimeOfIncident;
             hrd.YearHeld = model.YearHeld;
             hrd.DayCode = model.DayCode;
@@ -927,7 +920,7 @@ namespace HRD.WebApi.Controllers
                 IsFm = model.IsFM,
                 IsMicro = model.IsMicro,
 
-                Date = model.Date,
+                DateHeld = model.DateHeld,
                 TimeOfIncident = model.TimeOfIncident,
                 YearHeld = model.YearHeld,
                 DayCode = model.DayCode,

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRD.WebApi.Migrations
 {
     [DbContext(typeof(HRDContext))]
-    [Migration("20220613070308_AddInitial")]
-    partial class AddInitial
+    [Migration("20220707080643_RemoveWeekHeld_MonthHeld_Date_Columns")]
+    partial class RemoveWeekHeld_MonthHeld_Date_Columns
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -84,8 +84,8 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AdditionalDescription")
-                        .HasMaxLength(75)
-                        .HasColumnType("nvarchar(75)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool?>("AllCasesAccountedFor")
                         .HasColumnType("bit");
@@ -126,10 +126,6 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("AreaIfOther")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("BatchLot")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -179,8 +175,8 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Comments")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool?>("Complete")
                         .HasColumnType("bit");
@@ -194,9 +190,6 @@ namespace HRD.WebApi.Migrations
 
                     b.Property<decimal?>("CostofProductonHold")
                         .HasColumnType("money");
-
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DateCompleted")
                         .HasColumnType("datetime");
@@ -234,8 +227,8 @@ namespace HRD.WebApi.Migrations
                         .HasColumnName("DCUser");
 
                     b.Property<string>("DetailedDescription")
-                        .HasMaxLength(75)
-                        .HasColumnType("nvarchar(75)");
+                        .HasMaxLength(2147483647)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("Donate")
                         .HasColumnType("int");
@@ -245,6 +238,14 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("EquipmentIfOther")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FMSource")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("FMVendorBatch")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -278,10 +279,6 @@ namespace HRD.WebApi.Migrations
                     b.Property<bool?>("Gstdrequired")
                         .HasColumnType("bit")
                         .HasColumnName("GSTDRequired");
-
-                    b.Property<string>("HazardousSize")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool?>("HighRisk")
                         .HasColumnType("bit");
@@ -389,17 +386,9 @@ namespace HRD.WebApi.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("MonthHeld")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
                     b.Property<int?>("NonFtqcases")
                         .HasColumnType("int")
                         .HasColumnName("NonFTQCases");
-
-                    b.Property<string>("NonHazardousSize")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Nrcategory")
                         .HasMaxLength(50)
@@ -466,10 +455,6 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("QAComments");
 
-                    b.Property<string>("RawBatchLot")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
                     b.Property<string>("RawMaterialDescription")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -482,10 +467,6 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Response")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Responsibility")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -519,6 +500,10 @@ namespace HRD.WebApi.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("ROHMaterial");
+
+                    b.Property<string>("SMIVendorBatch")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int?>("Samples")
                         .HasColumnType("int");
@@ -597,9 +582,6 @@ namespace HRD.WebApi.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("WeekHeld")
-                        .HasColumnType("int");
-
                     b.Property<string>("When")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -613,6 +595,10 @@ namespace HRD.WebApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("YearHeld")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("YearOfIncident")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 
@@ -673,6 +659,35 @@ namespace HRD.WebApi.Migrations
                     b.HasIndex("Hrdid");
 
                     b.ToTable("HRDFC", (string)null);
+                });
+
+            modelBuilder.Entity("HRD.WebApi.Data.Entities.HrdMicro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Hour")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HrdId")
+                        .HasColumnType("int")
+                        .HasColumnName("HRDId");
+
+                    b.Property<string>("Organism")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("HrdId");
+
+                    b.ToTable("HRDMicro", (string)null);
                 });
 
             modelBuilder.Entity("HRD.WebApi.Data.Entities.Hrdnote", b =>
@@ -838,6 +853,49 @@ namespace HRD.WebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Product", (string)null);
+                });
+
+            modelBuilder.Entity("HRD.WebApi.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DisplayName = "Admin",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            DisplayName = "Data Entry",
+                            Name = "DataEntry"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            DisplayName = "Report Viewer",
+                            Name = "ReportViewer"
+                        });
                 });
 
             modelBuilder.Entity("HRD.WebApi.Data.Entities.Security", b =>
@@ -1027,6 +1085,20 @@ namespace HRD.WebApi.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("HRD.WebApi.Data.Entities.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId")
+                        .HasName("PK__UserRole__AF2760ADD67758F1");
+
+                    b.ToTable("UserRole", (string)null);
+                });
+
             modelBuilder.Entity("HRD.WebApi.Data.Entities.DropDownItem", b =>
                 {
                     b.HasOne("HRD.WebApi.Data.Entities.DropDownType", "DropDownType")
@@ -1056,6 +1128,16 @@ namespace HRD.WebApi.Migrations
                         .HasForeignKey("Hrdid")
                         .IsRequired()
                         .HasConstraintName("FK__HRDFC__HRDId__2E1BDC42");
+
+                    b.Navigation("Hrd");
+                });
+
+            modelBuilder.Entity("HRD.WebApi.Data.Entities.HrdMicro", b =>
+                {
+                    b.HasOne("HRD.WebApi.Data.Entities.Hrd", "Hrd")
+                        .WithMany("HrdMicros")
+                        .HasForeignKey("HrdId")
+                        .IsRequired();
 
                     b.Navigation("Hrd");
                 });
@@ -1100,6 +1182,8 @@ namespace HRD.WebApi.Migrations
 
             modelBuilder.Entity("HRD.WebApi.Data.Entities.Hrd", b =>
                 {
+                    b.Navigation("HrdMicros");
+
                     b.Navigation("Hrddcs");
 
                     b.Navigation("Hrdfcs");

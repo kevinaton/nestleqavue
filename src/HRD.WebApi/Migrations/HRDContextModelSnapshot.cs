@@ -189,9 +189,6 @@ namespace HRD.WebApi.Migrations
                     b.Property<decimal?>("CostofProductonHold")
                         .HasColumnType("money");
 
-                    b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime");
-
                     b.Property<DateTime?>("DateCompleted")
                         .HasColumnType("datetime");
 
@@ -386,10 +383,6 @@ namespace HRD.WebApi.Migrations
                     b.Property<string>("MeatComponent")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("MonthHeld")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
 
                     b.Property<int?>("NonFtqcases")
                         .HasColumnType("int")
@@ -586,9 +579,6 @@ namespace HRD.WebApi.Migrations
                     b.Property<string>("VendorSiteNumber")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("WeekHeld")
-                        .HasColumnType("int");
 
                     b.Property<string>("When")
                         .HasMaxLength(50)

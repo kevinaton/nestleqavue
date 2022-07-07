@@ -9,6 +9,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using NLog;
 using HRD.WebApi.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using HRD.WebApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace HRD.WebApi
 {
@@ -20,7 +23,14 @@ namespace HRD.WebApi
 
             try
             {
-                CreateHostBuilder(args).Build().Run();
+                var host = CreateHostBuilder(args).Build();
+
+                using (var scope = host.Services.CreateScope())
+                {
+                    var db = scope.ServiceProvider.GetRequiredService<HRDContext>();
+                    db.Database.Migrate();
+                }
+                host.Run();
                 logger.Debug("init main");
             }
             catch (Exception ex)

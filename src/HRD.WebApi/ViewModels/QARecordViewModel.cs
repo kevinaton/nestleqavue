@@ -21,7 +21,7 @@ namespace HRD.WebApi.ViewModels
         public bool? IsMicro { get; set; }
 
         //Highlights
-        public DateTime? Date { get; set; }        
+        public DateTime? DateHeld { get; set; }        
         public DateTime? TimeOfIncident { get; set; }
         public string YearHeld { get; set; }
         public string DayCode { get; set; }
