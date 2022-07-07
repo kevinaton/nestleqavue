@@ -123,8 +123,6 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.CostofProductonHold).HasColumnType("money");
 
-                entity.Property(e => e.Date).HasColumnType("datetime");
-
                 entity.Property(e => e.DateCompleted).HasColumnType("datetime");
 
                 entity.Property(e => e.DateHeld).HasColumnType("datetime");
@@ -218,8 +216,6 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.MaterialNumber).HasMaxLength(50);
 
                 entity.Property(e => e.MeatComponent).HasMaxLength(50);
-
-                entity.Property(e => e.MonthHeld).HasMaxLength(10);
 
                 entity.Property(e => e.NonFtqcases).HasColumnName("NonFTQCases");
 

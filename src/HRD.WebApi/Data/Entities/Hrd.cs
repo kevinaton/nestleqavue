@@ -86,7 +86,6 @@ namespace HRD.WebApi.Data.Entities
         public bool? IsNr { get; set; }
         public bool? IsFm { get; set; }
         public bool? IsMicro { get; set; }
-        public DateTime? Date { get; set; }
         public DateTime? TimeOfIncident { get; set; }
         public string Bumanager { get; set; }
         public string FertDescription { get; set; }
@@ -100,8 +99,6 @@ namespace HRD.WebApi.Data.Entities
         public int? NumberOfDaysHeld { get; set; }
         public int? Donate { get; set; }
         public int? Total { get; set; }
-        public string MonthHeld { get; set; }
-        public int? WeekHeld { get; set; }
         public int? NumberOfDayToReworkApproval { get; set; }
         public int? CaseCount { get; set; }
         public string ReasonAction { get; set; }
