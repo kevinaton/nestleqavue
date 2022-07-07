@@ -38,7 +38,7 @@ export default {
         },
             width: {
             type: Number,
-        default: 400
+            default: 400
         },
         height: {
             type: Number,
@@ -75,52 +75,20 @@ export default {
         barTitle: {
             type: String,
             default:''
+        },
+        borderColor: {
+            type: String,
+            default:''
+        },
+        snackbar: {
+            type: Object,
+            default: () => {}
         }
     },
 
     data: () => ({
-        snackbar: {
-            snack: false,
-            snackColor: '',
-            snackText: '',
-        },
-        chartKey: 1,
+        
     }),
-    
-
-    // data() {
-    // return {
-    //     chartData: {
-    //         labels: this.xValues,
-    //         datasets: [{ 
-    //             label: this.barLabel,
-    //             backgroundColor:this.barColor,
-    //             data: this.barData
-    //         }]
-    //     },
-    //     chartOptions: {
-    //         responsive: true,
-    //         maintainAspectRatio: false,
-    //         plugins: {
-    //             title: {
-    //                 display: true,
-    //                 text: this.barTitle,
-    //                 align:'start',
-    //                 color:'#212121',
-    //                 font: {
-    //                     size:18,
-    //                     weight:'bold'
-    //                 }
-    //             }
-    //         },
-    //     },
-    //     snackbar: {
-    //         snack: false,
-    //         snackColor: '',
-    //         snackText: '',
-    //     },
-    // }
-    // },
 
     computed: {
         chartData() {
@@ -128,8 +96,10 @@ export default {
                 labels: this.xValues,
                 datasets: [{ 
                     label: this.barLabel,
-                    backgroundColor:this.barColor,
-                    data: this.barData
+                    backgroundColor: this.barColor,
+                    data: this.barData,
+                    borderColor: this.borderColor,
+                    borderWidth:1,
                 }]
             }   
         },
@@ -146,6 +116,18 @@ export default {
                         font: {
                             size:18,
                             weight:'bold'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1565c0',
+                        intersect: true
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            maxRotation: 0,
+                            minRotation: 0
                         }
                     }
                 },

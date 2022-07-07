@@ -19,8 +19,10 @@
     <v-row>
       <BarChart 
         barLabel="Cases Held by Category"
-        barColor='#4DD0E1'
+        barColor='rgba(75, 192, 192, 0.3)'
+        borderColor='rgb(75, 192, 192)'
         barTitle="Cases Held by Category"
+        :snackbar="snackbar"
         :xValues="caseheldChart.xValues"
         :barData="caseheldChart.barData"
       />
@@ -28,8 +30,10 @@
     <v-row>
       <BarChart 
         barLabel="Cost Held by Category"
-        barColor='#AED581'
+        barColor='rgba(255, 159, 64, 0.2)'
+        borderColor='rgb(255, 159, 64)'
         barTitle="Cost Held by Category"
+        :snackbar="snackbar"
         :xValues="costheldChart.xValues"
         :barData="costheldChart.barData"
       />
@@ -65,6 +69,11 @@ export default {
       ReportTitle
     },
     data: () => ({
+      snackbar: {
+          snack: false,
+          snackColor: '',
+          snackText: '',
+      },
       bcrumbs: [
         {
           text: 'Reports',
@@ -152,7 +161,6 @@ export default {
         .then((res) => {
             vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
-            console.log(vm.caseheldChart.xValues)
         })
         .catch(err => {
             this.snackbar.snack = true
@@ -169,7 +177,6 @@ export default {
         .then((res) => {
             vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
-            console.log(vm.caseheldChart.xValues)
         })
         .catch(err => {
             this.snackbar.snack = true
