@@ -120,7 +120,13 @@ export default {
                     },
                     tooltip: {
                         backgroundColor: '#1565c0',
-                        intersect: true
+                        intersect: true,
+                        titleFont: {
+                            size:24
+                        },
+                        bodyFont: {
+                            size:18
+                        }
                     }
                 },
                 scales: {

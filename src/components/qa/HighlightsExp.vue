@@ -11,7 +11,7 @@
                             :rules="[rules.required]"
                             label1="Date"
                             label2="Time"
-                            @change="(value) => { inpValue.date = value }"
+                            @change="(value) => { inpValue.dateHeld = value }"
                         />
                     </v-col>
                     <v-col>
@@ -235,7 +235,6 @@
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
-import SelectDropdownObj from '@/components/FormElements/SelectDropdownObj.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 import moment from 'moment'
@@ -245,7 +244,6 @@ export default {
         SimpleDatePicker,
         SimpleTimePicker,
         YearOnly,
-        SelectDropdownObj,
         SelectDropdownString,
         DateTimePicker
 
@@ -271,7 +269,7 @@ export default {
     computed: {
         getDate(){
             let obj
-            obj = this.inpValue.date
+            obj = this.inpValue.dateHeld
             if(obj){
                 this.input.calendar1.allow=false
                 this.input.calendar1.menu=false

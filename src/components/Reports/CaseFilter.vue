@@ -3,26 +3,25 @@
     <v-row>
         <v-col>
             <v-chip-group
-            v-model="input.defaultTime"
-            active-class="info"
-            mandatory
+                :value="fValues.timeSelect"
+                active-class="info"
+                mandatory
             >
             <v-chip
                 value="today"
-                active
             >Today</v-chip>
             <v-chip
-                value="lastweek"
+                value="lastWeek"
             >Last Week</v-chip>
             <v-chip
-                value="lastmonth"
+                value="lastMonth"
             >Last Month</v-chip>
 
             <v-menu
                 ref="menu"
                 v-model="input.menu"
                 :close-on-content-click="false"
-                :return-value.sync="input.date"
+                :return-value.sync="fValues.dates"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
@@ -30,13 +29,13 @@
             >
                 <template v-slot:activator="{ on, attrs }">
                 <v-chip
-                    value="daterange"
+                    value="dateRange"
                     v-bind="attrs"
                     v-on="on"
-                >{{(input.dates.length > 0 ? input.date : "Date Range")}}</v-chip>
+                >{{(fValues.dates.length > 0 ? getDateRange : "Date Range")}}</v-chip>
                 </template>
                 <v-date-picker
-                v-model="input.dates"
+                v-model="fValues.dates"
                 range
                 >
                 <v-spacer></v-spacer>
@@ -63,28 +62,24 @@
         <v-col>
             <SelectDropdownObj 
                 :items="input.line"
-                :defaultValue="input.lineSelect"
-                v-model="input.lineSelect"
+                :inpValue="fValues.line.value"
                 name="Line" 
                 item-text="text"
                 item-value="value"
-                label="Line" 
-                @change="(value) => {
-                    this.input.lineSelect = value   
-                }"
+                label="Line"
+                @change="updateLine($event)"
             />
         </v-col>
         <v-col>
             <SelectDropdownObj 
                 :items="input.weekheld" 
-                :defaultValue="input.weekheldSelect"
-                v-model="input.weekheldSelect" 
+                :inpValue="fValues.weekHeld.value" 
                 name="weekheld" 
                 item-text="text"
                 item-value="value"
                 label="Week Held" 
                 @change="(value) => {
-                    this.input.weekheldSelect = value   
+                    fValues.weekHeld.value = value   
                 }"
             />
         </v-col>
@@ -93,12 +88,9 @@
                 item-text="text"
                 item-value="value"
                 label="Closed/Open"
-                v-model="input.closeopenSelect" 
-                :defaultValue="input.closeopenSelect"
+                :inpValue="fValues.closeOpen.value"
                 :items="input.closeopen" 
-                @change="(value) => {
-                    this.input.closeopenSelect = value   
-                }"
+                @change="updateCloseOpen($event)"
             />
         </v-col>
         <v-col>
@@ -106,12 +98,9 @@
                 item-text="text"
                 item-value="value"
                 label="Cost Graph Modifier"
-                v-model="input.costgraphSelect" 
-                :defaultValue="input.costgraphSelect"
+                :inpValue="fValues.costGraph.value"
                 :items="input.costgraph" 
-                @change="(value) => {
-                    this.input.costgraphSelect = value   
-                }"
+                @change="updateCostGraph($event)"
             />
         </v-col>
     </v-row>
@@ -119,6 +108,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
     name:'CaseFilter',
@@ -129,13 +119,42 @@ export default {
         input: {
             type: Object,
             default: () => {},
-            required:false,
+            required: false,
+        },
+        fValues: {
+            type: Object,
+            default: () => {},
+            required: false
         }
     },
+    emits: ["change"],
+    computed: {
+        getDateRange() {
+            let i = moment.utc(this.fValues.periodBegin).format('MM-DD-YYYY'),
+                f = moment.utc(this.fValues.periodEnd).format('MM-DD-YYYY')
+            return `${i} - ${f}`
+        }
+    },
+
     methods: {
-        dateRangeText () {
+        dateRangeText() {
             this.$refs.menu.save(this.input.dates.join(' - '))
         },
+        updateLine(value) {
+            let d = this.fValues
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+        },
+        updateCloseOpen(value) {
+            let d = this.fValues
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, value, d.costGraph.value)
+        },
+        updateCostGraph(value) {
+            let d = this.fValues
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, value)
+        }
     }
 }
 </script>

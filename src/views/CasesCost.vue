@@ -7,12 +7,16 @@
       class="ma-0 pa-0 mb-8"
       :items="bcrumbs"
     />
+    <SnackBar 
+      :input="snackbar"
+    />
     <ReportTitle 
       titleContent="Cases & Cost Held by Category"
     />
     <v-row>
       <CaseFilter 
         :input="filter"
+        :fValues="fValues"
       />
     </v-row>
     <v-divider class="mt-4"></v-divider>
@@ -57,6 +61,8 @@ import BarChart from '@/components/Reports/BarChart.vue'
 import CaseFilter from '@/components/Reports/CaseFilter.vue'
 import CaseTable from '@/components/Reports/CaseTable.vue'
 import ReportTitle from '@/components/Reports/ReportTitle.vue'
+import moment from 'moment'
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 
 export default {
     name: "CasesCost",
@@ -66,7 +72,8 @@ export default {
       BarChart,
       CaseFilter,
       CaseTable,
-      ReportTitle
+      ReportTitle,
+      SnackBar
     },
     data: () => ({
       snackbar: {
@@ -85,8 +92,17 @@ export default {
           href: '',
         },
       ],
+      fValues: {
+        line:{value:'1'},
+        weekHeld:{value:''},
+        closeOpen:{value:1},
+        costGraph:{value:1},
+        timeSelect:'dateRange',
+        periodBegin:'2001-07-07T00:00:00.171Z',
+        periodEnd:'2022-07-07T10:18:15.174Z',
+        dates:[]
+      },
       filter: {
-        defaultTime:0,
         dates:[],
         date: new Date().toISOString().substr(0, 10),
         menu: false,
@@ -110,13 +126,13 @@ export default {
           { text: 'Sunday', value:'7', disabled: false },
         ],
         closeopen: [
-          { text: 'All', value:'1', disabled: false },
-          { text: 'Close', value:'2', disabled: false },
-          { text: 'Open', value:'3', disabled: false },
+          { text: 'All', value:1, disabled: false },
+          { text: 'Close', value:2, disabled: false },
+          { text: 'Open', value:3, disabled: false },
         ],
         costgraph: [
-          { text: 'Cost by Category', value:'1', disabled: false },
-          { text: 'Cost by Allocation', value:'2', disabled: false },
+          { text: 'Cost by Category', value:1, disabled: false },
+          { text: 'Cost by Allocation', value:2, disabled: false },
         ],
       },
       table: {
@@ -124,13 +140,6 @@ export default {
           { text:'Line', value: 'line' },
           { text:'Total Cases', value: 'totalCases' },
           { text:'Total Cost', value: 'totalCost' },
-        ],
-        linecasecost: [
-          { line:'9', totalcases:'12234', totalcost:'$20235' },
-          { line:'7', totalcases:'93112', totalcost:'$10026' },
-          { line:'10', totalcases:'32221', totalcost:'$32201' },
-          { line:'24', totalcases:'33821', totalcost:'$83112' },
-          { line:'35', totalcases:'2123', totalcost:'$5225' },
         ],
       },
       caseheldChart: {
@@ -157,10 +166,11 @@ export default {
 
       fetchCaseGraph() {
         let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=1&CostGraphOption=1&PeriodBegin=2010-01-01T00%3A00%3A00&PeriodEnd=2022-12-30T00%3A00%3A00`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Line=${vm.fValues.line.value}&Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+            vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
         })
         .catch(err => {
             this.snackbar.snack = true
@@ -172,8 +182,19 @@ export default {
       },
 
       fetchCostGraph() {
-        let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=1&CostGraphOption=1&PeriodBegin=2010-01-01T00%3A00%3A00&PeriodEnd=2022-12-30T00%3A00%3A00`)
+        let vm = this
+
+        // GET TODAY
+        // let tz = new Date().toISOString().split(".")[1],
+        //     date = new Date().toISOString().split("T")[0],
+        //     itime = "00:00:00." + tz
+        // this.fValues.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
+        // this.fValues.periodEnd = new Date().toISOString()
+        
+        //Get Last Month
+        let month = new Date().toISOString().split("-")[1]
+
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Line=${vm.fValues.line.value}&Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -186,6 +207,52 @@ export default {
         })
         .finally(() => { })
       },
+
+      getCaseGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+            let vm = this
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+            .then((res) => {
+                vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+                vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+                vm.fValues.periodBegin = periodBegin
+                vm.fValues.periodEnd = periodEnd
+                vm.fValues.line.value = line
+                vm.fValues.weekHeld.value = weekHeld
+                vm.fValues.closeOpen.value = closeOpen
+                vm.fValues.costGraph.value = costGraph
+                vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
+            })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => { })
+        },
+        
+        getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+            let vm = this
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+            .then((res) => {
+                vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+                vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
+                vm.fValues.periodBegin = periodBegin
+                vm.fValues.periodEnd = periodEnd
+                vm.fValues.line.value = line
+                vm.fValues.weekHeld.value = weekHeld
+                vm.fValues.closeOpen.value = closeOpen
+                vm.fValues.costGraph.value = costGraph
+                vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
+            })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => { })
+        },
     }
 }
 </script>
