@@ -132,8 +132,10 @@ export default {
                 scales: {
                     x: {
                         ticks: {
-                            maxRotation: 0,
-                            minRotation: 0
+                            autoSkip: false,
+                            callback: function(value) {
+                                return this.getLabelForValue(value).substr(0, 15)
+                            },
                         }
                     }
                 },

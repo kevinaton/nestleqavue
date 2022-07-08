@@ -183,17 +183,6 @@ export default {
 
       fetchCostGraph() {
         let vm = this
-
-        // GET TODAY
-        // let tz = new Date().toISOString().split(".")[1],
-        //     date = new Date().toISOString().split("T")[0],
-        //     itime = "00:00:00." + tz
-        // this.fValues.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
-        // this.fValues.periodEnd = new Date().toISOString()
-        
-        //Get Last Month
-        let month = new Date().toISOString().split("-")[1]
-
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Line=${vm.fValues.line.value}&Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
@@ -209,50 +198,48 @@ export default {
       },
 
       getCaseGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
-            let vm = this
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
-            .then((res) => {
-                vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
-                vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
-                vm.fValues.periodBegin = periodBegin
-                vm.fValues.periodEnd = periodEnd
-                vm.fValues.line.value = line
-                vm.fValues.weekHeld.value = weekHeld
-                vm.fValues.closeOpen.value = closeOpen
-                vm.fValues.costGraph.value = costGraph
-                vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => { })
-        },
+          let vm = this
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+          .then((res) => {
+              vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+              vm.fValues.periodBegin = periodBegin
+              vm.fValues.periodEnd = periodEnd
+              vm.fValues.line.value = line
+              vm.fValues.weekHeld.value = weekHeld
+              vm.fValues.closeOpen.value = closeOpen
+              vm.fValues.costGraph.value = costGraph
+          })
+          .catch(err => {
+              this.snackbar.snack = true
+              this.snackbar.snackColor = 'error'
+              this.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
+      },
         
-        getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
-            let vm = this
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
-            .then((res) => {
-                vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
-                vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
-                vm.fValues.periodBegin = periodBegin
-                vm.fValues.periodEnd = periodEnd
-                vm.fValues.line.value = line
-                vm.fValues.weekHeld.value = weekHeld
-                vm.fValues.closeOpen.value = closeOpen
-                vm.fValues.costGraph.value = costGraph
-                vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => { })
-        },
+      getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+          let vm = this
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+          .then((res) => {
+              vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
+              vm.fValues.periodBegin = periodBegin
+              vm.fValues.periodEnd = periodEnd
+              vm.fValues.line.value = line
+              vm.fValues.weekHeld.value = weekHeld
+              vm.fValues.closeOpen.value = closeOpen
+              vm.fValues.costGraph.value = costGraph
+          })
+          .catch(err => {
+              this.snackbar.snack = true
+              this.snackbar.snackColor = 'error'
+              this.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
+      },
     }
 }
 </script>

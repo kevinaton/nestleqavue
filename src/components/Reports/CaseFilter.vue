@@ -6,6 +6,7 @@
                 :value="fValues.timeSelect"
                 active-class="info"
                 mandatory
+                @change="updateTime($event)"
             >
             <v-chip
                 value="today"
@@ -49,7 +50,7 @@
                 <v-btn
                     text
                     color="primary"
-                    @click="dateRangeText"
+                    @click="dateRange"
                 >
                     OK
                 </v-btn>
@@ -79,7 +80,7 @@
                 item-value="value"
                 label="Week Held" 
                 @change="(value) => {
-                    fValues.weekHeld.value = value   
+                    fValues.weekHeld.value = value
                 }"
             />
         </v-col>
@@ -130,16 +131,17 @@ export default {
     emits: ["change"],
     computed: {
         getDateRange() {
-            let i = moment.utc(this.fValues.periodBegin).format('MM-DD-YYYY'),
+            if(this.fValues.timeSelect == 'dateRange') {
+                let i = moment.utc(this.fValues.periodBegin).format('MM-DD-YYYY'),
                 f = moment.utc(this.fValues.periodEnd).format('MM-DD-YYYY')
-            return `${i} - ${f}`
+                return `${i} - ${f}`
+            } else {
+                return 'Date Range'
+            }
         }
     },
 
     methods: {
-        dateRangeText() {
-            this.$refs.menu.save(this.input.dates.join(' - '))
-        },
         updateLine(value) {
             let d = this.fValues
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
@@ -154,7 +156,51 @@ export default {
             let d = this.fValues
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, value)
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, value)
-        }
+        },
+        updateTime(value) {
+            let d = this.fValues
+            if(value == 'today') {
+                d.timeSelect = 'today'
+                let tz = new Date().toISOString().split(".")[1],
+                    date = new Date().toISOString().split("T")[0],
+                    itime = "00:00:00." + tz
+                
+                d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
+                d.periodEnd = new Date().toISOString()
+
+                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            }
+            if(value == 'lastWeek') {
+                d.timeSelect = 'lastWeek'
+                d.periodBegin = moment.utc().subtract(1, 'weeks').startOf('week').toISOString()
+                d.periodEnd = moment.utc().subtract(1, 'weeks').endOf('week').toISOString()
+
+                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            }
+            if(value == 'lastMonth') {
+                d.timeSelect = 'lastMonth'
+                let date = new Date().toISOString()
+
+                    d.periodBegin = moment(date).subtract(1,'months').startOf('month').toISOString()
+                    d.periodEnd = moment(date).subtract(1,'months').endOf('month').toISOString()
+
+                    this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                    this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            }
+            if(value == 'dateRange') {
+                d.timeSelect = 'dateRange'
+            }
+        },
+        dateRange() {
+            this.input.menu = false
+            let d = this.fValues
+            d.periodBegin = moment.utc(`${this.fValues.dates[0]} 00:00:00`).toISOString(),
+            d.periodEnd = moment.utc(`${this.fValues.dates[1]} 23:59:59`).toISOString()
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line.value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+        },
     }
 }
 </script>

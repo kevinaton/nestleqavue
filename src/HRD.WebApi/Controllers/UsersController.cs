@@ -26,7 +26,7 @@ namespace HRD.WebApi.Controllers
         
         // GET: api/Users
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<UserViewModel>>> GetUsers([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -78,7 +78,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -101,7 +101,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Users/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        // [Authorize(Policy = PolicyNames.EditUsers)]
+        [Authorize(Policy = PolicyNames.EditUsers)]
         public async Task<IActionResult> PutUser(int id, UserViewModel model)
         {
             if (id != model.Id)
@@ -140,7 +140,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        // [Authorize(Policy = PolicyNames.EditUsers)]
+        [Authorize(Policy = PolicyNames.EditUsers)]
         public async Task<ActionResult<UserViewModel>> PostUser(UserViewModel model)
         {
             var user = new User
@@ -159,7 +159,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Users/5
         [HttpDelete("{id}")]
-        // [Authorize(Policy = PolicyNames.EditUsers)]
+        [Authorize(Policy = PolicyNames.EditUsers)]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
