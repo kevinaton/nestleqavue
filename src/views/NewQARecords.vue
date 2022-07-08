@@ -274,6 +274,7 @@ export default {
                     buManager: d.buManager,
                     casesHeld: d.casesHeld,
                     date: d.date,
+                    dateHeld: d.dateHeld,
                     dateOfResample: d.dateOfResample,
                     dateReceived: d.dateReceived,
                     dayCode: d.dayCode,

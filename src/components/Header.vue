@@ -14,7 +14,8 @@
         Nestle QA
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-menu offset-y>
+
+        <!-- <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-avatar size="36">
               <v-icon dark v-bind="attrs" v-on="on">
@@ -31,7 +32,8 @@
               <v-list-item-title  @click="verify(item)">{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
-        </v-menu>
+        </v-menu> -->
+        
         <template>
           <v-dialog
               max-width="290"
