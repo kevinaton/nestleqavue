@@ -4,7 +4,7 @@
         :items="items"
         :label="label"
         @input="selectoption($event)"
-        v-model="selectedData"
+        :value="inpValue"
         :name="name"
         item-text="text"
         item-value="value"
@@ -24,9 +24,8 @@ export default {
             type:String,
             default:'',
         },
-        defaultValue: {
-            type: Object,
-            default: () => {},
+        inpValue: {
+            required:false
         },
         items: {
             type: Array,
@@ -43,11 +42,10 @@ export default {
         selectedData: {}
     }),
     created () {
-        this.selectedData = this.defaultValue
     },
     methods: {
         selectoption: function (value) {
-            this.$emit('change', value)
+            this.$emit('change', value.value)
         },
     }
 }

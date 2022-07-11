@@ -16,10 +16,10 @@
     />
     <v-divider></v-divider>
     <BarChart 
-    barLabel="Microbe Cases"
-    barColor='#AB47BC'
-    :xLabels="microbecasesChart.xLabels"
-    :barData="microbecasesChart.barData"
+        barLabel="Microbe Cases"
+        barColor='#AB47BC'
+        :xLabels="microbecasesChart.xLabels"
+        :barData="microbecasesChart.barData"
     />
 </v-card>
 </template>

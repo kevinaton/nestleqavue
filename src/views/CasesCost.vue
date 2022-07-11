@@ -7,33 +7,48 @@
       class="ma-0 pa-0 mb-8"
       :items="bcrumbs"
     />
+    <SnackBar 
+      :input="snackbar"
+    />
     <ReportTitle 
       titleContent="Cases & Cost Held by Category"
-      subContent="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     />
     <v-row>
       <CaseFilter 
         :input="filter"
-      />
-      <CaseTable 
-        :input="table"
+        :fValues="fValues"
       />
     </v-row>
-    <v-divider class="mt-8"></v-divider>
+    <v-divider class="mt-4"></v-divider>
     <v-row>
       <BarChart 
         barLabel="Cases Held by Category"
-        barColor='#4DD0E1'
+        barColor='rgba(75, 192, 192, 0.3)'
+        borderColor='rgb(75, 192, 192)'
         barTitle="Cases Held by Category"
-        :xLabels="caseheldChart.xLabels"
+        :snackbar="snackbar"
+        :xValues="caseheldChart.xValues"
         :barData="caseheldChart.barData"
       />
+    </v-row>
+    <v-row>
       <BarChart 
         barLabel="Cost Held by Category"
-        barColor='#AED581'
+        barColor='rgba(255, 159, 64, 0.2)'
+        borderColor='rgb(255, 159, 64)'
         barTitle="Cost Held by Category"
-        :xLabels="costheldChart.xLabels"
+        :snackbar="snackbar"
+        :xValues="costheldChart.xValues"
         :barData="costheldChart.barData"
+      />
+    </v-row>
+    <v-row>
+      <CaseTable 
+        :input="table"
+        :items="caseCostTable"
+        @change="(value) => {
+            caseCostTable = value   
+        }"
       />
     </v-row>
   </v-card>
@@ -46,6 +61,8 @@ import BarChart from '@/components/Reports/BarChart.vue'
 import CaseFilter from '@/components/Reports/CaseFilter.vue'
 import CaseTable from '@/components/Reports/CaseTable.vue'
 import ReportTitle from '@/components/Reports/ReportTitle.vue'
+import moment from 'moment'
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 
 export default {
     name: "CasesCost",
@@ -55,9 +72,15 @@ export default {
       BarChart,
       CaseFilter,
       CaseTable,
-      ReportTitle
+      ReportTitle,
+      SnackBar
     },
     data: () => ({
+      snackbar: {
+          snack: false,
+          snackColor: '',
+          snackText: '',
+      },
       bcrumbs: [
         {
           text: 'Reports',
@@ -69,8 +92,17 @@ export default {
           href: '',
         },
       ],
+      fValues: {
+        line:{value:'1'},
+        weekHeld:{value:''},
+        closeOpen:{value:1},
+        costGraph:{value:1},
+        timeSelect:'dateRange',
+        periodBegin:'2001-07-07T00:00:00.171Z',
+        periodEnd:'2022-07-07T10:18:15.174Z',
+        dates:[]
+      },
       filter: {
-        defaultTime:0,
         dates:[],
         date: new Date().toISOString().substr(0, 10),
         menu: false,
@@ -83,56 +115,130 @@ export default {
           { text: '5', value:'5', disabled: false },
           { text: '6', value:'6', disabled: false },
         ],
-        lineSelect:{ text: '1', value:'1', disabled: false },
         weekheld: [
-          { text: 'Monday', value:'monday', disabled: false },
-          { text: 'Tuesday', value:'tuesday', disabled: false },
-          { text: 'Wednesday', value:'wednesday', disabled: false },
-          { text: 'Thursday', value:'thursday', disabled: false },
-          { text: 'Friday', value:'friday', disabled: false },
-          { text: 'Saturday', value:'saturday', disabled: false },
-          { text: 'Sunday', value:'sunday', disabled: false },
+          { text: 'None', value:'', disabled: false },
+          { text: 'Monday', value:'1', disabled: false },
+          { text: 'Tuesday', value:'2', disabled: false },
+          { text: 'Wednesday', value:'3', disabled: false },
+          { text: 'Thursday', value:'4', disabled: false },
+          { text: 'Friday', value:'5', disabled: false },
+          { text: 'Saturday', value:'6', disabled: false },
+          { text: 'Sunday', value:'7', disabled: false },
         ],
-        weekheldSelect:{ text: 'Monday', value:'monday', disabled: false },
         closeopen: [
-          { text: 'All', value:'all', disabled: false },
-          { text: 'Close', value:'close', disabled: false },
-          { text: 'Open', value:'open', disabled: false },
+          { text: 'All', value:1, disabled: false },
+          { text: 'Close', value:2, disabled: false },
+          { text: 'Open', value:3, disabled: false },
         ],
-        closeopenSelect: {text:'All', value:'all'},
-        costgraphSelect: { text: 'Cost by Category', value:'costbycategory', disabled: false },
         costgraph: [
-          { text: 'Cost by Category', value:'costbycategory', disabled: false },
-          { text: 'Cost by Allocation', value:'costbyallocation', disabled: false },
+          { text: 'Cost by Category', value:1, disabled: false },
+          { text: 'Cost by Allocation', value:2, disabled: false },
         ],
       },
       table: {
         header: [
           { text:'Line', value: 'line' },
-          { text:'Total Cases', value: 'totalcases' },
-          { text:'Total Cost', value: 'totalcost' },
-        ],
-        linecasecost: [
-          { line:'9', totalcases:'12234', totalcost:'$20235' },
-          { line:'7', totalcases:'93112', totalcost:'$10026' },
-          { line:'10', totalcases:'32221', totalcost:'$32201' },
-          { line:'24', totalcases:'33821', totalcost:'$83112' },
-          { line:'35', totalcases:'2123', totalcost:'$5225' },
+          { text:'Total Cases', value: 'totalCases' },
+          { text:'Total Cost', value: 'totalCost' },
         ],
       },
       caseheldChart: {
-          xLabels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul' ],
-          barData: [400, 203, 125, 583, 831, 349, 299]
+          xValues: [],
+          barData: []
       },
       costheldChart: {
-          xLabels: [ 'Cat1', 'Cat2', 'Cat3', 'Cat4', 'Cat5' ],
-          barData: [5030, 2345, 3921, 1923, 4224 ]
-      }
+          xValues: [],
+          barData: []
+      },
+      caseCostTable:[],
     }),
+
+    created() {
+      this.fetchCaseGraph()
+      this.fetchCostGraph()
+    },
+
     methods: {
       dateRangeText () {
         this.$refs.menu.save(this.filter.dates.join(' - '))
         console.log(this.filter.dates)
+      },
+
+      fetchCaseGraph() {
+        let vm = this 
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Line=${vm.fValues.line.value}&Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        .then((res) => {
+            vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+            vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
+        })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => { })
+      },
+
+      fetchCostGraph() {
+        let vm = this
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Line=${vm.fValues.line.value}&Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        .then((res) => {
+            vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
+        })
+        .catch(err => {
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => { })
+      },
+
+      getCaseGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+          let vm = this
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+          .then((res) => {
+              vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
+              vm.fValues.periodBegin = periodBegin
+              vm.fValues.periodEnd = periodEnd
+              vm.fValues.line.value = line
+              vm.fValues.weekHeld.value = weekHeld
+              vm.fValues.closeOpen.value = closeOpen
+              vm.fValues.costGraph.value = costGraph
+          })
+          .catch(err => {
+              this.snackbar.snack = true
+              this.snackbar.snackColor = 'error'
+              this.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
+      },
+        
+      getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+          let vm = this
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}&Line=${line}&WeekHeld=${weekHeld}&Status=${closeOpen}&CostGraphOption=${costGraph}`)
+          .then((res) => {
+              vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
+              vm.fValues.periodBegin = periodBegin
+              vm.fValues.periodEnd = periodEnd
+              vm.fValues.line.value = line
+              vm.fValues.weekHeld.value = weekHeld
+              vm.fValues.closeOpen.value = closeOpen
+              vm.fValues.costGraph.value = costGraph
+          })
+          .catch(err => {
+              this.snackbar.snack = true
+              this.snackbar.snackColor = 'error'
+              this.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
       },
     }
 }

@@ -25,12 +25,9 @@
           :data="delItem.toString()"
           url="Hrds/Hrd"
         />
-        <Breadcrumbs 
-          class="mt-3"
-          :items="bcrumbs"
-        />
         <QaToolbar 
           title="QA Records"
+          class="mt-8"
           :input="qatoolbar"
           :table="qa"
           @change="getSearch($event)"
@@ -80,7 +77,6 @@
 </template>
 
 <script>
-  import Breadcrumbs from '@/components/BreadCrumbs.vue'
   import QaToolbar from '@/components/TableElements/QaToolbar.vue'
   import RowDelete from '@/components/TableElements/RowDelete.vue'
   import ResetTable from '@/components/TableElements/ResetTable.vue'
@@ -92,7 +88,6 @@
   
   export default {
     components: {
-      Breadcrumbs,
       QaToolbar,
       RowDelete,
       ResetTable,
@@ -181,13 +176,6 @@
         { text: 'Actions', value: 'actions', sortable: false },
       ],
       qa: [],
-      bcrumbs: [
-        {
-          text: 'QA',
-          disabled: false,
-          href: '',
-        },
-      ],
     }),
 
     created () {
