@@ -128,9 +128,12 @@ export default {
     emits: ["change"],
     computed: {
         getDateRange() {
+            console.log(this.fValues.periodBegin)
+            console.log(this.fValues.periodEnd)
+            console.log(this.fValues.dates)
             if(this.fValues.timeSelect == 'dateRange') {
-                let i = moment.utc(this.fValues.periodBegin).format('MM-DD-YYYY'),
-                f = moment.utc(this.fValues.periodEnd).format('MM-DD-YYYY')
+                let i = moment.utc(this.fValues.periodBegin).format('MM/DD/YYYY'),
+                f = moment.utc(this.fValues.periodEnd).format('MM/DD/YYYY')
                 return `${i} - ${f}`
             } else {
                 return 'Date Range'
@@ -156,7 +159,6 @@ export default {
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, value)
         },
         updateWeekHeld(value) {
-            console.log(value)
             let d = this.fValues
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, value, d.closeOpen.value, d.costGraph.value)
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, value, d.closeOpen.value, d.costGraph.value)

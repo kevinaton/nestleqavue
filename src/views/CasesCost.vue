@@ -98,7 +98,7 @@ export default {
         closeOpen:{value:2},
         costGraph:{value:1},
         timeSelect:'dateRange',
-        periodBegin:'2001-01-01T00:00:00.000Z',
+        periodBegin:'2000-01-01T00:00:00.000Z',
         periodEnd:'2022-07-07T10:18:15.174Z',
         dates:[]
       },
@@ -163,16 +163,11 @@ export default {
         this.fValues.periodEnd = new Date().toISOString()
       },
 
-      dateRangeText () {
-        this.$refs.menu.save(this.filter.dates.join(' - '))
-        console.log(this.filter.dates)
-      },
-
       fetchCaseGraph() {
         let vm = this 
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
-            vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            vm.caseheldChart.xValues = res.data.map(({monthHeld}) => monthHeld)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
             vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
         })
@@ -205,7 +200,7 @@ export default {
           let vm = this
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&WeekHeld=${weekHeld}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
-              vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              vm.caseheldChart.xValues = res.data.map(({monthHeld}) => monthHeld)
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
               vm.fValues.periodBegin = periodBegin
               vm.fValues.periodEnd = periodEnd
@@ -213,6 +208,8 @@ export default {
               vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen
               vm.fValues.costGraph.value = costGraph
+              console.log(vm.caseheldChart.xValues)
+              console.log(vm.caseheldChart.barData)
           })
           .catch(err => {
               this.snackbar.snack = true
