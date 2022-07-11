@@ -134,7 +134,7 @@ export default {
                         ticks: {
                             autoSkip: false,
                             callback: function(value) {
-                                return this.getLabelForValue(value).substr(0, 15)
+                                return this.getLabelForValue(value).substr(0, 12)
                             },
                         }
                     }
