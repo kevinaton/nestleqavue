@@ -98,45 +98,41 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
+            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                        || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                        || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString()) || input.WeekHeld == EnumWeekHeld.Select
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))));
+
             switch (input.CostGraphOption)
             {
                 case EnumCostGraph.CostByCategory:
-                    var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.HoldCategory,
-                                        }) 
-                                        .Select(s => new
-                                        {
-                                            s.Key.HoldCategory,
-                                            TotalCost = s.Sum(a => a.CostofProductonHold),
-                                        }).ToListAsync();
+                    var queryByCategory = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        g.HoldCategory,
+                                                    }) 
+                                                    .Select(s => new
+                                                    {
+                                                        s.Key.HoldCategory,
+                                                        TotalCost = s.Sum(a => a.CostofProductonHold),
+                                                    }).ToListAsync();
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.HoldCategory)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
-                                                    && (input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("f"))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.HoldCategory,
-                                        })
-                                        .Select(s => new
-                                        {
-                                            s.Key.HoldCategory,
-                                            TotalCost = s.Sum(a => a.CostofProductonHold),
-                                        }).ToListAsync();
-                    return Ok(queryByInHouse);
+                    var queryByAllocation = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        g.HoldCategory,
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        s.Key.HoldCategory,
+                                                        TotalCost = s.Sum(a => a.CostofProductonHold),
+                                                    }).ToListAsync();
+                    return Ok(queryByAllocation);
             }
 
             return Ok();
@@ -147,46 +143,40 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
-
+            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                        || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                        || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString()) || input.WeekHeld == EnumWeekHeld.Select
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))));
             switch (input.CostGraphOption)
             {
                 case EnumCostGraph.CostByCategory:
-                    var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
-                                        .GroupBy(g => new
-                                        {
-                                            MonthHeld = g.DateHeld.Value.Month
-                                        })
-                                        .Select(s => new
-                                        {
-                                            MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-                                            TotalCost = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
+                    var queryByCategory = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        MonthHeld = g.DateHeld.Value.Month
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
+                                                        TotalCost = s.Sum(a => a.Cases),
+                                                    }).ToListAsync();
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
-                                        .GroupBy(g => new
-                                        {
-                                            MonthHeld = g.DateHeld.Value.Month
-                                        })
-                                        .Select(s => new
-                                        {
-                                            MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-                                            TotalCost = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
-                    return Ok(queryByInHouse);
+                    var queryByAllocation = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        MonthHeld = g.DateHeld.Value.Month
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
+                                                        TotalCost = s.Sum(a => a.Cases),
+                                                    }).ToListAsync();
+                    return Ok(queryByAllocation);
             }
 
             return Ok();
@@ -197,71 +187,62 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
         {
-
+            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
+                                                    && (input.Status == EnumStatus.All
+                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))));
             switch (input.CasesOption)
             {
                 case EnumFMCasesOptions.ByCategory:
-                    var queryByCategory = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.Fmtype,
-                                        })
-                                        .Select(s => new
-                                        {
-                                            Type = s.Key.Fmtype,
-                                            NumberOfCases = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
+                    var queryByCategory = await query
+                                                .GroupBy(g => new
+                                                {
+                                                    g.Fmtype,
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    Type = s.Key.Fmtype,
+                                                    NumberOfCases = s.Sum(a => a.Cases),
+                                                }).ToListAsync();
                     return Ok(queryByCategory);
 
                 case EnumFMCasesOptions.ByInhouseVendor:
-                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.FMSource,
-                                        })
-                                        .Select(s => new
-                                        {
-                                            Type = s.Key.FMSource,
-                                            NumberOfCases = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
+                    var queryByInHouse = await query
+                                                .GroupBy(g => new
+                                                {
+                                                    g.FMSource,
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    Type = s.Key.FMSource,
+                                                    NumberOfCases = s.Sum(a => a.Cases),
+                                                }).ToListAsync();
                     return Ok(queryByInHouse);
 
                 case EnumFMCasesOptions.ByLine:
-                    var queryByLine = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.Line,
-                                        })
-                                        .Select(s => new
-                                        {
-                                            Type = s.Key.Line,
-                                            NumberOfCases = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
+                    var queryByLine = await query
+                                                .GroupBy(g => new
+                                                {
+                                                    g.Line,
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    Type = s.Key.Line,
+                                                    NumberOfCases = s.Sum(a => a.Cases),
+                                                }).ToListAsync();
                     return Ok(queryByLine);
 
                 case EnumFMCasesOptions.ByShift:
-                    var queryByShift = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
-                                                    && (input.Status == EnumStatus.All
-                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
-                                        .GroupBy(g => new
-                                        {
-                                            g.Shift,
-                                        })
-                                        .Select(s => new
-                                        {
-                                            Type = s.Key.Shift,
-                                            NumberOfCases = s.Sum(a => a.Cases),
-                                        }).ToListAsync();
+                    var queryByShift = await query
+                                                .GroupBy(g => new
+                                                {
+                                                    g.Shift,
+                                                })
+                                                .Select(s => new
+                                                {
+                                                    Type = s.Key.Shift,
+                                                    NumberOfCases = s.Sum(a => a.Cases),
+                                                }).ToListAsync();
                     return Ok(queryByShift);
             }
             
@@ -292,13 +273,15 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetMicrobeGraphData([FromQuery] GetMicrobeGraphDataInput input)
         {
+            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && 
+                                                    (input.Status == EnumStatus.All
+                                                        || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                        || (input.Status == EnumStatus.Open && x.Complete.HasValue && x.Complete.Value)));
+
             switch (input.Types)
             {
                 case EnumMicrobeTypes.ByTypesOfMicrobes:
-                    var queryByMicrobe = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.HoldConcern)
-                                                                        && (input.Status == EnumStatus.All
-                                                                                || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                                                || (input.Status == EnumStatus.Open && x.Complete.HasValue && x.Complete.Value)))
+                    var queryByMicrobe = await query.Where(x => !string.IsNullOrEmpty(x.HoldConcern))
                                                             .GroupBy(g => new {
                                                                 g.HoldConcern
                                                             })
@@ -311,10 +294,7 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByMicrobe);
 
                 case EnumMicrobeTypes.ByLine:
-                    var queryByLine = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.Line)
-                                                                     && (input.Status == EnumStatus.All
-                                                                        || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                                        || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
+                    var queryByLine = await query.Where(x => !string.IsNullOrEmpty(x.Line))
                                                         .GroupBy(g => new
                                                         {
                                                             g.Line
@@ -328,12 +308,9 @@ namespace HRD.WebApi.Controllers
 
                 case EnumMicrobeTypes.ByTopProducts:
 
-                    var queryByProduct = await (from s in _context.Hrds
+                    var queryByProduct = await (from s in query
                                                 join p in _context.Products on s.Globenum equals p.Gpn
-                                                where (s.DateHeld >= input.PeriodBegin && s.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(s.Globenum)
-                                                        && (input.Status == EnumStatus.All
-                                                                || (input.Status == EnumStatus.Closed && s.Complete.HasValue && s.Complete.Value)
-                                                                || (input.Status == EnumStatus.Open && (!s.Complete.HasValue || !s.Complete.Value))))
+                                                where (!string.IsNullOrEmpty(s.Globenum))
                                                 group new { s, p } by new
                                                 {
                                                     p.Description,
@@ -348,10 +325,7 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByProduct);
 
                 case EnumMicrobeTypes.ByShift:
-                    var queryByShift = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.Shift)
-                                                                        && input.Status == EnumStatus.All
-                                                                            || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                    var queryByShift = await query.Where(x => !string.IsNullOrEmpty(x.Shift))
                                                     .GroupBy(g => new
                                                     {
                                                         g.Shift
