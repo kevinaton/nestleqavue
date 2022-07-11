@@ -2,19 +2,19 @@
 {
     public enum EnumWeekHeld
     {
+        Sunday = 0,
         Monday = 1,
         Tuesday = 2,
         Wednesday = 3,
         Thursday = 4,
         Friday = 5,
         Saturday = 6,
-        Sunday = 7
     }
     public enum EnumStatus
     {
-        Open = 1,
-        Closed = 2,
-        All = 3
+        Open = 0,
+        Closed = 1,
+        All = 2
     }
     public enum EnumFMCasesOptions
     {

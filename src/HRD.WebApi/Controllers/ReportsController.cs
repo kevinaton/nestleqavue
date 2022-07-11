@@ -98,7 +98,6 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
-
             switch (input.CostGraphOption)
             {
                 case EnumCostGraph.CostByCategory:
@@ -106,12 +105,13 @@ namespace HRD.WebApi.Controllers
                                                     && (input.Status == EnumStatus.All
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (string.IsNullOrWhiteSpace(input.WeekHeld)
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("F").ToLower())))
+                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))))
                                         .GroupBy(g => new
                                         {
                                             g.HoldCategory,
-                                        })
+                                        }) 
                                         .Select(s => new
                                         {
                                             s.Key.HoldCategory,
@@ -120,10 +120,13 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                    var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("f"))))
                                         .GroupBy(g => new
                                         {
                                             g.HoldCategory,
@@ -152,15 +155,16 @@ namespace HRD.WebApi.Controllers
                                                     && (input.Status == EnumStatus.All
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (string.IsNullOrWhiteSpace(input.WeekHeld)
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToLower() == x.DateHeld.Value.DayOfWeek.ToString("F").ToLower())))
+                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                            || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
                                         .GroupBy(g => new
                                         {
-                                            g.HoldCategory,
+                                            MonthHeld = g.DateHeld.Value.Month
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.HoldCategory,
+                                            MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
                                             TotalCost = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByCategory);
@@ -169,14 +173,17 @@ namespace HRD.WebApi.Controllers
                     var queryByInHouse = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
-                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value))))
+                                                            || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
+                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                            || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
                                         .GroupBy(g => new
                                         {
-                                            g.HoldCategory,
+                                            MonthHeld = g.DateHeld.Value.Month
                                         })
                                         .Select(s => new
                                         {
-                                            s.Key.HoldCategory,
+                                            MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
                                             TotalCost = s.Sum(a => a.Cases),
                                         }).ToListAsync();
                     return Ok(queryByInHouse);
