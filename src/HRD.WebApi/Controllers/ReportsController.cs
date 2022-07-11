@@ -106,7 +106,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                    && (input.WeekHeld == EnumWeekHeld.Select
                                                             || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))))
                                         .GroupBy(g => new
                                         {
@@ -125,7 +125,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                    && (input.WeekHeld == EnumWeekHeld.Select
                                                             || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("f"))))
                                         .GroupBy(g => new
                                         {
@@ -156,7 +156,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                    && (input.WeekHeld == EnumWeekHeld.Select
                                                             || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
                                         .GroupBy(g => new
                                         {
@@ -175,7 +175,7 @@ namespace HRD.WebApi.Controllers
                                                             || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                             || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (!string.IsNullOrEmpty(input.Line) || x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString())
+                                                    && (input.WeekHeld == EnumWeekHeld.Select
                                                             || (x.DateHeld.HasValue && x.DateHeld.Value.DayOfWeek.ToString("F") == input.WeekHeld.ToString())))
                                         .GroupBy(g => new
                                         {

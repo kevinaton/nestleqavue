@@ -2,6 +2,7 @@
 {
     public enum EnumWeekHeld
     {
+        Select = -1,
         Sunday = 0,
         Monday = 1,
         Tuesday = 2,
