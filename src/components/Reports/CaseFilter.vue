@@ -128,9 +128,6 @@ export default {
     emits: ["change"],
     computed: {
         getDateRange() {
-            console.log(this.fValues.periodBegin)
-            console.log(this.fValues.periodEnd)
-            console.log(this.fValues.dates)
             if(this.fValues.timeSelect == 'dateRange') {
                 let i = moment.utc(this.fValues.periodBegin).format('MM/DD/YYYY'),
                 f = moment.utc(this.fValues.periodEnd).format('MM/DD/YYYY')

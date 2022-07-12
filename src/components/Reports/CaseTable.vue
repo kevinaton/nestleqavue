@@ -14,14 +14,6 @@
                 @update:sort-desc="customSort('desc', $event)"
                 hide-default-footer
             >
-                <template v-slot:top>
-                    <SimpleToolbar 
-                        title=""
-                        :table="items"
-                        class="mt-4"
-                        @change="getSearch($event)"
-                    />
-                </template>
             </v-data-table>
 
             <TablePagination 
@@ -35,13 +27,11 @@
 
 <script>
 import TablePagination from '@/components/TableElements/TablePagination.vue'
-import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
 
 export default {
     name:'CaseTable',
     components: {
         TablePagination,
-        SimpleToolbar,
     },
     props: {
         input: {
@@ -64,17 +54,11 @@ export default {
             totalPages:1,
             totalRecords:1,
             numToSearch:0,
-            searchValue:'',
             sortBy: ['line'],
             sortDesc: [false],
             desc:'asc',
         },
         firstload:true,
-        prodtoolbar: {
-            search: '',
-            dialogDelete: false,
-            dialog: false,
-        },
     }),
 
     emits: ["change"],
@@ -85,17 +69,16 @@ export default {
     },
 
     methods: {
-        getData(pageInput, pageSize, searchInput, By, Desc, desc) {
+        getData(pageInput, pageSize, By, Desc, desc) {
             let vm = this
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&SortColumn=${By}&SortOrder=${desc}`)
             .then((res) => {
                 vm.tableOptions.totalPages = res.data.totalPages,
                 vm.tableOptions.itemsPerPage = res.data.pageSize,
                 vm.tableOptions.page = pageInput,
                 vm.tableOptions.totalRecords = res.data.totalRecords,
-                this.$emit('change', res.data.data)
-                vm.tableOptions.searchValue = searchInput,
+                this.$emit('change', res.data.data) 
                 vm.tableOptions.sortBy = By,
                 vm.tableOptions.sortDesc = Desc,
                 vm.tableOptions.desc = desc
@@ -135,10 +118,10 @@ export default {
         updateTable(value) {
             let vm = this
             vm.tableOptions.page = value          
-            vm.getData(value, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            vm.getData(value, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
 
             if(vm.firstload == true) {
-                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
                 vm.firstload = false
             }
         },
@@ -148,15 +131,15 @@ export default {
             if(event[0] != undefined) {
                 if(par == 'by') {
                     vm.tableOptions.sortBy = event[0]
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+                    vm.getData(vm.tableOptions.page, 20, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
                 }
                 if(par == 'desc') {
                     vm.tableOptions.sortDesc = event[0]
                     if(event == 'true') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], true, 'desc')
+                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], true, 'desc')
                     }
                     if(event == 'false') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], false, 'asc')
+                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], false, 'asc')
                     }
                 }
             }
@@ -168,11 +151,6 @@ export default {
             } else {
                 this.showCheckBox = true
             }
-        },
-
-        getSearch(value) {
-            let vm = this
-            vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
         },
     },
 

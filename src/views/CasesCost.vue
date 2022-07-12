@@ -77,9 +77,9 @@ export default {
     },
     data: () => ({
       snackbar: {
-          snack: false,
-          snackColor: '',
-          snackText: '',
+        snack: false,
+        snackColor:'',
+        snackText:'',
       },
       bcrumbs: [
         {
@@ -103,7 +103,6 @@ export default {
         dates:[]
       },
       filter: {
-        dates:[],
         menu: false,
         modal: false,
         line: [
@@ -208,8 +207,6 @@ export default {
               vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen
               vm.fValues.costGraph.value = costGraph
-              console.log(vm.caseheldChart.xValues)
-              console.log(vm.caseheldChart.barData)
           })
           .catch(err => {
               this.snackbar.snack = true
