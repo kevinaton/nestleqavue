@@ -42,59 +42,57 @@ import moment from 'moment'
 export default {
     name: "MicrobeCases",
     components: {
-    Breadcrumbs,
-    SnackBar,
-    SelectDropdownObj,
-    BarChart,
-    ReportTitle,
-    FmFilter
+        Breadcrumbs,
+        SnackBar,
+        SelectDropdownObj,
+        BarChart,
+        ReportTitle,
+        FmFilter
     },
     data: () => ({
-    snackbar: {
-        snack: false,
-        snackColor: 'error',
-        snackText: '',
-    },
-    bcrumbs: [
-        {
-        text: 'Reports',
-        disabled: true,
+        snackbar: {
+            snack: false,
+            snackColor: 'error',
+            snackText: '',
         },
-        {
-        text: 'FM Cases',
-        disabled: false,
-        href: '',
+        bcrumbs: [
+            {
+            text: 'Reports',
+            disabled: true,
+            },
+            {
+            text: 'FM Cases',
+            disabled: false,
+            href: '',
+            },
+        ],
+        fValues: {
+            closeOpen:{value:2},
+            caseOptions:{value:1},
+            timeSelect:'dateRange',
+            periodBegin:'2000-01-01T00:00:00.000Z',
+            periodEnd:'2022-07-07T10:18:15.174Z',
+            dates:[]
         },
-    ],
-    fValues:{
-        closeOpen:{value:2},
-        caseOptions:{value:1},
-        timeSelect:'dateRange',
-        periodBegin:'2000-01-01T00:00:00.000Z',
-        periodEnd:'2022-07-07T10:18:15.174Z',
-        dates:[]
-    },
-    filter: {
-        defaultTime:0,
-        menu: false,
-        modal: false,
-        caseOptions: [
-            { text: 'By Category', value:1, disabled: false },
-            { text: 'By Inhouse and Vendor', value:2, disabled: false },
-            { text: 'By Line', value:3, disabled: false },
-            { text: 'Per Shift', value:4, disabled: false },
-        ],
-        closeopen: [
-            { text: 'Open', value:0, disabled: false },
-            { text: 'Closed', value:1, disabled: false },
-            { text: 'All', value:2, disabled: false },
-        ],
-        closeopenSelect: {text:'All', value:'all'},
-    },
-    fmCases: {
-        xValues: [],
-        barData: []
-    }
+        filter: {
+            menu: false,
+            modal: false,
+            caseOptions: [
+                { text: 'By Category', value:1, disabled: false },
+                { text: 'By Inhouse and Vendor', value:2, disabled: false },
+                { text: 'By Line', value:3, disabled: false },
+                { text: 'Per Shift', value:4, disabled: false },
+            ],
+            closeopen: [
+                { text: 'Open', value:0, disabled: false },
+                { text: 'Closed', value:1, disabled: false },
+                { text: 'All', value:2, disabled: false },
+            ],
+        },
+        fmCases: {
+            xValues: [],
+            barData: []
+        }
     }),
 
     created() {
