@@ -10,6 +10,7 @@ using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using HRD.WebApi.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace HRD.WebApi.Controllers
 {
@@ -18,10 +19,16 @@ namespace HRD.WebApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly HRDContext _context;
+        protected IAuthorizationService AuthorizationService { get; }
+        protected IConfiguration Configuration { get; }
 
-        public UsersController(HRDContext context)
+        public UsersController(HRDContext context,
+            IAuthorizationService authorizationService,
+            IConfiguration configuration)
         {
             _context = context;
+            AuthorizationService = authorizationService;
+            Configuration = configuration;
         }
         
         // GET: api/Users
@@ -173,10 +180,44 @@ namespace HRD.WebApi.Controllers
 
             return NoContent();
         }
-
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        [HttpGet("GetCurrentUser")]
+        public IActionResult GetCurrentUser()
+        {
+            var currentUser = User.Identities.First().Name;
+
+            return Ok(currentUser);
+        }
+
+        [HttpGet("CheckPermission")]
+        public async Task<IActionResult> CheckUserHasPermission()
+        {
+            var hasViewAccess = await HasPermissionAsync(PolicyNames.ViewHRDs);
+
+            if (!hasViewAccess)
+            {
+                return Ok("You do not currently have access to the HRD application. Send an email to " + Configuration["RequestAccessAdminEmail"].ToString() + " requesting access.");
+            }
+
+            return Ok();
+        }
+
+        protected async Task<bool> HasPermissionAsync(params string[] permissionsToCheck)
+        {
+            foreach (var permissionToCheck in permissionsToCheck)
+            {
+                var succeed = (await AuthorizationService.AuthorizeAsync(User, permissionToCheck)).Succeeded;
+                if (succeed)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
