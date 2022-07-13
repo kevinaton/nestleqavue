@@ -4,16 +4,23 @@
         absolute
         color="blue darken-3"
         elevate-on-scroll
-      >
-        <!-- <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon> -->
-  
+      >  
         <v-toolbar-title class="mTitle"
         @click="$router.push('/')"
         style="cursor:pointer"
         >
-        Nestle QA
+        Nestlé QA
         </v-toolbar-title>
         <v-spacer></v-spacer>
+
+        <v-btn plain color="white">
+          {{user}}
+        </v-btn>
+
+        <SnackBar 
+          :input="snackbar"
+          :timeOut="20000"
+        />
 
         <!-- <v-menu offset-y>
           <template v-slot:activator="{ on, attrs }">
@@ -116,81 +123,119 @@
 </template>
 
 <script>
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 
-  export default {
-      name: 'Header',
-      props: {
+export default {
+    name: 'Header',
+    components: { SnackBar },
+    data: () => ({
+      snackbar: {
+        snack: false,
+        snackColor: 'error',
+        snackText: '',
       },
-      data: () => ({
-        selectedReport:null,
-        selectedAdmin:null,
-        currentPage:{},
-        selectedTab:null,
-        items: [
-          // { title: 'Change Password', name:'change_password' },
-          { title: 'Logout' },
-        ],
-        tabs: [
-          { title:'QA', name: 'qa' },
-          { title:'REPORTS', name:'reports' },
-          { title:'ADMINISTRATION', name:'administration' }
-        ],
-        qa: { title:'QA', name:'qa' }
-        ,
-        reports: [
-          { title:'Cases & Cost Held by Category', name:'casecost' },
-          { title:'Microbe Case', name:'microbecases' },
-          { title:'FM Cases', name:'fmcases' },
-          { title:'Pest Log', name:'pestlog' }
-        ],
-        adminItems: [
-          { title: 'Products', name:'products'},
-          { title: 'Labor', name:'labor'},
-          { title: 'Testing', name:'testing' },
-          { title: 'Roles', name:'roles' },
-          { title: 'Users', name:'users' },
-          { title: 'Lookup Lists', name:'lookup' },
-        ],
-        initialValue:false,
-        redirectvalue:[],
-      }),
-      created () {
-        this.currentPage=this.$route.name
-        let x = this.currentPage
-        for (let i=0; i<this.reports.length; i++) {
-          if (x == this.reports[i].name) {
-            this.selectedReport = i
-            this.selectedTab = 1
-          }
-        }
-        for (let i=0; i<this.adminItems.length; i++) {
-          if (x == this.adminItems[i].name) {
-            this.selectedAdmin = i
-            this.selectedTab = 2
-          }
-        }
-      },
-      methods: {
-        cancel() {
-            this.initialValue = false
-        },
-        verify(value) {          
-          if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail' ) {
-            this.initialValue = true
-            this.redirectvalue = value
-          } else {
-            this.initialValue = false
-            this.$router.push({name:value.name}).catch(()=>{})
-            if (this.selectedTab != 1 || 2) {
-              this.selectedAdmin = null
-              this.selectedReport = null
-            }
-          }
-        },
-        redirect() {
-          this.$router.push({name:this.redirectvalue.name}).catch(()=>{})
-          this.initialValue = false
+      selectedReport:null,
+      selectedAdmin:null,
+      currentPage:{},
+      selectedTab:null,
+      items: [
+        // { title: 'Change Password', name:'change_password' },
+        { title: 'Logout' },
+      ],
+      tabs: [
+        { title:'QA', name: 'qa' },
+        { title:'REPORTS', name:'reports' },
+        { title:'ADMINISTRATION', name:'administration' }
+      ],
+      qa: { title:'QA', name:'qa' }
+      ,
+      reports: [
+        { title:'Cases & Cost Held by Category', name:'casecost' },
+        { title:'Microbe Case', name:'microbecases' },
+        { title:'FM Cases', name:'fmcases' },
+        { title:'Pest Log', name:'pestlog' }
+      ],
+      adminItems: [
+        { title: 'Products', name:'products'},
+        { title: 'Labor', name:'labor'},
+        { title: 'Testing', name:'testing' },
+        { title: 'Roles', name:'roles' },
+        { title: 'Users', name:'users' },
+        { title: 'Lookup Lists', name:'lookup' },
+      ],
+      initialValue:false,
+      redirectvalue:[],
+      user:'',
+    }),
+    created () {
+      this.fetchUser()
+      this.checkPermission()
+      this.currentPage=this.$route.name
+      let x = this.currentPage
+      for (let i=0; i<this.reports.length; i++) {
+        if (x == this.reports[i].name) {
+          this.selectedReport = i
+          this.selectedTab = 1
         }
       }
+      for (let i=0; i<this.adminItems.length; i++) {
+        if (x == this.adminItems[i].name) {
+          this.selectedAdmin = i
+          this.selectedTab = 2
+        }
+      }
+    },
+    methods: {
+      cancel() {
+          this.initialValue = false
+      },
+      verify(value) {          
+        if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail' ) {
+          this.initialValue = true
+          this.redirectvalue = value
+        } else {
+          this.initialValue = false
+          this.$router.push({name:value.name}).catch(()=>{})
+          if (this.selectedTab != 1 || 2) {
+            this.selectedAdmin = null
+            this.selectedReport = null
+          }
+        }
+      },
+      redirect() {
+        this.$router.push({name:this.redirectvalue.name}).catch(()=>{})
+        this.initialValue = false
+      },
+      fetchUser() {
+      let vm = this 
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUser`)
+          .then((res) => {
+              vm.user = res.data
+          })
+          .catch(err => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'error'
+              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
+      },
+      checkPermission() {
+        let vm = this
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/CheckPermission`)
+        .then((res) => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'info'
+              vm.snackbar.snackText = res.data
+          })
+          .catch(err => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'error'
+              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
+      }
     }
+  }
 </script>
