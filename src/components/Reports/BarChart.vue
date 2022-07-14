@@ -42,7 +42,7 @@ export default {
         },
         height: {
             type: Number,
-            default: 400
+            default: 600
         },
         cssClasses: {
             default: '',
@@ -134,7 +134,14 @@ export default {
                         ticks: {
                             autoSkip: false,
                             callback: function(value) {
-                                return this.getLabelForValue(value).substr(0, 15)
+                                let ellipse
+                                if(this.getLabelForValue(value)?.length > 5) {
+                                    ellipse = '...'
+                                } else {
+                                    ellipse = ''
+                                }
+                                let x = this.getLabelForValue(value)?.substr(0,6) + `${ellipse}`
+                                return x
                             },
                         }
                     }

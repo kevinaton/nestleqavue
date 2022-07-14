@@ -189,7 +189,6 @@ namespace HRD.WebApi.Controllers
         public IActionResult GetCurrentUser()
         {
             var currentUser = User.Identities.First().Name;
-
             return Ok(currentUser);
         }
 

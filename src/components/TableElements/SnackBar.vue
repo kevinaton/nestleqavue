@@ -1,7 +1,7 @@
 <template>
     <v-snackbar
         v-model="input.snack"
-        :timeout="3000"
+        :timeout="timeOut"
         :color="input.snackColor"
         top
     >
@@ -28,6 +28,11 @@ export default {
             default: () => {},
             required: false,
         },
+        timeOut: {
+            type:Number,
+            default:3000,
+            required:false
+        }
     },
     methods: {
     }
