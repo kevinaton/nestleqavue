@@ -1,4 +1,4 @@
-﻿namespace HRD.WebApi.ViewModels
+﻿namespace HRD.WebApi.ViewModels.Report
 {
     public class ReportPaginationFilter
     {
@@ -8,16 +8,16 @@
         public string SortOrder { get; set; }
         public ReportPaginationFilter()
         {
-            this.PageNumber = 1;
-            this.PageSize = 10;
+            PageNumber = 1;
+            PageSize = 10;
         }
 
         public ReportPaginationFilter(int pageNumber, int pageSize, string sortColumn, string sortOrder)
         {
-            this.PageNumber = pageNumber < 1 ? 1 : pageNumber;
-            this.PageSize = pageSize < 10 ? 10 : pageSize;
-            this.SortColumn = !string.IsNullOrWhiteSpace(sortColumn) ? sortColumn.ToLower() : "";
-            this.SortOrder = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.ToLower() : "asc";
+            PageNumber = pageNumber < 1 ? 1 : pageNumber;
+            PageSize = pageSize < 10 ? 10 : pageSize;
+            SortColumn = !string.IsNullOrWhiteSpace(sortColumn) ? sortColumn.ToLower() : "";
+            SortOrder = !string.IsNullOrWhiteSpace(sortOrder) ? sortOrder.ToLower() : "asc";
         }
     }
 }

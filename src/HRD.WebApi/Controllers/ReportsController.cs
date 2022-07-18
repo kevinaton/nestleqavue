@@ -2,6 +2,7 @@
 using HRD.WebApi.Data;
 using HRD.WebApi.Extensions;
 using HRD.WebApi.ViewModels;
+using HRD.WebApi.ViewModels.Enums;
 using HRD.WebApi.ViewModels.Report;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

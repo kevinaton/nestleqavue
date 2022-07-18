@@ -1,4 +1,4 @@
-﻿namespace HRD.WebApi.ViewModels.Report
+﻿namespace HRD.WebApi.ViewModels.Enums
 {
     public enum EnumWeekHeld
     {

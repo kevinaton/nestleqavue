@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HRD.WebApi.ViewModels.Enums;
+using System;
 
 namespace HRD.WebApi.ViewModels.Report
 {

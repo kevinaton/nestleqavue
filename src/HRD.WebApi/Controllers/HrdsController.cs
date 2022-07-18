@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace HRD.WebApi.Controllers
 {
@@ -1033,6 +1034,15 @@ namespace HRD.WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("Recalculate")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
+        public ActionResult<RecalculateViewModel> Recalculate(RecalculateViewModel model)
+        {
+            var recalculate = model.Clear + model.Sample + model.Scrap + model.ThriftStore + model.Donate;
+
+            return Ok(recalculate);
         }
     }
 }

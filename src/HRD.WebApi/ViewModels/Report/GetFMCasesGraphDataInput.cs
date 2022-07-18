@@ -1,4 +1,6 @@
-﻿namespace HRD.WebApi.ViewModels.Report
+﻿using HRD.WebApi.ViewModels.Enums;
+
+namespace HRD.WebApi.ViewModels.Report
 {
     public class GetFMCasesGraphDataInput : DataInput
     {
