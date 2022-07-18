@@ -6,7 +6,7 @@
         elevate-on-scroll
       >  
         <v-toolbar-title class="mTitle"
-        @click="$router.push('/')"
+        @click="verify(qa)"
         style="cursor:pointer"
         >
         Nestlé QA

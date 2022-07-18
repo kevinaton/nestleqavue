@@ -3,7 +3,7 @@
         ref="form"
         v-model="valid"
         elevation="0"
-        class="mx-auto mt-6 pa-8"
+        class="mx-auto mt-6 pt-0 pa-8"
         lazy-validation
     >   
         <SnackBar 
@@ -362,3 +362,4 @@ export default {
     }
 }    
 </script>
+

@@ -264,7 +264,7 @@ export default {
             type: Object,
             default: () => {},
             required: false,
-        },
+        }
     },
     computed: {
         getDate(){
@@ -293,7 +293,7 @@ export default {
                 show = true
             }
             return show
-        }
+        },
     },
     methods: {
         getFormattedDate(date) {

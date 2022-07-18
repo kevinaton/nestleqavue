@@ -99,6 +99,7 @@ export default {
         submitUpdate() {
             let value = true
             this.$emit('change', value)
+            this.$router.push({ name:'new_qa', params: { id: item.id } });
         }
     }
 }

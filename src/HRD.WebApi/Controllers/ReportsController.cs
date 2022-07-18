@@ -40,7 +40,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("CasesCostByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
             var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder);
@@ -95,7 +95,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("CostHeldByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
@@ -140,7 +140,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("CasesHeldByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
@@ -184,7 +184,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("FMCases")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
@@ -251,7 +251,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("PestLog")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetPestLogGraphData([FromQuery] GetPestLogGraphDataInput input)
         {
             var queryByPest = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.PestType))
@@ -270,7 +270,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports
         [HttpGet("Microbe")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetMicrobeGraphData([FromQuery] GetMicrobeGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && 
