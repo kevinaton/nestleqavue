@@ -34,10 +34,45 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
+        private byte[] ExportToExcel(IEnumerable<object> dataList, string sheetName)
+        {
+            var stream = new MemoryStream();
+            //required using OfficeOpenXml;
+            // If you use EPPlus in a noncommercial context
+            // according to the Polyform Noncommercial license:
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage(stream))
+            {
+                var workSheet = package.Workbook.Worksheets.Add(sheetName);
+                workSheet.Cells.LoadFromCollection(dataList, true);
+                package.Save();
+            }
+            stream.Position = 0;
+
+            return stream.ToArray();
+        }
+        private byte[] ExportToCsv(IEnumerable<object> dataList)
+        {
+            //Convert results to csv format and send to a memory stream
+            MemoryStream memoryStream = new MemoryStream();
+            StreamWriter streamWriter = new StreamWriter(memoryStream);
+            CsvWriter csvWriter = new(streamWriter, CultureInfo.CurrentCulture);
+
+            using (memoryStream)
+            using (streamWriter)
+            using (csvWriter)
+            {
+                csvWriter.WriteRecords(dataList);
+                streamWriter.Flush();
+            }
+
+            return memoryStream.ToArray();
+        }
+
         // GET: api/Export/HrdQa
         [HttpGet("Export/HrdQa")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportHrdQa([FromQuery] ExportFilter filter)
+        public IActionResult ExportHrdQa([FromQuery] ExportFilter filter)
         {
             var query = _context.Hrds
                 .Select(s => new QAListViewModel
@@ -125,24 +160,31 @@ namespace HRD.WebApi.Controllers
                                         || f.Originator.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "HrdQa");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "HrdQa");
+                    exportBytes = ExportToExcel(query, "HrdQa");
+                    contentType = "application/octet-stream";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
+            return File(exportBytes, contentType, $"HrdQa_{Guid.NewGuid():N}" + exportFormat);
         }
+
         // GET: api/Export/Products
         [HttpGet("Export/Products")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportProducts([FromQuery] ExportFilter filter)
+        public IActionResult ExportProducts([FromQuery] ExportFilter filter)
         {
             var query = _context.Products
                 .Select(s => new ProductViewModel
@@ -205,25 +247,31 @@ namespace HRD.WebApi.Controllers
                                         || f.Country.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "Products");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "Products");
+                    exportBytes = ExportToExcel(query, "Products");
+                    contentType = "application/vnd.ms-excel";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
+            return File(exportBytes, contentType, $"Products_{Guid.NewGuid():N}" + exportFormat);
         }
 
         // GET: api/Export/LaborCosts
         [HttpGet("Export/LaborCosts")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportLaborCosts([FromQuery] ExportFilter filter)
+        public IActionResult ExportLaborCosts([FromQuery] ExportFilter filter)
         {
             var query = _context.LaborCosts
                 .Select(s => new LaborCostViewModel
@@ -253,25 +301,31 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "LaborCosts");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "LaborCosts");
+                    exportBytes = ExportToExcel(query, "LaborCosts");
+                    contentType = "application/vnd.ms-excel";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
+            return File(exportBytes, contentType, $"LaborCosts_{Guid.NewGuid():N}" + exportFormat);
         }
 
         // GET: api/Export/TestCosts
         [HttpGet("Export/TestCosts")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportTestCosts([FromQuery] ExportFilter filter)
+        public IActionResult ExportTestCosts([FromQuery] ExportFilter filter)
         {
             var query = _context.TestCosts
                 .Select(s => new TestCostViewModel
@@ -313,25 +367,31 @@ namespace HRD.WebApi.Controllers
                 query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "TestCosts");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "TestCosts");
+                    exportBytes = ExportToExcel(query, "TestCosts");
+                    contentType = "application/vnd.ms-excel";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
+            return File(exportBytes, contentType, $"TestCosts_{Guid.NewGuid():N}" + exportFormat);
         }
 
         // GET: api/Export/Users
         [HttpGet("Export/Users")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportUsers([FromQuery] ExportFilter filter)
+        public IActionResult ExportUsers([FromQuery] ExportFilter filter)
         {
             var query = _context.Users.Select(s => new UserViewModel
             {
@@ -366,25 +426,31 @@ namespace HRD.WebApi.Controllers
                                         || f.UserId.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "Users");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "Users");
+                    exportBytes = ExportToExcel(query, "Users");
+                    contentType = "application/vnd.ms-excel";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
+            return File(exportBytes, contentType, $"Users_{Guid.NewGuid():N}" + exportFormat);
         }
 
         // GET: api/Export/Lookup
         [HttpGet("Export/Lookup")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public HttpResponseMessage ExportLookup([FromQuery] ExportFilter filter)
+        public IActionResult ExportLookup([FromQuery] ExportFilter filter)
         {
             var query = _context.DropDownItems
                 .Include(i => i.DropDownType)
@@ -424,78 +490,25 @@ namespace HRD.WebApi.Controllers
                                         || f.TypeName.Contains(filter.SearchString));
             }
 
-            HttpResponseMessage response = new HttpResponseMessage();
+            byte[] exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
 
             switch (filter.ExportFormat)
             {
                 case EnumExportFormat.Csv:
-                    response = ExportToCsv(query, "Lookup");
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    response = ExportToExcel(query, "Lookup");
+                    exportBytes = ExportToExcel(query, "Lookup");
+                    contentType = "application/vnd.ms-excel";
+                    exportFormat = ".xlsx";
                     break;
             }
 
-            return response;
-        }
-
-        private HttpResponseMessage ExportToCsv(IEnumerable<object> dataList, string filename)
-        {
-            //Convert results to csv format and send to a memory stream
-            MemoryStream memoryStream = new MemoryStream();
-            StreamWriter streamWriter = new StreamWriter(memoryStream);
-            CsvWriter csvWriter = new(streamWriter, CultureInfo.CurrentCulture);
-
-            using (memoryStream)
-            using (streamWriter)
-            using (csvWriter)
-            {
-                csvWriter.WriteRecords(dataList);
-                streamWriter.Flush();
-            }
-
-            //Save the memory stream to the HTTP response
-            string csvFilename = filename + $"_{Guid.NewGuid():N}.csv";
-            StreamContent streamContent = new StreamContent(new MemoryStream(memoryStream.ToArray()));
-
-            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = streamContent
-            };
-            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("Attachment")
-            {
-                FileName = csvFilename
-            };
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            return response;
-        }
-
-        private HttpResponseMessage ExportToExcel(IEnumerable<object> dataList, string filename)
-        {
-            string excelFilename = filename + $"_{Guid.NewGuid():N}.xlsx";
-
-            byte[] exportBytes = new byte[] { }; 
-
-            using ExcelPackage pack = new ExcelPackage();
-            ExcelWorksheet ws = pack.Workbook.Worksheets.Add(filename);
-            ws.Cells["A1"].LoadFromCollection(dataList, true, TableStyles.Light1);
-            exportBytes = pack.GetAsByteArray();
-
-            //Save the memory stream to the HTTP response
-            StreamContent streamContent = new StreamContent(new MemoryStream(exportBytes));
-
-            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = streamContent
-            };
-            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
-            {
-                FileName = excelFilename
-            };
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/vnd.ms-excel");
-
-            return response;
+            return File(exportBytes, contentType, $"Lookup_{Guid.NewGuid():N}" + exportFormat);
         }
     }
 }
