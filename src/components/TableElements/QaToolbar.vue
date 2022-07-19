@@ -15,6 +15,8 @@
 
         <Export
             :item="table"
+            :tableOptions="tableOptions"
+            :snackbar="snackbar"
         />
         
         <!-- <v-btn
@@ -49,6 +51,16 @@ export default {
         title: {
             type: String,
             default:'',
+            required: false
+        },
+        tableOptions: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        snackbar: {
+            type: Object,
+            default: () => {},
             required: false
         }
     },

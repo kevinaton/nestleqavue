@@ -36,7 +36,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/HrdQa
         [HttpGet("Export/HrdQa")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportHrdQa([FromQuery] ExportFilter filter)
         {
             var query = _context.Hrds
@@ -141,7 +141,7 @@ namespace HRD.WebApi.Controllers
         }
         // GET: api/Export/Products
         [HttpGet("Export/Products")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportProducts([FromQuery] ExportFilter filter)
         {
             var query = _context.Products
@@ -222,7 +222,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/LaborCosts
         [HttpGet("Export/LaborCosts")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportLaborCosts([FromQuery] ExportFilter filter)
         {
             var query = _context.LaborCosts
@@ -270,7 +270,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/TestCosts
         [HttpGet("Export/TestCosts")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportTestCosts([FromQuery] ExportFilter filter)
         {
             var query = _context.TestCosts
@@ -330,7 +330,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/Users
         [HttpGet("Export/Users")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportUsers([FromQuery] ExportFilter filter)
         {
             var query = _context.Users.Select(s => new UserViewModel
@@ -383,7 +383,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/Lookup
         [HttpGet("Export/Lookup")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public HttpResponseMessage ExportLookup([FromQuery] ExportFilter filter)
         {
             var query = _context.DropDownItems
