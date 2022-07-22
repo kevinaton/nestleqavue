@@ -34,7 +34,7 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
-        private byte[] ExportToExcel(IEnumerable<object> dataList, string sheetName)
+        private byte[] ExportToExcel<T>(IEnumerable<T> dataList, string sheetName)
         {
             var stream = new MemoryStream();
             //required using OfficeOpenXml;
@@ -44,7 +44,7 @@ namespace HRD.WebApi.Controllers
             using (var package = new ExcelPackage(stream))
             {
                 var workSheet = package.Workbook.Worksheets.Add(sheetName);
-                workSheet.Cells.LoadFromCollection(dataList, true);
+                workSheet.Cells.LoadFromCollection(dataList, true, TableStyles.Light8);
                 package.Save();
             }
             stream.Position = 0;
@@ -57,13 +57,14 @@ namespace HRD.WebApi.Controllers
             MemoryStream memoryStream = new MemoryStream();
             StreamWriter streamWriter = new StreamWriter(memoryStream);
             CsvWriter csvWriter = new(streamWriter, CultureInfo.CurrentCulture);
-
+            
             using (memoryStream)
             using (streamWriter)
             using (csvWriter)
             {
                 csvWriter.WriteRecords(dataList);
                 streamWriter.Flush();
+                memoryStream.Seek(0, SeekOrigin.Begin);
             }
 
             return memoryStream.ToArray();
@@ -160,7 +161,7 @@ namespace HRD.WebApi.Controllers
                                         || f.Originator.Contains(filter.SearchString));
             }
 
-            byte[] exportBytes = new byte[] { };
+            byte[] exportBytes = Array.Empty<byte>();
             var contentType = string.Empty;
             var exportFormat = string.Empty;
 
@@ -172,13 +173,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "HrdQa");
-                    contentType = "application/octet-stream";
+                    exportBytes = ExportToExcel(query.ToList(), "HrdQa");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"HrdQa_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"HrdQa_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat,true);
         }
 
         // GET: api/Export/Products
@@ -189,6 +190,7 @@ namespace HRD.WebApi.Controllers
             var query = _context.Products
                 .Select(s => new ProductViewModel
                 {
+                    Id = s.Id,
                     Year = s.Year,
                     Fert = s.Gpn,
                     Description = s.Description,
@@ -259,13 +261,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "Products");
-                    contentType = "application/vnd.ms-excel";
+                    exportBytes = ExportToExcel(query.ToList(), "Products");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"Products_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"Products_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
 
         // GET: api/Export/LaborCosts
@@ -313,13 +315,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "LaborCosts");
-                    contentType = "application/vnd.ms-excel";
+                    exportBytes = ExportToExcel(query.ToList(), "LaborCosts");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";//"application/vnd.ms-excel";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"LaborCosts_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"LaborCosts_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
 
         // GET: api/Export/TestCosts
@@ -379,13 +381,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "TestCosts");
-                    contentType = "application/vnd.ms-excel";
+                    exportBytes = ExportToExcel(query.ToList(), "TestCosts");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"TestCosts_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"TestCosts_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
 
         // GET: api/Export/Users
@@ -438,13 +440,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "Users");
-                    contentType = "application/vnd.ms-excel";
+                    exportBytes = ExportToExcel(query.ToList(), "Users");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"Users_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"Users_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
 
         // GET: api/Export/Lookup
@@ -472,7 +474,7 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.Id)
                         : query.OrderBy(o => o.Id);
                     break;
-                case "typename":
+                case "typeName":
                     query = filter.SortOrder == "desc"
                         ? query.OrderByDescending(o => o.TypeName)
                         : query.OrderBy(o => o.TypeName);
@@ -502,13 +504,13 @@ namespace HRD.WebApi.Controllers
                     exportFormat = ".csv";
                     break;
                 case EnumExportFormat.Excel:
-                    exportBytes = ExportToExcel(query, "Lookup");
-                    contentType = "application/vnd.ms-excel";
+                    exportBytes = ExportToExcel(query.ToList(), "Lookup");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                     exportFormat = ".xlsx";
                     break;
             }
 
-            return File(exportBytes, contentType, $"Lookup_{Guid.NewGuid():N}" + exportFormat);
+            return File(exportBytes, contentType, $"Lookup_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
     }
 }

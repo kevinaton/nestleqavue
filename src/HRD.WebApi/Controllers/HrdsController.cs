@@ -3,13 +3,14 @@ using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 
 namespace HRD.WebApi.Controllers
@@ -19,10 +20,13 @@ namespace HRD.WebApi.Controllers
     public class HrdsController : ControllerBase
     {
         private readonly HRDContext _context;
+        protected IConfiguration Configuration { get; }
 
-        public HrdsController(HRDContext context)
+        public HrdsController(HRDContext context,
+            IConfiguration configuration)
         {
             _context = context;
+            Configuration = configuration;
         }
 
         // GET: api/Hrds
@@ -1043,6 +1047,37 @@ namespace HRD.WebApi.Controllers
             var recalculate = model.Clear + model.Sample + model.Scrap + model.ThriftStore + model.Donate;
 
             return Ok(recalculate);
+        }
+
+        [HttpPost("UploadFiles"), DisableRequestSizeLimit]
+        public async Task<bool> UploadFiles(List<IFormFile> files)
+        {
+            string path = "";
+            try
+            {
+                if (files.Count > 0)
+                {
+                    path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    foreach (var file in files)
+                    {
+                        using var fileStream = new FileStream(Path.Combine(path, file.FileName), FileMode.Create);
+                        await file.CopyToAsync(fileStream);
+                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("File Upload Failed", ex);
+            }
         }
     }
 }
