@@ -57,9 +57,12 @@ export default {
             type: Object,
             default: () => {},
             required: false
+        },
+        util: {
+            type: String,
+            default: '',
+            required: false
         }
-    },
-    mounted() {
     },
     methods: {
         expFile(value) {
@@ -69,15 +72,13 @@ export default {
                 format = 'csv'
             } else {
                 format = 'xlsx'
-            }
-            
+            }            
             vm.$axios({
-                url: `${process.env.VUE_APP_API_URL}/Utilities/Export/HrdQa?SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}&ExportFormat=${value}`,
+                url: `${process.env.VUE_APP_API_URL}/Utilities/Export/${vm.util}?SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}&ExportFormat=${value}`,
                 method: 'GET',
                 responseType: 'blob',
             })
             .then((res) => {
-                console.log(res)
                 var FILE = window.URL.createObjectURL(new Blob([res.data]))
                 var docUrl = document.createElement('a')
                     docUrl.href = FILE

@@ -29,7 +29,6 @@
           title="QA Records"
           class="mt-8"
           :snackbar="snackbar"
-          :input="qatoolbar"
           :table="qa"
           :tableOptions = tableOptions
           @change="getSearch($event)"

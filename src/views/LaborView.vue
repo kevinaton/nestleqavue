@@ -31,8 +31,10 @@
       />
       <SimpleToolbar 
         title="Labor"
-        :input="labortoolbar"
         :table="labors"
+        :snackbar="snackbar"
+        util="LaborCosts"
+        :tableOptions="tableOptions"
         @change="getSearch($event)"
       />
     </template>

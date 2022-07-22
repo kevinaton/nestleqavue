@@ -107,7 +107,7 @@
                 </v-col>
             </v-row>
             <v-row class="mt-0">
-                <v-col class="d-flex">
+                <v-col class="d-flex" cols="5" md="6" sm="12">
                     <v-checkbox
                         v-model="inpValue.complete"
                         class="mr-5"
@@ -119,7 +119,7 @@
                         label="Canceled?"
                     ></v-checkbox>
                 </v-col>
-                <v-col>
+                <v-col cols="5" md="6" sm="12">
                     <v-text-field v-model="inpValue.samples" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Samples" outlined></v-text-field>
                 </v-col>
             </v-row>
@@ -137,13 +137,15 @@
                     <v-btn
                     outlined
                     color="primary"
+                    @click="recalculate"
                     >
                     Recalculate Total
                     </v-btn>
                     <v-banner
                         single-line
                         shaped
-                    >Total: 0
+                    >
+                    <h4>Total: {{recalculateTotal}}</h4>
                     </v-banner>
                 </v-col>
             </v-row>
@@ -273,6 +275,16 @@ export default {
             type: Object,
             default: () => {},
             required: false,
+        },
+        snackbar: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        recalculateTotal: {
+            type: Number,
+            default: 0,
+            required: false
         }
     },
     data: () => ({
@@ -307,8 +319,9 @@ export default {
         },
         getDcDateTime() {
             return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
-        },
+        }
     },
+    emits: ['change'],
     methods: {
         inputPO(value) {
         let vm = this,
@@ -326,7 +339,28 @@ export default {
         remove(index) {
             let vm = this
             vm.inpValue.hrdPo.splice(index, 1)
-        }
+        },
+        recalculate() {
+            let vm = this,
+            params = {
+                clear: vm.inpValue.clear,
+                scrap: vm.inpValue.scrap,
+                thriftStore: vm.inpValue.thriftStore,
+                sample: vm.inpValue.samples,
+                donate: vm.inpValue.donate
+            }
+            vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/Recalculate`, params)
+                .then((res) => {
+                    this.$emit('change', res.data)
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally()
+        },
     }
 }
 </script>

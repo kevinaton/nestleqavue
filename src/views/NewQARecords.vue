@@ -120,6 +120,7 @@ export default {
             counter: value => (value || '').length <= 50 || 'Max 50 characters',
             dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
             int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
+            rohMat: value => ((value || '').length <= 9 && (value || '').length >= 8) || 'Input 8 to 9 digit number',
             fert: value => (value || '').length <= 8 || 'Input 8 digits only',
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/

@@ -1037,7 +1037,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpPost("Recalculate")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public ActionResult<RecalculateViewModel> Recalculate(RecalculateViewModel model)
         {
             var recalculate = model.Clear + model.Sample + model.Scrap + model.ThriftStore + model.Donate;

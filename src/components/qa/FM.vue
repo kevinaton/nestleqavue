@@ -56,29 +56,16 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <SelectDropdownString
-                            :dropdownValue=24
-                            :inpValue="inpValue.rohMaterial"
-                            @input="checkroh"
-                            item-text="text"
-                            label="ROH Material" 
-                            @change="(value) => {
-                                inpValue.rohMaterial = value   
-                            }"
-                        />
+                        <v-text-field v-model="inpValue.rohMaterial" :rules="[rules.rohMat]" outlined label="ROH Material"></v-text-field>
                     </v-col>
-                    <v-col>
-                    </v-col>
-                </v-row>
-                <v-row class="mt-0">
                     <v-col>
                         <v-text-field v-model="inpValue.piecesTotal" :rules="[rules.int]" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" outlined label="Pieces Total" type="number" placeholder=0 suffix="pcs"></v-text-field>
                     </v-col>
+                </v-row>
+                <v-row class="mt-0">
                     <v-col>
                         <v-text-field v-model="inpValue.fmVendorBatch" :rules="[rules.int]" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" outlined label="Vendor Batch" type="number" placeholder=0></v-text-field>
                     </v-col>
-                </v-row>
-                <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString
                             :dropdownValue=15
@@ -144,14 +131,6 @@ export default {
         },
     },
     methods: {
-        checkroh(value) {
-            if(value.text=='Select') {
-                this.rohTable=false
-            }
-            else {
-                this.rohTable=true
-            }
-        },
         setRadioValue(value) {
             let vm = this
             let i = null

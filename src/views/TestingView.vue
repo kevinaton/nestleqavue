@@ -31,8 +31,10 @@
             />
             <SimpleToolbar 
                 title="Testing"
-                :input="testingtoolbar"
                 :table="testings"
+                :snackbar="snackbar"
+                util="TestCosts"
+                :tableOptions="tableOptions"
                 @change="getSearch($event)"
             />
         </template>

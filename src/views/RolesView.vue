@@ -31,8 +31,10 @@
             />
             <SimpleToolbar 
                 title="Roles"
-                :input="roletoolbar"
                 :table="roles"
+                :snackbar="snackbar"
+                util="TestCosts"
+                :tableOptions="tableOptions"
                 @change="getSearch($event)"
             />
         </template>

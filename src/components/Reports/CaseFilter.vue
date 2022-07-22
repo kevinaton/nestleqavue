@@ -140,7 +140,6 @@ export default {
 
     methods: {
         updateLine(value) {
-            console.log(value)
             let d = this.fValues
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
