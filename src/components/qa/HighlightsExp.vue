@@ -2,6 +2,9 @@
     <v-expansion-panel>
         <v-expansion-panel-header class="font-weight-bold text-h6 mb-6 rounded-b-0">Highlights</v-expansion-panel-header>
             <v-expansion-panel-content>
+                <SnackBar 
+                    :input="snackbar"
+                />
                 <v-row class="mt-0">
                     <v-col>
                         <DateTimePicker
@@ -70,9 +73,7 @@
                             :dropdownValue=9
                             :inpValue="inpValue.type"
                             label="Type" 
-                            @change="(value) => {
-                                inpValue.type = value   
-                            }"
+                            @change="(value) => { inpValue.type = value }"
                         />
                     </v-col>
                 </v-row>
@@ -183,18 +184,19 @@
                     <v-col class="mx-4">
                         <v-row>
                             <v-file-input
+                            v-model="vFile"
                             chips
                             counter
                             filled
-                            multiple
                             cols="4"
                             class="mr-4"
                             prepend-icon=""
                             prepend-inner-icon="mdi-paperclip"
                             truncate-length="26"
                             placeholder="Upload file"
+                            type="file"
                             ></v-file-input>
-                            <v-btn cols="4" x-large elevation="2">Upload</v-btn>
+                            <v-btn cols="4" x-large elevation="2" @click="uploadFile">Upload</v-btn>
                         </v-row>
                     </v-col>
                     <v-col></v-col>
@@ -237,6 +239,7 @@ import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
+import SnackBar from '@/components/TableElements/SnackBar.vue'
 import moment from 'moment'
 
 export default {
@@ -245,9 +248,18 @@ export default {
         SimpleTimePicker,
         YearOnly,
         SelectDropdownString,
-        DateTimePicker
+        DateTimePicker,
+        SnackBar
 
     },
+    data: () => ({
+        vFile:[],
+        snackbar: {
+            snack: false,
+            snackColor: '',
+            snackText: '',
+        },
+    }),
     props: {
         name: 'HighlightsExp',
         input: {
@@ -301,6 +313,58 @@ export default {
         },
         downloadItem(item) {
             console.log(item.path)
+        },
+        deleteItem(item) {
+            console.log(item)
+        },
+        uploadFile() {
+            let vm = this,
+                formData = new FormData(),
+                file = [this.vFile]
+
+            formData.append('files', file)
+
+            vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/UploadFiles`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data' 
+                    }
+                }
+            )
+            .then(res => 
+            {
+                console.log(res)
+                console.log(file)
+
+                if(res.data == false) {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'File error'
+                }
+                if(res.data == true) {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Uploaded Successfully'
+                }
+            })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+
+            // console.log(n)
+            // console.log(vm.vFile)
+
+            // vm.inpValue.hrdNote[n] = {
+            //     category: 'MISC',
+            //     date: date,
+            //     description: '',
+            //     filename: vm.vFile.name,
+            //     hrdId: 
+            // }
         }
     }
 }

@@ -36,6 +36,7 @@
 
 <script>
 import SnackBar from '@/components/TableElements/SnackBar.vue'
+import moment from 'moment'
 
 export default {
     name: 'Exportcsv',
@@ -78,11 +79,14 @@ export default {
                 method: 'GET',
                 responseType: 'blob',
             })
-            .then((res) => {
+            .then((res, req) => {
+                let date = new Date().toISOString(),
+                    y = moment(date).format('MMDDYYYYhhmmss')
+                    
                 var FILE = window.URL.createObjectURL(new Blob([res.data]))
                 var docUrl = document.createElement('a')
                     docUrl.href = FILE
-                    docUrl.setAttribute('download', `file.${format}`)
+                    docUrl.setAttribute('download', `${vm.$route.name}${y}.${format}`)
                     document.body.appendChild(docUrl)
                     docUrl.click()
             })
