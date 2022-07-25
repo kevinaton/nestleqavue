@@ -55,7 +55,10 @@ export default {
                     vm.lookup = arr
                     })
                     .catch(err => {
-                        console.log(err)
+                        vm.snackbar.snack = true
+                        vm.snackbar.snackColor = 'error'
+                        vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                        console.warn(err)
                     })
                     .finally(() => (this.loading = false))
             }

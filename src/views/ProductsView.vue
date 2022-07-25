@@ -32,7 +32,10 @@
       />
       <SimpleToolbar 
         title="Products"
+        :snackbar="snackbar"
         :table="products"
+        util="Products"
+        :tableOptions="tableOptions"
         @change="getSearch($event)"
       />
     </template>

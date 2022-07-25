@@ -34,6 +34,9 @@
                 :input="details"
                 :inpValue="getHRD"
                 :rules="rules"
+                :recalculateTotal="recalculateTotal"
+                :snackbar="snackbar"
+                @change="(value) => { recalculateTotal = value }"
             />
 
             <HoldClassification
@@ -244,6 +247,7 @@
                 snackColor: '',
                 snackText: '',
             },
+            recalculateTotal:0
         }),
         created() {
             this.fetchHRD()
@@ -254,6 +258,7 @@
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
                     vm.hrd = res.data
+                    this.fetchRecalculate()
                 })
                 .catch(err => {
                     this.snackbar.snack = true
@@ -263,9 +268,30 @@
                 })
                 .finally(() => (this.loading = false))
             },
+            fetchRecalculate() {
+                let vm = this,
+                value = {
+                    clear: vm.hrd.clear,
+                    scrap: vm.hrd.scrap,
+                    thriftStore: vm.hrd.thriftStore,
+                    sample: vm.hrd.samples,
+                    donate: vm.hrd.donate
+                }
+                vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/Recalculate`, value)
+                    .then((res) => {
+                        vm.recalculateTotal = res.data
+                    })
+                    .catch(err => {
+                        this.snackbar.snack = true
+                        this.snackbar.snackColor = 'error'
+                        this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                        console.warn(err)
+                    })
+                    .finally()
+            },
             submitHRD(value) {
-            let vm = this
-            let d = vm.hrd
+            let vm = this,
+                d = vm.hrd
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {

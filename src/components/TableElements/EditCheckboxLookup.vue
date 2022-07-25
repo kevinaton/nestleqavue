@@ -3,6 +3,7 @@
     <v-checkbox
         v-if="showCheckBox"
         v-model="cTable"
+        :label="`${table}`"
         @change="updateValue(cTable)"
     ></v-checkbox>
     <span v-else>N/A</span>

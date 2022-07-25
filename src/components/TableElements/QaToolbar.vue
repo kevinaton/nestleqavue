@@ -15,6 +15,9 @@
 
         <Export
             :item="table"
+            :tableOptions="tableOptions"
+            :snackbar="snackbar"
+            util = "HrdQa"
         />
         
         <!-- <v-btn
@@ -38,10 +41,6 @@ export default {
         Export,
     },
     props: {
-        input: {
-            type: Object,
-            default: () => {},
-        },
         table: {
             type: Array,
             default: [],
@@ -49,6 +48,16 @@ export default {
         title: {
             type: String,
             default:'',
+            required: false
+        },
+        tableOptions: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        snackbar: {
+            type: Object,
+            default: () => {},
             required: false
         }
     },

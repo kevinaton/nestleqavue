@@ -82,9 +82,6 @@ export default {
             let value = this.tempValue.toString()
             this.$emit('change', value)
             let stringyear = this.year.toString()
-            console.log('stringyear: ' + stringyear)
-            console.log('value: ' + value)
-            console.log('lcInput: ' + this.lcInput)
             axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
                 year:value,
                 laborCost:this.lcInput

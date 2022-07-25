@@ -28,8 +28,9 @@
         <QaToolbar 
           title="QA Records"
           class="mt-8"
-          :input="qatoolbar"
+          :snackbar="snackbar"
           :table="qa"
+          :tableOptions = tableOptions
           @change="getSearch($event)"
         />
       </template>
