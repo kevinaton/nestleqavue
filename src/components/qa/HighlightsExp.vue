@@ -187,7 +187,7 @@
                             v-model="vFile"
                             chips
                             counter
-                            filled
+                            outline
                             cols="4"
                             class="mr-4"
                             prepend-icon=""
@@ -195,7 +195,8 @@
                             truncate-length="26"
                             placeholder="Upload file"
                             type="file"
-                            ></v-file-input>
+                            >
+                            </v-file-input>
                             <v-btn cols="4" x-large elevation="2" @click="uploadFile">Upload</v-btn>
                         </v-row>
                     </v-col>
@@ -214,6 +215,7 @@
                             <template v-slot:[`item.actions`]="{ item }">
                                 <v-icon
                                     small
+                                    v-if="item.path ? true : false"
                                     class="mr-2"
                                     @click="downloadItem(item)"
                                 >
@@ -315,56 +317,69 @@ export default {
             console.log(item.path)
         },
         deleteItem(item) {
-            console.log(item)
+            this.inpValue.hrdNote.splice(this.inpValue.hrdNote.indexOf(item), 1)
+            console.log(this.inpValue.hrdNote)
         },
         uploadFile() {
             let vm = this,
                 formData = new FormData(),
-                file = [this.vFile]
+                file = [this.vFile],
+                date = new Date().toISOString()
 
-            formData.append('files', file)
+            if(vm.vFile.size > 0) {
+                //Round of size
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+                if (vm.vFile.size == 0) return '0 Byte'
+                var i = parseInt(Math.floor(Math.log(vm.vFile.size) / Math.log(1024)))
+                let size = Math.round(vm.vFile.size / Math.pow(1024, i), 2) + ' ' + sizes[i]
 
-            vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/UploadFiles`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data' 
+                formData.append('files', file)
+
+                // vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/UploadFiles`,
+                //     formData,
+                //     {
+                //         headers: {
+                //             'Content-Type': 'multipart/form-data' 
+                //         }
+                //     }
+                // )
+                // .then(res => 
+                // {
+                //     console.log(res)
+                //     console.log(file)
+
+                //     if(res.data == false) {
+                //         this.snackbar.snack = true
+                //         this.snackbar.snackColor = 'error'
+                //         this.snackbar.snackText = 'File error'
+                //     }
+                //     if(res.data == true) {
+                //         this.snackbar.snack = true
+                //         this.snackbar.snackColor = 'success'
+                //         this.snackbar.snackText = 'Uploaded Successfully'
+                //     }
+                // })
+                // .catch(err => {
+                //     this.snackbar.snack = true
+                //     this.snackbar.snackColor = 'error'
+                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
+
+                vm.inpValue.hrdNote.push(
+                    {
+                        category: 'MISC',
+                        date: date,
+                        description: null,
+                        size: size,
+                        filename: vm.vFile.name,
+                        hrdId: null
                     }
-                }
-            )
-            .then(res => 
-            {
-                console.log(res)
-                console.log(file)
+                )
 
-                if(res.data == false) {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'File error'
-                }
-                if(res.data == true) {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'success'
-                    this.snackbar.snackText = 'Uploaded Successfully'
-                }
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-
-            // console.log(n)
-            // console.log(vm.vFile)
-
-            // vm.inpValue.hrdNote[n] = {
-            //     category: 'MISC',
-            //     date: date,
-            //     description: '',
-            //     filename: vm.vFile.name,
-            //     hrdId: 
-            // }
+                //Remove file that is currently uploaded
+                vm.vFile = []
+            }
         }
     }
 }
