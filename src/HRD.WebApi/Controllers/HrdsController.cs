@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.StaticFiles;
+using Newtonsoft.Json;
 
 namespace HRD.WebApi.Controllers
 {
@@ -227,7 +229,7 @@ namespace HRD.WebApi.Controllers
                 HrdDcTotalCases = hrd.Hrddcs.Sum(s => s.NumberOfCases),
                 HrdFcTotalCases = hrd.Hrdfcs.Sum(s => s.NumberOfCases),
 
-                HrdNote = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                HrdNotes = hrd.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdDc = hrd.Hrddcs.Select(s => new HrdDCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 HrdFc = hrd.Hrdfcs.Select(s => new HrdFCViewModel { Id = s.Id, HrdId = s.Hrdid, Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 HrdPo = hrd.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList(),
@@ -241,8 +243,9 @@ namespace HRD.WebApi.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Hrd/{id}")]
         // [Authorize(Policy = PolicyNames.EditHRDs)]
-        public async Task<IActionResult> PutHrd(int id, HRDDetailViewModel model)
+        public async Task<IActionResult> PutHrd(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
+            var model = JsonConvert.DeserializeObject<HRDDetailViewModel>(jsonString);
             if (id != model.Id)
             {
                 return BadRequest();
@@ -395,40 +398,43 @@ namespace HRD.WebApi.Controllers
                 }
             }
 
-            if (model.HrdNote != null)
+            //Hrd Notes
+            foreach (var item in model.HrdNotes)
             {
-                foreach (var item in model.HrdNote)
+                if (item.Id < 1 && files.Any(a => a.FileName == item.Filename))
                 {
-                    var note = _context.Hrdnotes.FirstOrDefault(f => f.Id == item.Id);
+                    string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
 
-                    if (note != null)
+                    var note = new Hrdnote
                     {
-                        note.Id = item.Id;
-                        note.Hrdid = id;
-                        note.Category = item.Category;
-                        note.Date = item.Date;
-                        note.Description = item.Description;
-                        note.FileName = item.Filename;
-                        note.Path = item.Path;
-                        note.UserId = item.UserId;
-                        note.Size = item.Size;
-                        _context.Entry(note).State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        note = new Hrdnote();
-                        note.Hrdid = id;
-                        note.Category = item.Category;
-                        note.Date = item.Date;
-                        note.Description = item.Description;
-                        note.FileName = item.Filename;
-                        note.Path = item.Path;
-                        note.UserId = item.UserId;
-                        note.Size = item.Size;
-                        _context.Entry(note).State = EntityState.Added;
-                    }
+                        Hrdid = id,
+                        Category = hrd.ShortDescription, //item.Category,
+                        Date = item.Date,
+                        Description = item.Description,
+                        FileName = item.Filename,
+                        Path = path, //Path + file Our own filename generated.
+                        UserId = item.UserId, //Current Identity User
+                        Size = item.Size
+                    };
+                    _context.Entry(note).State = EntityState.Added;
 
                     hrd.Hrdnotes.Add(note);
+
+                    //Process Save file Here
+                    var isUploaded = await this.UploadFile(files.First(f => f.FileName == item.Filename));
+                }
+            }
+
+            //Delete Hrd Notes
+            foreach(var item in hrd.Hrdnotes)
+            {
+                if(!model.HrdNotes.Any(a => a.Id == item.Id))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
+
+                    //Process delete file here;
+                    if(System.IO.File.Exists(item.Path))
+                        this.DeleteFile(item.Path);
                 }
             }
 
@@ -533,7 +539,7 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
 
-                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                Hrdnotes = model.HrdNotes.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, UserId = s.UserId, Size = s.Size }).ToList(),
                 Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList(),
                 Hrddcs = model.HrdDc.Select(s => new Hrddc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
                 Hrdfcs = model.HrdDc.Select(s => new Hrdfc { Location = s.Location, NumberOfCases = s.NumberOfCases }).ToList(),
@@ -691,7 +697,7 @@ namespace HRD.WebApi.Controllers
                 StarchType = qa.StarchType,
                 AdditionalComments = qa.AdditionalComments,
                 HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
-                HrdNote = qa.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Path = s.Path, Size = s.Size, UserId = s.UserId }).ToList(),
+                HrdNotes = qa.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdMicros = qa.HrdMicros.Select(s => new HRDMicroViewModel { Id = s.Id, HrdId = s.HrdId, Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
             };
 
@@ -702,8 +708,9 @@ namespace HRD.WebApi.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Qa/{id}")]
         // [Authorize(Policy = PolicyNames.EditHRDs)]
-        public async Task<IActionResult> PutQARecord(int id, QARecordViewModel model)
+        public async Task<IActionResult> PutQARecord(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
+            var model = JsonConvert.DeserializeObject<QARecordViewModel>(jsonString);
             if (id != model.Id)
             {
                 return BadRequest();
@@ -852,40 +859,43 @@ namespace HRD.WebApi.Controllers
                 }
             }
 
-            if (model.HrdNote != null)
+            //Hrd Notes
+            foreach (var item in model.HrdNotes)
             {
-                foreach (var item in model.HrdNote)
+                if (item.Id < 1 && files.Any(a => a.FileName == item.Filename))
                 {
-                    var note = _context.Hrdnotes.FirstOrDefault(f => f.Id == item.Id);
+                    string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
 
-                    if (note != null)
+                    var note = new Hrdnote
                     {
-                        note.Id = item.Id;
-                        note.Hrdid = id;
-                        note.Category = item.Category;
-                        note.Date = item.Date;
-                        note.Description = item.Description;
-                        note.FileName = item.Filename;
-                        note.Path = item.Path;
-                        note.UserId = item.UserId;
-                        note.Size = item.Size;
-                        _context.Entry(note).State = EntityState.Modified;
-                    }
-                    else
-                    {
-                        note = new Hrdnote();
-                        note.Hrdid = id;
-                        note.Category = item.Category;
-                        note.Date = item.Date;
-                        note.Description = item.Description;
-                        note.FileName = item.Filename;
-                        note.Path = item.Path;
-                        note.UserId = item.UserId;
-                        note.Size = item.Size;
-                        _context.Entry(note).State = EntityState.Added;
-                    }
+                        Hrdid = id,
+                        Category = hrd.ShortDescription, //item.Category,
+                        Date = item.Date,
+                        Description = item.Description,
+                        FileName = item.Filename,
+                        Path = path, //Path + file Our own filename generated.
+                        UserId = item.UserId, //Current Identity User
+                        Size = item.Size
+                    };
+                    _context.Entry(note).State = EntityState.Added;
 
                     hrd.Hrdnotes.Add(note);
+
+                    //Process Save file Here
+                    var isUploaded = await this.UploadFile(files.First(f => f.FileName == item.Filename));
+                }
+            }
+
+            //Delete Hrd Notes
+            foreach (var item in hrd.Hrdnotes)
+            {
+                if (!model.HrdNotes.Any(a => a.Id == item.Id))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
+
+                    //Process delete file here;
+                    if (System.IO.File.Exists(item.Path))
+                        this.DeleteFile(item.Path);
                 }
             }
 
@@ -987,7 +997,7 @@ namespace HRD.WebApi.Controllers
                 StarchType = model.StarchType,
                 AdditionalComments = model.AdditionalComments,
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
-                Hrdnotes = model.HrdNote.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, Path = s.Path, UserId = s.UserId, Size = s.Size }).ToList(),
+                Hrdnotes = model.HrdNotes.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, UserId = s.UserId, Size = s.Size }).ToList(),
                 HrdMicros = model.HrdMicros.Select(s => new HrdMicro { Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
             };
 
@@ -1052,12 +1062,11 @@ namespace HRD.WebApi.Controllers
         [HttpPost("UploadFiles"), DisableRequestSizeLimit]
         public async Task<bool> UploadFiles(List<IFormFile> files)
         {
-            string path = "";
             try
             {
                 if (files.Count > 0)
                 {
-                    path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
+                    string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);
@@ -1077,6 +1086,61 @@ namespace HRD.WebApi.Controllers
             catch (Exception ex)
             {
                 throw new Exception("File Upload Failed", ex);
+            }
+        }
+
+        private async Task<bool> UploadFile(IFormFile file)
+        {
+            try
+            {
+                string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString()));
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                using var fileStream = new FileStream(Path.Combine(path, file.FileName), FileMode.Create);
+                await file.CopyToAsync(fileStream);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("File Upload Failed", ex);
+            }
+        }
+
+        private bool DeleteFile(string path)
+        {
+            try
+            {
+                System.IO.File.Delete(path);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("File Delete Failed", ex);
+            }
+        }
+
+        [HttpGet("DownloadFile")]
+        public async Task<ActionResult> DownloadFile(string filename)
+        {
+            // ... code for validation and get the file
+            string path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, Configuration["FilePath"].ToString() + "//" + filename));
+
+            if (!System.IO.File.Exists(path))
+                return NotFound();
+            else
+            {
+                var provider = new FileExtensionContentTypeProvider();
+                if (!provider.TryGetContentType(path, out var contentType))
+                {
+                    contentType = "application/octet-stream";
+                }
+
+                var bytes = await System.IO.File.ReadAllBytesAsync(path);
+                return File(bytes, contentType, Path.GetFileName(path));
             }
         }
     }
