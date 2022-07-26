@@ -31,8 +31,10 @@
         />
         <SimpleToolbar 
             title="Users"
-            :input="usertoolbar"
             :table="users"
+            :snackbar="snackbar"
+            util="Users"
+            :tableOptions="tableOptions"
             @change="getSearch($event)"
         />
     </template>

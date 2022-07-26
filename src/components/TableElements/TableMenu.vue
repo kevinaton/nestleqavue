@@ -59,17 +59,14 @@ export default {
             required:false
         }
     },
-    created () {
-        this.getItem()
-    },
     emits:['change'],
     methods: {
         menuActionClick(action, item) {
             if (action === "vqa") {
-                this.$router.push({ name:'new_qa', params: { id: item.id } });
+                this.$router.push({ name:'new_qa', params: { id: item.id } })
             }
             else if (action === "vhrd") {
-                this.$router.push({ name:'hrd_detail', params: { id: item.id } });
+                this.$router.push({ name:'hrd_detail', params: { id: item.id } })
             }
             else if (action === "delete") {
                 this.input.editedIndex = this.table.indexOf(item)
@@ -79,9 +76,6 @@ export default {
                 this.$emit('change', value)
             }
         },
-        getItem() {
-            // console.log(this.item)
-        }
     },
 }
 </script>

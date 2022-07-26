@@ -31,8 +31,10 @@
     />
     <SimpleToolbar 
         title="Lookup Lists"
-        :input="lookuptoolbar"
         :table="lookups"
+        :snackbar="snackbar"
+        util="Lookup"
+        :tableOptions="tableOptions"
         @change="getSearch($event)"
     />
     </template>
@@ -55,6 +57,16 @@
         :input="snackbar"
         @change="(value) => { props.item.value = value }"
     />
+    </template>
+    <template v-slot:[`item.isActive`]="props">
+        <EditCheckboxLookup
+            :table="props.item.isActive"
+            v-model="props.item.isActive"
+            :input="snackbar"
+            editData="noBbdate"
+            :data="props.item"
+            @change="(value) => { props.item.isActive = value }"
+        />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
     <DeleteAction 
@@ -148,6 +160,9 @@ export default {
     headers: [
         { text: 'Lookup Type', sortable: true, value: 'typeName' },
         { text: 'Value', sortable: true, value: 'value' },
+        { text: 'Dropdown Type ID', sortable: true, value: 'dropDownTypeId' },
+        { text: 'Sort Order', sortable: true, value: 'sortOrder' },
+        { text: 'Status', sortable: true, value: 'isActive' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     lookups: [],
