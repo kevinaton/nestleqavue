@@ -31,6 +31,7 @@
                 :input="qaOptions"
                 :inpValue="getQaRec"
                 :rules="rules"
+                @change="upFile($event)"
             />
 
             <HRD 
@@ -247,6 +248,7 @@ export default {
             snackText: '',
         },
         valid:false,
+        tFile:[]
     }),
     created () {
         this.fetchQaRecords()
@@ -261,20 +263,21 @@ export default {
                 this.loading=false
             })
         },
+        upFile(value) {
+            this.tFile?.push({value})
+            console.log(this.tFile)
+        },
         submitQA(value) {
-            let vm = this
-            let d = vm.qaRec
-            vm.valid = value
-            if(vm.valid == true) {
-                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`,  {
+            let vm = this,
+                formData = new FormData(),
+                d = vm.qaRec,
+                jsonFile = {
                     additionalComments: d.additionalComments,
                     additionalDescription: d.additionalDescription,
                     area: d.area,
                     areaIfOther: d.areaIfOther,
-                    smiVendorBatch: d.smiVendorBatch,
                     buManager: d.buManager,
                     casesHeld: d.casesHeld,
-                    date: d.date,
                     dateHeld: d.dateHeld,
                     dateOfResample: d.dateOfResample,
                     dateReceived: d.dateReceived,
@@ -287,9 +290,13 @@ export default {
                     fertDescription: d.fertDescription,
                     fmDescription: d.fmDescription,
                     fmMaterial: d.fmMaterial,
+                    fmSource: d.fmSource,
                     fmType: d.fmType,
+                    fmVendorBatch: d.fmVendorBatch,
                     holdConcern: d.holdConcern,
                     hourCode: d.hourCode,
+                    hrdMicros: d.hrdMicros,
+                    hrdNotes: d.hrdNotes,
                     hrdTestCosts: d.hrdTestCosts,
                     id: d.id,
                     ifYesAffectedProduct: d.ifYesAffectedProduct,
@@ -314,16 +321,15 @@ export default {
                     pestType: d.pestType,
                     piecesTotal: d.piecesTotal,
                     productAdultered: d.productAdultered,
-                    fmVendorBatch: d.fmVendorBatch,
                     rawMaterialDescription: d.rawMaterialDescription,
                     response: d.response,
-                    fmSource: d.fmSource,
                     reworkInstructions: d.reworkInstructions,
                     rohMaterial: d.rohMaterial,
                     sauceType: d.sauceType,
                     shift: d.shift,
                     shortDescription: d.shortDescription,
                     size: d.size,
+                    smiVendorBatch: d.smiVendorBatch,
                     starchType: d.starchType,
                     tagNumber: d.tagNumber,
                     tagged: d.tagged,
@@ -337,18 +343,32 @@ export default {
                     whenOther: d.whenOther,
                     whereFound: d.whereFound,
                     yearHeld: d.yearHeld
-                })
-                .then(response => 
+                }
+
+            formData.append('files', vm.tFile)
+            formData.append('jsonString', JSON.stringify(jsonFile))
+
+            vm.valid = value
+            if(vm.valid == true) {
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`, formData, 
                 {
-                    response.status
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'success'
-                    this.snackbar.snackText = 'Data saved'
+                    headers: {
+                        'Content-Type': 'multipart/form-data' 
+                    }
+                }
+                )
+                .then(res => 
+                {
+                    console.log(res)
+                    res.status
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'success'
+                    vm.snackbar.snackText = 'Data saved'
                 })
                 .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
             }

@@ -206,7 +206,7 @@
                     <v-col>
                         <v-data-table
                         :headers="input.fileHeaders"
-                        :items="inpValue.hrdNote"
+                        :items="inpValue.hrdNotes"
                         class="mb-6 pt-0"
                         >
                             <template v-slot:[`item.date`]="{ item }">
@@ -215,7 +215,7 @@
                             <template v-slot:[`item.actions`]="{ item }">
                                 <v-icon
                                     small
-                                    v-if="item.path ? true : false"
+                                    v-if="item.id ? true : false"
                                     class="mr-2"
                                     @click="downloadItem(item)"
                                 >
@@ -309,6 +309,7 @@ export default {
             return show
         },
     },
+    emits: ["change"],
     methods: {
         getFormattedDate(date) {
             return moment(date).format('MM-DD-YYYY; hh:mm')
@@ -317,14 +318,15 @@ export default {
             console.log(item.path)
         },
         deleteItem(item) {
-            this.inpValue.hrdNote.splice(this.inpValue.hrdNote.indexOf(item), 1)
-            console.log(this.inpValue.hrdNote)
+            this.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(item), 1)
+            console.log(this.inpValue.hrdNotes)
         },
         uploadFile() {
             let vm = this,
-                formData = new FormData(),
-                file = [this.vFile],
                 date = new Date().toISOString()
+
+            //Emit file to parent
+            vm.$emit('change', vm.vFile)
 
             if(vm.vFile.size > 0) {
                 //Round of size
@@ -332,8 +334,6 @@ export default {
                 if (vm.vFile.size == 0) return '0 Byte'
                 var i = parseInt(Math.floor(Math.log(vm.vFile.size) / Math.log(1024)))
                 let size = Math.round(vm.vFile.size / Math.pow(1024, i), 2) + ' ' + sizes[i]
-
-                formData.append('files', file)
 
                 // vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/UploadFiles`,
                 //     formData,
@@ -366,7 +366,7 @@ export default {
                 //     console.warn(err)
                 // })
 
-                vm.inpValue.hrdNote.push(
+                vm.inpValue.hrdNotes.push(
                     {
                         category: 'MISC',
                         date: date,
