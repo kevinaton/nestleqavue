@@ -177,13 +177,6 @@ export default {
                 menu: false,
                 allow: true,
             },
-            fileHeaders: [
-                { text:'File', value: 'filename' },
-                { text:'Category', value: 'category' },
-                { text:'Size', value: 'size' },
-                { text:'Date', value: 'date' },
-                { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
-            ],
 
             // Micro
             microDialog: false,
@@ -265,7 +258,6 @@ export default {
         },
         upFile(value) {
             this.tFile?.push({value})
-            console.log(this.tFile)
         },
         submitQA(value) {
             let vm = this,
@@ -345,7 +337,7 @@ export default {
                     yearHeld: d.yearHeld
                 }
 
-            formData.append('files', vm.tFile)
+            formData.append('files', vm.tFile[0])
             formData.append('jsonString', JSON.stringify(jsonFile))
 
             vm.valid = value
@@ -359,7 +351,7 @@ export default {
                 )
                 .then(res => 
                 {
-                    console.log(res)
+                    console.log(vm.tFile[0])
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'

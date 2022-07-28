@@ -1,8 +1,8 @@
-2022-07-26 22:50:36.4650 Info Message Template Auto Format enabled
-2022-07-26 22:50:36.5376 Info Loading assembly: NLog.Web.AspNetCore
-2022-07-26 22:50:36.7593 Info Adding target FileTarget(Name=allfile)
-2022-07-26 22:50:36.7613 Info Adding target ConsoleTarget(Name=lifetimeConsole)
-2022-07-26 22:50:36.7956 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: Microsoft.Hosting.Lifetime.
-2022-07-26 22:50:36.7970 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: *.
-2022-07-26 22:50:36.9281 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config
-2022-07-26 22:50:39.2687 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config
+2022-07-28 17:13:10.5410 Info Message Template Auto Format enabled
+2022-07-28 17:13:10.5867 Info Loading assembly: NLog.Web.AspNetCore
+2022-07-28 17:13:10.6918 Info Adding target FileTarget(Name=allfile)
+2022-07-28 17:13:10.6942 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2022-07-28 17:13:10.7160 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: Microsoft.Hosting.Lifetime.
+2022-07-28 17:13:10.7170 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: *.
+2022-07-28 17:13:10.8250 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config
+2022-07-28 17:13:12.4085 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config

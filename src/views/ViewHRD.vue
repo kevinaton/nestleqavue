@@ -28,6 +28,7 @@
                 :input="highlights"
                 :inpValue="getHRD"
                 :rules="rules"
+                @change="upFile($event)"
             />
 
             <Details
@@ -289,6 +290,9 @@
                     })
                     .finally()
             },
+            upFile(value) {
+                this.tFile?.push({value})
+            },
             submitHRD(value) {
             let vm = this,
                 d = vm.hrd
@@ -368,9 +372,10 @@
                     yearHeld: d.yearHeld,
                     yearOfIncident: d.yearOfIncident
                 })
-                .then(response => 
+                .then(res => 
                 {
-                    response.status
+                    res.status
+                    console.log(res)
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'success'
                     this.snackbar.snackText = 'Data saved'
