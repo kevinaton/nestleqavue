@@ -180,32 +180,50 @@
                     </v-col>
                 </v-row>
                 <v-divider></v-divider>
-                <v-row class="mt-8">
-                    <v-col class="mx-4">
+                <v-row class="mt-8 mx-0">
                         <v-row>
-                            <v-file-input
-                            v-model="vFile"
-                            chips
-                            counter
-                            filled
-                            cols="4"
-                            class="mr-4"
-                            prepend-icon=""
-                            prepend-inner-icon="mdi-paperclip"
-                            truncate-length="26"
-                            placeholder="Upload file"
-                            type="file"
-                            ></v-file-input>
-                            <v-btn cols="4" x-large elevation="2" @click="uploadFile">Upload</v-btn>
+                            <v-col class="ml-0">
+                                <v-file-input
+                                    v-model="vFile"
+                                    chips
+                                    counter
+                                    show-size
+                                    outlined
+                                    cols="4"
+                                    prepend-icon=""
+                                    prepend-inner-icon="mdi-paperclip"
+                                    truncate-length="26"
+                                    placeholder="Upload file"
+                                    type="file"
+                                >
+                                </v-file-input>
+                            </v-col>
+                            <v-col>
+                                <v-select
+                                    outlined
+                                    cols="2"
+                                    :value="fDetails.category"
+                                    :items="fDetails.categories"
+                                    label="Categories"
+                                ></v-select>
+                            </v-col>
+                            <v-col>
+                                <v-text-field 
+                                    outlined
+                                    cols="4"
+                                    v-model="fDetails.description"
+                                    :rules="[rules.counter]"
+                                    label="Description"
+                                ></v-text-field>
+                            </v-col>
+                            <v-col><v-btn cols="2" x-large elevation="2" @click="uploadFile">Upload</v-btn></v-col>
                         </v-row>
-                    </v-col>
-                    <v-col></v-col>
                 </v-row>
                 <v-row> 
                     <v-col>
                         <v-data-table
-                        :headers="input.fileHeaders"
-                        :items="inpValue.hrdNote"
+                        :headers="fileHeaders"
+                        :items="inpValue.hrdNotes"
                         class="mb-6 pt-0"
                         >
                             <template v-slot:[`item.date`]="{ item }">
@@ -214,6 +232,7 @@
                             <template v-slot:[`item.actions`]="{ item }">
                                 <v-icon
                                     small
+                                    v-if="item.id ? true : false"
                                     class="mr-2"
                                     @click="downloadItem(item)"
                                 >
@@ -259,6 +278,19 @@ export default {
             snackColor: '',
             snackText: '',
         },
+        fDetails: {
+            category:'Misc',
+            categories: ['Misc', 'Others'],
+            description:''
+        },
+        fileHeaders: [
+            { text:'File', value: 'filename' },
+            { text:'Category', value: 'category' },
+            { text:'Size', value: 'size' },
+            { text:'Date', value: 'date' },
+            { text:'Description', value: 'description' },
+            { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+        ],
     }),
     props: {
         name: 'HighlightsExp',
@@ -307,64 +339,63 @@ export default {
             return show
         },
     },
+    emits: ["change"],
     methods: {
         getFormattedDate(date) {
             return moment(date).format('MM-DD-YYYY; hh:mm')
         },
         downloadItem(item) {
-            console.log(item.path)
+            let vm = this
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/DownloadFile`, {
+                filename: item.filename
+            })
+            .then(res => 
+            {
+                res.status
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'success'
+                vm.snackbar.snackText = 'Data saved'
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = err.response.statusText
+                console.warn(err)
+            })
         },
         deleteItem(item) {
-            console.log(item)
+            this.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(item), 1)
         },
         uploadFile() {
             let vm = this,
-                formData = new FormData(),
-                file = [this.vFile]
+                date = new Date().toISOString()
 
-            formData.append('files', file)
+            if(vm.vFile.size >> 0) {
+                //Round of size
+                var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+                if (vm.vFile.size == 0) return '0 Byte'
+                var i = parseInt(Math.floor(Math.log(vm.vFile.size) / Math.log(1024)))
+                let size = Math.round(vm.vFile.size / Math.pow(1024, i), 2) + ' ' + sizes[i]
 
-            vm.$axios.post(`${process.env.VUE_APP_API_URL}/Hrds/UploadFiles`,
-                formData,
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data' 
+                //Emit file to parent
+                vm.$emit('change', vm.vFile)
+
+                vm.inpValue.hrdNotes.push(
+                    {
+                        category: vm.fDetails.category,
+                        date: date,
+                        description: vm.fDetails.description,
+                        filename: vm.vFile.name,
+                        hrdId: vm.inpValue.id,
+                        id: 0,
+                        size: size
                     }
-                }
-            )
-            .then(res => 
-            {
-                console.log(res)
-                console.log(file)
+                )
 
-                if(res.data == false) {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'File error'
-                }
-                if(res.data == true) {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'success'
-                    this.snackbar.snackText = 'Uploaded Successfully'
-                }
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-
-            // console.log(n)
-            // console.log(vm.vFile)
-
-            // vm.inpValue.hrdNote[n] = {
-            //     category: 'MISC',
-            //     date: date,
-            //     description: '',
-            //     filename: vm.vFile.name,
-            //     hrdId: 
-            // }
+                //Remove file that is currently uploaded
+                vm.vFile = null
+                vm.fDetails.description = ''
+            }
         }
     }
 }

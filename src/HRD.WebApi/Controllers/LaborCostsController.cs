@@ -95,7 +95,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/LaborCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{year}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutLaborCost(string year, LaborCostViewModel model)
         {
             if (year != model.Year)
