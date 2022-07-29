@@ -346,15 +346,21 @@ export default {
         },
         downloadItem(item) {
             let vm = this
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/DownloadFile`, {
-                filename: item.filename
+
+            vm.$axios({
+                url: `${process.env.VUE_APP_API_URL}/Hrds/DownloadFile?filename=${item.filename}`,
+                method: 'GET',
+                responseType: 'blob'
             })
             .then(res => 
             {
-                res.status
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'success'
-                vm.snackbar.snackText = 'Data saved'
+                var fileURL = window.URL.createObjectURL(new Blob([res.data]))
+                var fileLink = document.createElement('a')
+
+                fileLink.href = fileURL
+                fileLink.setAttribute('download', item.filename)
+                document.body.appendChild(fileLink)
+                fileLink.click()
             })
             .catch(err => {
                 vm.snackbar.snack = true
@@ -391,7 +397,6 @@ export default {
                         size: size
                     }
                 )
-
                 //Remove file that is currently uploaded
                 vm.vFile = null
                 vm.fDetails.description = ''
