@@ -226,6 +226,19 @@
                         :items="inpValue.hrdNotes"
                         class="mb-6 pt-0"
                         >
+                            <template v-slot:top>
+                                <v-dialog v-model="del.dialog" max-width="250px">
+                                    <v-card>
+                                    <v-card-title>Delete item</v-card-title>
+                                    <v-card-text>Are you sure you want to delete?</v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text @click="del.dialog = false">Cancel</v-btn>
+                                        <v-btn color="" text @click="deleteItem">OK</v-btn>
+                                    </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                            </template>
                             <template v-slot:[`item.date`]="{ item }">
                                 {{ getFormattedDate(item.date) }}
                             </template>
@@ -240,7 +253,7 @@
                                 </v-icon>
                                 <v-icon
                                     small
-                                    @click="deleteItem(item)"
+                                    @click="deleteDialog(item)"
                                 >
                                     mdi-delete
                                 </v-icon>
@@ -291,6 +304,10 @@ export default {
             { text:'Description', value: 'description' },
             { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
         ],
+        del: {
+            dialog: false,
+            item:''
+        }
     }),
     props: {
         name: 'HighlightsExp',
@@ -369,8 +386,17 @@ export default {
                 console.warn(err)
             })
         },
-        deleteItem(item) {
-            this.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(item), 1)
+        deleteDialog(item) {
+            this.del.dialog = true
+            this.del.item = item
+        },
+        deleteItem() {
+            let vm = this
+            vm.del.dialog = false
+            vm.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(this.del.item), 1)
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'info'
+            vm.snackbar.snackText = 'Submit the form to delete file'
         },
         uploadFile() {
             let vm = this,
@@ -385,7 +411,7 @@ export default {
 
                 //Emit file to parent
                 vm.$emit('change', vm.vFile)
-
+                console.log(vm.inpValue.id)
                 vm.inpValue.hrdNotes.push(
                     {
                         category: vm.fDetails.category,

@@ -351,7 +351,6 @@ export default {
                 )
                 .then(res => 
                 {
-                    console.log(vm.tFile)
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
