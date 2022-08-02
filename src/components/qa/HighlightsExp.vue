@@ -189,23 +189,14 @@
                                     counter
                                     show-size
                                     outlined
+                                    multiply
                                     cols="4"
                                     prepend-icon=""
                                     prepend-inner-icon="mdi-paperclip"
                                     truncate-length="26"
                                     placeholder="Upload file"
                                     type="file"
-                                >
-                                </v-file-input>
-                            </v-col>
-                            <v-col>
-                                <v-select
-                                    outlined
-                                    cols="2"
-                                    :value="fDetails.category"
-                                    :items="fDetails.categories"
-                                    label="Categories"
-                                ></v-select>
+                                ></v-file-input>
                             </v-col>
                             <v-col>
                                 <v-text-field 
@@ -238,6 +229,14 @@
                                     </v-card-actions>
                                     </v-card>
                                 </v-dialog>
+                            </template>
+                            <template v-slot:[`item.description`]="props">
+                                <EditTableFile
+                                    :table="props.item.description"
+                                    :input="snackbar"
+                                    :rules="rules"
+                                    @change="(value) => { props.item.description = value }"
+                                />
                             </template>
                             <template v-slot:[`item.date`]="{ item }">
                                 {{ getFormattedDate(item.date) }}
@@ -272,6 +271,7 @@ import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
+import EditTableFile from '@/components/FormElements/EditTableFile.vue'
 import moment from 'moment'
 
 export default {
@@ -281,7 +281,8 @@ export default {
         YearOnly,
         SelectDropdownString,
         DateTimePicker,
-        SnackBar
+        SnackBar,
+        EditTableFile
 
     },
     data: () => ({
@@ -298,11 +299,10 @@ export default {
         },
         fileHeaders: [
             { text:'File', value: 'filename' },
-            { text:'Category', value: 'category' },
             { text:'Size', value: 'size' },
             { text:'Date', value: 'date' },
             { text:'Description', value: 'description' },
-            { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+            { text:'Actions', value:'actions', sortable: false, align:'right' }
         ],
         del: {
             dialog: false,
@@ -411,10 +411,9 @@ export default {
 
                 //Emit file to parent
                 vm.$emit('change', vm.vFile)
-                console.log(vm.inpValue.id)
                 vm.inpValue.hrdNotes.push(
                     {
-                        category: vm.fDetails.category,
+                        category: 'MISC',
                         date: date,
                         description: vm.fDetails.description,
                         filename: vm.vFile.name,
@@ -423,6 +422,7 @@ export default {
                         size: size
                     }
                 )
+
                 //Remove file that is currently uploaded
                 vm.vFile = null
                 vm.fDetails.description = ''

@@ -255,7 +255,7 @@
             this.fetchHRD()
         },
         methods: {
-            fetchHRD () {
+            fetchHRD() {
             let vm = this 
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
@@ -390,6 +390,7 @@
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
+                    vm.fetchHRD()
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
