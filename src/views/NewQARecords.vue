@@ -241,7 +241,7 @@ export default {
             snackText: '',
         },
         valid:false,
-        tFile:[]
+        tFile:null
     }),
     created () {
         this.fetchQaRecords()
@@ -257,7 +257,7 @@ export default {
             })
         },
         upFile(value) {
-            this.tFile?.push({value})
+            this.tFile = value
         },
         submitQA(value) {
             let vm = this,
@@ -337,7 +337,7 @@ export default {
                     yearHeld: d.yearHeld
                 }
 
-            formData.append('files', vm.tFile[0])
+            formData.append('files', vm.tFile)
             formData.append('jsonString', JSON.stringify(jsonFile))
 
             vm.valid = value
@@ -351,7 +351,7 @@ export default {
                 )
                 .then(res => 
                 {
-                    console.log(vm.tFile[0])
+                    console.log(vm.tFile)
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
