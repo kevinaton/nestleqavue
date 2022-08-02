@@ -179,16 +179,16 @@ namespace HRD.WebApi.Controllers
 
                 QaComments = hrd.Qacomments,
                 DateCompleted = hrd.DateCompleted,
-                Clear = hrd.Clear,
+                Clear = hrd.Clear ?? 0,
                 HrdcompletedBy = hrd.HrdcompletedBy,
-                Scrap = hrd.Scrap,
+                Scrap = hrd.Scrap ?? 0,
                 DateofDisposition = hrd.DateofDisposition,
-                ThriftStore = hrd.ThriftStore,
+                ThriftStore = hrd.ThriftStore ?? 0,
                 Complete = hrd.Complete,
                 Cancelled = hrd.Cancelled,
-                Samples = hrd.Samples,
+                Samples = hrd.Samples ?? 0,
                 NumberOfDaysHeld = hrd.NumberOfDaysHeld,
-                Donate = hrd.Donate,
+                Donate = hrd.Donate ?? 0,
                 AllCasesAccountedFor = hrd.AllCasesAccountedFor,
                 Cases = hrd.Cases,
                 OtherHrdAffected = hrd.OtherHrdaffected,
@@ -408,12 +408,12 @@ namespace HRD.WebApi.Controllers
                     var note = new Hrdnote
                     {
                         Hrdid = id,
-                        Category = hrd.ShortDescription, //item.Category,
+                        Category = item.Category,
                         Date = item.Date,
                         Description = item.Description,
                         FileName = item.Filename,
                         Path = path, //Path + file Our own filename generated.
-                        UserId = item.UserId, //Current Identity User
+                        UserId = User.Identities.First().Name, //item.UserId, //Current Identity User
                         Size = item.Size
                     };
                     _context.Entry(note).State = EntityState.Added;
@@ -869,12 +869,12 @@ namespace HRD.WebApi.Controllers
                     var note = new Hrdnote
                     {
                         Hrdid = id,
-                        Category = hrd.ShortDescription, //item.Category,
+                        Category = item.Category,
                         Date = item.Date,
                         Description = item.Description,
                         FileName = item.Filename,
                         Path = path, //Path + file Our own filename generated.
-                        UserId = item.UserId, //Current Identity User
+                        UserId = User.Identities.First().Name, //item.UserId, //Current Identity User
                         Size = item.Size
                     };
                     _context.Entry(note).State = EntityState.Added;
