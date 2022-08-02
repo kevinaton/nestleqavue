@@ -34,6 +34,7 @@ namespace HRD.WebApi.Data
         public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<HrdMicro> HrdMicros { get; set; }
+        public virtual DbSet<RawMaterial> RawMaterials { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -587,6 +588,21 @@ namespace HRD.WebApi.Data
                     .WithMany(p => p.HrdMicros)
                     .HasForeignKey(d => d.HrdId)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<RawMaterial>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.ToTable("RawMaterials");
+
+                entity.Property(e => e.Id)
+                    .HasMaxLength(8)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("Description");
             });
 
             OnModelCreatingPartial(modelBuilder);
