@@ -1,6 +1,8 @@
-﻿using HRD.WebApi.Data;
+﻿using HRD.WebApi.Authorization;
+using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +27,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/RawMaterials
         [HttpGet]
-        //[Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> GetRawMaterials([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -36,9 +38,8 @@ namespace HRD.WebApi.Controllers
                     Id = s.Id,
                     Description = s.Description
                 });
-            //sorting 
-    
 
+            //sorting 
             switch (validFilter.SortColumn)
             {
                 case "id":
@@ -73,7 +74,7 @@ namespace HRD.WebApi.Controllers
 
         //GET: api/RawMaterials/5
         [HttpGet("{Id}")]
-        //[Authorize(Policy =  PolicyNams.ViewHRDs)]
+        [Authorize(Policy =  PolicyNames.ViewHRDs)]
         public async Task<ActionResult<RawMaterialViewModel>> GetRawMaterial(string Id)
         {
             var rawMaterials = await _context.RawMaterials.FindAsync(Id);
@@ -90,12 +91,11 @@ namespace HRD.WebApi.Controllers
             };
 
             return model;
-
         }
 
         //PUT: api/RawMaterial/5
-        [HttpPut("{Id}")]
-        //Authorize(Policy = PolicyNames.EditHRDs)]
+        [HttpPut("{id}")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutRawMaterial(string id, RawMaterialViewModel model)
         {
             if (id != model.Id)
@@ -130,10 +130,9 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
-
         //POST: api?RawMaterial/5
         [HttpPost]
-        //[Authorize(policy = policyNames.EditHRs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RawMaterialViewModel>> PostRawMaterial(RawMaterialViewModel model)
         {
             var rawMaterial = new RawMaterial
@@ -142,41 +141,38 @@ namespace HRD.WebApi.Controllers
                 Description = model.Description
             };
 
-            _context.RawMaterials.Add(rawMaterial);
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (RawMaterialExists(rawMaterial.Id))
+                _context.RawMaterials.Add(rawMaterial);
+
+                if (rawMaterial.Id.Length > 8)
                 {
-                    return Conflict();
+                    throw new InvalidOperationException("Exceed 8 characters");
+                }
+                else if (string.IsNullOrEmpty(rawMaterial.Id))
+                {
+                    throw new InvalidOperationException("Field is empty");
                 }
                 else
                 {
-                    throw;
+                    await _context.SaveChangesAsync();
                 }
             }
-            catch (DbException)
+            catch (Exception e)
             {
-                throw;
-            }
-            catch (Exception)
-            {
-                throw;
+                return BadRequest(e.Message);
             }
 
             return CreatedAtAction("GetRawMaterial", new { Id = model.Id }, model);
         }
 
-
         //DELETE: api/Rawmaterial/5
         [HttpDelete("{Id}")]
-        //[Authorize(policy =  policyName.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteRawMaterial(string Id)
         {
             var description = await _context.RawMaterials.FindAsync(Id);
+
             if (description == null)
             {
                 return NotFound();
@@ -190,6 +186,25 @@ namespace HRD.WebApi.Controllers
         private bool RawMaterialExists(string id)
         {
             return _context.RawMaterials.Any(c => c.Id == id);  
+        }
+
+        [HttpGet("Search/{id}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials(string id)
+        {
+            var rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
+                .Select(s => new RawMaterialViewModel
+                {
+                    Id = s.Id,
+                    Description = s.Description
+                }).ToListAsync();
+
+            if (rawMaterials == null)
+            {
+                return NotFound();
+            }
+
+            return rawMaterials;
         }
     }
 }

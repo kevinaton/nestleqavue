@@ -25,7 +25,6 @@ namespace HRD.WebApi.Controllers
         }
 
         // GET: api/Lookup/types
-
         [HttpGet("types")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
@@ -39,7 +38,6 @@ namespace HRD.WebApi.Controllers
 
 
         // GET: api/Lookup/items
-
         [HttpGet("items")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
