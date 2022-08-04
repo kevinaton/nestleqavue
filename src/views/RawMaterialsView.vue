@@ -33,7 +33,7 @@
             title="Raw Materials"
             formTitle="Add Raw-material"
             btnName="Add Raw Material"
-            :noAdding="true"
+            :adding="true"
             :toolbar='toolbar'
             :table="rawMaterials"
             :snackbar="snackbar"

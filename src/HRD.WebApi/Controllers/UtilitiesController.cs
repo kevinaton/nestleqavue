@@ -515,7 +515,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Export/RawMaterials
         [HttpGet("Export/RawMaterials")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public IActionResult ExportRawMaterials([FromQuery] ExportFilter filter)
         {
             var query = _context.RawMaterials

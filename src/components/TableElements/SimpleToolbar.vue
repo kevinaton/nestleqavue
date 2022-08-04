@@ -27,7 +27,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
             <v-btn
-                v-if="noAdding"
+                v-if="adding"
                 color="primary"
                 dark
                 large
@@ -130,7 +130,7 @@ export default {
             default:'Add',
             required: false
         },
-        noAdding: {
+        adding: {
             type: Boolean,
             default: false,
             required: false
