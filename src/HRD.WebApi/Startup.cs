@@ -83,14 +83,8 @@ namespace HRD.WebApi
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
-        {
-            
+        {            
             logger.LogInformation("Configure Application");
-            var builder = WebApplication.CreateBuilder();
-
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-
 
             if (env.IsDevelopment())
             {

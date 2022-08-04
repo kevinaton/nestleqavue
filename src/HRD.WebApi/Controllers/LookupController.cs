@@ -25,7 +25,6 @@ namespace HRD.WebApi.Controllers
         }
 
         // GET: api/Lookup/types
-
         [HttpGet("types")]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
@@ -37,9 +36,7 @@ namespace HRD.WebApi.Controllers
                                         }).ToListAsync();
         }
 
-
         // GET: api/Lookup/items
-
         [HttpGet("items")]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
@@ -224,6 +221,34 @@ namespace HRD.WebApi.Controllers
         private bool DropDownItemExists(int id)
         {
             return _context.DropDownItems.Any(e => e.Id == id);
+        }
+
+        // GET: api/Lookup/items/typeid/5
+        [HttpGet("items/typeid/{id}/{search}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> SearchDropDownItemsByTypeId(int id, string search)
+        {
+
+            if (string.IsNullOrWhiteSpace(search) || search.Trim().Length < 3)
+            {
+                return BadRequest("Search string should have 3 or more characters");
+            }
+            var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownTypeId == id && f.Value.Contains(search))
+                .Select(s => new DropDownItemViewModel
+                {
+                    Id = s.Id,
+                    DropDownTypeId = s.DropDownTypeId,
+                    IsActive = s.IsActive,
+                    SortOrder = s.SortOrder,
+                    Value = s.Value,
+                }).ToListAsync();
+
+            if (dropDownItems == null)
+            {
+                return NotFound();
+            }
+
+            return dropDownItems;
         }
     }
 }
