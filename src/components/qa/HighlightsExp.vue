@@ -61,12 +61,12 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field 
-                            outlined 
-                            v-model="inpValue.buManager"
-                            :rules="[rules.required, rules.counter]"
-                            label="BU Manager">
-                        </v-text-field>
+                        <SelectDropdownString
+                            :dropdownValue=24
+                            :inpValue="inpValue.buManager"
+                            label="BU Manager" 
+                            @change="(value) => { inpValue.buManager = value }"
+                        />
                     </v-col>
                     <v-col>
                         <SelectDropdownString
@@ -107,12 +107,12 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field 
-                            outlined
-                            v-model="inpValue.lineSupervisor"
-                            :rules="[rules.required, rules.counter]"
-                            label="Line Supervisor"
-                        ></v-text-field>
+                        <SelectDropdownString
+                            :dropdownValue=25
+                            :inpValue="inpValue.lineSupervisor"
+                            label="Line Supervisor" 
+                            @change="(value) => { inpValue.lineSupervisor = value }"
+                        />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">

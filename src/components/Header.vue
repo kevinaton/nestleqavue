@@ -162,6 +162,7 @@ export default {
         { title: 'Roles', name:'roles' },
         { title: 'Users', name:'users' },
         { title: 'Lookup Lists', name:'lookup' },
+        { title: 'Raw Materials', name:'rawmaterials' },
       ],
       initialValue:false,
       redirectvalue:[],
