@@ -34,7 +34,7 @@ namespace HRD.WebApi.Controllers
             _context = context;
         }
 
-        private byte[] ExportToExcel<T>(IEnumerable<T> dataList, string sheetName)
+        private static byte[] ExportToExcel<T>(IEnumerable<T> dataList, string sheetName)
         {
             var stream = new MemoryStream();
             //required using OfficeOpenXml;
@@ -51,7 +51,7 @@ namespace HRD.WebApi.Controllers
 
             return stream.ToArray();
         }
-        private byte[] ExportToCsv(IEnumerable<object> dataList)
+        private static byte[] ExportToCsv(IEnumerable<object> dataList)
         {
             //Convert results to csv format and send to a memory stream
             MemoryStream memoryStream = new MemoryStream();
@@ -511,6 +511,57 @@ namespace HRD.WebApi.Controllers
             }
 
             return File(exportBytes, contentType, $"Lookup_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
+        }
+
+        // GET: api/Export/RawMaterials
+        [HttpGet("Export/RawMaterials")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public IActionResult ExportRawMaterials([FromQuery] ExportFilter filter)
+        {
+            var query = _context.RawMaterials
+                               .Select(s => new RawMaterialViewModel { Id = s.Id, Description = s.Description });
+
+            //Sorting
+            switch (filter.SortColumn)
+            {
+                case "id":
+                    query = filter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Id)
+                        : query.OrderBy(o => o.Id);
+                    break;
+                case "description":
+                    query = filter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Description)
+                        : query.OrderBy(o => o.Description);
+                    break;
+            }
+
+
+            if (!string.IsNullOrEmpty(filter.SearchString))
+            {
+                query = query.Where(f => f.Id.Contains(filter.SearchString)
+                                        || f.Description.Contains(filter.SearchString));
+            }
+
+            var exportBytes = new byte[] { };
+            var contentType = string.Empty;
+            var exportFormat = string.Empty;
+
+            switch (filter.ExportFormat)
+            {
+                case EnumExportFormat.Csv:
+                    exportBytes = ExportToCsv(query);
+                    contentType = "text/csv";
+                    exportFormat = ".csv";
+                    break; 
+                case EnumExportFormat.Excel:
+                    exportBytes = ExportToExcel(query.ToList(), "RawMaterial");
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    exportFormat = ".xlsx";
+                    break;
+            }
+
+            return File(exportBytes, contentType, $"RawMaterial_{DateTime.Now:yyyyMMddHHmmssfff}" + exportFormat);
         }
     }
 }

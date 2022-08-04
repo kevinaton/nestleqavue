@@ -192,6 +192,11 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials(string id)
         {
+
+            if (string.IsNullOrWhiteSpace(id) || id.Trim().Length < 3)
+            {
+                return BadRequest("Search string should have 3 or more characters");
+            }
             var rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
                 .Select(s => new RawMaterialViewModel
                 {
