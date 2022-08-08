@@ -182,9 +182,9 @@
                     vm.rawMaterials = res.data.data
                 })
                 .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
                 .finally(() => {vm.loading = false})

@@ -65,12 +65,14 @@ export default {
                 vm = this
 
             value = this.origVal = this.inputValue
-            vm.$axios.put(`${process.env.VUE_APP_API_URL}/RawMaterials/${this.string1}`,  {
-                id:this.string1,
-                description:this.value
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/RawMaterials/${this.string1}`,
+            {
+                id: this.string1,
+                description: value
             })
             .then(response => 
             {
+                console.log(value)
                 this.$emit('change', value)
                 response.status
                 this.input.snack = true
