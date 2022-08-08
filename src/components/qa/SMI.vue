@@ -6,8 +6,14 @@
                 <v-col>
                     <SelectRawMaterial
                         :inpValue="input.materialNumber"
+                        :description="input.rawMaterialDescription"
+                        :rules="rules"
+                        :snackbar="snackbar"
                         label="Material Number" 
-                        @change="(value) => { input.materialNumber = value }"
+                        @change="(value, description) => { 
+                            input.materialNumber = value 
+                            input.rawMaterialDescription = description
+                        }"
                     />
                 </v-col>
                 <v-col>
@@ -51,6 +57,11 @@ export default {
             type: Object,
             default: () => {},
             required: false
+        },
+        snackbar: {
+            type:Object,
+            default: () => {},
+            required: false,
         }
     },
     methods: {

@@ -3,10 +3,12 @@
         outlined
         :loading="loading"
         :value="inputValue"
+        :rules="[rules.matNum]"
         :label="label"
         :items="lookup"
+        @click="initialOptions"
         @input="inp($event)"
-        @change="selectOption($event)"
+        @change="changeValue($event)"
         return-object
     ></v-combobox>
 </template>
@@ -25,6 +27,16 @@ export default {
             default: '',
             required: false
         },
+        rules: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        snackbar: {
+            type:Object,
+            default: () => {},
+            required: false,
+        }
     },
     data: () => ({
         lookup:[],
@@ -36,33 +48,64 @@ export default {
         this.inputValue = this.inpValue
     },
     methods: {
-        selectOption(value) {
-            this.$emit('change', value)
-            console.log('selectOption: ' + value)
-            
+        initialOptions() {
+            let vm = this,
+                search = vm.inputValue.slice(0, 4)
+            vm.loading = true            
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${search}`)
+                .then((res) => {
+                    let arr = []
+                    res.data.forEach(item => {
+                        arr.push(item.id)
+                    })
+                    vm.lookup = arr
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = err.response.statusText
+                    console.warn(err)
+                })
+                .finally(() => (vm.loading = false))
         },
-        inp(material) {
+        inp(value) {
             let vm = this
-            console.log(material)
-            if(vm.lookup.length == 0 && vm.inpValue.length >= 3) {
+            if(vm.lookup.length == 0 && value.length >= 4) {
+                vm.$emit('change', value)
+                vm.inputValue = value
+                console.log(value)
                 vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${vm.inputValue}`)
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${value}`)
                     .then((res) => {
                         let arr = []
-                        console.log('res.data: ' + res.data)
-                        // res.data.forEach(item => {
-                        //     arr.push(item.value)
-                        // })
-                        // vm.lookup = arr
+                        res.data.forEach(item => {
+                            arr.push(item.id)
+                        })
+                        vm.lookup = arr
                     })
                     .catch(err => {
                         vm.snackbar.snack = true
                         vm.snackbar.snackColor = 'error'
-                        vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                        vm.snackbar.snackText = err.response.statusText
                         console.warn(err)
                     })
                     .finally(() => (vm.loading = false))
             }
+        },
+        changeValue(value) {
+            let vm = this
+
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/${value}`)
+                    .then((res) => {
+                        vm.$emit('change', value, res.data.description)
+                    })
+                    .catch(err => {
+                        vm.snackbar.snack = true
+                        vm.snackbar.snackColor = 'error'
+                        vm.snackbar.snackText = err.response.statusText
+                        console.warn(err)
+                    })
+                    .finally(() => (vm.loading = false))
         }
     }
 }
