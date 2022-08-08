@@ -14,6 +14,7 @@ import ViewHRD from '../views/ViewHRD.vue'
 import MicrobeCases from '../views/MicrobeCases.vue'
 import FmCases from '../views/FmCases.vue'
 import PestLog from '../views/PestLog.vue'
+import RawMaterials from '../views/RawMaterialsView.vue'
 
 Vue.use(VueRouter)
 
@@ -24,27 +25,27 @@ const routes = [
     component: QaView
   },
   {
-    path: '/Casecost',
+    path: '/repor0t/Casecost',
     name: 'casecost',
     component: CaseCost
   },
   {
-    path: '/Microbecases',
+    path: '/report/microbecases',
     name: 'microbecases',
     component: MicrobeCases
   },
   {
-    path: '/Fmcases',
+    path: '/report/fmcases',
     name: 'fmcases',
     component: FmCases
   },
   {
-    path: '/Products',
+    path: '/administration/products',
     name: 'products',
     component: ProductsView
   },
   {
-    path: '/labor',
+    path: '/administration/labor',
     name: 'labor',
     component: LaborView
   },
@@ -59,22 +60,22 @@ const routes = [
     component: NewQARecords
   },
   {
-    path: '/TestCosts',
+    path: '/administration/testCosts',
     name: 'testing',
     component: TestingView
   },
   {
-    path: '/Roles',
+    path: '/administration/roles',
     name: 'roles',
     component: RolesView
   },
   {
-    path: '/Users',
+    path: '/administration/users',
     name: 'users',
     component: UsersView
   },
   {
-    path: '/Lookup',
+    path: '/administrion/lookup',
     name: 'lookup',
     component: LookupView
   },
@@ -84,11 +85,15 @@ const routes = [
     component: ViewHRD
   },
   {
-    path: '/Pestlog',
+    path: '/report/pestlog',
     name: 'pestlog',
     component: PestLog
-  }
-
+  },
+  {
+    path: '/administration/raw-materials',
+    name: 'rawmaterials',
+    component: RawMaterials
+  },
 ]
 
 const router = new VueRouter({

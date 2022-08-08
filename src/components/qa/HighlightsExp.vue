@@ -61,12 +61,12 @@
                 </v-row>
                 <v-row class="mt-0">
                     <v-col>
-                        <v-text-field 
-                            outlined 
-                            v-model="inpValue.buManager"
-                            :rules="[rules.required, rules.counter]"
-                            label="BU Manager">
-                        </v-text-field>
+                        <SelectDropdownString
+                            :dropdownValue=24
+                            :inpValue="inpValue.buManager"
+                            label="BU Manager" 
+                            @change="(value) => { inpValue.buManager = value }"
+                        />
                     </v-col>
                     <v-col>
                         <SelectDropdownString
@@ -107,12 +107,12 @@
                         />
                     </v-col>
                     <v-col>
-                        <v-text-field 
-                            outlined
-                            v-model="inpValue.lineSupervisor"
-                            :rules="[rules.required, rules.counter]"
-                            label="Line Supervisor"
-                        ></v-text-field>
+                        <SelectDropdownString
+                            :dropdownValue=25
+                            :inpValue="inpValue.lineSupervisor"
+                            label="Line Supervisor" 
+                            @change="(value) => { inpValue.lineSupervisor = value }"
+                        />
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -189,23 +189,14 @@
                                     counter
                                     show-size
                                     outlined
+                                    multiply
                                     cols="4"
                                     prepend-icon=""
                                     prepend-inner-icon="mdi-paperclip"
                                     truncate-length="26"
                                     placeholder="Upload file"
                                     type="file"
-                                >
-                                </v-file-input>
-                            </v-col>
-                            <v-col>
-                                <v-select
-                                    outlined
-                                    cols="2"
-                                    :value="fDetails.category"
-                                    :items="fDetails.categories"
-                                    label="Categories"
-                                ></v-select>
+                                ></v-file-input>
                             </v-col>
                             <v-col>
                                 <v-text-field 
@@ -226,6 +217,27 @@
                         :items="inpValue.hrdNotes"
                         class="mb-6 pt-0"
                         >
+                            <template v-slot:top>
+                                <v-dialog v-model="del.dialog" max-width="250px">
+                                    <v-card>
+                                    <v-card-title>Delete item</v-card-title>
+                                    <v-card-text>Are you sure you want to delete?</v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn color="blue darken-1" text @click="del.dialog = false">Cancel</v-btn>
+                                        <v-btn color="" text @click="deleteItem">OK</v-btn>
+                                    </v-card-actions>
+                                    </v-card>
+                                </v-dialog>
+                            </template>
+                            <template v-slot:[`item.description`]="props">
+                                <EditTableFile
+                                    :table="props.item.description"
+                                    :input="snackbar"
+                                    :rules="rules"
+                                    @change="(value) => { props.item.description = value }"
+                                />
+                            </template>
                             <template v-slot:[`item.date`]="{ item }">
                                 {{ getFormattedDate(item.date) }}
                             </template>
@@ -240,7 +252,7 @@
                                 </v-icon>
                                 <v-icon
                                     small
-                                    @click="deleteItem(item)"
+                                    @click="deleteDialog(item)"
                                 >
                                     mdi-delete
                                 </v-icon>
@@ -259,6 +271,7 @@ import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
+import EditTableFile from '@/components/FormElements/EditTableFile.vue'
 import moment from 'moment'
 
 export default {
@@ -268,7 +281,8 @@ export default {
         YearOnly,
         SelectDropdownString,
         DateTimePicker,
-        SnackBar
+        SnackBar,
+        EditTableFile
 
     },
     data: () => ({
@@ -285,12 +299,15 @@ export default {
         },
         fileHeaders: [
             { text:'File', value: 'filename' },
-            { text:'Category', value: 'category' },
             { text:'Size', value: 'size' },
             { text:'Date', value: 'date' },
             { text:'Description', value: 'description' },
-            { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
+            { text:'Actions', value:'actions', sortable: false, align:'right' }
         ],
+        del: {
+            dialog: false,
+            item:''
+        }
     }),
     props: {
         name: 'HighlightsExp',
@@ -369,8 +386,17 @@ export default {
                 console.warn(err)
             })
         },
-        deleteItem(item) {
-            this.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(item), 1)
+        deleteDialog(item) {
+            this.del.dialog = true
+            this.del.item = item
+        },
+        deleteItem() {
+            let vm = this
+            vm.del.dialog = false
+            vm.inpValue.hrdNotes.splice(this.inpValue.hrdNotes.indexOf(this.del.item), 1)
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'info'
+            vm.snackbar.snackText = 'Submit the form to delete file'
         },
         uploadFile() {
             let vm = this,
@@ -385,10 +411,9 @@ export default {
 
                 //Emit file to parent
                 vm.$emit('change', vm.vFile)
-
                 vm.inpValue.hrdNotes.push(
                     {
-                        category: vm.fDetails.category,
+                        category: 'MISC',
                         date: date,
                         description: vm.fDetails.description,
                         filename: vm.vFile.name,
@@ -397,6 +422,7 @@ export default {
                         size: size
                     }
                 )
+
                 //Remove file that is currently uploaded
                 vm.vFile = null
                 vm.fDetails.description = ''

@@ -50,6 +50,7 @@
             <SMI
                 :input="getQaRec"
                 :rules="rules"
+                :snackbar="snackbar"
                 v-if="qaRec.isSMI"
             />
             
@@ -127,6 +128,7 @@ export default {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                 return pattern.test(value) || 'Invalid e-mail.'
             },
+            matNum: value => (value || '').length >= 3 || 'Input more that 3 characters',
         },
         qaRec:{},
         qaOptions:{
@@ -247,14 +249,20 @@ export default {
         this.fetchQaRecords()
     },
     methods: {
-        fetchQaRecords () {
+        fetchQaRecords() {
             let vm = this 
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`)
                 .then((res) => {
-                vm.qaRec = res.data
-                vm.qaRec.id = vm.$route.params.id
-                this.loading=false
-            })
+                    vm.qaRec = res.data
+                    vm.qaRec.id = vm.$route.params.id
+                    this.loading=false
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
         },
         upFile(value) {
             this.tFile = value
@@ -351,11 +359,11 @@ export default {
                 )
                 .then(res => 
                 {
-                    console.log(vm.tFile)
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
+                    vm.fetchQaRecords()
                 })
                 .catch(err => {
                     vm.snackbar.snack = true

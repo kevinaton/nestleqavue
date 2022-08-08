@@ -4,7 +4,17 @@
         <v-expansion-panel-content>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="input.materialNumber" :rules="[rules.counter]" outlined label="Material Number"></v-text-field>
+                    <SelectRawMaterial
+                        :inpValue="input.materialNumber"
+                        :description="input.rawMaterialDescription"
+                        :rules="rules"
+                        :snackbar="snackbar"
+                        label="Material Number" 
+                        @change="(value, description) => { 
+                            input.materialNumber = value 
+                            input.rawMaterialDescription = description
+                        }"
+                    />
                 </v-col>
                 <v-col>
                     <v-text-field v-model="input.rawMaterialDescription" :rules="[rules.counter]" outlined label="Raw Material Description"></v-text-field>
@@ -31,7 +41,12 @@
 </template>
 
 <script>
+import SelectRawMaterial from '@/components/FormElements/SelectRawMaterial.vue'
+
 export default {
+    components: {
+        SelectRawMaterial,
+    },
     props: {
         input: {
             type: Object,
@@ -42,7 +57,14 @@ export default {
             type: Object,
             default: () => {},
             required: false
+        },
+        snackbar: {
+            type:Object,
+            default: () => {},
+            required: false,
         }
+    },
+    methods: {
     }
 }
 </script>

@@ -248,13 +248,14 @@
                 snackColor: '',
                 snackText: '',
             },
-            recalculateTotal:0
+            recalculateTotal:0,
+            tFile:null
         }),
         created() {
             this.fetchHRD()
         },
         methods: {
-            fetchHRD () {
+            fetchHRD() {
             let vm = this 
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
@@ -291,14 +292,13 @@
                     .finally()
             },
             upFile(value) {
-                this.tFile?.push({value})
+                this.tFile = value
             },
             submitHRD(value) {
             let vm = this,
-                d = vm.hrd
-            vm.valid = value
-            if(vm.valid == true) {
-                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  {
+                formData = new FormData(),
+                d = vm.hrd,
+                jsonFile = {
                     additionalDescription: d.additionalDescription,
                     allCasesAccountedFor: d.allCasesAccountedFor,
                     approvalRequestByQa: d.approvalRequestByQa,
@@ -342,7 +342,7 @@
                     hourCode: d.hourCode,
                     hrdDc: d.hrdDc,
                     hrdFc: d.hrdFc,
-                    hrdNote: d.hrdNote,
+                    hrdNotes: d.hrdNotes,
                     hrdPo: d.hrdPo,
                     hrdcompletedBy: d.hrdcompletedBy,
                     id: d.id,
@@ -371,19 +371,31 @@
                     weekHeld: d.weekHeld,
                     yearHeld: d.yearHeld,
                     yearOfIncident: d.yearOfIncident
-                })
+                }
+
+            formData.append('files', vm.tFile)
+            formData.append('jsonString', JSON.stringify(jsonFile))
+            vm.valid = value
+            if(vm.valid == true) {
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data' 
+                    }
+                }
+                )
                 .then(res => 
                 {
                     res.status
-                    console.log(res)
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'success'
-                    this.snackbar.snackText = 'Data saved'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'success'
+                    vm.snackbar.snackText = 'Data saved'
+                    vm.fetchHRD()
                 })
                 .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
             }

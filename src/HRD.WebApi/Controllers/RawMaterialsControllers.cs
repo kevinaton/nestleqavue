@@ -27,7 +27,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/RawMaterials
         [HttpGet]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> GetRawMaterials([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -74,7 +74,7 @@ namespace HRD.WebApi.Controllers
 
         //GET: api/RawMaterials/5
         [HttpGet("{Id}")]
-        [Authorize(Policy =  PolicyNames.ViewHRDs)]
+        // [Authorize(Policy =  PolicyNames.ViewHRDs)]
         public async Task<ActionResult<RawMaterialViewModel>> GetRawMaterial(string Id)
         {
             var rawMaterials = await _context.RawMaterials.FindAsync(Id);
@@ -95,7 +95,7 @@ namespace HRD.WebApi.Controllers
 
         //PUT: api/RawMaterial/5
         [HttpPut("{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutRawMaterial(string id, RawMaterialViewModel model)
         {
             if (id != model.Id)
@@ -132,7 +132,7 @@ namespace HRD.WebApi.Controllers
 
         //POST: api?RawMaterial/5
         [HttpPost]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RawMaterialViewModel>> PostRawMaterial(RawMaterialViewModel model)
         {
             var rawMaterial = new RawMaterial
@@ -168,7 +168,7 @@ namespace HRD.WebApi.Controllers
 
         //DELETE: api/Rawmaterial/5
         [HttpDelete("{Id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteRawMaterial(string Id)
         {
             var description = await _context.RawMaterials.FindAsync(Id);
@@ -189,7 +189,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("Search/{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials(string id)
         {
 

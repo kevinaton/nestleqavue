@@ -9,9 +9,9 @@
         <template v-slot:input>
             <v-text-field
                 :value="table"
-                @input="updateValue(parseFloat($event, 10))"
+                @input="updateValue($event)"
                 :type="type"
-                :rules="[rules.int]"
+                :rules="[rules.counter]"
                 label="Edit"
                 single-line
                 persistent
@@ -21,39 +21,39 @@
 </template>
 
 <script>
-import axios from 'axios'
+
 export default {
-    name:'EditTableLabor',
+    name:'EditTableRawMaterials',
     props: {
         input: {
-            type:Object,
+            type: Object,
             default: () => {},
             required: false,
         },
         table: {
-            type:Number,
-            default: 0,
-            required: false
+            type: String,
+            default: '',
+            required: false,
         },
         type: {
-            type:String,
+            type: String,
             default: '',
-            required: false
+            required: false,
         },
         string1: {
-            type:String,
+            type: String,
             default:'',
-            required:false
+            required: false,
         },
         rules: {
             type: Object,
-            default: {},
+            default: () => {},
             required: false,
         },
     },
     data: () => ({
         origVal:[],
-        inputValue:0,
+        inputValue:'',
     }),
     created () {
         this.saveOriginalValue()
@@ -61,14 +61,18 @@ export default {
     emits: ['change'],
     methods: {
         save () {
-            let value
+            let value, 
+                vm = this
+
             value = this.origVal = this.inputValue
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
-                year:this.string1,
-                laborCost:this.inputValue
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/RawMaterials/${this.string1}`,
+            {
+                id: this.string1,
+                description: value
             })
             .then(response => 
             {
+                console.log(value)
                 this.$emit('change', value)
                 response.status
                 this.input.snack = true
@@ -86,9 +90,8 @@ export default {
             this.input.snack = true
             this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
-            let vm = this 
             let value = this.origVal
-            vm.$emit('change', value)
+            this.$emit('change', value)
         },
         updateValue(value) {
             let vm = this 
