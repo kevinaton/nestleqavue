@@ -26,7 +26,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Products
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<ProductViewModel>>> GetProducts([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -40,8 +40,8 @@ namespace HRD.WebApi.Controllers
                             Description = p.Description,
                             CostPerCase = p.CostPerCase,
                             Country = p.Country,
-                            NoBbdate = p.NoBbdate,
-                            Holiday = p.Holiday
+                            NoBbdate = p.NoBbdate ?? false,
+                            Holiday = p.Holiday ?? false
                         });
 
             //Sorting
@@ -106,7 +106,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<ProductViewModel>> GetProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -124,8 +124,8 @@ namespace HRD.WebApi.Controllers
                 Description = product.Description,
                 Country = product.Country,
                 CostPerCase = product.CostPerCase,
-                Holiday = product.Holiday,
-                NoBbdate = product.NoBbdate,
+                Holiday = product.Holiday ?? false,
+                NoBbdate = product.NoBbdate ?? false,
             };
 
             return model;
@@ -134,7 +134,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutProduct(int id, ProductViewModel model)
         {
             if (id != model.Id)
@@ -178,7 +178,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<ProductViewModel>> PostProduct(ProductViewModel model)
         {
             var product = new Product
@@ -201,7 +201,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);

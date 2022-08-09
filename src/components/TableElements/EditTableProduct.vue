@@ -36,7 +36,7 @@ export default {
         type: {
             type:String,
             default: '',
-            required: false
+            required: false,
         },
         data: {
             type:Object,
@@ -49,6 +49,16 @@ export default {
             required:false
         },
         rules: {
+            type: Object,
+            default: {},
+            required: false,
+        },
+        rulesCountry: {
+            type: Object,
+            default: {},
+            required: false,
+        },
+        rulesFert: {
             type: Object,
             default: {},
             required: false,
