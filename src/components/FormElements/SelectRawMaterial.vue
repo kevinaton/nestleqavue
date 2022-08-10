@@ -61,9 +61,6 @@ export default {
                     vm.lookup = arr
                 })
                 .catch(err => {
-                    vm.snackbar.snack = true
-                    vm.snackbar.snackColor = 'error'
-                    vm.snackbar.snackText = err.response.statusText
                     console.warn(err)
                 })
                 .finally(() => (vm.loading = false))
@@ -84,9 +81,6 @@ export default {
                         vm.lookup = arr
                     })
                     .catch(err => {
-                        vm.snackbar.snack = true
-                        vm.snackbar.snackColor = 'error'
-                        vm.snackbar.snackText = err.response.statusText
                         console.warn(err)
                     })
                     .finally(() => (vm.loading = false))
@@ -100,9 +94,6 @@ export default {
                         vm.$emit('change', value, res.data.description)
                     })
                     .catch(err => {
-                        vm.snackbar.snack = true
-                        vm.snackbar.snackColor = 'error'
-                        vm.snackbar.snackText = err.response.statusText
                         console.warn(err)
                     })
                     .finally(() => (vm.loading = false))

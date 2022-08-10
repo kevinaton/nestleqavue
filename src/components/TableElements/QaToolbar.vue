@@ -20,15 +20,15 @@
             util = "HrdQa"
         />
         
-        <!-- <v-btn
+        <v-btn
             large
             color="primary"
             dark
             class="mb-2 ml-3"
-            to="/qa/newqa"
+            to="/new-qa-record"
         >
             New QA Record
-        </v-btn> -->
+        </v-btn>
 
     </v-toolbar>
 </template>

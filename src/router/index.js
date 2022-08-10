@@ -15,6 +15,7 @@ import MicrobeCases from '../views/MicrobeCases.vue'
 import FmCases from '../views/FmCases.vue'
 import PestLog from '../views/PestLog.vue'
 import RawMaterials from '../views/RawMaterialsView.vue'
+import CreateRecord from '../views/CreateRecord.vue'
 
 Vue.use(VueRouter)
 
@@ -93,6 +94,11 @@ const routes = [
     path: '/administration/raw-materials',
     name: 'rawmaterials',
     component: RawMaterials
+  },
+  {
+    path: '/new-qa-record',
+    name: 'createrecord',
+    component: CreateRecord
   },
 ]
 

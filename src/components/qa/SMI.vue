@@ -17,7 +17,7 @@
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="input.rawMaterialDescription" :rules="[rules.counter]" outlined label="Raw Material Description"></v-text-field>
+                    <v-text-field v-model="input.rawMaterialDescription" readonly :rules="[rules.counter]" outlined label="Raw Material Description"></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
