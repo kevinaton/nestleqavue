@@ -188,7 +188,6 @@ namespace HRD.WebApi.Controllers
         [HttpGet("GetCurrentUser")]
         public IActionResult GetCurrentUser()
         {
-            return Ok();
             var currentUser = User.Identities.First().Name;
             return Ok(currentUser);
         }
@@ -196,7 +195,6 @@ namespace HRD.WebApi.Controllers
         [HttpGet("CheckPermission")]
         public async Task<IActionResult> CheckUserHasPermission()
         {
-            return Ok();
             var hasViewAccess = await HasPermissionAsync(PolicyNames.ViewHRDs);
 
             if (!hasViewAccess)
