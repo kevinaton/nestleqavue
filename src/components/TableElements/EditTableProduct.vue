@@ -10,7 +10,7 @@
             <v-text-field
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[rules.counter]"
+                :rules="[rules]"
                 :type="type"
                 label="Edit"
                 single-line
@@ -36,7 +36,7 @@ export default {
         type: {
             type:String,
             default: '',
-            required: false
+            required: false,
         },
         data: {
             type:Object,

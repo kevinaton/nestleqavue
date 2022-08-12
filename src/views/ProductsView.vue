@@ -50,7 +50,7 @@
         :table="props.item.fert"
         editData="fert"
         :data="props.item"
-        :rules="rules"
+        :rules="rules.fert"
         :input="snackbar"
         @change="(value) => { props.item.fert = value }"
       />
@@ -61,7 +61,7 @@
         :table="props.item.description"
         editData="description"
         :data="props.item"
-        :rules="rules"
+        :rules="rules.counter"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
@@ -84,7 +84,7 @@
         :table="props.item.country"
         editData="country"
         :data="props.item"
-        :rules="rules"
+        :rules="rules.country"
         :input="snackbar"
         @change="(value) => { props.item.country = value }"
       />
@@ -209,11 +209,19 @@
       rules: {
           required: value => !!value || 'Required.',
           counter: value => value.length <= 50 || 'Input too long.',
+          country: value => value.length == 2 || 'Input must be 2 characters.',
+          fert: value => (value || '').length <= 8 || 'Input 8 digits only',
           email: value => {
               const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
               return pattern.test(value) || 'Invalid e-mail.'
           },
       },
+      // rulesCountry: {
+      //     counter: value => value.length == 2 || 'Input must be 2 characters.',
+      // },
+      // rulesFert: {
+      //     counter: value => value.length <= 8 || 'Input too long.',
+      // },
       headers: [
         {
           text: 'Year',
