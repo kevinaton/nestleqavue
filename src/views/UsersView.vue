@@ -22,7 +22,7 @@
             :items="bcrumbs"
         />
         <RowDelete 
-            :input='usertoolbar'
+            :input='toolbar'
             :table="users"
             editData="id"
             :data="delItem"
@@ -164,7 +164,6 @@ export default {
         },
         { text: 'Name', sortable: true, value: 'name' },
         { text: 'User ID', sortable: true, value: 'userId' },
-        { text: 'User Role', sortable: true, value: 'userRoles' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],
@@ -182,8 +181,7 @@ export default {
     forms: [
         {index:0, name:'name', label:'Name', type:'', value:'', visible:true},
         {index:1, name:'userId', label:'User ID', type:'', value:'', visible:true},
-        {index:2, name:'userRoles', label:'User Roles', type:'', value:[], visible:true},
-        {index:3, name:'id', label:'ID', type:'', value:0, visible:false},
+        {index:2, name:'id', label:'ID', type:'', value:0, visible:false},
     ]
     }),
 
