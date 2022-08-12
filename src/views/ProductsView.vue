@@ -19,7 +19,7 @@
         :input="snackbar"
       />
       <RowDelete 
-        :input='prodtoolbar'
+        :input='toolbar'
         :table="products"
         :snackbar="snackbar"
         editData="id"
@@ -30,10 +30,15 @@
         class="mt-3"
         :items="bcrumbs"
       />
-      <SimpleToolbar 
+      <ProdToolbar 
         title="Products"
-        :snackbar="snackbar"
+        formTitle="Add Product"
+        btnName="Add Product"
+        :adding="true"
+        :forms="forms"
+        :toolbar="toolbar"
         :table="products"
+        :snackbar="snackbar"
         util="Products"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
@@ -111,13 +116,13 @@
       <DeleteAction 
         :item="item"
         :tableItem="products"
-        :input="prodtoolbar"
+        :input="toolbar"
         durl="id"
         @change="(value) => { delItem = value}"
       />
     </template>
 
-    <ResetTable  @click="fetchProducts" />
+    <ResetTable  @click="fetchData()" />
 
   </v-data-table>
 
@@ -140,6 +145,7 @@
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
   import EditCheckboxProduct from '@/components/TableElements/EditCheckboxProduct.vue'
   import TablePagination from '@/components/TableElements/TablePagination.vue'
+  import ProdToolbar from '@/components/TableElements/ProdToolbar.vue'
 
   export default {
     components: {
@@ -153,6 +159,7 @@
       EditYearOnly,
       EditCheckboxProduct,
       TablePagination,
+      ProdToolbar
     },
     data: () => ({
       loading:true,
@@ -174,7 +181,7 @@
         snackColor: '',
         snackText: '',
       },
-      prodtoolbar: {
+      toolbar: {
         search: '',
         dialogDelete: false,
         dialog: false,
@@ -209,12 +216,6 @@
               return pattern.test(value) || 'Invalid e-mail.'
           },
       },
-      // rulesCountry: {
-      //     counter: value => value.length == 2 || 'Input must be 2 characters.',
-      // },
-      // rulesFert: {
-      //     counter: value => value.length <= 8 || 'Input too long.',
-      // },
       headers: [
         {
           text: 'Year',
@@ -241,6 +242,15 @@
           href: '',
         },
       ],
+      forms: [
+        {index:0, name:'id', value:0, visible:false},
+        {index:1, name:'year', label:'Year', type:'Number', value:'', visible:true},
+        {index:2, name:'fert', label:'FERT', type:'', value:'', visible:true},
+        {index:3, name:'description', label:'Description', type:'', value:'', visible:true},
+        {index:4, name:'costPerCase', label:'Cost/Case', type:'Number', value:'', visible:true},
+        {index:5, name:'noBbdate', label:'No Birth Date', type:'Boolean', select:[true, false], value:null, visible:true},
+        {index:6, name:'holiday', label:'Holiday', type:'Boolean', select:[true, false], value:null, visible:true},
+      ]
     }),
 
     computed: {
@@ -252,11 +262,11 @@
     },
     
     created () {
-      this.fetchProducts()
+      this.fetchData()
     },
 
     methods: {
-      fetchProducts () {
+      fetchData () {
         let vm = this 
         vm.loading = true
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

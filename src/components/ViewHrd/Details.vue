@@ -326,13 +326,11 @@ export default {
         inputPO(value) {
         let vm = this,
             lastObj = value[vm.oPoLength - 1],
-            nhrdId = lastObj.hrdId + 1,
-            nid = lastObj.id + 1,
             npoNumber = value[vm.oPoLength]
 
             vm.inpValue.hrdPo.push({
-                hrdId: nhrdId,
-                id: nid,
+                id: 0,
+                hrdId: vm.inpValue.id,
                 poNumber: npoNumber
             })
         },

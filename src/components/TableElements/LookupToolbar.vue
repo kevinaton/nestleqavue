@@ -20,7 +20,7 @@
             :util="util"
         />
         
-        <!-- Add Raw Material data -->
+        <!-- Add Lookup data -->
         <v-dialog
             v-model="dialog"
             max-width="500px"
@@ -50,14 +50,65 @@
                     cols="12"
                     sm="6"
                     md="6"
-                    v-for="form in forms"
-                    :key="form.index"
                     >
                         <v-text-field
-                            v-if="form.visible"
-                            v-model="form.value"
-                            :label="form.label"
-                            :type="form.type"
+                            v-if="forms[0].visible"
+                            v-model="forms[0].value"
+                            :label="forms[0].label"
+                            :type="forms[0].type"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                    >
+                        <v-text-field
+                            v-if="forms[1].visible"
+                            v-model="forms[1].value"
+                            :label="forms[1].label"
+                            :type="forms[1].type"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                    >
+                        <v-text-field
+                            v-if="forms[2].visible"
+                            v-model="forms[2].value"
+                            :label="forms[2].label"
+                            :type="forms[2].type"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                    >
+                        <v-select
+                            v-if="forms[3].visible"
+                            v-model="forms[3].value"
+                            :items="forms[3].select"
+                            :label="forms[3].label"
+                            :type="forms[3].type"
+                        ></v-select>
+                    </v-col>
+                </v-row>                    
+                <v-row>
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                    >
+                        <v-text-field
+                            v-if="forms[4].visible"
+                            v-model="forms[4].value"
+                            :label="forms[4].label"
+                            :type="forms[4].type"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -171,7 +222,7 @@ export default {
             for(let i=0; i < this.forms.length; i++) {
                 params[this.forms[i].name] = this.forms[i].value
             }
-            this.$axios.post(`${process.env.VUE_APP_API_URL}/${this.apiUrl}`,  params)
+            this.$axios.post(`${process.env.VUE_APP_API_URL}/Lookup/items`,  params)
             .then(response => 
             {
                 response.status
@@ -192,7 +243,7 @@ export default {
                 this.close()
                 for(let i=0; i < this.forms.length; i++) {
                     this.forms[i].value = ''
-                } 
+                }
                 this.$parent.$parent.$parent.$parent.fetchData()
             })
         }

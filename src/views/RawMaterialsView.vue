@@ -34,10 +34,12 @@
             formTitle="Add Raw-material"
             btnName="Add Raw Material"
             :adding="true"
+            :forms="forms"
             :toolbar='toolbar'
             :table="rawMaterials"
             :snackbar="snackbar"
             util="RawMaterials"
+            apiUrl="RawMaterials"
             :tableOptions="tableOptions"
             @change="getSearch($event)"
         />
@@ -63,7 +65,7 @@
         />
         </template>
         
-        <ResetTable  @click="fetchLabors()" />
+        <ResetTable  @click="fetchData()" />
         
     </v-data-table>
     
@@ -157,6 +159,10 @@
                 required: value => !!value || 'Required.',
                 counter: value => value.length <= 50 || 'Input too long.',
             },
+            forms: [
+                {index:0, name:'id', label:'ID', type:'Number', value:'', visible:true},
+                {index:1, name:'description', label:'Description', type:'', value:'', visible:true}
+            ]
         }),
         computed: {
             getPage() {
@@ -166,10 +172,10 @@
             },
         },
         created () {
-            this.fetchRawMaterials()
+            this.fetchData()
         },
         methods: {
-            fetchRawMaterials() {
+            fetchData() {
                 let vm = this 
                 vm.loading = true
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

@@ -22,15 +22,20 @@
         :items="bcrumbs"
     />
     <RowDelete 
-        :input='lookuptoolbar'
+        :input='toolbar'
         :table="lookups"
         :snackbar="snackbar"
         editData="id"
         :data="delItem"
         url="Lookup/items"
     />
-    <SimpleToolbar 
+    <LookupToolbar
         title="Lookup Lists"
+        formTitle="Add Lookup"
+        btnName="Add Lookup"
+        :adding="true"
+        :forms="forms"
+        :toolbar="toolbar"
         :table="lookups"
         :snackbar="snackbar"
         util="Lookup"
@@ -72,13 +77,13 @@
     <DeleteAction 
         :item="item"
         :tableItem="lookups"
-        :input="lookuptoolbar"
+        :input="toolbar"
         durl="id"
         @change="(value) => { delItem = value}"
     />
     </template>
 
-    <ResetTable  @click="fetchLookupTypes" />
+    <ResetTable  @click="fetchData()" />
 
     </v-data-table>
 
@@ -93,7 +98,7 @@
 
 <script>
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
-import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
+import LookupToolbar from '@/components/TableElements/LookupToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -105,7 +110,7 @@ import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
 export default {
     components: {
         Breadcrumbs,
-        SimpleToolbar,
+        LookupToolbar,
         ResetTable,
         SnackBar,
         RowDelete,
@@ -134,7 +139,7 @@ export default {
         snackColor: '',
         snackText: '',
     },
-    lookuptoolbar: {
+    toolbar: {
         search: '',
         dialogDelete: false,
         dialog: false,
@@ -158,7 +163,7 @@ export default {
         },
     },
     headers: [
-        { text: 'Lookup Type', sortable: true, value: 'typeName' },
+        { text: 'Type Name', sortable: true, value: 'typeName' },
         { text: 'Value', sortable: true, value: 'value' },
         { text: 'Dropdown Type ID', sortable: true, value: 'dropDownTypeId' },
         { text: 'Sort Order', sortable: true, value: 'sortOrder' },
@@ -177,6 +182,14 @@ export default {
         href: '',
         },
     ],
+    forms:[
+        {index:0, name:'dropDownTypeId', label:'Dropdown Type ID', type:'Number', value:'', visible:true},
+        {index:1, name:'value', label:'Value', type:'', value:'', visible:true},
+        {index:2, name:'sortOrder', label:'Sort Order', type:'Number', value:'', visible:true},
+        {index:3, name:'isActive', label:'Active?', type:'Boolean', select:[true, false], value:null, visible:true},
+        {index:4, name:'typeName', label:'Type Name', type:'', value:'', visible:true},
+        {index:5, name:'id', label:'ID', type:'Number', value:0, visible:false},
+    ]
     }),
     computed: {
         getPage() {
@@ -187,11 +200,11 @@ export default {
     },
 
     created () {
-    this.fetchLookupTypes()
+    this.fetchData()
     },
 
     methods: {    
-        fetchLookupTypes() {
+        fetchData() {
             let vm = this 
             vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

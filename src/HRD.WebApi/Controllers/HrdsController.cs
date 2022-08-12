@@ -33,7 +33,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds
         [HttpGet]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -138,7 +138,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Hrd/{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
@@ -242,7 +242,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Hrd/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutHrd(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
             var model = JsonConvert.DeserializeObject<HRDDetailViewModel>(jsonString);
@@ -463,7 +463,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Hrd")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> PostHrd(HRDDetailViewModel model)
         {
             var hrd = new Hrd
@@ -554,7 +554,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Hrd/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteHrd(int id)
         {
             var hrd = await _context.Hrds
@@ -601,7 +601,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Qa/{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
@@ -707,7 +707,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/Qa/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Qa/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutQARecord(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
             var model = JsonConvert.DeserializeObject<QARecordViewModel>(jsonString);
@@ -923,7 +923,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Qa")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<QARecordViewModel>> PostQARecord(QARecordViewModel model)
         {
             var hrd = new Hrd
@@ -1010,7 +1010,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Qa/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteQARecord(int id)
         {
             var hrd = await _context.Hrds
@@ -1051,7 +1051,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpPost("Recalculate")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public ActionResult<RecalculateViewModel> Recalculate(RecalculateViewModel model)
         {
             var recalculate = model.Clear + model.Sample + model.Scrap + model.ThriftStore + model.Donate;
