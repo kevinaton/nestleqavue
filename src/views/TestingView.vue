@@ -22,7 +22,7 @@
                 :items="bcrumbs"
             />
             <RowDelete 
-                :input='testingtoolbar'
+                :input='toolbar'
                 :table="testings"
                 :snackbar="snackbar"
                 editData="id"
@@ -31,9 +31,15 @@
             />
             <SimpleToolbar 
                 title="Testing"
+                formTitle="Add Test Case"
+                btnName="Add Test Case"
+                :adding="true"
+                :forms="forms"
+                :toolbar="toolbar"
                 :table="testings"
                 :snackbar="snackbar"
                 util="TestCosts"
+                apiUrl="TestCosts"
                 :tableOptions="tableOptions"
                 @change="getSearch($event)"
             />
@@ -66,13 +72,13 @@
             <DeleteAction 
                 :item="item"
                 :tableItem="testings"
-                :input="testingtoolbar"
+                :input="toolbar"
                 durl="id"
                 @change="(value) => { delItem = value }"
             />
         </template>
         
-        <ResetTable  @click="fetchTest()" />
+        <ResetTable  @click="fetchData()" />
         
     </v-data-table>
 
@@ -128,7 +134,7 @@
             snackColor: '',
             snackText: '',
         },
-        testingtoolbar: {
+        toolbar: {
             search: '',
             dialogDelete: false,
             dialog: false,
@@ -178,6 +184,12 @@
             href: '',
             },
         ],
+        forms: [
+            {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true},
+            {index:1, name:'testName', label:'Test Name', type:'', value:'', visible:true},
+            {index:2, name:'testCost', label:'Test Cost', type:'Number', value:'', visible:true},
+            {index:3, name:'id', value:0, visible:false},
+        ]
         }),
 
         computed: {
@@ -189,11 +201,11 @@
         },
 
         created () {
-        this.fetchTest()
+        this.fetchData()
         },
 
         methods: {
-        fetchTest () {
+        fetchData () {
             let vm = this 
             vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

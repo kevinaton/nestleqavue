@@ -78,7 +78,7 @@
     />
     </template>
 
-    <ResetTable  @click="fetchLookupTypes" />
+    <ResetTable  @click="fetchData()" />
 
     </v-data-table>
 
@@ -187,11 +187,11 @@ export default {
     },
 
     created () {
-    this.fetchLookupTypes()
+    this.fetchData()
     },
 
     methods: {    
-        fetchLookupTypes() {
+        fetchData() {
             let vm = this 
             vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

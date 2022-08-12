@@ -22,7 +22,7 @@
                 :items="bcrumbs"
             />
             <RowDelete 
-                :input='roletoolbar'
+                :input='toolbar'
                 :table="roles"
                 :snackbar="snackbar"
                 editData="id"
@@ -31,6 +31,7 @@
             />
             <SimpleToolbar 
                 title="Roles"
+                :toolbar="toolbar"
                 :table="roles"
                 :snackbar="snackbar"
                 util="TestCosts"
@@ -55,13 +56,13 @@
             <DeleteAction 
                 :item="item"
                 :tableItem="roles"
-                :input="roletoolbar"
+                :input="toolbar"
                 durl="id"
                 @change="(value) => { delItem = value}"
             />
         </template>
         
-        <ResetTable  @click="fetchRoles()" />
+        <ResetTable  @click="fetchData()" />
         
     </v-data-table>
 
@@ -117,7 +118,7 @@
             snackColor: '',
             snackText: '',
         },
-        roletoolbar: {
+        toolbar: {
             search: '',
             dialogDelete: false,
             dialog: false,
@@ -174,11 +175,11 @@
         },
 
         created () {
-            this.fetchRoles()
+            this.fetchData()
         },
 
         methods: {
-            fetchRoles() {
+            fetchData() {
                 let vm = this 
                 vm.loading = true
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

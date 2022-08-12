@@ -31,9 +31,15 @@
         />
         <SimpleToolbar 
             title="Users"
+            formTitle="Add User"
+            btnName="Add User"
+            :adding="true"
+            :forms="forms"
+            :toolbar="toolbar"
             :table="users"
             :snackbar="snackbar"
             util="Users"
+            apiUrl="Users"
             :tableOptions="tableOptions"
             @change="getSearch($event)"
         />
@@ -64,13 +70,13 @@
         <DeleteAction 
             :item="item"
             :tableItem="users"
-            :input="usertoolbar"
+            :input="toolbar"
             durl="id"
             @change="(value) => { delItem = value }"
         />
     </template>
     
-    <ResetTable  @click="fetchUsers()" />
+    <ResetTable  @click="fetchData()" />
     
     </v-data-table>
     
@@ -123,7 +129,7 @@ export default {
         snackColor: '',
         snackText: '',
     },
-    usertoolbar: {
+    toolbar: {
         search: '',
         dialogDelete: false,
         dialog: false,
@@ -158,6 +164,7 @@ export default {
         },
         { text: 'Name', sortable: true, value: 'name' },
         { text: 'User ID', sortable: true, value: 'userId' },
+        { text: 'User Role', sortable: true, value: 'userRoles' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],
@@ -172,6 +179,12 @@ export default {
         href: '',
         },
     ],
+    forms: [
+        {index:0, name:'name', label:'Name', type:'', value:'', visible:true},
+        {index:1, name:'userId', label:'User ID', type:'', value:'', visible:true},
+        {index:2, name:'userRoles', label:'User Roles', type:'', value:[], visible:true},
+        {index:3, name:'id', label:'ID', type:'', value:0, visible:false},
+    ]
     }),
 
     computed: {
@@ -183,11 +196,11 @@ export default {
     },
 
     created () {
-    this.fetchUsers()
+    this.fetchData()
     },
 
     methods: {
-    fetchUsers() {
+    fetchData() {
         let vm = this 
         vm.loading = true
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)

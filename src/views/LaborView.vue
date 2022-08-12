@@ -22,7 +22,7 @@
         :items="bcrumbs"
       />
       <RowDelete 
-        :input='labortoolbar'
+        :input='toolbar'
         :table="labors"
         :snackbar="snackbar"
         editData="year"
@@ -31,9 +31,15 @@
       />
       <SimpleToolbar 
         title="Labor"
+        formTitle="Add Labor Cost"
+        btnName="Add Labor Cost"
+        :adding="true"
+        :forms="forms"
+        :toolbar='toolbar'
         :table="labors"
         :snackbar="snackbar"
         util="LaborCosts"
+        apiUrl="LaborCosts"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
       />
@@ -54,13 +60,13 @@
       <DeleteAction 
         :item="item"
         :tableItem="labors"
-        :input="labortoolbar"
+        :input="toolbar"
         durl="year"
         @change="(value) => { delItem = value}"
       />
     </template>
     
-    <ResetTable  @click="fetchLabors()" />
+    <ResetTable  @click="fetchData()" />
     
   </v-data-table>
   
@@ -115,7 +121,7 @@
         snackColor: '',
         snackText: '',
       },
-      labortoolbar: {
+      toolbar: {
         search: '',
         dialogDelete: false,
         dialog: false,
@@ -161,6 +167,10 @@
           href: '',
         },
       ],
+      forms: [
+        {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true},
+        {index:1, name:'laborCost', label:'Labor Cost', type:'Number', value:0, visible:true},
+      ]
     }),
 
     computed: {
@@ -172,11 +182,11 @@
     },
 
     created () {
-      this.fetchLabors()
+      this.fetchData()
     },
 
     methods: {
-      fetchLabors () {
+      fetchData() {
         let vm = this 
         vm.loading = true
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/LaborCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
@@ -189,9 +199,9 @@
             vm.labors = res.data.data
           })
           .catch(err => {
-            this.snackbar.snack = true
-            this.snackbar.snackColor = 'error'
-            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'error'
+            vm.snackbar.snackText = 'Something went wrong. Please try again later.'
             console.warn(err)
           })
           .finally(() => {vm.loading = false})
