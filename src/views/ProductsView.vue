@@ -216,12 +216,6 @@
               return pattern.test(value) || 'Invalid e-mail.'
           },
       },
-      // rulesCountry: {
-      //     counter: value => value.length == 2 || 'Input must be 2 characters.',
-      // },
-      // rulesFert: {
-      //     counter: value => value.length <= 8 || 'Input too long.',
-      // },
       headers: [
         {
           text: 'Year',
