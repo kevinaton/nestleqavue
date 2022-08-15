@@ -51,12 +51,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-text-field
+                        <v-select
                             v-if="forms[0].visible"
                             v-model="forms[0].value"
+                            :items="forms[0].select"
                             :label="forms[0].label"
                             :type="forms[0].type"
-                        ></v-text-field>
+                            @click="fetchDropdownId"
+                        ></v-select>
                     </v-col>
                     <v-col
                     cols="12"
@@ -96,20 +98,6 @@
                             :label="forms[3].label"
                             :type="forms[3].type"
                         ></v-select>
-                    </v-col>
-                </v-row>                    
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-text-field
-                            v-if="forms[4].visible"
-                            v-model="forms[4].value"
-                            :label="forms[4].label"
-                            :type="forms[4].type"
-                        ></v-text-field>
                     </v-col>
                 </v-row>
                 </v-container>
@@ -245,6 +233,24 @@ export default {
                     this.forms[i].value = ''
                 }
                 this.$parent.$parent.$parent.$parent.fetchData()
+            })
+        },
+        fetchDropdownId() {
+            let vm = this
+            vm.loading = true
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
+            .then((res) => {
+                vm.forms[0].select = res.data.map(({id}) => id)
+                console.log(vm.forms[0])
+            })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => {
+                vm.loading = false
             })
         }
     }

@@ -183,7 +183,7 @@ export default {
         },
     ],
     forms:[
-        {index:0, name:'dropDownTypeId', label:'Dropdown Type ID', type:'Number', value:'', visible:true},
+        {index:0, name:'dropDownTypeId', label:'Dropdown Type ID', type:'Number', select:[], value:'', visible:true},
         {index:1, name:'value', label:'Value', type:'', value:'', visible:true},
         {index:2, name:'sortOrder', label:'Sort Order', type:'Number', value:'', visible:true},
         {index:3, name:'isActive', label:'Active?', type:'Boolean', select:[true, false], value:null, visible:true},
