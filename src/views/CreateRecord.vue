@@ -92,12 +92,11 @@ import Pest from '@/components/qa/Pest.vue'
 import SMI from '@/components/qa/SMI.vue'
 import FM from '@/components/qa/FM.vue'
 import NR from '@/components/qa/NR.vue'
-import Micro from '@/components/qa/Micro.vue'
+import Micro from '@/components/qa/newMicro.vue'
 import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
 import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 import BackBtn from '@/components/FormElements/BackBtn.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
-import moment from 'moment'
 
 export default {
     name:'NewQARecords',

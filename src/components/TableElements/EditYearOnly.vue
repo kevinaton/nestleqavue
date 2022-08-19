@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditYearOnly',
     props: {
@@ -82,7 +81,7 @@ export default {
             let value = this.tempValue.toString()
             this.$emit('change', value)
             let stringyear = this.year.toString()
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
+            this.$axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
                 year:value,
                 laborCost:this.lcInput
             })

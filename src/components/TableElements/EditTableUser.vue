@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditTableNumber',
     props: {
@@ -70,7 +69,7 @@ export default {
             value = this.data.ed = this.origVal = this.table
 
 
-            axios.put(`${process.env.VUE_APP_API_URL}/Users/${this.data.id}`,  {
+            this.$axios.put(`${process.env.VUE_APP_API_URL}/Users/${this.data.id}`,  {
                 id:this.data.id,
                 name:this.data.name,
                 userId:this.data.userId,
@@ -94,13 +93,11 @@ export default {
             this.input.snack = true
             this.input.snackColor = 'info'
             this.input.snackText = 'Canceled'
-            let vm = this 
             let value = this.origVal
-            vm.$emit('change', value)
+            this.$emit('change', value)
         },
         updateValue(value) {
-            let vm = this 
-            vm.$emit('change', value)
+            this.$emit('change', value)
         },
         saveOriginalValue() {
             this.origVal = this.table

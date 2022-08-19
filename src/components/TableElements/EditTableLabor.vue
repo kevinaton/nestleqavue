@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditTableLabor',
     props: {
@@ -61,33 +60,35 @@ export default {
     emits: ['change'],
     methods: {
         save () {
-            let value
-            value = this.origVal = this.inputValue
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${this.string1}`,  {
-                year:this.string1,
-                laborCost:this.inputValue
+            let vm = this, value
+            value = vm.origVal = vm.inputValue
+
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${vm.string1}`,  {
+                year: vm.string1,
+                laborCost: vm.inputValue
             })
             .then(response => 
             {
-                this.$emit('change', value)
+                vm.$emit('change', value)
                 response.status
-                this.input.snack = true
-                this.input.snackColor = 'success'
-                this.input.snackText = 'Data saved'
+                vm.input.snack = true
+                vm.input.snackColor = 'success'
+                vm.input.snackText = 'Data saved'
             })
             .catch(err => {
-                this.input.snack = true
-                this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later.'
+                vm.input.snack = true
+                vm.input.snackColor = 'error'
+                vm.input.snackText = 'Something went wrong. Please try again later.'
                 console.warn(err)
             }) 
         },
         cancel () {
-            this.input.snack = true
-            this.input.snackColor = 'info'
-            this.input.snackText = 'Canceled'
-            let vm = this 
-            let value = this.origVal
+            let vm = this
+            vm.input.snack = true
+            vm.input.snackColor = 'info'
+            vm.input.snackText = 'Canceled'
+
+            let value = vm.origVal
             vm.$emit('change', value)
         },
         updateValue(value) {

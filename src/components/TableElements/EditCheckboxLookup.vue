@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditCheckboxLookup',
     props: {
@@ -49,27 +48,28 @@ export default {
     emits: ['change'],
     methods: {
         updateValue(value) {
-            this.tempValue = value
-            this.cTable = value
-            this.$emit('change', value)
+            let vm = this
+            vm.tempValue = value
+            vm.cTable = value
+            vm.$emit('change', value)
 
-            let ed = this.editData
-            this.data.ed = this.table
+            let ed = vm.editData
+            this.data.ed = vm.table
 
-            axios.put(`${process.env.VUE_APP_API_URL}/Lookup/items/${this.data.id}`,  {
-                id:this.data.id,
-                dropDownTypeId:this.data.dropDownTypeId,
-                value:this.data.value,
-                sortOrder:this.data.sortOrder,
-                isActive:this.data.isActive,
-                typeName:this.data.typeName,
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Lookup/items/${this.data.id}`,  {
+                id: vm.data.id,
+                dropDownTypeId: vm.data.dropDownTypeId,
+                value: vm.data.value,
+                sortOrder: vm.data.sortOrder,
+                isActive: vm.data.isActive,
+                typeName: vm.data.typeName,
             })
             .then(response => 
             {
                 response.statusv
-                this.input.snack = true
-                this.input.snackColor = 'success'
-                this.input.snackText = 'Data saved'
+                vm.input.snack = true
+                vm.input.snackColor = 'success'
+                vm.input.snackText = 'Data saved'
             }
             )
             .catch(err => console.warn(err))

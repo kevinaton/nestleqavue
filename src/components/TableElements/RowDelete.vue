@@ -13,9 +13,6 @@
 </template>
 
 <script>
-
-
-import axios from 'axios'
 export default {
     name:'RowDelete',
     props: {
@@ -61,7 +58,7 @@ export default {
             this.table.splice(this.input.editedIndex, 1)
             this.closeDelete()
             
-            axios.delete(`${process.env.VUE_APP_API_URL}/${this.url}/${this.data}`)
+            this.$axios.delete(`${process.env.VUE_APP_API_URL}/${this.url}/${this.data}`)
             .then(response => {
                 response.status
                 this.snackbar.snack = true

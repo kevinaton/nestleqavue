@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditCheckboxProduct',
     props: {
@@ -49,26 +48,27 @@ export default {
     emits: ['change'],
     methods: {
         updateValue(value) {
-            this.tempValue = value
-            this.cTable = value
-            this.$emit('change', value)
+            let vm = this
+            vm.tempValue = value
+            vm.cTable = value
+            vm.$emit('change', value)
 
-            this.input.snack = true
-            this.input.snackColor = 'success'
-            this.input.snackText = 'Data saved'
+            vm.input.snack = true
+            vm.input.snackColor = 'success'
+            vm.input.snackText = 'Data saved'
 
-            let ed = this.editData
-            this.data.ed = this.table
+            let ed = vm.editData
+            this.data.ed = vm.table
 
-            axios.put(`${process.env.VUE_APP_API_URL}/Products/${this.data.id}`,  {
-                id:this.data.id,
-                year:this.data.year,
-                fert:this.data.fert,
-                description:this.data.description,
-                costPerCase:this.data.costPerCase,
-                country:this.data.country,
-                noBbdate:this.data.noBbdate,
-                holiday:this.data.holiday
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.data.id}`,  {
+                id: vm.data.id,
+                year: vm.data.year,
+                fert: vm.data.fert,
+                description: vm.data.description,
+                costPerCase: vm.data.costPerCase,
+                country: vm.data.country,
+                noBbdate: vm.data.noBbdate,
+                holiday: vm.data.holiday
             })
             .then(response => response.status)
             .catch(err => console.warn(err))
