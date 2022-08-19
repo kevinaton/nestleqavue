@@ -10,7 +10,7 @@
             <v-text-field
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[rules]"
+                :rules="rules"
                 :type="type"
                 label="Edit"
                 single-line
@@ -49,8 +49,8 @@ export default {
             required:false
         },
         rules: {
-            type: Object,
-            default: {},
+            type: Array,
+            default: () => [],
             required: false,
         },
     },

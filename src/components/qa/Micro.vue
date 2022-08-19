@@ -117,6 +117,18 @@
                                         v-model="input.dialog"
                                         max-width="500px"
                                         >
+                                        <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            color="primary"
+                                            dark
+                                            large
+                                            class="mb-2 ml-5"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            Add Micro
+                                        </v-btn>
+                                        </template>
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">New Micro</span>
@@ -130,7 +142,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.microEditedItem.hour"
+                                                    v-model="micro.hour"
                                                     label="Hour"
                                                     type="number"
                                                     ></v-text-field>
@@ -141,7 +153,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.microEditedItem.count"
+                                                    v-model="micro.count"
                                                     label="Count"
                                                     type="number"
                                                     ></v-text-field>
@@ -152,7 +164,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.microEditedItem.organism"
+                                                    v-model="micro.organism"
                                                     label="Organism"
                                                     placeholder="Organism"
                                                     ></v-text-field>
@@ -172,14 +184,28 @@
                                                 <v-btn
                                                     color="blue darken-1"
                                                     text
-                                                    @click="save"
+                                                    @click="saveMicro"
                                                 >
                                                     Save
                                                 </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
+                                            </v-card-actions>
+                                        </v-card>
                                         </v-dialog>
                                     </v-toolbar>
+                                </template>
+                                <template v-slot:[`item.actions`]="{ item }">
+                                    <v-hover
+                                        v-slot="{ hover }"
+                                        open-delay="200"
+                                    >
+                                        <v-icon
+                                            @click="deleteMicroItem(item)"
+                                            :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                                            :class="{ 'on-hover': hover }"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-hover>
                                 </template>
                             </v-data-table>
                         </v-col>
@@ -193,10 +219,23 @@
                                 <template v-slot:top>
                                     <v-toolbar flat>
                                         <v-toolbar-title class="mr-6">Testing</v-toolbar-title>
+                                        <v-spacer></v-spacer>
                                         <v-dialog
                                         v-model="input.testDialog"
                                         max-width="500px"
                                         >
+                                        <template v-slot:activator="{ on, attrs }">
+                                        <v-btn
+                                            color="primary"
+                                            dark
+                                            large
+                                            class="mb-2 ml-5"
+                                            v-bind="attrs"
+                                            v-on="on"
+                                        >
+                                            Add Testing
+                                        </v-btn>
+                                        </template>
                                         <v-card>
                                             <v-card-title>
                                             <span class="text-h5">Testing</span>
@@ -210,7 +249,8 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.testEditedItem.testName"
+                                                    v-model="testing.testName"
+                                                    placeholder="Enter here"
                                                     label="Test Name"
                                                     ></v-text-field>
                                                 </v-col>
@@ -220,7 +260,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.testEditedItem.qty"
+                                                    v-model="testing.qty"
                                                     label="Quantity"
                                                     type="number"
                                                     ></v-text-field>
@@ -231,7 +271,7 @@
                                                     md="4"
                                                 >
                                                     <v-text-field
-                                                    v-model="input.testEditedItem.cost"
+                                                    v-model="testing.cost"
                                                     label="Cost"
                                                     type="number"
                                                     ></v-text-field>
@@ -244,14 +284,14 @@
                                                 <v-btn
                                                     color="blue darken-1"
                                                     text
-                                                    @click="testclose"
+                                                    @click="testClose"
                                                 >
                                                     Cancel
                                                 </v-btn>
                                                 <v-btn
                                                     color="blue darken-1"
                                                     text
-                                                    @click="testsave"
+                                                    @click="testSave"
                                                 >
                                                     Save
                                                 </v-btn>
@@ -259,6 +299,20 @@
                                             </v-card>
                                         </v-dialog>
                                     </v-toolbar>
+                                </template>
+                                <template v-slot:[`item.actions`]="{ item }">
+                                    <v-hover
+                                        v-slot="{ hover }"
+                                        open-delay="200"
+                                    >
+                                        <v-icon
+                                            @click="deleteTestingItem(item)"
+                                            :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                                            :class="{ 'on-hover': hover }"
+                                        >
+                                            mdi-delete
+                                        </v-icon>
+                                    </v-hover>
                                 </template>
                             </v-data-table>
                         </v-col>
@@ -311,6 +365,20 @@ export default {
     },
     data: () => ({
         delItem:'',
+        micro: {
+            id: 0,
+            hrdId: 0,
+            hour:0,
+            count:0,
+            organism:''
+        },
+        testing: {
+            id:0,
+            hrdId:0,
+            testName:'',
+            qty:0,
+            cost:0
+        }
     }),
     computed: {
         getDate(){
@@ -326,33 +394,54 @@ export default {
     methods: {
         close () {
             this.input.dialog = false
-            this.$nextTick(() => {
-                this.input.editedItem = Object.assign({}, this.input.defaultItem)
-                this.input.editedIndex = -1
-            })
-        },
-        save () {
-            if (this.input.editedIndex > -1) {
-            Object.assign(this.input.microtable[this.input.editedIndex], this.input.editedItem)
-            } else {
-            this.input.microtable.push(this.input.editedItem)
+            this.micro = {
+                id: 0,
+                hrdId: 0,
+                hour:0,
+                count:0,
+                organism:''
             }
+        },
+        saveMicro() {
+            let addMicro = {
+                id: 0,
+                hrdId: this.inpValue.id,
+                hour: this.micro.hour,
+                count: this.micro.count,
+                organism: this.micro.organism
+            }
+            this.inpValue.hrdMicros.push(addMicro)
+            this.$parent.$parent.$parent.submitQA(true)
             this.close()
         },
-        testclose () {
-            this.test.dialog = false
-            this.$nextTick(() => {
-                this.test.editedItem = Object.assign({}, this.test.defaultItem)
-                this.test.editedIndex = -1
-            })
+        deleteMicroItem(item) {
+            this.inpValue.hrdMicros.splice(this.inpValue.hrdMicros.indexOf(item), 1);
         },
-        testsave () {
-            if (this.test.editedIndex > -1) {
-            Object.assign(this.test.testtable[this.test.editedIndex], this.test.editedItem)
-            } else {
-            this.test.testtable.push(this.test.editedItem)
+        deleteTestingItem(item) {
+            this.inpValue.hrdTestCosts.splice(this.inpValue.hrdTestCosts.indexOf(item), 1);
+            console.log(this.inpValue.hrdTestCosts)
+        },
+        testClose () {
+            this.input.testDialog = false
+            this.testing = {
+                id:0,
+                hrdId:0,
+                testName:'',
+                qty:0,
+                cost:0
             }
-            this.testclose()
+        },
+        testSave () {
+            let addTesting = {
+                id:0,
+                hrdId:this.inpValue.id,
+                testName:this.testing.testName,
+                qty:this.testing.qty,
+                cost:this.testing.cost
+            }
+            this.inpValue.hrdTestCosts.push(addTesting)
+            this.$parent.$parent.$parent.submitQA(true)
+            this.testClose()
         },
     },
 }

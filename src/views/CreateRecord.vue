@@ -260,7 +260,7 @@ export default {
                 { text:'Hour', value: 'hour'},
                 { text:'Count', value: 'count'},
                 { text:'Organism', value: 'organism'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             microEditedIndex: -1,
             microEditedItem: {
@@ -284,19 +284,12 @@ export default {
                 { text: 'Test Name', value: 'testName' },
                 { text:'Quantity', value: 'qty'},
                 { text:'Cost', value: 'cost'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             testTable: [
                 { hrddid:'0', testname:'select', quantity:'0' },
             ],
             testEditedIndex: -1,
-            testEditedItem: {
-                id:0,
-                hrdId:0,
-                testName:'',
-                qty:0,
-                cost:0,
-            },
             testDefaultItem: {
                 id:0,
                 testName:'',

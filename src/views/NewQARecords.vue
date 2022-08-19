@@ -188,15 +188,9 @@ export default {
                 { text:'Hour', value: 'hour'},
                 { text:'Count', value: 'count'},
                 { text:'Organism', value: 'organism'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             microEditedIndex: -1,
-            microEditedItem: {
-                id:0,
-                hour:0,
-                count:0,
-                organism:'',
-            },
             microDefaultItem: {
                 id:0,
                 hour:0,
@@ -212,7 +206,7 @@ export default {
                 { text: 'Test Name', value: 'testName' },
                 { text:'Quantity', value: 'qty'},
                 { text:'Cost', value: 'cost'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
             ],
             testTable: [
                 { hrddid:'0', testname:'select', quantity:'0' },
@@ -268,6 +262,7 @@ export default {
             this.tFile = value
         },
         submitQA(value) {
+            console.log(this.qaRec.hrdTestCosts)
             let vm = this,
                 formData = new FormData(),
                 d = vm.qaRec,
@@ -359,6 +354,7 @@ export default {
                 )
                 .then(res => 
                 {
+                    console.log(this.qaRec.hrdTestCosts)
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
