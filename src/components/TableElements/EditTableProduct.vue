@@ -10,7 +10,7 @@
             <v-text-field
                 :value="table"
                 @input="updateValue($event)"
-                :rules="[rules]"
+                :rules="rules"
                 :type="type"
                 label="Edit"
                 single-line
@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditTableProduct',
     props: {
@@ -49,8 +48,8 @@ export default {
             required:false
         },
         rules: {
-            type: Object,
-            default: {},
+            type: Array,
+            default: () => [],
             required: false,
         },
     },
@@ -64,32 +63,33 @@ export default {
     emits: ['change'],
     methods: {
         save () { 
-            let ed = this.editData
-            let value
-            value = this.data.ed = this.origVal = this.table
+            let ed = this.editData,
+                vm = this,
+                value
+            value = vm.data.ed = vm.origVal = vm.table
 
-            axios.put(`${process.env.VUE_APP_API_URL}/Products/${this.data.id}`,  {
-                id:this.data.id,
-                year:this.data.year,
-                fert:this.data.fert,
-                description:this.data.description,
-                costPerCase:this.data.costPerCase,
-                country:this.data.country,
-                noBdate:this.data.noBdate,
-                holiday:this.data.holiday
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.data.id}`,  {
+                id: vm.data.id,
+                year: vm.data.year,
+                fert: vm.data.fert,
+                description: vm.data.description,
+                costPerCase: vm.data.costPerCase,
+                country: vm.data.country,
+                noBdate: vm.data.noBdate,
+                holiday: vm.data.holiday
             })
             .then(response => 
             {
-                this.$emit('change', value)
+                vm.$emit('change', value)
                 response.status
-                this.input.snack = true
-                this.input.snackColor = 'success'
-                this.input.snackText = 'Data saved'
+                vm.input.snack = true
+                vm.input.snackColor = 'success'
+                vm.input.snackText = 'Data saved'
             })
             .catch(err => {
-                this.input.snack = true
-                this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later.'
+                vm.input.snack = true
+                vm.input.snackColor = 'error'
+                vm.input.snackText = 'Something went wrong. Please try again later.'
                 console.warn(err)
             }) 
         },
@@ -99,7 +99,7 @@ export default {
             this.input.snackText = 'Canceled'
             let vm = this 
             let value = vm.origVal
-            vm.$emit('change', value)
+            this.$emit('change', value)
         },
         updateValue(value) {
             let vm = this 

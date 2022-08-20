@@ -50,7 +50,7 @@
         :table="props.item.fert"
         editData="fert"
         :data="props.item"
-        :rules="rules.fert"
+        :rules="[rules.fert]"
         :input="snackbar"
         @change="(value) => { props.item.fert = value }"
       />
@@ -61,7 +61,7 @@
         :table="props.item.description"
         editData="description"
         :data="props.item"
-        :rules="rules.counter"
+        :rules="[rules.counter]"
         :input="snackbar"
         @change="(value) => { props.item.description = value }"
       />
@@ -72,7 +72,7 @@
         :table="props.item.costPerCase"
         editData="description"
         :data="props.item"
-        :rules="rules"
+        :rules="[rules.counter]"
         :input="snackbar"
         @change="(value) => { props.item.costPerCase = value }"
         type="number"
@@ -84,7 +84,7 @@
         :table="props.item.country"
         editData="country"
         :data="props.item"
-        :rules="rules.country"
+        :rules="[rules.country, rules.counter]"
         :input="snackbar"
         @change="(value) => { props.item.country = value }"
       />

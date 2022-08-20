@@ -411,7 +411,6 @@ export default {
                 organism: this.micro.organism
             }
             this.inpValue.hrdMicros.push(addMicro)
-            this.$parent.$parent.$parent.submitQA(true)
             this.close()
         },
         deleteMicroItem(item) {
@@ -440,7 +439,6 @@ export default {
                 cost:this.testing.cost
             }
             this.inpValue.hrdTestCosts.push(addTesting)
-            this.$parent.$parent.$parent.submitQA(true)
             this.testClose()
         },
     },

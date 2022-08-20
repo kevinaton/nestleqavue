@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import axios from 'axios'
 export default {
     name:'EditTable',
     props: {
@@ -54,13 +53,14 @@ export default {
     emits: ['change'],
     methods: {
         save () {
-            this.input.snack = true
-            this.input.snackColor = 'success'
-            this.input.snackText = 'Data saved'
-            let stringyear = this.year.toString()
-            axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
+            vm = this
+            vm.input.snack = true
+            vm.input.snackColor = 'success'
+            vm.input.snackText = 'Data saved'
+            let stringyear = vm.year.toString()
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/LaborCosts/${stringyear}`,  {
                 year:stringyear,
-                laborCost:this.inputValue
+                laborCost: vm.inputValue
             })
             .then(response => response.status)
             .catch(err => console.warn(err)) 

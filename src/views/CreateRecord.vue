@@ -92,12 +92,11 @@ import Pest from '@/components/qa/Pest.vue'
 import SMI from '@/components/qa/SMI.vue'
 import FM from '@/components/qa/FM.vue'
 import NR from '@/components/qa/NR.vue'
-import Micro from '@/components/qa/Micro.vue'
+import Micro from '@/components/qa/newMicro.vue'
 import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
 import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 import BackBtn from '@/components/FormElements/BackBtn.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
-import moment from 'moment'
 
 export default {
     name:'NewQARecords',
@@ -260,7 +259,7 @@ export default {
                 { text:'Hour', value: 'hour'},
                 { text:'Count', value: 'count'},
                 { text:'Organism', value: 'organism'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             microEditedIndex: -1,
             microEditedItem: {
@@ -284,19 +283,12 @@ export default {
                 { text: 'Test Name', value: 'testName' },
                 { text:'Quantity', value: 'qty'},
                 { text:'Cost', value: 'cost'},
-                // { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
+                { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             testTable: [
                 { hrddid:'0', testname:'select', quantity:'0' },
             ],
             testEditedIndex: -1,
-            testEditedItem: {
-                id:0,
-                hrdId:0,
-                testName:'',
-                qty:0,
-                cost:0,
-            },
             testDefaultItem: {
                 id:0,
                 testName:'',
