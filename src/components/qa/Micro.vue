@@ -104,6 +104,7 @@
                             <v-data-table
                                 :headers="input.microHeaders"
                                 :items="inpValue.hrdMicros"
+                                :item-key="microIndex"
                                 class="mb-6 pt-0 elevation-1"
                             >
                                 <template v-slot:top>
@@ -215,6 +216,7 @@
                             <v-data-table
                                 :headers="input.testHeaders"
                                 :items="inpValue.hrdTestCosts"
+                                :item-key="testIndex"
                             >
                                 <template v-slot:top>
                                     <v-toolbar flat>
@@ -365,6 +367,8 @@ export default {
     },
     data: () => ({
         delItem:'',
+        microIndex:'0',
+        testIndex:'0',
         micro: {
             id: 0,
             hrdId: 0,
@@ -393,8 +397,9 @@ export default {
     },
     methods: {
         close () {
-            this.input.dialog = false
+            this.input.dialog = false,
             this.micro = {
+                index: this.microIndex,
                 id: 0,
                 hrdId: 0,
                 hour:0,
@@ -404,14 +409,15 @@ export default {
         },
         saveMicro() {
             let addMicro = {
+                index:this.microIndex,
                 id: 0,
                 hrdId: this.inpValue.id,
                 hour: this.micro.hour,
                 count: this.micro.count,
                 organism: this.micro.organism
             }
+            this.microIndex += 1
             this.inpValue.hrdMicros.push(addMicro)
-            this.$parent.$parent.$parent.submitQA(true)
             this.close()
         },
         deleteMicroItem(item) {
@@ -419,11 +425,11 @@ export default {
         },
         deleteTestingItem(item) {
             this.inpValue.hrdTestCosts.splice(this.inpValue.hrdTestCosts.indexOf(item), 1);
-            console.log(this.inpValue.hrdTestCosts)
         },
         testClose () {
             this.input.testDialog = false
             this.testing = {
+                index: this.testIndex,
                 id:0,
                 hrdId:0,
                 testName:'',
@@ -433,14 +439,15 @@ export default {
         },
         testSave () {
             let addTesting = {
+                index: this.testIndex,
                 id:0,
                 hrdId:this.inpValue.id,
                 testName:this.testing.testName,
                 qty:this.testing.qty,
                 cost:this.testing.cost
             }
+            this.testIndex += 1
             this.inpValue.hrdTestCosts.push(addTesting)
-            this.$parent.$parent.$parent.submitQA(true)
             this.testClose()
         },
     },

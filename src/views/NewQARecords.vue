@@ -262,7 +262,6 @@ export default {
             this.tFile = value
         },
         submitQA(value) {
-            console.log(this.qaRec.hrdTestCosts)
             let vm = this,
                 formData = new FormData(),
                 d = vm.qaRec,
@@ -354,7 +353,6 @@ export default {
                 )
                 .then(res => 
                 {
-                    console.log(this.qaRec.hrdTestCosts)
                     res.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'

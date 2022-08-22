@@ -7,7 +7,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
                 <v-btn color="primary" class="mr-3" :disabled="!valid" light large v-bind="attrs" v-on="on">
-                    Submit
+                    Save
                 </v-btn>
             </template>
             <v-card>
@@ -31,7 +31,7 @@
                     large
                     @click="input.submitDialog = false, submitUpdate(), validate"
                 >
-                    Submit
+                    Save
                 </v-btn>
                 </v-card-actions>
             </v-card>
@@ -42,7 +42,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
                 <v-btn class="mr-3" light large v-bind="attrs" v-on="on">
-                    Discard
+                    Cancel
                 </v-btn>
             </template>
             <v-card>
@@ -57,7 +57,7 @@
                     text
                     @click="input.discardDialog = false"
                 >
-                    Cancel
+                    Back
                 </v-btn>
                 <v-btn
                     color=""
@@ -65,7 +65,7 @@
                     to='/'
                     @click="input.discardDialog = false"
                 >
-                    Discard
+                    Cancel
                 </v-btn>
                 </v-card-actions>
             </v-card>
