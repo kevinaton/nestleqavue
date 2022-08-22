@@ -85,7 +85,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
             var user = await _context.Users.FindAsync(id);
