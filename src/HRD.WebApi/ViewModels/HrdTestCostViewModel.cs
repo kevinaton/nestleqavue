@@ -8,5 +8,6 @@ namespace HRD.WebApi.ViewModels
         public string TestName { get; set; }
         public int? Qty { get; set; }
         public decimal? Cost { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

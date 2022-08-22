@@ -33,7 +33,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -138,7 +138,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
@@ -237,12 +237,11 @@ namespace HRD.WebApi.Controllers
 
             return model;
         }
-
-        //[EnableCors("AllowOrigin")]
+                
         // PUT: api/Hrds/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutHrd(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
             var model = JsonConvert.DeserializeObject<HRDDetailViewModel>(jsonString);
@@ -459,11 +458,10 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
-        //[EnableCors("AllowOrigin")]
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Hrd")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> PostHrd(HRDDetailViewModel model)
         {
             var hrd = new Hrd
@@ -554,7 +552,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Hrd/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteHrd(int id)
         {
             var hrd = await _context.Hrds
@@ -601,7 +599,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Hrds/5
         [HttpGet("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<QARecordViewModel>> GetQARecord(int id)
         {
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
@@ -707,7 +705,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/Hrds/Qa/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutQARecord(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
             var model = JsonConvert.DeserializeObject<QARecordViewModel>(jsonString);
@@ -805,28 +803,34 @@ namespace HRD.WebApi.Controllers
             {
                 foreach (var item in model.HrdMicros)
                 {
-                    var micro = _context.HrdMicros.FirstOrDefault(f => f.Id == item.Id);
-
-                    if (micro != null)
+                    HrdMicro micro = null;
+                    if(item.Id > 0)
                     {
-                        micro.Id = micro.Id;
-                        micro.HrdId = id;
-                        micro.Hour = item.Hour;
-                        micro.Count = item.Count;
-                        micro.Organism = item.Organism;
-                        _context.Entry(micro).State = EntityState.Modified;
+                        micro = _context.HrdMicros.FirstOrDefault(f => f.Id == item.Id);
+
+                        if (micro != null)
+                        {
+                            micro.HrdId = id;
+                            micro.Hour = item.Hour;
+                            micro.Count = item.Count;
+                            micro.Organism = item.Organism;
+                            _context.Entry(micro).State = item.IsDeleted ? EntityState.Deleted : EntityState.Modified;
+                        }
                     }
                     else
                     {
-                        micro = new HrdMicro();
-                        micro.HrdId = id;
-                        micro.Hour = item.Hour;
-                        micro.Count = item.Count;
-                        micro.Organism = item.Organism;
+                        micro = new HrdMicro
+                        {
+                            HrdId = id,
+                            Hour = item.Hour,
+                            Count = item.Count,
+                            Organism = item.Organism
+                        };
                         _context.Entry(micro).State = EntityState.Added;
+
+                        hrd.HrdMicros.Add(micro);
                     }
 
-                    hrd.HrdMicros.Add(micro);
                 }
             }
 
@@ -834,28 +838,35 @@ namespace HRD.WebApi.Controllers
             {
                 foreach (var item in model.HrdTestCosts)
                 {
-                    var testCost = _context.HrdtestCosts.FirstOrDefault(f => f.Id == item.Id);
-
-                    if (testCost != null)
+                    HrdtestCost testCost = null;
+                    if(item.Id > 0)
                     {
-                        testCost.Id = testCost.Id;
-                        testCost.Hrdid = id;
-                        testCost.Qty = item.Qty;
-                        testCost.Cost = item.Cost;
-                        testCost.TestName = item.TestName;
-                        _context.Entry(testCost).State = EntityState.Modified;
+                        testCost = _context.HrdtestCosts.FirstOrDefault(f => f.Id == item.Id);
+                        if(testCost != null)
+                        {
+                            testCost.Id = testCost.Id;
+                            testCost.Hrdid = id;
+                            testCost.Qty = item.Qty;
+                            testCost.Cost = item.Cost;
+                            testCost.TestName = item.TestName;
+                            _context.Entry(testCost).State = item.IsDeleted ? EntityState.Deleted : EntityState.Modified;
+                        }
                     }
                     else
                     {
-                        testCost = new HrdtestCost();
-                        testCost.Hrdid = id;
-                        testCost.Qty = item.Qty;
-                        testCost.Cost = item.Cost;
-                        testCost.TestName = item.TestName;
+                        testCost = new HrdtestCost
+                        {
+                            Hrdid = id,
+                            Qty = item.Qty,
+                            Cost = item.Cost,
+                            TestName = item.TestName
+                        };
                         _context.Entry(testCost).State = EntityState.Added;
+
+                        hrd.HrdtestCosts.Add(testCost);
                     }
 
-                    hrd.HrdtestCosts.Add(testCost);
+
                 }
             }
 
@@ -923,7 +934,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Hrds
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Qa")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<QARecordViewModel>> PostQARecord(QARecordViewModel model)
         {
             var hrd = new Hrd
@@ -1010,7 +1021,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Hrds/5
         [HttpDelete("Qa/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteQARecord(int id)
         {
             var hrd = await _context.Hrds
@@ -1051,7 +1062,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpPost("Recalculate")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public ActionResult<RecalculateViewModel> Recalculate(RecalculateViewModel model)
         {
             var recalculate = model.Clear + model.Sample + model.Scrap + model.ThriftStore + model.Donate;
