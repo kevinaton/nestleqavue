@@ -225,9 +225,12 @@ export default {
         let vm = this
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/CheckPermission`)
         .then((res) => {
-              vm.snackbar.snack = true
-              vm.snackbar.snackColor = 'info'
-              vm.snackbar.snackText = res.data
+          if(res.data !== "")
+            {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'info'
+                vm.snackbar.snackText = res.data
+            }
           })
           .catch(err => {
               vm.snackbar.snack = true
