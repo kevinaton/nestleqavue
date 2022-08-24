@@ -44,13 +44,13 @@
     />
     </template>
     <template v-slot:[`item.typeName`]="props">
-    <EditTableLookup
+    <EditDropdownLookup
         :table="props.item.typeName"
         editData="typeName"
         :data="props.item"
         :rules="rules"
         :input="snackbar"
-        @change="(value) => { props.item.typeName = value }"        
+        @change="(value, id) => {props.item.typeName = value, props.item.dropDownTypeId = id}"        
     />
     </template>
     <template v-slot:[`item.value`]="props">
@@ -106,6 +106,7 @@ import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
 import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
+import EditDropdownLookup from '@/components/TableElements/EditDropdownLookup.vue'
 
 export default {
     components: {
@@ -118,6 +119,7 @@ export default {
         EditCheckboxLookup,
         EditTableLookup,
         TablePagination,
+        EditDropdownLookup
     },
     data: () => ({
     loading:true,
@@ -287,6 +289,10 @@ export default {
             })
         },
 
+        updateLookup(value, id) {
+            
+            props
+        }
     },
 }
 </script>
