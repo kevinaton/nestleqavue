@@ -52,12 +52,11 @@
                     md="6"
                     >
                         <v-select
-                            v-if="forms[0].visible"
-                            v-model="forms[0].value"
-                            :items="forms[0].select"
-                            :label="forms[0].label"
-                            :type="forms[0].type"
-                            @click="fetchDropdownId"
+                            v-if="forms[4].visible"
+                            v-model="forms[4].value"
+                            :items="forms[4].select"
+                            :label="forms[4].label"
+                            :type="forms[4].type"
                         ></v-select>
                     </v-col>
                     <v-col
@@ -128,7 +127,7 @@
 <script>
 import Export from '@/components/Exportcsv.vue'
 export default {
-    name:'SimpleToolbar',
+    name:'LookupToolbar',
     components: {
         Export,
     },
@@ -191,9 +190,13 @@ export default {
     data: () => ({
         searchInput:'',
         dialog:false,
-        origVal:[]
+        origVal:[],
+        lookupTypes:[]
     }),
     emits: ["change"],
+    created() {
+        this.fetchTypeName()
+    },
     methods: {
         searchVal(value) {
             this.searchInput = value
@@ -206,10 +209,14 @@ export default {
             }
         },
         save() {
-            let params={}
+            let params={},
+                vm = this,
+                typeId = vm.lookupTypes.find(x => x.name === vm.forms[4].value)
+
             for(let i=0; i < this.forms.length; i++) {
                 params[this.forms[i].name] = this.forms[i].value
             }
+            params.dropDownTypeId = vm.forms[0].value = typeId.id
             this.$axios.post(`${process.env.VUE_APP_API_URL}/Lookup/items`,  params)
             .then(response => 
             {
@@ -235,23 +242,25 @@ export default {
                 this.$parent.$parent.$parent.$parent.fetchData()
             })
         },
-        fetchDropdownId() {
+        fetchTypeName() {
             let vm = this
-            vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
-            .then((res) => {
-                vm.forms[0].select = res.data.map(({id}) => id)
-                console.log(vm.forms[0])
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-            .finally(() => {
-                vm.loading = false
-            })
+            if(vm.forms[4].select.length == 0) {
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
+                .then((res) => {
+                    vm.forms[4].select = res.data.map(({name}) => name)
+                    vm.lookupTypes = res.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => {
+                    vm.loading = false
+                })
+            }
         }
     }
 }    
