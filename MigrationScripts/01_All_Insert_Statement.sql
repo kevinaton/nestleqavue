@@ -74,7 +74,7 @@ SELECT
 		[AutoNum],
 		[Plant],
 		[Originator],
-		[HRD],
+		1,
 		[DayCode],
 		[Line],
 		[Shift],
