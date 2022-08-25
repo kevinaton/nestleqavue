@@ -60,8 +60,28 @@
       </template>
 
       <template v-slot:[`item.type`]="{ item }">
-        <TypeIcons 
-          :item="item.type"
+        <TypeIcons v-if="item.isHRD"
+          :item="'hrd'"
+          :input="qatoolbar"
+        />
+        <TypeIcons v-if="item.isPest"
+          :item="'pest'"
+          :input="qatoolbar"
+        />
+        <TypeIcons v-if="item.isSMI"
+          :item="'smi'"
+          :input="qatoolbar"
+        />
+        <TypeIcons v-if="item.isNR"
+          :item="'nr'"
+          :input="qatoolbar"
+        />
+        <TypeIcons v-if="item.isFM"
+          :item="'fm'"
+          :input="qatoolbar"
+        />
+        <TypeIcons v-if="item.isMicro"
+          :item="'micro'"
           :input="qatoolbar"
         />
       </template>
@@ -165,7 +185,7 @@
           value: 'id',
         },
         { text: 'Daycode', value: 'dayCode' },
-        { text: 'Type', value: 'type'},
+        { text: 'Type', value: 'type', sortable: false},
         { text: 'FERT', value: 'fert' },
         { text: 'Product Description', value: 'productDescription' },
         { text: 'Line', value: 'line' },
