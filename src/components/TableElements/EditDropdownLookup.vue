@@ -1,6 +1,6 @@
 <template>
     <v-edit-dialog
-        :return-value.sync="selectType.name"
+        :return-value.sync="selectType"
         light
         @save="save($event)"
         @cancel="cancel"
@@ -8,7 +8,7 @@
         {{ table }}
         <template v-slot:input>
             <v-autocomplete
-                :value="selectType.name"
+                :value="selectType"
                 :items="items"
                 item-text="name"
                 item-value="name"
@@ -16,7 +16,7 @@
                 @keydown="keyType"
                 @click="lookupTypes"
                 @input="updateValue($event)"
-                :rules="[rules.counter, rules.required]"
+                :rules="[rules.required]"
                 :type="type"
                 persistent
                 return-object
@@ -72,19 +72,18 @@ export default {
         save () { 
             let vm = this
             if(vm.table != null){
-                let value = vm.origVal = vm.table = selectType.name,
-                typeId = this.items.find(x => x.name === value)
+                vm.origVal = vm.table = vm.selectType.name
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Lookup/items/${vm.data.id}`,  {
                     id: vm.data.id,
-                    dropDownTypeId: typeId.id,
+                    dropDownTypeId: vm.selectType.id,
                     value: vm.data.value,
                     sortOrder: vm.data.sortOrder,
                     isActive: vm.data.isActive,
-                    typeName: value
+                    typeName: vm.selectType.name
                 })
                 .then(response => 
                 {
-                    vm.$emit('change', value, typeId.id)
+                    vm.$emit('change', vm.selectType.name, vm.selectType.id)
                     response.status
                     vm.input.snack = true
                     vm.input.snackColor = 'success'
@@ -113,10 +112,10 @@ export default {
             let vm = this
             if(value != null) { 
                 this.selectType = {
-                    id:this.data.id,
-                    name:value
+                    id:value.id,
+                    name:value.name
                 }
-                vm.$emit('change', value, vm.data.dropDownTypeId)
+                vm.$emit('change', value.name, value.id)
             }
             else {
                 vm.$emit('change', this.origVal, vm.data.dropDownTypeId)
