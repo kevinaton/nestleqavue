@@ -126,7 +126,23 @@
                             :type="forms[6].type"
                         ></v-select>
                     </v-col>
+
+                <!--Start for country-->
+                    <v-col
+                    cols="12"
+                    sm="6"
+                    md="6"
+                    >
+                        <v-text-field
+                            v-if="forms[7].visible"
+                            v-model="forms[7].value" 
+                            :label="forms[7].label" 
+                            :type="forms[7].type"
+                        ></v-text-field>
+                    </v-col>
+              <!--End for country-->
                 </v-row>
+
                 </v-container>
             </v-card-text>
 
