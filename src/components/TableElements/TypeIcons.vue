@@ -45,13 +45,13 @@ export default {
     }),
     methods: {
         checkType() {
-            if(this.item == null){
-                this.iconType = "mdi-alert-circle-outline"
-                this.iconName = "no data"
-            } else {
+            // if(this.item == null || this.item == ""){
+            //     this.iconType = "mdi-alert-circle-outline"
+            //     this.iconName = "no data"
+            // } else {
                 this.iconType = this[this.item].icon
                 this.iconName = this[this.item].name
-            }
+            // }
         }
     },
 }
