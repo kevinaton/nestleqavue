@@ -103,7 +103,7 @@
                         <v-col>
                             <v-data-table
                                 :headers="input.microHeaders"
-                                :items="inpValue.hrdMicros"
+                                :items="tempMicroTable"
                                 :item-key="microIndex"
                                 class="mb-6 pt-0 elevation-1"
                             >
@@ -369,6 +369,7 @@ export default {
         delItem:'',
         microIndex:'0',
         testIndex:'0',
+        tempMicroTable:[],
         micro: {
             id: 0,
             hrdId: 0,
@@ -395,6 +396,11 @@ export default {
             return obj
         },
     },
+    created() {
+        this.tempMicroTable = this.inpValue.hrdMicros
+        console.log(this.inpValue.hrdMicros)
+        console.log(this.tempMicroTable)
+    },
     methods: {
         close () {
             this.input.dialog = false,
@@ -414,14 +420,22 @@ export default {
                 hrdId: this.inpValue.id,
                 hour: this.micro.hour,
                 count: this.micro.count,
-                organism: this.micro.organism
+                organism: this.micro.organism,
+                isDeleted: false
             }
             this.microIndex += 1
             this.inpValue.hrdMicros.push(addMicro)
             this.close()
         },
         deleteMicroItem(item) {
-            this.inpValue.hrdMicros.splice(this.inpValue.hrdMicros.indexOf(item), 1);
+            console.log(this.inpValue.hrdMicros)
+            this.tempMicroTable.map((value, index) => {
+                if(item.hour == value.hour && item.id == value.id) {
+                    this.inpValue.hrdMicros[index].isDeleted = true
+                    console.log(this.tempMicroTable)
+                    this.tempMicroTable.splice(this.tempMicroTable.indexOf(value), 1)
+                }
+            })
         },
         deleteTestingItem(item) {
             this.inpValue.hrdTestCosts.splice(this.inpValue.hrdTestCosts.indexOf(item), 1);
@@ -444,7 +458,8 @@ export default {
                 hrdId:this.inpValue.id,
                 testName:this.testing.testName,
                 qty:this.testing.qty,
-                cost:this.testing.cost
+                cost:this.testing.cost,
+                isDeleted: false
             }
             this.testIndex += 1
             this.inpValue.hrdTestCosts.push(addTesting)
