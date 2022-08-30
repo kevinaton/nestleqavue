@@ -120,9 +120,6 @@
                                         >
                                         <template v-slot:activator="{ on, attrs }">
                                         <v-btn
-                                            color="primary"
-                                            dark
-                                            large
                                             class="mb-2 ml-5"
                                             v-bind="attrs"
                                             v-on="on"
@@ -228,9 +225,6 @@
                                         >
                                         <template v-slot:activator="{ on, attrs }">
                                         <v-btn
-                                            color="primary"
-                                            dark
-                                            large
                                             class="mb-2 ml-5"
                                             v-bind="attrs"
                                             v-on="on"
