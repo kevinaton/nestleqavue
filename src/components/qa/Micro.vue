@@ -194,13 +194,13 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <template v-slot:[`item.actions`]="{ item }">
+                                <template v-slot:[`item.actions`]="{ item, index }">
                                     <v-hover
                                         v-slot="{ hover }"
                                         open-delay="200"
                                     >
                                         <v-icon
-                                            @click="deleteMicroItem(item)"
+                                            @click="deleteMicroItem(item, index)"
                                             :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                             :class="{ 'on-hover': hover }"
                                         >
@@ -215,7 +215,7 @@
                         <v-col>
                             <v-data-table
                                 :headers="input.testHeaders"
-                                :items="inpValue.hrdTestCosts"
+                                :items="tempTestTable"
                                 :item-key="testIndex"
                             >
                                 <template v-slot:top>
@@ -302,13 +302,13 @@
                                         </v-dialog>
                                     </v-toolbar>
                                 </template>
-                                <template v-slot:[`item.actions`]="{ item }">
+                                <template v-slot:[`item.actions`]="{ item, index }">
                                     <v-hover
                                         v-slot="{ hover }"
                                         open-delay="200"
                                     >
                                         <v-icon
-                                            @click="deleteTestingItem(item)"
+                                            @click="deleteTestingItem(item, index)"
                                             :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                             :class="{ 'on-hover': hover }"
                                         >
@@ -370,7 +370,9 @@ export default {
         microIndex:'0',
         testIndex:'0',
         tempMicroTable:[],
+        tempTestTable:[],
         micro: {
+            index: 0,
             id: 0,
             hrdId: 0,
             hour:0,
@@ -394,18 +396,16 @@ export default {
                 this.input.calendarMicro.menu=false
             }
             return obj
-        },
+        }
     },
     created() {
-        this.tempMicroTable = this.inpValue.hrdMicros
-        console.log(this.inpValue.hrdMicros)
-        console.log(this.tempMicroTable)
+        this.getMicroTable()
+        this.getTestTable()
     },
     methods: {
         close () {
             this.input.dialog = false,
             this.micro = {
-                index: this.microIndex,
                 id: 0,
                 hrdId: 0,
                 hour:0,
@@ -415,7 +415,6 @@ export default {
         },
         saveMicro() {
             let addMicro = {
-                index:this.microIndex,
                 id: 0,
                 hrdId: this.inpValue.id,
                 hour: this.micro.hour,
@@ -425,25 +424,22 @@ export default {
             }
             this.microIndex += 1
             this.inpValue.hrdMicros.push(addMicro)
+            this.tempMicroTable.push(addMicro)
+            this.$parent.$parent.$parent.submitQA(true)
+            this.$parent.$parent.$parent.fetchQaRecords()
             this.close()
         },
-        deleteMicroItem(item) {
-            console.log(this.inpValue.hrdMicros)
-            this.tempMicroTable.map((value, index) => {
-                if(item.hour == value.hour && item.id == value.id) {
-                    this.inpValue.hrdMicros[index].isDeleted = true
-                    console.log(this.tempMicroTable)
-                    this.tempMicroTable.splice(this.tempMicroTable.indexOf(value), 1)
-                }
-            })
+        deleteMicroItem(item, index) {
+            this.inpValue.hrdMicros[index].isDeleted = true
+            this.tempMicroTable.splice(index, 1)
         },
-        deleteTestingItem(item) {
-            this.inpValue.hrdTestCosts.splice(this.inpValue.hrdTestCosts.indexOf(item), 1);
+        deleteTestingItem(item, index) {
+            this.inpValue.hrdTestCosts[index].isDeleted = true
+            this.tempTestTable.splice(index, 1)
         },
         testClose () {
             this.input.testDialog = false
             this.testing = {
-                index: this.testIndex,
                 id:0,
                 hrdId:0,
                 testName:'',
@@ -453,7 +449,6 @@ export default {
         },
         testSave () {
             let addTesting = {
-                index: this.testIndex,
                 id:0,
                 hrdId:this.inpValue.id,
                 testName:this.testing.testName,
@@ -463,8 +458,39 @@ export default {
             }
             this.testIndex += 1
             this.inpValue.hrdTestCosts.push(addTesting)
+            this.tempTestTable.push(addTesting)
+            this.$parent.$parent.$parent.submitQA(true)
+            this.$parent.$parent.$parent.fetchQaRecords()
             this.testClose()
         },
-    },
+        getMicroTable() {
+            for(let x=0; x < this.inpValue.hrdMicros.length; x++){
+            this.tempMicroTable.push(
+                {
+                    count: this.inpValue.hrdMicros[x].count,
+                    hour: this.inpValue.hrdMicros[x].hour,
+                    hrdId: this.inpValue.hrdMicros[x].hrdId,
+                    id: this.inpValue.hrdMicros[x].id,
+                    isDeleted: this.inpValue.hrdMicros[x].isDeleted,
+                    organism: this.inpValue.hrdMicros[x].organism
+                }
+            )
+            }
+        },
+        getTestTable() {
+            for(let x=0; x < this.inpValue.hrdTestCosts.length; x++){
+            this.tempTestTable.push(
+                {
+                    cost: this.inpValue.hrdTestCosts[x].cost,
+                    hrdId: this.inpValue.hrdTestCosts[x].hrdId,
+                    id: this.inpValue.hrdTestCosts[x].id,
+                    isDeleted: this.inpValue.hrdTestCosts[x].isDeleted,
+                    qty: this.inpValue.hrdTestCosts[x].qty,
+                    testName: this.inpValue.hrdTestCosts[x].testName
+                }
+            )
+            }
+        }
+    }
 }
 </script>
