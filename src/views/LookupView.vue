@@ -44,13 +44,13 @@
     />
     </template>
     <template v-slot:[`item.typeName`]="props">
-    <EditTableLookup
+    <EditDropdownLookup
         :table="props.item.typeName"
         editData="typeName"
         :data="props.item"
         :rules="rules"
         :input="snackbar"
-        @change="(value) => { props.item.typeName = value }"        
+        @change="(value, id) => {props.item.typeName = value, props.item.dropDownTypeId = id}"        
     />
     </template>
     <template v-slot:[`item.value`]="props">
@@ -106,6 +106,7 @@ import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditCheckboxLookup from '@/components/TableElements/EditCheckboxLookup.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
 import EditTableLookup from '@/components/TableElements/EditTableLookup.vue'
+import EditDropdownLookup from '@/components/TableElements/EditDropdownLookup.vue'
 
 export default {
     components: {
@@ -118,6 +119,7 @@ export default {
         EditCheckboxLookup,
         EditTableLookup,
         TablePagination,
+        EditDropdownLookup
     },
     data: () => ({
     loading:true,
@@ -165,7 +167,6 @@ export default {
     headers: [
         { text: 'Type Name', sortable: true, value: 'typeName' },
         { text: 'Value', sortable: true, value: 'value' },
-        { text: 'Dropdown Type ID', sortable: true, value: 'dropDownTypeId' },
         { text: 'Sort Order', sortable: true, value: 'sortOrder' },
         { text: 'Status', sortable: true, value: 'isActive' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
@@ -183,11 +184,11 @@ export default {
         },
     ],
     forms:[
-        {index:0, name:'dropDownTypeId', label:'Dropdown Type ID', type:'Number', select:[], value:'', visible:true},
+        {index:0, name:'dropDownTypeId', label:'Dropdown Type ID', type:'Number', value:'', visible:true},
         {index:1, name:'value', label:'Value', type:'', value:'', visible:true},
         {index:2, name:'sortOrder', label:'Sort Order', type:'Number', value:'', visible:true},
         {index:3, name:'isActive', label:'Active?', type:'Boolean', select:[true, false], value:null, visible:true},
-        {index:4, name:'typeName', label:'Type Name', type:'', value:'', visible:true},
+        {index:4, name:'typeName', label:'Type Name', type:'',  select:[], value:'', visible:true},
         {index:5, name:'id', label:'ID', type:'Number', value:0, visible:false},
     ]
     }),
@@ -287,6 +288,10 @@ export default {
             })
         },
 
+        updateLookup(value, id) {
+            
+            props
+        }
     },
 }
 </script>

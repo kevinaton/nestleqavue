@@ -38,14 +38,14 @@
       <template max-width="200px" v-slot:[`item.productDescription`]="{ value }">
         <TextTruncate 
           :input="value"
-          style="max-width: 250px"
+          style="max-width: 200px"
         />
       </template>
 
       <template v-slot:[`item.shortDescription`]="{ value }">
         <TextTruncate 
           :input="value"
-          style="max-width: 250px"
+          style="max-width: 200px"
         />
       </template>
 
@@ -181,11 +181,10 @@
         {
           text: 'Report #',
           align: 'start',
-          sortable: true,
           value: 'id',
         },
         { text: 'Daycode', value: 'dayCode' },
-        { text: 'Type', value: 'type', sortable: false},
+        { text: 'Type', value: 'type', sortable: false, width:'10%'},
         { text: 'FERT', value: 'fert' },
         { text: 'Product Description', value: 'productDescription' },
         { text: 'Line', value: 'line' },
