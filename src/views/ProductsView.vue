@@ -250,6 +250,7 @@
         {index:4, name:'costPerCase', label:'Cost/Case', type:'Number', value:'', visible:true},
         {index:5, name:'noBbdate', label:'No Birth Date', type:'Boolean', select:[true, false], value:null, visible:true},
         {index:6, name:'holiday', label:'Holiday', type:'Boolean', select:[true, false], value:null, visible:true},
+        {index:7, name:'country', label:'Country', type:'', value:'', visible:true},
       ]
     }),
 
