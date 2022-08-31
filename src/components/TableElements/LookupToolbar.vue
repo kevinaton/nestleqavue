@@ -19,6 +19,11 @@
             :snackbar="snackbar"
             :util="util"
         />
+
+        <FilterLookup
+            :items="forms[4].select"
+            @change="searchVal($event)"
+        />
         
         <!-- Add Lookup data -->
         <v-dialog
@@ -126,10 +131,13 @@
 
 <script>
 import Export from '@/components/Exportcsv.vue'
+import FilterLookup from '@/components/TableElements/FilterLookup.vue'
+
 export default {
     name:'LookupToolbar',
     components: {
         Export,
+        FilterLookup
     },
     props: {
         table: {

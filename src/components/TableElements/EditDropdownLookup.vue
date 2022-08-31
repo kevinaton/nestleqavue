@@ -13,7 +13,7 @@
                 item-text="name"
                 item-value="name"
                 :placeholder="selectType.name"
-                @keydown="keyType"
+                @keydown="lookupTypes"
                 @click="lookupTypes"
                 @input="updateValue($event)"
                 :rules="[rules.required]"
@@ -137,31 +137,12 @@ export default {
                 vm.loading = true
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
                 .then((res) => {
-                    this.items = res.data
-                })
-                .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-                .finally(() => {
-                    vm.loading = false
-                })
-            }
-        },
-
-        keyType() {
-            let vm = this
-            if(!vm.items.length) {
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
-                .then((res) => {
                     vm.items = res.data
                 })
                 .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
                 .finally(() => {
