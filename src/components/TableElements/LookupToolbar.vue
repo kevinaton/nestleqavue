@@ -5,7 +5,7 @@
 
         <!-- Search input -->
         <v-text-field
-            :value="searchInput"
+            :value="tableOptions.searchValue"
             append-icon="mdi-magnify"
             label="Search"
             single-line
@@ -22,6 +22,7 @@
 
         <FilterLookup
             :items="forms[4].select"
+            :searchValue="tableOptions.searchValue"
             @change="searchVal($event)"
         />
         

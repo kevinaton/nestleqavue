@@ -55,12 +55,28 @@ export default {
             type: Array,
             default: () => [],
             required: false
+        },
+        searchValue: {
+            type: String,
+            default: '',
+            required: false
         }
     },
     emits: ['change'],
     methods: {
         filterByLookup() {
-            this.$emit('change', this.lookupSelected)
+            if(this.lookupSelected != undefined || null) {
+                
+                this.$emit('change', this.lookupSelected)
+                console.log('bwisit')
+            } else {
+                this.$emit('change', '')
+            }
+        }
+    },
+    watch: {
+        searchValue:function() {
+            this.lookupSelected = this.searchValue
         }
     }
 }
