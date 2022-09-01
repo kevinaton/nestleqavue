@@ -36,6 +36,7 @@
         btnName="Add Product"
         :adding="true"
         :forms="forms"
+        :rules="rules"
         :toolbar="toolbar"
         :table="products"
         :snackbar="snackbar"

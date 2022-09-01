@@ -66,9 +66,7 @@ export default {
     methods: {
         filterByLookup() {
             if(this.lookupSelected != undefined || null) {
-                
                 this.$emit('change', this.lookupSelected)
-                console.log('bwisit')
             } else {
                 this.$emit('change', '')
             }
