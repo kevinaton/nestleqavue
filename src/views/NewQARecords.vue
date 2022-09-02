@@ -15,10 +15,12 @@
                 class="ma-0"
                 :input="backbtn" 
                 />
-                
-                <h2 class="mb-4">New QA Record</h2>
+                <h2 class="mb-4">QA Record Details</h2>
                 <p class="mb-0">Check the following to show the form.</p>
-                <Newqacheckbox :inpValue="qaRec" />
+                <Newqacheckbox
+                    :inpValue="qaRec" 
+                    @change="scrollExpansion"
+                />
             </v-col>
         </v-row>
         <v-expansion-panels
@@ -33,48 +35,66 @@
                 :rules="rules"
                 @change="upFile($event)"
             />
-
-            <HRD 
-                :input="qaOptions"
-                :inpValue="getQaRec"
-                :rules="rules"
-                v-if="qaRec.isHRD" 
-            />
-
-            <Pest
-                :inpValue="getQaRec"
-                :rules="rules"
-                v-if="qaRec.isPest"
-            />
-
-            <SMI
-                :input="getQaRec"
-                :rules="rules"
-                :snackbar="snackbar"
-                v-if="qaRec.isSMI"
-            />
-            
-            <FM 
-                :inpValue="getQaRec"
-                :rules="rules"
-                v-if="qaRec.isFM"
-            />
-
-            <NR 
-                :input="qaOptions"
-                :inpValue="getQaRec"
-                :rules="rules"
-                v-if="qaRec.isNR"
-            />            
-
-            <Micro 
-                :input="qaOptions"
-                :inpValue="getQaRec"
-                :rules="rules"
-                :snackbar="snackbar"
-                v-if="qaRec.isMicro"
-            />
-
+            <v-expansion-panel id="hrd" class="mt-2">
+                <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">HRD</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isHRD">
+                <HRD 
+                    :input="qaOptions"
+                    :inpValue="getQaRec"
+                    :rules="rules"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel id="pest" class="mt-2">
+                <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">Pest</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isPest">
+                <Pest
+                    id="pest"
+                    :inpValue="getQaRec"
+                    :rules="rules"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel id="smi" class="mt-2">
+            <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">SMI</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isSMI">
+                <SMI
+                    :input="getQaRec"
+                    :rules="rules"
+                    :snackbar="snackbar"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel id="fm" class="mt-2">
+                <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">FM</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isFM">
+                <FM 
+                    :inpValue="getQaRec"
+                    :rules="rules"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel id="nr" class="mt-2">
+                <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">NR</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isNR">
+                <NR 
+                    :input="qaOptions"
+                    :inpValue="getQaRec"
+                    :rules="rules"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel id="micro" class="mt-2">
+                <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">Micro</v-expansion-panel-header>
+                <v-expansion-panel-content v-if="qaRec.isMicro">
+                <Micro 
+                    :input="qaOptions"
+                    :inpValue="getQaRec"
+                    :rules="rules"
+                    :snackbar="snackbar"
+                />
+                </v-expansion-panel-content>
+            </v-expansion-panel>
         </v-expansion-panels>
         
         <SubmitDiscard 
@@ -366,6 +386,14 @@ export default {
                     console.warn(err)
                 })
             }
+        },
+        scrollExpansion(value, status) {
+            if(status == true) {
+                this.$vuetify.goTo(`#${value}`)
+            }
+
+            console.log(`#${value}`)
+            console.log(status)
         }
     },
     computed: {

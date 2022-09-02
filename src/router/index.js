@@ -17,6 +17,7 @@ import PestLog from '../views/PestLog.vue'
 import RawMaterials from '../views/RawMaterialsView.vue'
 import CreateRecord from '../views/CreateRecord.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [

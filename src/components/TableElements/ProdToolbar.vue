@@ -41,9 +41,8 @@
             <v-card>
                 <v-form
                 ref="form"
-                class="pa-6"
+                class="pa-4"
                 v-model="valid"
-                
                 >
                 <v-card-title>
                     <span class="text-h5">{{ formTitle }}</span>
@@ -104,6 +103,7 @@
                                 v-model="forms[4].value"
                                 :label="forms[4].label"
                                 :type="forms[4].type"
+                                :rules="[rules.required, rules.counter]"
                             ></v-text-field>
                         </v-col>
                         <v-col
@@ -165,7 +165,7 @@
                         :disabled="!valid"
                         light
                         color="primary"
-                        @click="save(validate)"
+                        @click="save(valid)"
                     >
                     Save
                     </v-btn>
@@ -259,9 +259,6 @@ export default {
         },
         close () {
             this.dialog = false
-            for(let i=0; i < this.forms.length; i++) {
-                this.forms[i].value = ''
-            }
         },
         save(value) {
             let params={}
@@ -288,15 +285,12 @@ export default {
                 })
                 .finally(() => {
                     this.close()
-                    for(let i=0; i < this.forms.length; i++) {
-                        this.forms[i].value = ''
-                    }
                     this.$parent.$parent.$parent.$parent.fetchData()
                 })
             }
         },
         validate() {
-            return this.$refs.form.validate()
+            this.$refs.form.validate()
         },
     }
 }    

@@ -98,7 +98,6 @@ export default {
             this.validateValue = this.$refs.form.validate()
         },
         submitUpdate() {
-            console.log(this.validateValue)
             let value = true
             this.$emit('change', value)
         }

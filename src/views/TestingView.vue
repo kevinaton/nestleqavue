@@ -185,9 +185,9 @@
             },
         ],
         forms: [
-            {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true},
-            {index:1, name:'testName', label:'Test Name', type:'', value:'', visible:true},
-            {index:2, name:'testCost', label:'Test Cost', type:'Number', value:'', visible:true},
+            {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true, rules:value => !!value || 'Required'},
+            {index:1, name:'testName', label:'Test Name', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
+            {index:2, name:'testCost', label:'Test Cost', type:'Number', value:'', visible:true, rules:value => !!value || 'Required'},
             {index:3, name:'id', value:0, visible:false},
         ]
         }),
@@ -205,7 +205,7 @@
         },
 
         methods: {
-        fetchData () {
+        fetchData() {
             let vm = this 
             vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
