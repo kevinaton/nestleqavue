@@ -4,7 +4,6 @@
         v-model="valid"
         elevation="0"
         class="mx-auto mt-6 pt-0 pa-8"
-        lazy-validation
     >   
         <SnackBar 
         :input="snackbar"
@@ -76,12 +75,80 @@
             />
 
         </v-expansion-panels>
-        
-        <SubmitDiscard 
-            :input="submitdiscard"
-            :valid="valid"
-            @change="submitQA($event)"
-        />
+
+        <v-row>
+            <v-col class="mt-8 d-flex flex-row-reverse align-end">
+                <v-dialog
+                    v-model="submitdiscard.submitDialog"
+                    max-width="290"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn @click="validate" color="primary" class="mr-3" :disabled="!valid" light large v-bind="attrs" v-on="on">
+                            Save
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title class="text-h5">
+                        Are you sure?
+                        </v-card-title>
+                        <v-card-text>You are about to submit your entries.</v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color=""
+                            text
+                            large
+                            @click="submitdiscard.submitDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        <v-btn
+                            color="primary"
+                            text
+                            large
+                            @click="submitdiscard.submitDialog = false, submitQA(validate)"
+                        >
+                            Save
+                        </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+                <v-dialog
+                    v-model="submitdiscard.discardDialog"
+                    max-width="290"
+                >
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn class="mr-3" light large v-bind="attrs" v-on="on">
+                            Cancel
+                        </v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title class="text-h5">
+                        Are you sure?
+                        </v-card-title>
+                        <v-card-text>Any unsaved data will be lost.</v-card-text>
+                        <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="primary"
+                            text
+                            @click="submitdiscard.discardDialog = false"
+                        >
+                            Back
+                        </v-btn>
+                        <v-btn
+                            color=""
+                            text
+                            to='/'
+                            @click="submitdiscard.discardDialog = false"
+                        >
+                            Cancel
+                        </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-col>
+        </v-row>
     </v-form>
 </template>
 
@@ -94,7 +161,6 @@ import FM from '@/components/qa/FM.vue'
 import NR from '@/components/qa/NR.vue'
 import Micro from '@/components/qa/Micro.vue'
 import Newqacheckbox from '@/components/FormElements/ShowPanelCheck.vue'
-import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
 import BackBtn from '@/components/FormElements/BackBtn.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 
@@ -109,7 +175,6 @@ export default {
         NR,
         Micro,
         Newqacheckbox,
-        SubmitDiscard,
         BackBtn,
         SnackBar
     },
@@ -421,7 +486,10 @@ export default {
             this.qaRec.dateOfResample = date
             this.qaRec.timeOfIncident = date
             this.qaRec.dateReceived = date
-        }
+        },
+        validate() {
+            return this.$refs.form.validate()
+        },
     },
     computed: {
         getQaRec(){

@@ -33,6 +33,7 @@
             title="Users"
             formTitle="Add User"
             btnName="Add User"
+            :rules="rules"
             :adding="true"
             :forms="forms"
             :toolbar="toolbar"
@@ -179,8 +180,8 @@ export default {
         },
     ],
     forms: [
-        {index:0, name:'name', label:'Name', type:'', value:'', visible:true},
-        {index:1, name:'userId', label:'User ID', type:'', value:'', visible:true},
+        {index:0, name:'name', label:'Name', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
+        {index:1, name:'userId', label:'User ID', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
         {index:2, name:'id', label:'ID', type:'', value:0, visible:false},
     ]
     }),

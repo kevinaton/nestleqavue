@@ -239,6 +239,7 @@ export default {
 
         getSearch(value) {
             let vm = this
+            vm.tableOptions.searchValue = value
             vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
         },
 
@@ -286,11 +287,6 @@ export default {
                 vm.loading = false, 
                 vm.tableOptions.page = pageInput
             })
-        },
-
-        updateLookup(value, id) {
-            
-            props
         }
     },
 }

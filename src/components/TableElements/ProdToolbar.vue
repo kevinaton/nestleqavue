@@ -39,131 +39,140 @@
             </v-btn>
             </template>
             <v-card>
-            <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
-
-            <v-card-text>
-                <v-container>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-text-field
-                            v-if="forms[1].visible"
-                            v-model="forms[1].value"
-                            :label="forms[1].label"
-                            :type="forms[1].type"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-text-field
-                            v-if="forms[2].visible"
-                            v-model="forms[2].value"
-                            :label="forms[2].label"
-                            :type="forms[2].type"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="12"
-                    md="12"
-                    >
-                        <v-text-field
-                            v-if="forms[3].visible"
-                            v-model="forms[3].value"
-                            :label="forms[3].label"
-                            :type="forms[3].type"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-text-field
-                            v-if="forms[4].visible"
-                            v-model="forms[4].value"
-                            :label="forms[4].label"
-                            :type="forms[4].type"
-                        ></v-text-field>
-                    </v-col>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-select
-                            v-if="forms[5].visible"
-                            v-model="forms[5].value"
-                            :items="forms[5].select"
-                            :label="forms[5].label"
-                            :type="forms[5].type"
-                        ></v-select>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-select
-                            v-if="forms[6].visible"
-                            v-model="forms[6].value"
-                            :items="forms[6].select"
-                            :label="forms[6].label"
-                            :type="forms[6].type"
-                        ></v-select>
-                    </v-col>
-
-                <!--Start for country-->
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    >
-                        <v-text-field
-                            v-if="forms[7].visible"
-                            v-model="forms[7].value" 
-                            :label="forms[7].label" 
-                            :type="forms[7].type"
-                        ></v-text-field>
-                    </v-col>
-              <!--End for country-->
-                </v-row>
-
-                </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
+                <v-form
+                ref="form"
+                class="pa-4"
+                v-model="valid"
                 >
-                Cancel
-                </v-btn>
-                <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-                >
-                Save
-                </v-btn>
-            </v-card-actions>
-            </v-card>
+                <v-card-title>
+                    <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
+
+                <v-card-text>
+                    <v-container>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-text-field
+                                v-if="forms[1].visible"
+                                v-model="forms[1].value"
+                                :label="forms[1].label"
+                                :type="forms[1].type"
+                                :rules="[rules.required]"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-text-field
+                                v-if="forms[2].visible"
+                                v-model="forms[2].value"
+                                :label="forms[2].label"
+                                :type="forms[2].type"
+                                :rules="[rules.required, rules.fert]"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        sm="12"
+                        md="12"
+                        >
+                            <v-text-field
+                                v-if="forms[3].visible"
+                                v-model="forms[3].value"
+                                :label="forms[3].label"
+                                :type="forms[3].type"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-text-field
+                                v-if="forms[4].visible"
+                                v-model="forms[4].value"
+                                :label="forms[4].label"
+                                :type="forms[4].type"
+                                :rules="[rules.required, rules.counter]"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-select
+                                v-if="forms[5].visible"
+                                v-model="forms[5].value"
+                                :items="forms[5].select"
+                                :label="forms[5].label"
+                                :type="forms[5].type"
+                            ></v-select>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-select
+                                v-if="forms[6].visible"
+                                v-model="forms[6].value"
+                                :items="forms[6].select"
+                                :label="forms[6].label"
+                                :type="forms[6].type"
+                            ></v-select>
+                        </v-col>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        >
+                            <v-text-field
+                                v-if="forms[7].visible"
+                                v-model="forms[7].value" 
+                                :label="forms[7].label" 
+                                :type="forms[7].type"
+                                :rules="[rules.country, rules.required]"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+
+                    </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="close"
+                    >
+                    Cancel
+                    </v-btn>
+                    <v-btn
+                        :disabled="!valid"
+                        light
+                        color="primary"
+                        @click="save(valid)"
+                    >
+                    Save
+                    </v-btn>
+                </v-card-actions>
+                </v-form>
+            </v-card>    
+            
         </v-dialog>
     </v-toolbar>
 </template>
@@ -229,12 +238,18 @@ export default {
             type: String,
             default:'',
             required:false
+        },
+        rules: {
+            type: Object,
+            deafult: () => {},
+            required: false
         }
     },
     data: () => ({
         searchInput:'',
         dialog:false,
-        origVal:[]
+        origVal:[],
+        valid: false
     }),
     emits: ["change"],
     methods: {
@@ -244,40 +259,39 @@ export default {
         },
         close () {
             this.dialog = false
-            for(let i=0; i < this.forms.length; i++) {
-                this.forms[i].value = ''
-            }
         },
-        save() {
+        save(value) {
             let params={}
             for(let i=0; i < this.forms.length; i++) {
                 params[this.forms[i].name] = this.forms[i].value
             }
-            this.$axios.post(`${process.env.VUE_APP_API_URL}/Products`,  params)
-            .then(response => 
-            {
-                response.status
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'success'
-                this.snackbar.snackText = 'Data saved'
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = err.response.statusText || 'Something went wrong'
-                console.warn(err)
-                if(err.response.statusTest == 'Conflict') {
-                    location.reload()
-                }
-            })
-            .finally(() => {
-                this.close()
-                for(let i=0; i < this.forms.length; i++) {
-                    this.forms[i].value = ''
-                }
-                this.$parent.$parent.$parent.$parent.fetchData()
-            })
-        }
+            if(value == true) {
+                this.$axios.post(`${process.env.VUE_APP_API_URL}/Products`,  params)
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = err.response.statusText || 'Something went wrong'
+                    console.warn(err)
+                    if(err.response.statusTest == 'Conflict') {
+                        location.reload()
+                    }
+                })
+                .finally(() => {
+                    this.close()
+                    this.$parent.$parent.$parent.$parent.fetchData()
+                })
+            }
+        },
+        validate() {
+            this.$refs.form.validate()
+        },
     }
 }    
 </script>

@@ -39,48 +39,57 @@
             </v-btn>
             </template>
             <v-card>
-            <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-            </v-card-title>
+                <v-form
+                ref="form"
+                class="pa-6"
+                v-model="valid"
+                >
+                <v-card-title>
+                    <span class="text-h5">{{ formTitle }}</span>
+                </v-card-title>
 
-            <v-card-text>
-                <v-container>
-                <v-row>
-                    <v-col
-                    cols="12"
-                    sm="6"
-                    md="6"
-                    v-for="form in forms"
-                    :key="form.index"
+                <v-card-text>
+                    <v-container>
+                    <v-row>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-for="form in forms"
+                        :key="form.index"
+                        class="pl-0"
+                        >
+                            <v-text-field
+                                v-if="form.visible"
+                                v-model="form.value"
+                                :label="form.label"
+                                :type="form.type"
+                                :rules="[form.rules]"
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                    color="blue darken-1"
+                    text
+                    @click="close"
                     >
-                        <v-text-field
-                            v-if="form.visible"
-                            v-model="form.value"
-                            :label="form.label"
-                            :type="form.type"
-                        ></v-text-field>
-                    </v-col>
-                </v-row>
-                </v-container>
-            </v-card-text>
-
-            <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
-                >
-                Cancel
-                </v-btn>
-                <v-btn
-                color="blue darken-1"
-                text
-                @click="save"
-                >
-                Save
-                </v-btn>
-            </v-card-actions>
+                    Cancel
+                    </v-btn>
+                    <v-btn
+                    light
+                    color="primary"
+                    @click="save(valid), validate"
+                    :disabled="!valid"
+                    >
+                    Save
+                    </v-btn>
+                </v-card-actions>
+                </v-form>
             </v-card>
         </v-dialog>
     </v-toolbar>
@@ -145,14 +154,20 @@ export default {
         },
         apiUrl: {
             type: String,
-            default:'',
-            required:false
+            default: '',
+            required: false
+        },
+        rules: {
+            type: Object,
+            default: () => {},
+            required: false
         }
     },
     data: () => ({
         searchInput:'',
         dialog:false,
-        origVal:[]
+        origVal:[],
+        valid: false
     }),
     emits: ["change"],
     methods: {
@@ -162,39 +177,38 @@ export default {
         },
         close () {
             this.dialog = false
-            for(let i=0; i < this.forms.length; i++) {
-                this.forms[i].value = ''
-            }
         },
-        save() {
+        save(valid) {
             let params={}
             for(let i=0; i < this.forms.length; i++) {
                 params[this.forms[i].name] = this.forms[i].value
             }
-            this.$axios.post(`${process.env.VUE_APP_API_URL}/${this.apiUrl}`,  params)
-            .then(response => 
-            {
-                response.status
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'success'
-                this.snackbar.snackText = 'Data saved'
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = err.response.statusText || 'Something went wrong'
-                console.warn(err)
-                if(err.response.statusTest == 'Conflict') {
-                    location.reload()
-                }
-            })
-            .finally(() => {
-                this.close()
-                for(let i=0; i < this.forms.length; i++) {
-                    this.forms[i].value = ''
-                } 
-                this.$parent.$parent.$parent.$parent.fetchData()
-            })
+            if(valid == true) {
+                this.$axios.post(`${process.env.VUE_APP_API_URL}/${this.apiUrl}`,  params)
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = err.response.statusText || 'Something went wrong'
+                    console.warn(err)
+                    if(err.response.statusTest == 'Conflict') {
+                        location.reload()
+                    }
+                })
+                .finally(() => {
+                    this.close()
+                    this.$parent.$parent.$parent.$parent.fetchData()
+                })
+            }
+        },
+        validate() {
+            this.$refs.form.validate()
         }
     }
 }    

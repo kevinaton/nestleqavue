@@ -5,7 +5,7 @@
 
         <!-- Search input -->
         <v-text-field
-            :value="searchInput"
+            :value="tableOptions.searchValue"
             append-icon="mdi-magnify"
             label="Search"
             single-line
@@ -18,6 +18,12 @@
             :tableOptions="tableOptions"
             :snackbar="snackbar"
             :util="util"
+        />
+
+        <FilterLookup
+            :items="forms[4].select"
+            :searchValue="tableOptions.searchValue"
+            @change="searchVal($event)"
         />
         
         <!-- Add Lookup data -->
@@ -126,10 +132,13 @@
 
 <script>
 import Export from '@/components/Exportcsv.vue'
+import FilterLookup from '@/components/TableElements/FilterLookup.vue'
+
 export default {
     name:'LookupToolbar',
     components: {
         Export,
+        FilterLookup
     },
     props: {
         table: {
