@@ -68,7 +68,7 @@ namespace HRD.WebApi.Controllers
             //Search
             if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
             {
-                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
+                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString) || (f.TestCost != null && f.TestCost.ToString().Contains(filter.SearchString)));
             }
 
             var totalRecords = await query.CountAsync();
