@@ -27,7 +27,7 @@ const routes = [
     component: QaView
   },
   {
-    path: '/repor0t/Casecost',
+    path: '/report/Casecost',
     name: 'casecost',
     component: CaseCost
   },

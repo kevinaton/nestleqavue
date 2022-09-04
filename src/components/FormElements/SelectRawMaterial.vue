@@ -27,6 +27,11 @@ export default {
             default: '',
             required: false
         },
+        id: {
+            type: String,
+            default: '',
+            required: false
+        },
         rules: {
             type: Object,
             default: () => {},
@@ -49,10 +54,9 @@ export default {
     },
     methods: {
         initialOptions() {
-            let vm = this,
-                search = vm.inputValue.slice(0, 4)
+            let vm = this
             vm.loading = true            
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${search}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${vm.id}`)
                 .then((res) => {
                     let arr = []
                     res.data.forEach(item => {

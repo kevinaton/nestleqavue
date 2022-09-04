@@ -13,7 +13,8 @@
             <v-col>
                 <BackBtn 
                 class="ma-0"
-                :input="backbtn" 
+                :submitted="submitted"
+                :input="backbtn"
                 />
                 <h2 class="mb-4">QA Record Details</h2>
                 <p class="mb-0">Check the following to show the form.</p>
@@ -99,6 +100,7 @@
         
         <SubmitDiscard 
             :input="submitdiscard"
+            :submitted="submitted"
             :valid="valid"
             @change="submitQA($event)"
         />
@@ -257,7 +259,8 @@ export default {
             snackText: '',
         },
         valid:false,
-        tFile:null
+        tFile:null,
+        submitted:false
     }),
     created () {
         this.fetchQaRecords()
@@ -378,6 +381,7 @@ export default {
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.fetchQaRecords()
+                    vm.submitted = true
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
@@ -391,9 +395,6 @@ export default {
             if(status == true) {
                 this.$vuetify.goTo(`#${value}`)
             }
-
-            console.log(`#${value}`)
-            console.log(status)
         }
     },
     computed: {

@@ -41,7 +41,7 @@
             max-width="290"
         >
             <template v-slot:activator="{ on, attrs }">
-                <v-btn class="mr-3" light large v-bind="attrs" v-on="on">
+                <v-btn class="mr-3" :disabled="submitted" light large v-bind="attrs" v-on="on">
                     Cancel
                 </v-btn>
             </template>
@@ -84,6 +84,11 @@ export default {
             required: false,
         },
         valid: {
+            type: Boolean,
+            default: false,
+            required: false
+        },
+        submitted: {
             type: Boolean,
             default: false,
             required: false

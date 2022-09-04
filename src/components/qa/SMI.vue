@@ -4,6 +4,7 @@
             <v-col>
                 <SelectRawMaterial
                     :inpValue="input.materialNumber"
+                    :id="input.id"
                     :description="input.rawMaterialDescription"
                     :rules="rules"
                     :snackbar="snackbar"
