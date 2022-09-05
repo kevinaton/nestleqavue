@@ -28,8 +28,8 @@ export default {
             required: false
         },
         id: {
-            type: String,
-            default: '',
+            type: Number,
+            default: 0,
             required: false
         },
         rules: {

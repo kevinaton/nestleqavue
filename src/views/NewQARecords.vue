@@ -265,6 +265,7 @@ export default {
     created () {
         this.fetchQaRecords()
     },
+    emits: ["change"],
     methods: {
         fetchQaRecords() {
             let vm = this 
@@ -382,6 +383,7 @@ export default {
                     vm.snackbar.snackText = 'Data saved'
                     vm.fetchQaRecords()
                     vm.submitted = true
+                    this.$emit('change', true)
                 })
                 .catch(err => {
                     vm.snackbar.snack = true

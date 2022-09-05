@@ -133,7 +133,7 @@
                             color="primary"
                             text
                             large
-                            @click="submitdiscard.submitDialog = false, submitQA(validate)"
+                            @click="submitdiscard.submitDialog = false, submitQA(valid), validate"
                         >
                             Save
                         </v-btn>
@@ -405,6 +405,7 @@ export default {
     created () {
         this.currentDate()        
     },
+    emits: ["change"],
     methods: {
         upFile(value) {
             this.tFile = value
@@ -500,6 +501,7 @@ export default {
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.submitted = true
+                    this.$emit('change', true)
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
@@ -517,7 +519,7 @@ export default {
             this.qaRec.dateReceived = date
         },
         validate() {
-            return this.$refs.form.validate()
+            this.$refs.form.validate()
         },
         scrollExpansion(value, status) {
             if(status == true) {
