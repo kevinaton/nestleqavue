@@ -6,29 +6,37 @@
       >
       </v-navigation-drawer> -->
   
-      <Header />
+      <Header 
+      :submitted = input
+      />
       <v-main>
-        <router-view></router-view>
+        <router-view @change="updateValue($event)"></router-view>
       </v-main>
 
       <Footer />
     </v-app>
-    
-
-  </template>
+</template>
   
-  <script>
-    import Header from '@/components/Header.vue'
-    import Footer from '@/components/Footer.vue'
+<script>
+  import Header from '@/components/Header.vue'
+  import Footer from '@/components/Footer.vue'
 
-    export default {
-      components: {
-        Header,
-        Footer
-      },
+  export default {
+    components: {
+      Header,
+      Footer
+    },
+    data: () => ({
+      input:false
+    }),
+    methods: {
+      updateValue(submitted) {
+        this.input = submitted
+      }
     }
-  </script>
+  }
+</script>
 
-  <style>
-    @import './assets/styles/style.css';
-  </style>
+<style>
+  @import './assets/styles/style.css';
+</style>

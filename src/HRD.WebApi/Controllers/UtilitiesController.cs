@@ -519,7 +519,7 @@ namespace HRD.WebApi.Controllers
         public IActionResult ExportRawMaterials([FromQuery] ExportFilter filter)
         {
             var query = _context.RawMaterials
-                               .Select(s => new RawMaterialViewModel { Id = s.Id, Description = s.Description });
+                                .Select(s => new RawMaterialViewModel { Id = s.Id, Description = s.Description });
 
             //Sorting
             switch (filter.SortColumn)

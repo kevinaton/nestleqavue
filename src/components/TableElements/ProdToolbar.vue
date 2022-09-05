@@ -180,7 +180,7 @@
 <script>
 import Export from '@/components/Exportcsv.vue'
 export default {
-    name:'SimpleToolbar',
+    name:'ProdToolbar',
     components: {
         Export,
     },

@@ -168,8 +168,8 @@
         },
       ],
       forms: [
-        {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true},
-        {index:1, name:'laborCost', label:'Labor Cost', type:'Number', value:0, visible:true},
+        {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true, rules:value => value <= 9999 || 'Enter a lesser amount'},
+        {index:1, name:'laborCost', label:'Labor Cost', type:'Number', value:0, visible:true, rules:value => !!value || 'Required'},
       ]
     }),
 

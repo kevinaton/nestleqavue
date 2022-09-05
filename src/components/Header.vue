@@ -128,6 +128,13 @@ import SnackBar from '@/components/TableElements/SnackBar.vue'
 export default {
     name: 'Header',
     components: { SnackBar },
+    props: {
+      submitted: {
+        type: Boolean,
+        default: false,
+        required: false
+      }
+    },
     data: () => ({
       snackbar: {
         snack: false,
@@ -192,8 +199,17 @@ export default {
       },
       verify(value) {          
         if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail' ) {
-          this.initialValue = true
-          this.redirectvalue = value
+          if(this.submitted == true) {
+            this.initialValue = false
+            this.$router.push({name:value.name}).catch(()=>{})
+            if (this.selectedTab != 1 || 2) {
+              this.selectedAdmin = null
+              this.selectedReport = null
+            }
+          } else {
+            this.initialValue = true
+            this.redirectvalue = value
+          }
         } else {
           this.initialValue = false
           this.$router.push({name:value.name}).catch(()=>{})
