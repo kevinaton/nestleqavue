@@ -249,11 +249,13 @@
                 snackText: '',
             },
             recalculateTotal:0,
-            tFile:null
+            tFile:null,
+            submitted:false
         }),
         created() {
             this.fetchHRD()
         },
+        emits: ["change"],
         methods: {
             fetchHRD() {
             let vm = this 
@@ -391,6 +393,8 @@
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.fetchHRD()
+                    vm.submitted = true
+                    this.$emit('change', true)
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
