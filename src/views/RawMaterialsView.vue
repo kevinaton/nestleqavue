@@ -249,7 +249,7 @@
                 .catch(err => {
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    this.snackbar.snackText = err.response.statusText || 'Something went wrong'
                     console.warn(err)
                 })
                 .finally(() => {

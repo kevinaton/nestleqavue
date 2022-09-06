@@ -1,7 +1,6 @@
 <template>
     <v-edit-dialog
         :return-value.sync="table"
-        persistent
         @save="save($event)"
         @cancel="cancel"
     >
@@ -14,7 +13,6 @@
                 :type="type"
                 label="Edit"
                 single-line
-                persistent
             ></v-text-field>
         </template>
     </v-edit-dialog>
