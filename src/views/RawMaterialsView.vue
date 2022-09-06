@@ -29,7 +29,7 @@
             :data="delItem"
             url="RawMaterials"
         />
-        <SimpleToolbar 
+        <RawMaterialToolbar 
             title="Raw Materials"
             formTitle="Add Raw-material"
             btnName="Add Raw Material"
@@ -38,6 +38,7 @@
             :toolbar='toolbar'
             :table="rawMaterials"
             :snackbar="snackbar"
+            :materialId="materialId"
             util="RawMaterials"
             apiUrl="RawMaterials"
             :tableOptions="tableOptions"
@@ -79,7 +80,7 @@
 
 <script>
     import Breadcrumbs from '@/components/BreadCrumbs.vue'
-    import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
+    import RawMaterialToolbar from '@/components/TableElements/RawMaterialToolbar.vue'
     import ResetTable from '@/components/TableElements/ResetTable.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -90,7 +91,7 @@
     export default {
         components: {
             Breadcrumbs,
-            SimpleToolbar,
+            RawMaterialToolbar,
             ResetTable,
             SnackBar,
             RowDelete,
@@ -135,6 +136,7 @@
                 { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
             ],
             rawMaterials: [],
+            materialId: [],
             snackbar: {
                 snack: false,
                 snackColor: '',
@@ -158,6 +160,7 @@
             rules: {
                 required: value => !!value || 'Required.',
                 counter: value => value.length <= 50 || 'Input too long.',
+                checkId: value => value == materialId || 'Sayop!'
             },
             forms: [
                 {index:0, name:'id', label:'ID', type:'Number', value:'', visible:true},
@@ -169,23 +172,40 @@
                 let obj = {}
                 obj = this.tableOptions
                 return obj
-            },
+            }
         },
-        created () {
-            this.fetchData()
+        created() {
+            this.fetchData().then((res) => {
+                this.fetchAll()
+            })
         },
         methods: {
             fetchData() {
                 let vm = this 
-                vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+                return vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
                 .then((res) => {
                     vm.tableOptions.totalPages = res.data.totalPages
                     vm.tableOptions.itemsPerPage = res.data.pageSize
                     vm.tableOptions.page = res.data.pageNumber
-                    vm.tableOptions.totalRecords = res.data.totalRecords
                     vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
                     vm.rawMaterials = res.data.data
+                    vm.tableOptions.totalRecords = res.data.totalRecords
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => {vm.loading = false})
+            },
+
+            fetchAll() {
+                let vm = this 
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials?PageNumber=1&PageSize=${vm.tableOptions.totalRecords}`)
+                .then((res) => {
+                    vm.materialId = res.data.data.map(({id}) => id)
                 })
                 .catch(err => {
                     vm.snackbar.snack = true

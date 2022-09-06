@@ -70,7 +70,6 @@ export default {
             })
             .then(response => 
             {
-                console.log(value)
                 this.$emit('change', value)
                 response.status
                 this.input.snack = true
