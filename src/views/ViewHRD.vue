@@ -176,14 +176,13 @@
                 fcHeader: [
                     { text:'Location', value: 'location' },
                     { text: '# Cases', value: 'numberOfCases' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
                 ],
-                totalCase: [
-                    21323, 21323
+                DcHeader: [
+                    { text:'Location', value: 'location' },
+                    { text: '# Cases', value: 'numberOfCases' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
                 ],
-                useract: [
-                    { userlog:'kevinaton', datelog:'04/20/22'},
-                    { userlog:'jovanismith', datelog:'05/01/22'},
-                ]
             },
             rework: {
                 reworkApproved: false,

@@ -45,6 +45,11 @@
             </v-btn>
             </template>
             <v-card>
+            <v-form
+                ref="form"
+                class="pa-4"
+                v-model="valid"
+            >
             <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
             </v-card-title>
@@ -63,6 +68,7 @@
                             :items="forms[4].select"
                             :label="forms[4].label"
                             :type="forms[4].type"
+                            :rules="[rules.required]"
                         ></v-select>
                     </v-col>
                     <v-col
@@ -75,6 +81,7 @@
                             v-model="forms[1].value"
                             :label="forms[1].label"
                             :type="forms[1].type"
+                            :rules="[rules.required]"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -89,6 +96,7 @@
                             v-model="forms[2].value"
                             :label="forms[2].label"
                             :type="forms[2].type"
+                            :rules="[rules.required]"
                         ></v-text-field>
                     </v-col>
                     <v-col
@@ -119,12 +127,14 @@
                 </v-btn>
                 <v-btn
                 color="blue darken-1"
+                :disabled="!valid"
                 text
-                @click="save"
+                @click="save(valid), validate"
                 >
                 Save
                 </v-btn>
             </v-card-actions>
+            </v-form>
             </v-card>
         </v-dialog>
     </v-toolbar>
@@ -194,13 +204,19 @@ export default {
             type: String,
             default:'',
             required:false
+        },
+        rules: {
+            type: Object,
+            default: () => {},
+            required: false
         }
     },
     data: () => ({
         searchInput:'',
         dialog:false,
         origVal:[],
-        lookupTypes:[]
+        lookupTypes:[],
+        valid:false,
     }),
     emits: ["change"],
     created() {
@@ -213,11 +229,8 @@ export default {
         },
         close () {
             this.dialog = false
-            for(let i=0; i < this.forms.length; i++) {
-                this.forms[i].value = ''
-            }
         },
-        save() {
+        save(valid) {
             let params={},
                 vm = this,
                 typeId = vm.lookupTypes.find(x => x.name === vm.forms[4].value)
@@ -226,30 +239,29 @@ export default {
                 params[this.forms[i].name] = this.forms[i].value
             }
             params.dropDownTypeId = vm.forms[0].value = typeId.id
-            this.$axios.post(`${process.env.VUE_APP_API_URL}/Lookup/items`,  params)
-            .then(response => 
-            {
-                response.status
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'success'
-                this.snackbar.snackText = 'Data saved'
-            })
-            .catch(err => {
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'error'
-                this.snackbar.snackText = err.response.statusText || 'Something went wrong'
-                console.warn(err)
-                if(err.response.statusTest == 'Conflict') {
-                    location.reload()
-                }
-            })
-            .finally(() => {
-                this.close()
-                for(let i=0; i < this.forms.length; i++) {
-                    this.forms[i].value = ''
-                }
-                this.$parent.$parent.$parent.$parent.fetchData()
-            })
+            if(valid == true) {
+                this.$axios.post(`${process.env.VUE_APP_API_URL}/Lookup/items`,  params)
+                .then(response => 
+                {
+                    response.status
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'success'
+                    this.snackbar.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = err.response.statusText || 'Something went wrong'
+                    console.warn(err)
+                    if(err.response.statusTest == 'Conflict') {
+                        location.reload()
+                    }
+                })
+                .finally(() => {
+                    this.close()
+                    this.$parent.$parent.$parent.$parent.fetchData()
+                })
+            }
         },
         fetchTypeName() {
             let vm = this
@@ -270,7 +282,10 @@ export default {
                     vm.loading = false
                 })
             }
-        }
+        },
+        validate() {
+            this.$refs.form.validate()
+        },
     }
 }    
 </script>

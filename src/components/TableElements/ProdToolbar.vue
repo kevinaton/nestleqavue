@@ -165,7 +165,7 @@
                         :disabled="!valid"
                         light
                         color="primary"
-                        @click="save(valid)"
+                        @click="save(valid), validate"
                     >
                     Save
                     </v-btn>

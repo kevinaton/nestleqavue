@@ -38,6 +38,7 @@
         :toolbar="toolbar"
         :table="lookups"
         :snackbar="snackbar"
+        :rules="rules"
         util="Lookup"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
@@ -201,7 +202,7 @@ export default {
     },
 
     created () {
-    this.fetchData()
+        this.fetchData()
     },
 
     methods: {    
