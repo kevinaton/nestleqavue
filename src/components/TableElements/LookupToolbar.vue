@@ -244,6 +244,7 @@ export default {
                 .then(response => 
                 {
                     response.status
+                    console.log(params)
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'success'
                     this.snackbar.snackText = 'Data saved'
