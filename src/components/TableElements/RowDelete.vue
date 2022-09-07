@@ -48,28 +48,29 @@ export default {
     },
     methods: {
         closeDelete () {
-        this.input.dialogDelete = false
-        this.$nextTick(() => {
-            this.input.editedItem = Object.assign({}, this.input.defaultItem)
-            this.input.editedIndex = -1
-        })
+            this.input.dialogDelete = false
+            this.$nextTick(() => {
+                this.input.editedItem = Object.assign({}, this.input.defaultItem)
+                this.input.editedIndex = -1
+            })
         },
         deleteItemConfirm () {
-            this.table.splice(this.input.editedIndex, 1)
-            this.closeDelete()
+            let vm = this
+            vm.table.splice(this.input.editedIndex, 1)
+            vm.closeDelete()
             
-            this.$axios.delete(`${process.env.VUE_APP_API_URL}/${this.url}/${this.data}`)
+            vm.$axios.delete(`${process.env.VUE_APP_API_URL}/${this.url}/${this.data}`)
             .then(response => {
                 response.status
-                this.snackbar.snack = true
-                this.snackbar.snackColor = 'success'
-                this.snackbar.snackText = 'Successfully deleted'
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'success'
+                vm.snackbar.snackText = 'Successfully deleted'
             })
             .catch( err => { 
                 console.warn(err)
-                this.input.snack = true
-                this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later.'
+                vm.input.snack = true
+                vm.input.snackColor = 'error'
+                vm.input.snackText = 'Something went wrong. Please try again later.'
             }) 
         },
     }

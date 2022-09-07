@@ -183,17 +183,108 @@
                             :items="inpValue.hrdFc"
                         >
                             <template v-slot:top>
-                                <v-toolbar flat class="text-h6">First Check</v-toolbar>
-                                    <v-col>
-                                        <v-row>
-                                            <v-col>
-                                            <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
-                                            </v-col>
-                                            <v-col>
-                                                <v-text-field label="Date logged in" outlined readonly :value="getFcDateTime"></v-text-field>
-                                            </v-col>
-                                        </v-row>
-                                    </v-col>
+                                <v-toolbar flat>
+                                    <v-toolbar-title class="text-h6">First Check</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-dialog
+                                        v-model="fcDialog"
+                                        max-width="500px"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            >
+                                            Add Case</v-btn>
+                                        </template>
+                                        <v-card>
+                                            <v-form
+                                            ref="fc"
+                                            class="pa-6"
+                                            v-model="fcForm"
+                                            >
+                                            <v-card-title>
+                                                <span class="text-h5">Add First Check</span>
+                                            </v-card-title>
+
+                                            <v-card-text>
+                                                <v-container>
+                                                <v-row>
+                                                    <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="6"
+                                                    class="pl-0"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="fcLocation"
+                                                            label="Location"
+                                                            :rules="[rules.required]"
+                                                        ></v-text-field>
+                                                    </v-col>
+                                                    <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="6"
+                                                    class="pl-0"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="fcNumberOfCases"
+                                                            type="Number"
+                                                            label="Number of Cases"
+                                                            :rules="[rules.required]"
+                                                        ></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                </v-container>
+                                            </v-card-text>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                color="blue darken-1"
+                                                text
+                                                @click="closeFc"
+                                                >
+                                                Cancel
+                                                </v-btn>
+                                                <v-btn
+                                                light
+                                                color="primary"
+                                                @click="saveFc(fcForm), validateFc"
+                                                :disabled="!fcForm"
+                                                >
+                                                Save
+                                                </v-btn>
+                                            </v-card-actions>
+                                            </v-form>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-toolbar>
+                                <v-col>
+                                    <v-row>
+                                        <v-col>
+                                        <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field label="Date logged in" outlined readonly :value="getFcDateTime"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-col>
+                            </template>
+                            <template v-slot:[`item.actions`]="{ item, index }">
+                                <v-hover
+                                    v-slot="{ hover }"
+                                    open-delay="200"
+                                >
+                                    <v-icon
+                                        @click="deleteFcItem(item, index)"
+                                        :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                                        :class="{ 'on-hover': hover }"
+                                    >
+                                        mdi-delete
+                                    </v-icon>
+                                </v-hover>
                             </template>
                         </v-data-table>
                         <v-alert
@@ -213,11 +304,88 @@
                 <v-col>
                     <v-card elevation="0" outlined>
                         <v-data-table
-                            :headers="input.fcHeader"
+                            :headers="input.DcHeader"
                             :items="inpValue.hrdDc"
                         >
                             <template v-slot:top>
-                                <v-toolbar flat class="text-h6">Second Check</v-toolbar>
+                                <v-toolbar flat>
+                                    <v-toolbar-title class="text-h6">Second Check</v-toolbar-title>
+                                    <v-spacer></v-spacer>
+                                    <v-dialog
+                                        v-model="dcDialog"
+                                        max-width="500px"
+                                    >
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn
+                                            v-bind="attrs"
+                                            v-on="on"
+                                            >
+                                            Add Case</v-btn>
+                                        </template>
+                                        <v-card>
+                                            <v-form
+                                            ref="dc"
+                                            class="pa-6"
+                                            v-model="dcForm"
+                                            >
+                                            <v-card-title>
+                                                <span class="text-h5">Add Second Check</span>
+                                            </v-card-title>
+
+                                            <v-card-text>
+                                                <v-container>
+                                                <v-row>
+                                                    <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="6"
+                                                    class="pl-0"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="dcLocation"
+                                                            label="Location"
+                                                            :rules="[rules.required]"
+                                                        ></v-text-field>
+                                                    </v-col>
+                                                    <v-col
+                                                    cols="12"
+                                                    sm="6"
+                                                    md="6"
+                                                    class="pl-0"
+                                                    >
+                                                        <v-text-field
+                                                            v-model="dcNumberOfCases"
+                                                            type="Number"
+                                                            label="Number of Cases"
+                                                            :rules="[rules.required]"
+                                                        ></v-text-field>
+                                                    </v-col>
+                                                </v-row>
+                                                </v-container>
+                                            </v-card-text>
+
+                                            <v-card-actions>
+                                                <v-spacer></v-spacer>
+                                                <v-btn
+                                                color="blue darken-1"
+                                                text
+                                                @click="closeDc"
+                                                >
+                                                Cancel
+                                                </v-btn>
+                                                <v-btn
+                                                light
+                                                color="primary"
+                                                @click="saveDc(dcForm), validateDc"
+                                                :disabled="!dcForm"
+                                                >
+                                                Save
+                                                </v-btn>
+                                            </v-card-actions>
+                                            </v-form>
+                                        </v-card>
+                                    </v-dialog>
+                                </v-toolbar>
                                 <v-col>
                                     <v-row>
                                         <v-col>
@@ -228,6 +396,20 @@
                                         </v-col>
                                     </v-row>
                                 </v-col>
+                            </template>
+                            <template v-slot:[`item.actions`]="{ item, index }">
+                                <v-hover
+                                    v-slot="{ hover }"
+                                    open-delay="200"
+                                >
+                                    <v-icon
+                                        @click="deleteDcItem(item, index)"
+                                        :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                                        :class="{ 'on-hover': hover }"
+                                    >
+                                        mdi-delete
+                                    </v-icon>
+                                </v-hover>
                             </template>
                         </v-data-table>
                         <v-alert
@@ -289,6 +471,14 @@ export default {
     },
     data: () => ({
         oPoLength: 0,
+        fcDialog: false,
+        dcDialog: false,
+        fcForm: false,
+        dcForm: false,
+        fcLocation:'',
+        dcLocation:'',
+        fcNumberOfCases:0,
+        dcNumberOfCases:0
     }),
     computed: {
         getDateCompleted(){
@@ -315,9 +505,15 @@ export default {
             return vm.inpValue?.hrdPo
         },
         getFcDateTime() {
+            if(this.inpValue.fcDate == null || undefined) {
+                return 'No date'
+            } else
             return moment.utc(this.inpValue.fcDate).format('YYYY/MM/DD | hh:mm:ss')
         },
         getDcDateTime() {
+            if(this.inpValue.dcDate == null || undefined) {
+                return 'No date'
+            } else
             return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
         }
     },
@@ -358,6 +554,42 @@ export default {
                     console.warn(err)
                 })
                 .finally()
+        },
+        validateFc() {
+            this.$refs.fc.validate()
+        },
+        validateDc() {
+            this.$refs.dc.validate()
+        },
+        closeFc() {
+            this.fcDialog = false
+        },
+        closeDc() {
+            this.dcDialog = false
+        },
+        saveFc(fcForm) {
+                if(fcForm == true) {
+                    this.inpValue.hrdFc.push({
+                    location: this.fcLocation,
+                    numberOfCases: this.fcNumberOfCases
+                })
+                this.closeFc()
+            }
+        },
+        saveDc(dcForm) {
+                if(dcForm == true) {
+                    this.inpValue.hrdDc.push({
+                    location: this.dcLocation,
+                    numberOfCases: this.dcNumberOfCases
+                })
+                this.closeDc()
+            }
+        },
+        deleteFcItem(item, index) {
+            this.inpValue.hrdFc.splice(index, 1)
+        },
+        deleteDcItem(item, index) {
+            this.inpValue.hrdDc.splice(index, 1)
         },
     }
 }

@@ -20,7 +20,7 @@
             :util="util"
         />
         
-        <!-- Add Prod data -->
+        <!-- Add Raw Material data -->
         <v-dialog
             v-model="dialog"
             max-width="500px"
@@ -41,7 +41,7 @@
             <v-card>
                 <v-form
                 ref="form"
-                class="pa-4"
+                class="pa-6"
                 v-model="valid"
                 >
                 <v-card-title>
@@ -55,100 +55,31 @@
                         cols="12"
                         sm="6"
                         md="6"
+                        class="pl-0"
+                        >
+                            <v-text-field
+                                v-if="forms[0].visible"
+                                v-model="forms[0].value"
+                                :label="forms[0].label"
+                                :type="forms[0].type"
+                                :rules="[checkId]"
+                            ></v-text-field>
+                        </v-col>
+                        <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        class="pl-0"
                         >
                             <v-text-field
                                 v-if="forms[1].visible"
                                 v-model="forms[1].value"
                                 :label="forms[1].label"
                                 :type="forms[1].type"
-                                :rules="[rules.required]"
-                            ></v-text-field>
-                        </v-col>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
-                            <v-text-field
-                                v-if="forms[2].visible"
-                                v-model="forms[2].value"
-                                :label="forms[2].label"
-                                :type="forms[2].type"
-                                :rules="[rules.required, rules.fert]"
+                                :rules="[required]"
                             ></v-text-field>
                         </v-col>
                     </v-row>
-                    <v-row>
-                        <v-col
-                        cols="12"
-                        sm="12"
-                        md="12"
-                        >
-                            <v-text-field
-                                v-if="forms[3].visible"
-                                v-model="forms[3].value"
-                                :label="forms[3].label"
-                                :type="forms[3].type"
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
-                            <v-text-field
-                                v-if="forms[4].visible"
-                                v-model="forms[4].value"
-                                :label="forms[4].label"
-                                :type="forms[4].type"
-                                :rules="[rules.required, rules.counter]"
-                            ></v-text-field>
-                        </v-col>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
-                            <v-select
-                                v-if="forms[5].visible"
-                                v-model="forms[5].value"
-                                :items="forms[5].select"
-                                :label="forms[5].label"
-                                :type="forms[5].type"
-                            ></v-select>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
-                            <v-select
-                                v-if="forms[6].visible"
-                                v-model="forms[6].value"
-                                :items="forms[6].select"
-                                :label="forms[6].label"
-                                :type="forms[6].type"
-                            ></v-select>
-                        </v-col>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
-                            <v-text-field
-                                v-if="forms[7].visible"
-                                v-model="forms[7].value" 
-                                :label="forms[7].label" 
-                                :type="forms[7].type"
-                                :rules="[rules.country, rules.required]"
-                            ></v-text-field>
-                        </v-col>
-                    </v-row>
-
                     </v-container>
                 </v-card-text>
 
@@ -162,17 +93,16 @@
                     Cancel
                     </v-btn>
                     <v-btn
-                        :disabled="!valid"
-                        light
-                        color="primary"
-                        @click="save(valid), validate"
+                    light
+                    color="primary"
+                    @click="save(valid), validate"
+                    :disabled="!valid"
                     >
                     Save
                     </v-btn>
                 </v-card-actions>
                 </v-form>
-            </v-card>    
-            
+            </v-card>
         </v-dialog>
     </v-toolbar>
 </template>
@@ -180,7 +110,7 @@
 <script>
 import Export from '@/components/Exportcsv.vue'
 export default {
-    name:'ProdToolbar',
+    name:'RawMaterialToolbar',
     components: {
         Export,
     },
@@ -236,12 +166,12 @@ export default {
         },
         apiUrl: {
             type: String,
-            default:'',
-            required:false
+            default: '',
+            required: false
         },
-        rules: {
-            type: Object,
-            deafult: () => {},
+        materialId: {
+            type: Array,
+            default: () => [],
             required: false
         }
     },
@@ -260,13 +190,13 @@ export default {
         close () {
             this.dialog = false
         },
-        save(value) {
+        save(valid) {
             let params={}
             for(let i=0; i < this.forms.length; i++) {
                 params[this.forms[i].name] = this.forms[i].value
             }
-            if(value == true) {
-                this.$axios.post(`${process.env.VUE_APP_API_URL}/Products`,  params)
+            if(valid == true) {
+                this.$axios.post(`${process.env.VUE_APP_API_URL}/${this.apiUrl}`,  params)
                 .then(response => 
                 {
                     response.status
@@ -291,6 +221,18 @@ export default {
         },
         validate() {
             this.$refs.form.validate()
+        },
+        required(value) {
+            if(value) {
+                return true
+            } else {
+                return 'Required'
+            }
+        },
+        checkId(value) {
+            if(this.materialId.indexOf(value) !== -1) {
+                return 'ID not available'
+            } else return true
         },
     }
 }    

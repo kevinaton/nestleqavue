@@ -7,7 +7,8 @@
       </v-navigation-drawer> -->
   
       <Header 
-      :submitted = input
+        :submitted = input
+        @change="updateInput($event)"
       />
       <v-main>
         <router-view @change="updateValue($event)"></router-view>
@@ -32,6 +33,9 @@
     methods: {
       updateValue(submitted) {
         this.input = submitted
+      },
+      updateInput(value) {
+        this.input = value
       }
     }
   }

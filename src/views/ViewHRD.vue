@@ -176,14 +176,13 @@
                 fcHeader: [
                     { text:'Location', value: 'location' },
                     { text: '# Cases', value: 'numberOfCases' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
                 ],
-                totalCase: [
-                    21323, 21323
+                DcHeader: [
+                    { text:'Location', value: 'location' },
+                    { text: '# Cases', value: 'numberOfCases' },
+                    { text: 'Actions', value: 'actions', sortable: false, align: 'right' }
                 ],
-                useract: [
-                    { userlog:'kevinaton', datelog:'04/20/22'},
-                    { userlog:'jovanismith', datelog:'05/01/22'},
-                ]
             },
             rework: {
                 reworkApproved: false,
@@ -249,11 +248,13 @@
                 snackText: '',
             },
             recalculateTotal:0,
-            tFile:null
+            tFile:null,
+            submitted:false
         }),
         created() {
             this.fetchHRD()
         },
+        emits: ["change"],
         methods: {
             fetchHRD() {
             let vm = this 
@@ -391,6 +392,8 @@
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.fetchHRD()
+                    vm.submitted = true
+                    this.$emit('change', true)
                 })
                 .catch(err => {
                     vm.snackbar.snack = true

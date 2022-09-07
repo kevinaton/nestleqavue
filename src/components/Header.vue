@@ -201,7 +201,7 @@ export default {
         if(this.$route.name == 'new_qa' || this.$route.name == 'hrd_detail' ) {
           if(this.submitted == true) {
             this.initialValue = false
-            this.$router.push({name:value.name}).catch(()=>{})
+            this.$router.push({name:value.name}).then((res)=>{this.$emit('change', false)}).catch(()=>{})
             if (this.selectedTab != 1 || 2) {
               this.selectedAdmin = null
               this.selectedReport = null

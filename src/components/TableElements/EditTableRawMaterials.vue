@@ -1,7 +1,6 @@
 <template>
     <v-edit-dialog
         :return-value.sync="table"
-        persistent
         @save="save($event)"
         @cancel="cancel"
     >
@@ -14,7 +13,6 @@
                 :rules="[rules.counter]"
                 label="Edit"
                 single-line
-                persistent
             ></v-text-field>
         </template>
     </v-edit-dialog>
@@ -72,7 +70,6 @@ export default {
             })
             .then(response => 
             {
-                console.log(value)
                 this.$emit('change', value)
                 response.status
                 this.input.snack = true
