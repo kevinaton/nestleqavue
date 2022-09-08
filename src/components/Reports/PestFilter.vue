@@ -1,7 +1,7 @@
 <template>
     <v-row class="mt-0 pt-0">
     <v-col>
-        <v-row class="d-inline-flex">
+        <v-row align="start">
             <v-col>
                 <v-chip-group
                     v-model="fValues.timeSelect"
@@ -97,7 +97,7 @@ export default {
         dateRange() {
             this.input.menu = false
             let d = this.fValues
-            d.periodBegin = moment.utc(`${d.dates[0]} 00:00:00`).toISOString(),
+            d.periodBegin = moment.utc(`${d.dates[0]} 00:00:01`).toISOString(),
             d.periodEnd = moment.utc(`${d.dates[1]} 23:59:59`).toISOString()
             this.$parent.$parent.getPestLog(d.periodBegin, d.periodEnd)
         },
@@ -105,13 +105,15 @@ export default {
             let d = this.fValues
             if(value == 'today') {
                 d.timeSelect = 'today'
-                let tz = new Date().toISOString().split(".")[1],
-                    date = new Date().toISOString().split("T")[0],
-                    itime = "00:00:00." + tz
-                
-                d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
-                d.periodEnd = new Date().toISOString()
+                // let tz = new Date().toISOString().split(".")[1],
+                //     date = new Date().toISOString().split("T")[0],
+                //     itime = "00:00:00." + tz,
+                //     ntime = "23:59:59" + tz
+                // d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
+                // d.periodEnd = new Date().toISOString()
 
+                d.periodBegin = moment().startOf('day').toISOString()
+                d.periodEnd = moment().endOf('day').toISOString()
                 this.$parent.$parent.getPestLog(d.periodBegin, d.periodEnd)
             }
             if(value == 'lastWeek') {

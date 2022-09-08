@@ -16,6 +16,7 @@
     <MicrobeFilter 
         :input="filter"
         :fValues="fValues"
+        @change="(value) => fValues.dates = value"
     />
     <v-divider></v-divider>
     <BarChart 
@@ -129,6 +130,7 @@ export default {
                 vm.microbecasesChart.barData = res.data.map(({numberOfCases}) => numberOfCases)
                 vm.fValues.periodBegin = periodBegin
                 vm.fValues.periodEnd = periodEnd
+                vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
                 vm.fValues.closeOpen.value = closeOpen
                 vm.fValues.types.value = types
             })

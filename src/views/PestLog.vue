@@ -117,6 +117,7 @@ export default {
                 vm.pestLog.barData = res.data.map(({numberOfPestLog}) => numberOfPestLog)
                 vm.fValues.periodBegin = periodBegin
                 vm.fValues.periodEnd = periodEnd
+                vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
             })
             .catch(err => {
                 vm.snackbar.snack = true
