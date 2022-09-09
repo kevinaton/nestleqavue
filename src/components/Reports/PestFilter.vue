@@ -111,7 +111,6 @@ export default {
                 //     ntime = "23:59:59" + tz
                 // d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
                 // d.periodEnd = new Date().toISOString()
-
                 d.periodBegin = moment().startOf('day').toISOString()
                 d.periodEnd = moment().endOf('day').toISOString()
                 this.$parent.$parent.getPestLog(d.periodBegin, d.periodEnd)
@@ -120,16 +119,13 @@ export default {
                 d.timeSelect = 'lastWeek'
                 d.periodBegin = moment.utc().subtract(1, 'weeks').startOf('week').toISOString()
                 d.periodEnd = moment.utc().subtract(1, 'weeks').endOf('week').toISOString()
-
                 this.$parent.$parent.getPestLog(d.periodBegin, d.periodEnd)
             }
             if(value == 'lastMonth') {
                 d.timeSelect = 'lastMonth'
                 let date = new Date().toISOString()
-
                 d.periodBegin = moment(date).subtract(1,'months').startOf('month').toISOString()
                 d.periodEnd = moment(date).subtract(1,'months').endOf('month').toISOString()
-
                 this.$parent.$parent.getPestLog(d.periodBegin, d.periodEnd)
             }
             if(value == 'dateRange') {

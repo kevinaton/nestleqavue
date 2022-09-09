@@ -4,21 +4,13 @@
     <v-row align="start">
         <v-col cols="auto" sm="auto">
             <v-chip-group
-                v-model="fValues.timeSelect"
-                active-class="info"
-                mandatory
-                @change="updateTime($event)"
-            >
-                <v-chip
-                value="today"
-                active
-                >Today</v-chip>
-                <v-chip
-                value="lastWeek"
-                >Last Week</v-chip>
-                <v-chip
-                value="lastMonth"
-                >Last Month</v-chip>
+            v-model="fValues.timeSelect"
+            active-class="info"
+            mandatory
+            @change="updateTime($event)">
+                <v-chip value="today" active>Today</v-chip>
+                <v-chip value="lastWeek">Last Week</v-chip>
+                <v-chip value="lastMonth">Last Month</v-chip>
 
                 <v-menu
                 ref="menu"
@@ -35,10 +27,7 @@
                     v-on="on"
                     >{{(fValues.dates.length > 0 ? getDateRange : "Date Range")}}</v-chip>
                 </template>
-                <v-date-picker
-                    v-model="fValues.dates"
-                    range
-                >
+                <v-date-picker v-model="fValues.dates" range>
                     <v-spacer></v-spacer>
                     <v-btn
                     text
