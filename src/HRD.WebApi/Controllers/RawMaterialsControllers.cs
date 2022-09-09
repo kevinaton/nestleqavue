@@ -98,6 +98,7 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutRawMaterial(string id, RawMaterialViewModel model)
         {
+            model.Id = model.Id.TrimEnd();
             if (id != model.Id)
             {
                 return BadRequest();
