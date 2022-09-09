@@ -366,6 +366,8 @@ export default {
             formData.append('files', vm.tFile)
             formData.append('jsonString', JSON.stringify(jsonFile))
 
+            console.log(jsonFile)
+
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`, formData, 
