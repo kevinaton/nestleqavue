@@ -121,7 +121,12 @@ namespace HRD.WebApi.Controllers
                                         || f.ProductDescription.Contains(filter.SearchString)
                                         || f.ShortDescription.Contains(filter.SearchString)
                                         || f.Fert.Contains(filter.SearchString)
-                                        || f.Originator.Contains(filter.SearchString));
+                                        || f.Originator.Contains(filter.SearchString)
+                                        || f.Line.Contains(filter.SearchString)
+                                        || f.Shift.Contains(filter.SearchString)
+                                        || f.HourCode.Contains(filter.SearchString)
+                                        || f.Cases.ToString().Contains(filter.SearchString));
+
             }
 
             var totalRecords = await query.CountAsync();
@@ -641,7 +646,7 @@ namespace HRD.WebApi.Controllers
                 DetailedDescription = qa.DetailedDescription,
 
                 //HRD                                  
-                CasesHeld = qa.CasesHeld,
+                CasesHeld = qa.Cases,
                 HourCode = qa.HourCode,
                 POs = qa.Pos,
                 ReworkInstructions = qa.ReworkInstructions,
@@ -747,7 +752,7 @@ namespace HRD.WebApi.Controllers
             hrd.DetailedDescription = model.DetailedDescription;
 
             //HRD                                  
-            hrd.CasesHeld = model.CasesHeld;
+            hrd.Cases = model.CasesHeld;
             hrd.HourCode = model.HourCode;
             hrd.Pos = model.POs;
             hrd.ReworkInstructions = model.ReworkInstructions;
@@ -964,7 +969,7 @@ namespace HRD.WebApi.Controllers
                 AdditionalDescription = model.AdditionalDescription,
                 DetailedDescription = model.DetailedDescription,
 
-                CasesHeld = model.CasesHeld,
+                Cases = model.CasesHeld,
                 HourCode = model.HourCode,
                 Pos = model.POs,
                 ReworkInstructions = model.ReworkInstructions,
