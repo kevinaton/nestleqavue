@@ -10,3 +10,7 @@
 .expanHeight {
     min-height: 40vh;
 }
+
+.filterFixWidth {
+    width: 100%;
+}

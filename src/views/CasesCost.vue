@@ -13,7 +13,7 @@
     <ReportTitle 
       titleContent="Cases & Cost Held by Category"
     />
-    <v-row>
+    <v-row class="mt-0 pt-0">
       <CaseFilter 
         :input="filter"
         :fValues="fValues"
@@ -203,6 +203,7 @@ export default {
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
               vm.fValues.periodBegin = periodBegin
               vm.fValues.periodEnd = periodEnd
+              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
               vm.fValues.line = line
               vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen
@@ -225,6 +226,7 @@ export default {
               vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
               vm.fValues.periodBegin = periodBegin
               vm.fValues.periodEnd = periodEnd
+              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
               vm.fValues.line = line
               vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen

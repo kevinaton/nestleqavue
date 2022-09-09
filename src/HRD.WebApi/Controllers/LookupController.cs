@@ -118,7 +118,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/5
         [HttpGet("items/{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> GetDropDownItem(int id)
         {
             var ddItem = await _context.DropDownItems.FindAsync(id);
@@ -142,7 +142,7 @@ namespace HRD.WebApi.Controllers
 
         //Put: api/Lookup/items/5
         [HttpPut("items/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
         {
             if (id != model.Id)

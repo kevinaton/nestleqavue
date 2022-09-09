@@ -1,8 +1,8 @@
 <template>
-    <v-row>
+    <v-row class="mt-0 pt-0">
     <v-col>
-        <v-row class="d-inline-flex">
-            <v-col>
+        <v-row align="start">
+            <v-col cols="auto" sm="auto">
                 <v-chip-group
                     v-model="fValues.timeSelect"
                     active-class="info"
@@ -60,7 +60,7 @@
                     </v-menu>
                 </v-chip-group>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="6" md="2">
                 <SelectDropdownObj 
                     item-text="text"
                     item-value="value"
@@ -70,7 +70,7 @@
                     @change="updateCloseOpen($event)"
                 />
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="6" md="3">
                 <SelectDropdownObj 
                     name="fmcase" 
                     item-text="text"
@@ -130,13 +130,8 @@ export default {
             let d = this.fValues
             if(value == 'today') {
                 d.timeSelect = 'today'
-                let tz = new Date().toISOString().split(".")[1],
-                    date = new Date().toISOString().split("T")[0],
-                    itime = "00:00:00." + tz
-                
-                d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
-                d.periodEnd = new Date().toISOString()
-
+                d.periodBegin = moment().startOf('day').toISOString()
+                d.periodEnd = moment().endOf('day').toISOString()
                 this.$parent.$parent.getFMGraph(d.closeOpen.value, d.caseOptions.value, d.periodBegin, d.periodEnd)
             }
             if(value == 'lastWeek') {

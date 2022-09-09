@@ -128,6 +128,7 @@ export default {
                 vm.fmCases.barData = res.data.map(({numberOfCases}) => numberOfCases)
                 vm.fValues.periodBegin = periodBegin
                 vm.fValues.periodEnd = periodEnd
+                vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
                 vm.fValues.closeOpen.value = closeOpen
                 vm.fValues.caseOptions.value = caseOptions
             })

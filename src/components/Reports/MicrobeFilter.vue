@@ -1,87 +1,74 @@
 <template>
-    <v-row>
+    <v-row class="mt-0 pt-0">
     <v-col>
-        <v-row class="d-inline-flex">
-            <v-col>
-                <v-chip-group
-                    v-model="fValues.timeSelect"
-                    active-class="info"
-                    mandatory
-                    @change="updateTime($event)"
-                >
-                    <v-chip
-                    value="today"
-                    active
-                    >Today</v-chip>
-                    <v-chip
-                    value="lastWeek"
-                    >Last Week</v-chip>
-                    <v-chip
-                    value="lastMonth"
-                    >Last Month</v-chip>
+    <v-row align="start">
+        <v-col cols="auto" sm="auto">
+            <v-chip-group
+            v-model="fValues.timeSelect"
+            active-class="info"
+            mandatory
+            @change="updateTime($event)">
+                <v-chip value="today" active>Today</v-chip>
+                <v-chip value="lastWeek">Last Week</v-chip>
+                <v-chip value="lastMonth">Last Month</v-chip>
 
-                    <v-menu
-                    ref="menu"
-                    v-model="input.menu"
-                    :close-on-content-click="false"
-                    :return-value.sync="fValues.dates"
-                    transition="scale-transition"
-                    offset-y
-                    max-width="290px"
-                    min-width="auto"
+                <v-menu
+                ref="menu"
+                v-model="input.menu"
+                :close-on-content-click="false"
+                :return-value.sync="fValues.dates"
+                transition="scale-transition"
+                offset-y
+                >
+                <template v-slot:activator="{ on, attrs }">
+                    <v-chip
+                    value="dateRange"
+                    v-bind="attrs"
+                    v-on="on"
+                    >{{(fValues.dates.length > 0 ? getDateRange : "Date Range")}}</v-chip>
+                </template>
+                <v-date-picker v-model="fValues.dates" range>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                    text
+                    color="primary"
+                    @click="input.menu = false"
                     >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-chip
-                        value="dateRange"
-                        v-bind="attrs"
-                        v-on="on"
-                        >{{(fValues.dates.length > 0 ? getDateRange : "Date Range")}}</v-chip>
-                    </template>
-                    <v-date-picker
-                        v-model="fValues.dates"
-                        range
+                    Cancel
+                    </v-btn>
+                    <v-btn
+                    text
+                    color="primary"
+                    @click="dateRange"
                     >
-                        <v-spacer></v-spacer>
-                        <v-btn
-                        text
-                        color="primary"
-                        @click="input.menu = false"
-                        >
-                        Cancel
-                        </v-btn>
-                        <v-btn
-                        text
-                        color="primary"
-                        @click="dateRange"
-                        >
-                        OK
-                        </v-btn>
-                    </v-date-picker>
-                    </v-menu>
-                </v-chip-group>
-            </v-col>
-            <v-col>
-                <SelectDropdownObj 
-                    item-text="text"
-                    item-value="value"
-                    label="Closed/Open"
-                    :inpValue="fValues.closeOpen" 
-                    :items="input.closeopen" 
-                    @change="updateCloseOpen($event)"
-                />
-            </v-col>
-            <v-col>
-                <SelectDropdownObj 
-                    name="microbecase" 
-                    item-text="text"
-                    item-value="value"
-                    label="Types of Microbe Cases" 
-                    :inpValue="fValues.types"
-                    :items="input.microbecases" 
-                    @change="updateType($event)"
-                />
-            </v-col>
-        </v-row>
+                    OK
+                    </v-btn>
+                </v-date-picker>
+                </v-menu>
+            </v-chip-group>
+        </v-col>
+        <v-col cols="12" sm="6" md="2">
+            <SelectDropdownObj 
+                item-text="text"
+                item-value="value"
+                label="Closed/Open"
+                :inpValue="fValues.closeOpen" 
+                :items="input.closeopen" 
+                @change="updateCloseOpen($event)"
+            />
+        </v-col>
+        <v-col cols="12" sm="6" md="3">
+            <SelectDropdownObj 
+                name="microbecase" 
+                item-text="text"
+                item-value="value"
+                label="Types of Microbe Cases" 
+                :inpValue="fValues.types"
+                :items="input.microbecases" 
+                @change="updateType($event)"
+            />
+        </v-col>
+    </v-row>
     </v-col>
     </v-row>
 </template>
@@ -117,6 +104,7 @@ export default {
             }
         }
     },
+    emits: ["change"],
     methods: {
         dateRange() {
             this.input.menu = false
