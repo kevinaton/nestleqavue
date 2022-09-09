@@ -142,7 +142,7 @@ namespace HRD.WebApi.Controllers
 
         //Put: api/Lookup/items/5
         [HttpPut("items/{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutDropDownItem(int id, DropDownItemViewModel model)
         {
             if (id != model.Id)

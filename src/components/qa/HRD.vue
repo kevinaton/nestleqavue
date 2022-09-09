@@ -2,7 +2,7 @@
     <v-form class="mt-6">
         <v-row class="mt-0">
             <v-col>
-                <v-text-field v-model="inpValue.casesHeld" :rules="[rules.counter]" outlined label="Cases Held"></v-text-field>
+                <v-text-field :value="inpValue.casesHeld" @input="sendCasesHeld($event)" type="Number" :rules="[rules.int]" outlined label="Cases Held"></v-text-field>
             </v-col>
             <v-col>
                 <v-text-field v-model="inpValue.hourCode" :rules="[rules.counter]" outlined label="Hour Codes"></v-text-field>
@@ -42,5 +42,10 @@ export default {
             required: false,
         },
     },
+    methods: {
+        sendCasesHeld(value) {
+            this.inpValue.casesHeld = parseFloat(value)
+        }
+    }
 }
 </script>
