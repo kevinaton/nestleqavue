@@ -83,7 +83,7 @@
             <SelectDropdownObj 
                 item-text="text"
                 item-value="value"
-                label="Closed/Open"
+                label="Close/Open"
                 :inpValue="fValues.closeOpen.value"
                 :items="input.closeopen" 
                 @change="updateCloseOpen($event)"

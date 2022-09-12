@@ -13,6 +13,7 @@
             <v-col>
                 <BackBtn 
                 class="ma-0"
+                :submitted="submitted"
                 :input="backbtn" 
                 />
                 <h2 class="mb-4">HRD Detail</h2>
@@ -172,6 +173,26 @@
                     menu1: false,
                     allow: true,
                     yearonly: '',
+                },
+                calendarFc: {
+                    time: null,
+                    date: null,
+                    date2: null,
+                    menu: false,
+                    modal: false,
+                    menu1: false,
+                    allow: true,
+                    yearonly: ''
+                },
+                calendarDc: {
+                    time: null,
+                    date: null,
+                    date2: null,
+                    menu: false,
+                    modal: false,
+                    menu1: false,
+                    allow: true,
+                    yearonly: ''
                 },
                 fcHeader: [
                     { text:'Location', value: 'location' },

@@ -264,10 +264,16 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                        <v-text-field label="Username" outlined readonly :value="inpValue.fcUser"></v-text-field>
+                                        <v-text-field label="Username" outlined v-model="inpValue.fcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field label="Date logged in" outlined readonly :value="getFcDateTime"></v-text-field>
+                                            <SimpleDatePicker 
+                                                :items="input.calendarFc"
+                                                :inpValue="inpValue.fcDate"
+                                                label="Date logged in"
+                                                :hasDefault="false"
+                                                @change="(value) => { inpValue.fcDate = value }"
+                                            />
                                         </v-col>
                                     </v-row>
                                 </v-col>
@@ -331,7 +337,6 @@
                                             <v-card-title>
                                                 <span class="text-h5">Add Second Check</span>
                                             </v-card-title>
-
                                             <v-card-text>
                                                 <v-container>
                                                 <v-row>
@@ -363,7 +368,6 @@
                                                 </v-row>
                                                 </v-container>
                                             </v-card-text>
-
                                             <v-card-actions>
                                                 <v-spacer></v-spacer>
                                                 <v-btn
@@ -389,10 +393,16 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field label="Username" outlined readonly :value="inpValue.dcUser"></v-text-field>
+                                            <v-text-field label="Username" outlined v-model="inpValue.dcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
-                                            <v-text-field label="Date logged in" outlined readonly :value="getDcDateTime"></v-text-field>
+                                            <SimpleDatePicker 
+                                                :items="input.calendarDc"
+                                                :inpValue="inpValue.dcDate"
+                                                label="Date logged in"
+                                                :hasDefault="false"
+                                                @change="(value) => { inpValue.dcDate = value }"
+                                            />
                                         </v-col>
                                     </v-row>
                                 </v-col>

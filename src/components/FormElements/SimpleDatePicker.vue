@@ -18,6 +18,7 @@
             v-bind="attrs"
             v-on="on"
             clearable
+            @click:clear="clearDate"
         ></v-text-field>
         </template>
         <v-date-picker
@@ -47,25 +48,36 @@ export default {
         },
         rules: {
             type: Array,
-            default: [],
+            default: () => [],
             required: false,
+        },
+        hasDefault: {
+            type: Boolean,
+            default: true,
+            required: false
         }
     },
     data: () => ({
         tempDate:'',
         tempTime:'',
+        newDate:'',
+        addDate:true
     }),
+    created() {
+        this.addDate = this.hasDefault
+        this.newDate = new Date().toISOString()
+        this.tempTime = moment.utc(this.newDate).format('hh:mm:ss')
+    },
     emits: ["change"],
     computed: {
         getDate() {
-            let value = this.inpValue
-            let d
-            let e = new Date().toISOString()
+            let value = this.inpValue, d
             if (value != null) {
                 d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
             } else {
-                d = moment.utc(e).format('MM-DD-YYYY')
-                this.tempTime = moment.utc(e).format('hh:mm:ss')
+                if(this.addDate == true) {
+                    d = moment.utc(this.newDate).format('MM-DD-YYYY')
+                }
             }
             return d
         },
@@ -75,7 +87,10 @@ export default {
             this.tempDate = moment.utc(y).format("YYYY-MM-DD")
             let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
-    },
+        },
+        clearDate() {
+            this.$emit('change', '')
+        }
     }
 }
 </script>

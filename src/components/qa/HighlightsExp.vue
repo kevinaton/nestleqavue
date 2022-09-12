@@ -265,8 +265,6 @@
 </template>
 
 <script>
-import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
-import SimpleTimePicker from '@/components/FormElements/SimpleTimePicker.vue'
 import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
@@ -276,8 +274,6 @@ import moment from 'moment'
 
 export default {
     components: {
-        SimpleDatePicker,
-        SimpleTimePicker,
         YearOnly,
         SelectDropdownString,
         DateTimePicker,
