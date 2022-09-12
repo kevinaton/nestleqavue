@@ -110,6 +110,7 @@
                             :items="forms[3].select"
                             :label="forms[3].label"
                             :type="forms[3].type"
+                            :rules="[rules.required]"
                         ></v-select>
                     </v-col>
                 </v-row>
@@ -244,7 +245,6 @@ export default {
                 .then(response => 
                 {
                     response.status
-                    console.log(params)
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'success'
                     this.snackbar.snackText = 'Data saved'
