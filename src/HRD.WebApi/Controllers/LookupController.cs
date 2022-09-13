@@ -186,6 +186,21 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
         {
+
+            var item = _context.DropDownItems.Where(x =>
+
+                   x.Value == model.Value &&
+                   x.DropDownTypeId == model.DropDownTypeId
+
+               ).FirstOrDefaultAsync(); 
+
+               if(item == null)
+               {
+              
+                   return BadRequest("Lookup already Exist");
+
+               }
+
             var dropdownitem = new DropDownItem
             {
                 Id = model.Id,
