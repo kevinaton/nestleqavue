@@ -136,6 +136,19 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RawMaterialViewModel>> PostRawMaterial(RawMaterialViewModel model)
         {
+
+
+            var Item = _context.RawMaterials.Where(x =>
+                x.Id == model.Id &&
+                x.Description == model.Description
+                ).FirstOrDefaultAsync();
+           
+            if(Item != null)
+            {
+                return BadRequest("Raw Materials already Exist");
+            }
+
+
             var rawMaterial = new RawMaterial
             {
                 Id = model.Id,
@@ -194,21 +207,36 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials(string id)
         {
 
-            if (string.IsNullOrWhiteSpace(id) || id.Trim().Length < 3)
-            {
-                return BadRequest("Search string should have 3 or more characters");
-            }
-            var rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
-                .Select(s => new RawMaterialViewModel
-                {
-                    Id = s.Id,
-                    Description = s.Description
-                }).ToListAsync();
+            
+             var rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
+                                .Select(s => new RawMaterialViewModel
+                                {
+                                    Id = s.Id,
+                                    Description = s.Description
+                                }).ToListAsync();
+            
+
 
             if (rawMaterials == null)
             {
                 return NotFound();
             }
+                
+            return rawMaterials; 
+        }
+
+        [HttpGet("Search")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials()
+        {
+
+            
+             var rawMaterials = await _context.RawMaterials.Select(s => new RawMaterialViewModel
+                                {
+                                    Id = s.Id,
+                                    Description = s.Description
+                                }).ToListAsync();
+
 
             return rawMaterials;
         }
