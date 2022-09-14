@@ -51,6 +51,17 @@
                 @change="(value) => { props.item.testCost = value }"
             />
         </template>
+
+        <template v-slot:[`item.status`]="props">
+            <EditCheckboxProduct
+                :table="props.item.status"
+                v-model="props.item.status"
+                :input="snackbar"
+                editData="noBbdate"
+                :data="props.item"
+                @change="(value) => { props.item.status = value }"
+            />
+        </template>
         
         <template v-slot:[`item.actions`]="{ item }">
             <DeleteAction 
@@ -149,7 +160,8 @@
             sortable: true,
             value: 'id',
             },
-            { text: 'Test Cost', value: 'testCost' },
+            { text: 'Role Name', value: 'roleName' },
+            { text: 'Static', value: 'static' },
             { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
         ],
         roles: [],
