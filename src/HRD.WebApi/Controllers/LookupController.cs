@@ -187,14 +187,14 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
         {
 
-            var item = _context.DropDownItems.Where(x =>
+            var item = await _context.DropDownItems.Where(x =>
 
                    x.Value == model.Value &&
                    x.DropDownTypeId == model.DropDownTypeId
 
                ).FirstOrDefaultAsync(); 
 
-               if(item == null)
+               if(item != null)
                {
               
                    return BadRequest("Lookup already Exist");
@@ -215,7 +215,7 @@ namespace HRD.WebApi.Controllers
 
             model.Id = dropdownitem.Id;
             return CreatedAtAction("GetDropDownItem", new { id = model.Id }, model);
-        }
+            }
 
         // DELETE: api/Lookup/items/5
         [HttpDelete("items/{id}")]
