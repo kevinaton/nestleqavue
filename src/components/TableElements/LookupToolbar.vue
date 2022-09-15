@@ -96,7 +96,7 @@
                             v-model="forms[2].value"
                             :label="forms[2].label"
                             :type="forms[2].type"
-                            :rules="[rules.required]"
+                            :rules="[rules.required, rules.int]"
                         ></v-text-field>
                     </v-col>
                     <v-col
@@ -110,7 +110,6 @@
                             :items="forms[3].select"
                             :label="forms[3].label"
                             :type="forms[3].type"
-                            :rules="[rules.required]"
                         ></v-select>
                     </v-col>
                 </v-row>
