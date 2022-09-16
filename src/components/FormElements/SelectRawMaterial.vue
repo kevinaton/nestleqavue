@@ -7,7 +7,6 @@
         :label="label"
         :items="lookup"
         @click="initialOptions"
-        @input="inp($event)"
         @change="changeValue($event)"
         return-object
     ></v-combobox>
@@ -25,11 +24,6 @@ export default {
         inpValue: {
             type: String,
             default: '',
-            required: false
-        },
-        id: {
-            type: Number,
-            default: 0,
             required: false
         },
         rules: {
@@ -55,8 +49,9 @@ export default {
     methods: {
         initialOptions() {
             let vm = this
-            vm.loading = true            
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${vm.id}`)
+            vm.loading = true
+            if(vm.lookup.length == 0) {
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search`)
                 .then((res) => {
                     let arr = []
                     res.data.forEach(item => {
@@ -68,27 +63,7 @@ export default {
                     console.warn(err)
                 })
                 .finally(() => (vm.loading = false))
-        },
-        inp(value) {
-            let vm = this
-            if(vm.lookup.length == 0 && value.length >= 4) {
-                vm.$emit('change', value)
-                vm.inputValue = value
-                console.log(value)
-                vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/Search/${value}`)
-                    .then((res) => {
-                        let arr = []
-                        res.data.forEach(item => {
-                            arr.push(item.id)
-                        })
-                        vm.lookup = arr
-                    })
-                    .catch(err => {
-                        console.warn(err)
-                    })
-                    .finally(() => (vm.loading = false))
-            }
+            }         
         },
         changeValue(value) {
             let vm = this

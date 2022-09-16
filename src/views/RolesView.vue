@@ -13,6 +13,12 @@
     @update:sort-desc="customSort('desc', $event)"
     hide-default-footer
     >
+        
+        
+        <!-- ADJUST LOADING to TRUE. ADJUST fetchData and getData -->
+        
+        
+        
         <template v-slot:top>
             <SnackBar 
                 :input="snackbar"
@@ -29,13 +35,15 @@
                 :data="delItem"
                 url="Lookup/items"
             />
-            <SimpleToolbar 
+            <RolesToolbar 
                 title="Roles"
+                formTitle="Add Role"
                 :toolbar="toolbar"
                 :table="roles"
                 :snackbar="snackbar"
                 util="TestCosts"
                 :tableOptions="tableOptions"
+                :rules="rules"
                 @change="getSearch($event)"
             />
         </template>
@@ -89,7 +97,7 @@
 
 <script>
     import Breadcrumbs from '@/components/BreadCrumbs.vue'
-    import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
+    import RolesToolbar from '@/components/TableElements/RolesToolbar.vue'
     import ResetTable from '@/components/TableElements/ResetTable.vue'
     import DeleteAction from '@/components/TableElements/DeleteAction.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
@@ -100,7 +108,7 @@
     export default {
         components: {
             Breadcrumbs,
-            SimpleToolbar,
+            RolesToolbar,
             ResetTable,
             DeleteAction,
             SnackBar,
@@ -110,7 +118,7 @@
             EditTableTesting
         },
         data: () => ({
-        loading:true,
+        loading:false,
         delItem:'',
         firstload:true,
         tableOptions: {
@@ -175,7 +183,7 @@
             disabled: false,
             href: '',
             },
-        ],
+        ]
         }),
 
         computed: {
@@ -193,23 +201,23 @@
         methods: {
             fetchData() {
                 let vm = this 
-                vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
-                .then((res) => {
-                    vm.tableOptions.totalPages = res.data.totalPages
-                    vm.tableOptions.itemsPerPage = res.data.pageSize
-                    vm.tableOptions.page = res.data.pageNumber
-                    vm.tableOptions.totalRecords = res.data.totalRecords
-                    vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
-                    vm.roles = res.data.data
-                })
-                .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-                .finally(() => {vm.loading = false})
+                // vm.loading = true
+                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+                // .then((res) => {
+                //     vm.tableOptions.totalPages = res.data.totalPages
+                //     vm.tableOptions.itemsPerPage = res.data.pageSize
+                //     vm.tableOptions.page = res.data.pageNumber
+                //     vm.tableOptions.totalRecords = res.data.totalRecords
+                //     vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
+                //     vm.roles = res.data.data
+                // })
+                // .catch(err => {
+                //     this.snackbar.snack = true
+                //     this.snackbar.snackColor = 'error'
+                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
+                // .finally(() => {vm.loading = false})
             },
 
             updateTable(value) {
@@ -249,29 +257,29 @@
 
             getData(pageInput, pageSize, searchInput, By, Desc, desc) {
                 let vm = this
-                vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
-                .then((res) => {
-                    vm.tableOptions.totalPages = res.data.totalPages,
-                    vm.tableOptions.itemsPerPage = res.data.pageSize,
-                    vm.tableOptions.page = pageInput,
-                    vm.tableOptions.totalRecords = res.data.totalRecords,
-                    vm.roles = res.data.data,
-                    vm.tableOptions.searchValue = searchInput,
-                    vm.tableOptions.sortBy = By,
-                    vm.tableOptions.sortDesc = Desc,
-                    vm.tableOptions.desc = desc
-                })
-                .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-                .finally(() => {
-                vm.loading = false, 
-                vm.tableOptions.page = pageInput
-                })
+                // vm.loading = true
+                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
+                // .then((res) => {
+                //     vm.tableOptions.totalPages = res.data.totalPages,
+                //     vm.tableOptions.itemsPerPage = res.data.pageSize,
+                //     vm.tableOptions.page = pageInput,
+                //     vm.tableOptions.totalRecords = res.data.totalRecords,
+                //     vm.roles = res.data.data,
+                //     vm.tableOptions.searchValue = searchInput,
+                //     vm.tableOptions.sortBy = By,
+                //     vm.tableOptions.sortDesc = Desc,
+                //     vm.tableOptions.desc = desc
+                // })
+                // .catch(err => {
+                //     this.snackbar.snack = true
+                //     this.snackbar.snackColor = 'error'
+                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
+                // .finally(() => {
+                // vm.loading = false, 
+                // vm.tableOptions.page = pageInput
+                // })
             },
 
         },
