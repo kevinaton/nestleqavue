@@ -138,7 +138,7 @@ namespace HRD.WebApi.Controllers
         {
 
 
-            var Item = _context.RawMaterials.Where(x =>
+            var Item = await _context.RawMaterials.Where(x =>
                 x.Id == model.Id &&
                 x.Description == model.Description
                 ).FirstOrDefaultAsync();
