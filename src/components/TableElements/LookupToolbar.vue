@@ -109,6 +109,7 @@
                             v-model="forms[3].value"
                             :items="forms[3].select"
                             :label="forms[3].label"
+                            :rules="[rules.required]"
                             :type="forms[3].type"
                         ></v-select>
                     </v-col>
@@ -228,6 +229,9 @@ export default {
             this.$emit('change', value)
         },
         close () {
+            this.$refs.form.reset()
+            this.forms[3].value = true
+            console.log(this.forms)
             this.dialog = false
         },
         save(valid) {
