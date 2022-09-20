@@ -109,7 +109,7 @@
                             v-model="forms[3].value"
                             :items="forms[3].select"
                             :label="forms[3].label"
-                            :rules="[rules.required]"
+                            :rules="[rules.tf]"
                             :type="forms[3].type"
                         ></v-select>
                     </v-col>
@@ -230,9 +230,10 @@ export default {
         },
         close () {
             this.$refs.form.reset()
-            this.forms[3].value = true
-            console.log(this.forms)
-            this.dialog = false
+            this.$nextTick(() => {
+                this.forms[3].value = true
+                this.dialog = false
+            })
         },
         save(valid) {
             let params={},
@@ -255,7 +256,7 @@ export default {
                 .catch(err => {
                     this.snackbar.snack = true
                     this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = err.response.statusText || 'Something went wrong'
+                    this.snackbar.snackText = err.response.data || 'Something went wrong'
                     console.warn(err)
                     if(err.response.statusTest == 'Conflict') {
                         location.reload()

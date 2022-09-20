@@ -144,6 +144,7 @@
                                 v-model="forms[7].value" 
                                 :label="forms[7].label" 
                                 :type="forms[7].type"
+                                v-on:keypress="isLetter($event)"
                                 :rules="[rules.country, rules.required]"
                             ></v-text-field>
                         </v-col>
@@ -258,6 +259,7 @@ export default {
             this.$emit('change', value)
         },
         close () {
+            this.$refs.form.reset()
             this.dialog = false
         },
         save(value) {
@@ -288,6 +290,11 @@ export default {
                     this.$parent.$parent.$parent.$parent.fetchData()
                 })
             }
+        },
+        isLetter(e) {
+            let char = String.fromCharCode(e.keyCode)
+            if(/^[A-Za-z]+$/.test(char)) return true
+            else e.preventDefault()
         },
         validate() {
             this.$refs.form.validate()

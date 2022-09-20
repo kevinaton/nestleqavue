@@ -159,6 +159,7 @@ export default {
     },
     rules: {
         required: value => !!value || 'Required.',
+        tf: value => typeof value === "boolean" || 'required',
         counter: value => value.length <= 50 || 'Input too long',
         int: value => value <= 32767 || 'Enter a lesser amount',
         email: value => {
