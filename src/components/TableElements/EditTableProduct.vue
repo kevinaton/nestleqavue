@@ -1,22 +1,4 @@
 <template>
-    <!-- <v-edit-dialog
-        :return-value.sync="table"
-        @save="save($event)"
-        @cancel="cancel"
-    >
-        {{ table }}
-        <template v-slot:input>
-            <v-text-field
-                :value="table"
-                @input="updateValue($event)"
-                :rules="rules"
-                :type="type"
-                label="Edit"
-                single-line
-            ></v-text-field>
-        </template>
-    </v-edit-dialog> -->
-
     <v-dialog
         v-model="editDialog"
         max-width="500px"

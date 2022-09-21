@@ -32,16 +32,20 @@
             <v-card-text>
                 <v-container>
                     <v-row>
+
+                        <!-- eslint-disable -->
                         <v-col
-                        cols="12"
-                        :sm="smmd"
-                        :md="smmd"
-                        v-for="form in forms"
-                        :key="form.index"
-                        class="pl-0"
+                            cols="12"
+                            :sm="smmd"
+                            :md="smmd"
+                            v-for="form in forms"
+                            :key="form.index"
+                            class="pl-0"
+                            v-if="form.edit"
                         >
+                        <!-- eslint-enable -->
+
                             <v-text-field
-                                v-if="form.edit"
                                 v-model="edit[form.name]"
                                 :label="form.label"
                                 :type="form.type"

@@ -190,7 +190,12 @@
           value:0, 
           edit:true, 
           visible:true, 
-          rules:(value) => {if(!value){return 'Required'} if(value >= 2147483647){return 'Already max'} else{return true}}},
+          rules:(value) => {
+            if(!value){return 'Required'}
+            if(value >= 2147483647){return 'Already max'}
+            else{return true}
+          }
+        },
       ]
     }),
 
