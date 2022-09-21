@@ -2,9 +2,9 @@
     <v-col center>
     <v-checkbox
         v-if="showCheckBox"
-        v-model="cTable"
+        v-model="checkboxValue"
+        readonly
         :label="`${table}`"
-        @change="updateValue(cTable)"
     ></v-checkbox>
     <span v-else>N/A</span>
     </v-col>
@@ -44,6 +44,11 @@ export default {
         this.cTable = this.table
         this.checkValue()
 
+    },
+    computed: {
+        checkboxValue() {
+            return this.table
+        }
     },
     emits: ['change'],
     methods: {
