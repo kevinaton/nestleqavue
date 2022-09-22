@@ -36,6 +36,8 @@ namespace HRD.WebApi.Data
         public virtual DbSet<HrdMicro> HrdMicros { get; set; }
         public virtual DbSet<RawMaterial> RawMaterials { get; set; }
 
+        public virtual DbSet<Permission> Permissions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -604,6 +606,14 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.Description)
                     .HasColumnName("Description");
             });
+
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.ToTable("Permissions");
+                
+            });
+
+
 
             OnModelCreatingPartial(modelBuilder);
         }

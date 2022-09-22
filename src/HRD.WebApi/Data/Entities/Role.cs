@@ -8,5 +8,7 @@ namespace HRD.WebApi.Data.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
+        public bool IsStatic { get; set; } = true;
+        public virtual ICollection<Permission> Permissions { get; set; }
     }
 }
