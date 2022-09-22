@@ -196,7 +196,7 @@
             else{return true}
           }
         },
-      ]
+      ],
     }),
 
     computed: {

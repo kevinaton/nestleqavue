@@ -46,28 +46,16 @@
         />
     </template>
 
-    <template v-slot:[`item.name`]="props">
-        <EditTableUser
-            :table="props.item.name"
-            editData="name"
-            :data="props.item"
-            :rules="[rules.counter]"
-            :input="snackbar"
-            @change="(value) => { props.item.name = value }"
-        />
-    </template>
-    <template v-slot:[`item.userId`]="props">
-        <EditTableUser
-            :table="props.item.userId"
-            editData="userId"
-            :data="props.item"
-            :rules="[rules.counter]"
-            :input="snackbar"
-            @change="(value) => { props.item.userId = value }"
-        />
-    </template>
-
     <template v-slot:[`item.actions`]="{ item }">
+        <SimpleEdit 
+            :input="snackbar"
+            :item="item"
+            :forms="forms"
+            formTitle="Edit User"
+            apiUrl="Users"
+            id="id"
+            :smmd="6"
+        />
         <DeleteAction 
             :item="item"
             :tableItem="users"
@@ -98,6 +86,7 @@ import RowDelete from '@/components/TableElements/RowDelete.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import EditTableUser from '@/components/TableElements/EditTableUser.vue'
 import TablePagination from '@/components/TableElements/TablePagination.vue'
+import SimpleEdit from '@/components/TableElements/SimpleEdit.vue'
 
 export default {
     components: {
@@ -109,6 +98,7 @@ export default {
         DeleteAction,
         EditTableUser,
         TablePagination,
+        SimpleEdit
     },
     data: () => ({
     loading:true,
@@ -180,9 +170,34 @@ export default {
         },
     ],
     forms: [
-        {index:0, name:'name', label:'Name', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
-        {index:1, name:'userId', label:'User ID', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
-        {index:2, name:'id', label:'ID', type:'', value:0, visible:false},
+        {
+            index:0,
+            name:'name',
+            label:'Name',
+            type:'',
+            value:'',
+            edit:true,
+            visible:true,
+            rules:value => !!value || 'Required'
+        },
+        {
+            index:1,
+            name:'userId',
+            label:'User ID',
+            type:'', value:'',
+            edit:true,
+            visible:true,
+            rules:value => !!value || 'Required'
+        },
+        {
+            index:2,
+            name:'id',
+            label:'ID',
+            type:'',
+            value:0,
+            edit:false,
+            visible:false
+        },
     ]
     }),
 

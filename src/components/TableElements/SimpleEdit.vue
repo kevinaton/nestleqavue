@@ -32,7 +32,6 @@
             <v-card-text>
                 <v-container>
                     <v-row>
-
                         <!-- eslint-disable -->
                         <v-col
                             cols="12"
@@ -44,7 +43,6 @@
                             v-if="form.edit"
                         >
                         <!-- eslint-enable -->
-
                             <v-text-field
                                 v-model="edit[form.name]"
                                 :label="form.label"
@@ -81,7 +79,7 @@
 
 <script>
 export default {
-    name:'EditTableProduct',
+    name:'SimpleEdit',
     props: {
         input: {
             type:Object,

@@ -191,7 +191,8 @@
                 index:1,
                 name:'testName',
                 label:'Test Name',
-                type:'', value:'',
+                type:'', 
+                value:'',
                 edit:true,
                 visible:true,
                 rules:(value) => {

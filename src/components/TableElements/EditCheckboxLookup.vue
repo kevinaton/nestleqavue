@@ -2,6 +2,7 @@
     <v-col center>
     <v-checkbox
         v-if="showCheckBox"
+        readonly
         v-model="cTable"
         :label="`${table}`"
         @change="updateValue(cTable)"
