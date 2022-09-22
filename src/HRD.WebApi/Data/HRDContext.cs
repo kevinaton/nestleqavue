@@ -112,8 +112,6 @@ namespace HRD.WebApi.Data
                     .HasMaxLength(50)
                     .HasColumnName("BUManager");
 
-                entity.Property(e => e.CasesHeld).HasMaxLength(50);
-
                 entity.Property(e => e.Classification).HasMaxLength(50);
 
                 entity.Property(e => e.CodingDetails).HasMaxLength(10);
@@ -258,9 +256,9 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.FMVendorBatch).HasMaxLength(50);
 
-                entity.Property(e => e.RawMaterialDescription).HasMaxLength(50);
+                entity.Property(e => e.RawMaterialDescription).HasMaxLength(250);
 
-                entity.Property(e => e.ReasonAction).HasMaxLength(50);
+                entity.Property(e => e.ScrapReasonAction).HasMaxLength(250);
 
                 entity.Property(e => e.Response).HasMaxLength(50);
 
