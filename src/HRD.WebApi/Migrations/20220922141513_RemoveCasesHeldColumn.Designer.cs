@@ -4,6 +4,7 @@ using HRD.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRD.WebApi.Migrations
 {
     [DbContext(typeof(HRDContext))]
-    partial class HRDContextModelSnapshot : ModelSnapshot
+    [Migration("20220922141513_RemoveCasesHeldColumn")]
+    partial class RemoveCasesHeldColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,6 +136,9 @@ namespace HRD.WebApi.Migrations
 
                     b.Property<bool?>("Cancelled")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("CaseCount")
+                        .HasColumnType("int");
 
                     b.Property<int?>("Cases")
                         .HasColumnType("int");
@@ -447,8 +452,12 @@ namespace HRD.WebApi.Migrations
                         .HasColumnName("QAComments");
 
                     b.Property<string>("RawMaterialDescription")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ReasonAction")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool?>("RejectOrNinePack")
                         .HasColumnType("bit");
@@ -505,13 +514,6 @@ namespace HRD.WebApi.Migrations
 
                     b.Property<int?>("Scrap")
                         .HasColumnType("int");
-
-                    b.Property<int?>("ScrapCaseCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ScrapReasonAction")
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool?>("SecondaryNotification")
                         .HasColumnType("bit");

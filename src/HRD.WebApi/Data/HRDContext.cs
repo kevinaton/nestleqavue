@@ -36,6 +36,8 @@ namespace HRD.WebApi.Data
         public virtual DbSet<HrdMicro> HrdMicros { get; set; }
         public virtual DbSet<RawMaterial> RawMaterials { get; set; }
 
+        public virtual DbSet<Permission> Permissions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -109,8 +111,6 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.Bumanager)
                     .HasMaxLength(50)
                     .HasColumnName("BUManager");
-
-                entity.Property(e => e.CasesHeld).HasMaxLength(50);
 
                 entity.Property(e => e.Classification).HasMaxLength(50);
 
@@ -256,9 +256,9 @@ namespace HRD.WebApi.Data
 
                 entity.Property(e => e.FMVendorBatch).HasMaxLength(50);
 
-                entity.Property(e => e.RawMaterialDescription).HasMaxLength(50);
+                entity.Property(e => e.RawMaterialDescription).HasMaxLength(250);
 
-                entity.Property(e => e.ReasonAction).HasMaxLength(50);
+                entity.Property(e => e.ScrapReasonAction).HasMaxLength(250);
 
                 entity.Property(e => e.Response).HasMaxLength(50);
 
@@ -604,6 +604,14 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.Description)
                     .HasColumnName("Description");
             });
+
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.ToTable("Permissions");
+                
+            });
+
+
 
             OnModelCreatingPartial(modelBuilder);
         }
