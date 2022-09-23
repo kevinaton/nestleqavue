@@ -13,12 +13,6 @@
     @update:sort-desc="customSort('desc', $event)"
     hide-default-footer
     >
-        
-        
-        <!-- ADJUST LOADING to TRUE. ADJUST fetchData and getData -->
-        
-        
-        
         <template v-slot:top>
             <SnackBar 
                 :input="snackbar"
@@ -47,27 +41,13 @@
                 @change="getSearch($event)"
             />
         </template>
-        
-        <template v-slot:[`item.testCost`]="props">
-            <EditTableTesting
-                :table="props.item.testCost"
-                editData="testCost"
-                :data="props.item"
-                :rules="[rules.int]"
-                :input="snackbar"
-                type="number"
-                @change="(value) => { props.item.testCost = value }"
-            />
-        </template>
 
-        <template v-slot:[`item.status`]="props">
-            <EditCheckboxProduct
-                :table="props.item.status"
-                v-model="props.item.status"
+        <template v-slot:[`item.isStatic`]="props">
+            <EditCheckboxRole
+                :table="props.item.isStatic"
+                v-model="props.item.isStatic"
                 :input="snackbar"
-                editData="noBbdate"
                 :data="props.item"
-                @change="(value) => { props.item.status = value }"
             />
         </template>
         
@@ -103,7 +83,7 @@
     import SnackBar from '@/components/TableElements/SnackBar.vue'
     import RowDelete from '@/components/TableElements/RowDelete.vue'
     import TablePagination from '@/components/TableElements/TablePagination.vue'
-    import EditTableTesting from '@/components/TableElements/EditTableTesting.vue'
+    import EditCheckboxRole from '@/components/TableElements/EditCheckboxRole.vue'
 
     export default {
         components: {
@@ -115,10 +95,10 @@
             RowDelete,
             DeleteAction,
             TablePagination,
-            EditTableTesting
+            EditCheckboxRole
         },
         data: () => ({
-        loading:false,
+        loading:true,
         delItem:'',
         firstload:true,
         tableOptions: {
@@ -168,8 +148,8 @@
             sortable: true,
             value: 'id',
             },
-            { text: 'Role Name', value: 'roleName' },
-            { text: 'Static', value: 'static' },
+            { text: 'Role', value: 'name' },
+            { text: 'Static', value: 'isStatic' },
             { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
         ],
         roles: [],
@@ -201,23 +181,23 @@
         methods: {
             fetchData() {
                 let vm = this 
-                // vm.loading = true
-                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
-                // .then((res) => {
-                //     vm.tableOptions.totalPages = res.data.totalPages
-                //     vm.tableOptions.itemsPerPage = res.data.pageSize
-                //     vm.tableOptions.page = res.data.pageNumber
-                //     vm.tableOptions.totalRecords = res.data.totalRecords
-                //     vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
-                //     vm.roles = res.data.data
-                // })
-                // .catch(err => {
-                //     this.snackbar.snack = true
-                //     this.snackbar.snackColor = 'error'
-                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                //     console.warn(err)
-                // })
-                // .finally(() => {vm.loading = false})
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+                .then((res) => {
+                    vm.tableOptions.totalPages = res.data.totalPages
+                    vm.tableOptions.itemsPerPage = res.data.pageSize
+                    vm.tableOptions.page = res.data.pageNumber
+                    vm.tableOptions.totalRecords = res.data.totalRecords
+                    vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
+                    vm.roles = res.data.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => {vm.loading = false})
             },
 
             updateTable(value) {
@@ -257,29 +237,29 @@
 
             getData(pageInput, pageSize, searchInput, By, Desc, desc) {
                 let vm = this
-                // vm.loading = true
-                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/TestCosts?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
-                // .then((res) => {
-                //     vm.tableOptions.totalPages = res.data.totalPages,
-                //     vm.tableOptions.itemsPerPage = res.data.pageSize,
-                //     vm.tableOptions.page = pageInput,
-                //     vm.tableOptions.totalRecords = res.data.totalRecords,
-                //     vm.roles = res.data.data,
-                //     vm.tableOptions.searchValue = searchInput,
-                //     vm.tableOptions.sortBy = By,
-                //     vm.tableOptions.sortDesc = Desc,
-                //     vm.tableOptions.desc = desc
-                // })
-                // .catch(err => {
-                //     this.snackbar.snack = true
-                //     this.snackbar.snackColor = 'error'
-                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                //     console.warn(err)
-                // })
-                // .finally(() => {
-                // vm.loading = false, 
-                // vm.tableOptions.page = pageInput
-                // })
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=${pageInput}&PageSize=${pageSize}&SearchString=${searchInput}&SortColumn=${By}&SortOrder=${desc}`)
+                .then((res) => {
+                    vm.tableOptions.totalPages = res.data.totalPages,
+                    vm.tableOptions.itemsPerPage = res.data.pageSize,
+                    vm.tableOptions.page = pageInput,
+                    vm.tableOptions.totalRecords = res.data.totalRecords,
+                    vm.roles = res.data.data,
+                    vm.tableOptions.searchValue = searchInput,
+                    vm.tableOptions.sortBy = By,
+                    vm.tableOptions.sortDesc = Desc,
+                    vm.tableOptions.desc = desc
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => {
+                vm.loading = false, 
+                vm.tableOptions.page = pageInput
+                })
             },
 
         },
