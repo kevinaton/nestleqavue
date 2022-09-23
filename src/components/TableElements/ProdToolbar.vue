@@ -49,7 +49,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-container>
+                    <v-container class="px-0">
                     <v-row>
                         <v-col
                         cols="12"
@@ -103,7 +103,7 @@
                                 v-model="forms[4].value"
                                 :label="forms[4].label"
                                 :type="forms[4].type"
-                                :rules="[rules.required, rules.counter]"
+                                :rules="[rules.required, rules.int]"
                             ></v-text-field>
                         </v-col>
                         <v-col

@@ -12,7 +12,7 @@
 
 <script>
 export default {
-    name:'EditCheckboxProduct',
+    name:'EditCheckboxRole',
     props: {
         input: {
             type:Object,
@@ -27,11 +27,6 @@ export default {
         data: {
             type:Object,
             default: () => {},
-            required:false
-        },
-        editData: {
-            type:String,
-            default:'',
             required:false
         }
     },
@@ -52,32 +47,6 @@ export default {
     },
     emits: ['change'],
     methods: {
-        updateValue(value) {
-            let vm = this
-            vm.tempValue = value
-            vm.cTable = value
-            vm.$emit('change', value)
-
-            vm.input.snack = true
-            vm.input.snackColor = 'success'
-            vm.input.snackText = 'Data saved'
-
-            let ed = vm.editData
-            this.data.ed = vm.table
-
-            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.data.id}`,  {
-                id: vm.data.id,
-                year: vm.data.year,
-                fert: vm.data.fert,
-                description: vm.data.description,
-                costPerCase: vm.data.costPerCase,
-                country: vm.data.country,
-                noBbdate: vm.data.noBbdate,
-                holiday: vm.data.holiday
-            })
-            .then(response => response.status)
-            .catch(err => console.warn(err))
-        },
         checkValue() {
             if(this.table == null) {
                 this.showCheckBox = false

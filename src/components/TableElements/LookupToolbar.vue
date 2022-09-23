@@ -81,7 +81,7 @@
                             v-model="forms[1].value"
                             :label="forms[1].label"
                             :type="forms[1].type"
-                            :rules="[rules.required]"
+                            :rules="[rules.required, rules.counter]"
                         ></v-text-field>
                     </v-col>
                 </v-row>
@@ -210,19 +210,20 @@ export default {
             type: Object,
             default: () => {},
             required: false
+        },
+        lookupTypes: {
+            type: Array,
+            default: () => {},
+            required: false
         }
     },
     data: () => ({
         searchInput:'',
         dialog:false,
         origVal:[],
-        lookupTypes:[],
         valid:false,
     }),
     emits: ["change"],
-    created() {
-        this.fetchTypeName()
-    },
     methods: {
         searchVal(value) {
             this.searchInput = value
@@ -265,26 +266,6 @@ export default {
                 .finally(() => {
                     this.close()
                     this.$parent.$parent.$parent.$parent.fetchData()
-                })
-            }
-        },
-        fetchTypeName() {
-            let vm = this
-            if(vm.forms[4].select.length == 0) {
-                vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
-                .then((res) => {
-                    vm.forms[4].select = res.data.map(({name}) => name)
-                    vm.lookupTypes = res.data
-                })
-                .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-                .finally(() => {
-                    vm.loading = false
                 })
             }
         },

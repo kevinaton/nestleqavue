@@ -11,7 +11,6 @@
     :page.sync="tableOptions.page"
     @update:sort-by="customSort('by',$event)"
     @update:sort-desc="customSort('desc', $event)"
-    dense
     hide-default-footer
   >
     <template v-slot:top>
@@ -34,67 +33,21 @@
         title="Products"
         formTitle="Add Product"
         btnName="Add Product"
+        util="Products"
         :adding="true"
         :forms="forms"
         :rules="rules"
         :toolbar="toolbar"
         :table="products"
         :snackbar="snackbar"
-        util="Products"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
-      />
-    </template>
-
-    <template v-slot:[`item.fert`]="props">
-      <EditTableProduct
-        :table="props.item.fert"
-        editData="fert"
-        :data="props.item"
-        :rules="[rules.fert]"
-        :input="snackbar"
-        @change="(value) => { props.item.fert = value }"
-      />
-    </template>
-
-    <template v-slot:[`item.description`]="props">
-      <EditTableProduct 
-        :table="props.item.description"
-        editData="description"
-        :data="props.item"
-        :rules="[rules.counter]"
-        :input="snackbar"
-        @change="(value) => { props.item.description = value }"
-      />
-    </template>
-
-    <template v-slot:[`item.costPerCase`]="props">
-      <EditTableProduct
-        :table="props.item.costPerCase"
-        editData="description"
-        :data="props.item"
-        :rules="[rules.counter]"
-        :input="snackbar"
-        @change="(value) => { props.item.costPerCase = value }"
-        type="number"
-      />
-    </template>
-
-    <template v-slot:[`item.country`]="props">
-      <EditTableProduct
-        :table="props.item.country"
-        editData="country"
-        :data="props.item"
-        :rules="[rules.country, rules.counter]"
-        :input="snackbar"
-        @change="(value) => { props.item.country = value }"
       />
     </template>
 
     <template v-slot:[`item.noBbdate`]="props">
       <EditCheckboxProduct
         :table="props.item.noBbdate"
-        v-model="props.item.noBbdate"
         :input="snackbar"
         editData="noBbdate"
         :data="props.item"
@@ -105,7 +58,6 @@
     <template v-slot:[`item.holiday`]="props">
       <EditCheckboxProduct
         :table="props.item.holiday"
-        v-model="props.item.holiday"
         :input="snackbar"
         editData="holiday"
         :data="props.item"
@@ -114,12 +66,18 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
+      <EditTableProduct
+        :input="snackbar"
+        :item="item"
+        :rules="rules"
+        @change="(value) => { item = value }"
+      />
       <DeleteAction 
         :item="item"
         :tableItem="products"
         :input="toolbar"
         durl="id"
-        @change="(value) => { delItem = value}"
+        @change="(value) => { delItem = value }"
       />
     </template>
 
@@ -208,9 +166,11 @@
         },
       },
       rules: {
-          required: value => !!value || 'Required.',
-          counter: value => value.length <= 50 || 'Input too long.',
-          country: value => value.length == 2 || 'Input must be 2 characters.',
+          required: value => !!value || 'Required',
+          tf: value => typeof value === "boolean" || 'required',
+          counter: value => (value || '').length <= 50 || 'Input too long.',
+          int: value => value <= 2147483647 || 'Enter a lesser amount',
+          country: value => (value || '').length == 2 || 'Input must be 2 characters.',
           fert: value => (value || '').length <= 8 || 'Input 8 digits only',
           email: value => {
               const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -231,8 +191,8 @@
         { text: 'Holiday', value: 'holiday' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
       ],
-      products: [],
-      bcrumbs: [
+      products:[],
+      bcrumbs:[
         {
           text: 'Administration',
           disabled: true,
@@ -243,7 +203,7 @@
           href: '',
         },
       ],
-      forms: [
+      forms:[
         {index:0, name:'id', value:0, visible:false},
         {index:1, name:'year', label:'Year', type:'Number', value:'', visible:true},
         {index:2, name:'fert', label:'FERT', type:'', value:'', visible:true},
@@ -252,7 +212,9 @@
         {index:5, name:'noBbdate', label:'No Birth Date', type:'Boolean', select:[true, false], value:null, visible:true},
         {index:6, name:'holiday', label:'Holiday', type:'Boolean', select:[true, false], value:null, visible:true},
         {index:7, name:'country', label:'Country', type:'', value:'', visible:true},
-      ]
+      ],
+      editDialog: false,
+      valid: false
     }),
 
     computed: {
@@ -323,7 +285,6 @@
           }
         }
       },
-
       getData(pageInput, pageSize, searchInput, By, Desc, desc) {
         let vm = this
         vm.loading = true
@@ -350,6 +311,10 @@
           vm.tableOptions.page = pageInput
         })
       },
+      closeEdit() {
+        this.$refs.form.reset()
+        this.dialog = false
+      }
     },
   }
 </script>

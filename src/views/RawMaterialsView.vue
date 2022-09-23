@@ -46,24 +46,23 @@
         />
         </template>
 
-        <template v-slot:[`item.description`]="props">
-            <EditTableRawMaterials
-                :table="props.item.description"
-                :input="snackbar"
-                :rules="rules"
-                :string1="props.item.id"
-                @change="(value) => { props.item.description = value }"
-            />
-        </template>
-
         <template v-slot:[`item.actions`]="{ item }">
-        <DeleteAction 
-            :item="item"
-            :tableItem="rawMaterials"
-            :input="toolbar"
-            durl="id"
-            @change="(value) => { delItem = value}"
-        />
+            <SimpleEdit 
+                :input="snackbar"
+                :item="item"
+                :forms="forms"
+                formTitle="Edit Raw Materials"
+                apiUrl="RawMaterials"
+                id="id"
+                :smmd="12"
+            />
+            <DeleteAction 
+                :item="item"
+                :tableItem="rawMaterials"
+                :input="toolbar"
+                durl="id"
+                @change="(value) => { delItem = value}"
+            />
         </template>
         
         <ResetTable  @click="fetchData()" />
@@ -87,6 +86,7 @@
     import DeleteAction from '@/components/TableElements/DeleteAction.vue'
     import EditTableRawMaterials from '@/components/TableElements/EditTableRawMaterials.vue'
     import TablePagination from '@/components/TableElements/TablePagination.vue'
+    import SimpleEdit from '@/components/TableElements/SimpleEdit.vue'
 
     export default {
         components: {
@@ -98,6 +98,7 @@
             DeleteAction,
             EditTableRawMaterials,
             TablePagination,
+            SimpleEdit
         },
         data: () => ({
             bcrumbs: [
@@ -163,8 +164,8 @@
                 checkId: value => value == materialId || 'Sayop!'
             },
             forms: [
-                {index:0, name:'id', label:'ID', type:'Number', value:'', visible:true},
-                {index:1, name:'description', label:'Description', type:'', value:'', visible:true}
+                {index:0, name:'id', label:'ID', type:'Number', value:'', edit:false, visible:true, rules:value => !!value || 'Required'},
+                {index:1, name:'description', label:'Description', type:'', value:'', edit:true, visible:true, rules:value => !!value || 'Required'}
             ]
         }),
         computed: {

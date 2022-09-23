@@ -28,7 +28,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Roles
         [HttpGet]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RoleViewModel>>> GetRoles([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -75,7 +75,7 @@ namespace HRD.WebApi.Controllers
 
         //GET: api/Roles/1
         [HttpGet("{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<RoleViewModel>> GetRole(int id)
         {
             var role = await _context.Roles.Include(i => i.Permissions).FirstOrDefaultAsync(f => f.Id == id);
@@ -99,7 +99,7 @@ namespace HRD.WebApi.Controllers
 
         //PUT: api/Roles/1
         [HttpPut("{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult> PutRole(int id, RoleViewModel model)
         {
             if(id != model.Id)
@@ -172,7 +172,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RoleViewModel>> PostRole(RoleViewModel model)
         {
             var role = new Role
@@ -211,7 +211,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Roles/1
         [HttpDelete("{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteRole(int id)
         {
             var role = await _context.Roles.FindAsync(id);

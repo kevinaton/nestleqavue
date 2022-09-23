@@ -45,18 +45,16 @@
       />
     </template>
 
-    <template v-slot:[`item.laborCost`]="props">
-      <EditTableLabor
-        :table="props.item.laborCost"
-        :input="snackbar"
-        :rules="rules"
-        :string1="props.item.year"
-        type="number"
-        @change="(inputValue) => { props.item.laborCost = inputValue }"
-      />
-    </template>
-
     <template v-slot:[`item.actions`]="{ item }">
+      <SimpleEdit 
+        :input="snackbar"
+        :item="item"
+        :forms="forms"
+        formTitle="Edit Labor"
+        apiUrl="LaborCosts"
+        id="year"
+        :smmd="12"
+      />
       <DeleteAction 
         :item="item"
         :tableItem="labors"
@@ -88,6 +86,7 @@
   import EditTableLabor from '@/components/TableElements/EditTableLabor.vue'
   import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
   import TablePagination from '@/components/TableElements/TablePagination.vue'
+  import SimpleEdit from '@/components/TableElements/SimpleEdit.vue'
 
   export default {
     components: {
@@ -100,6 +99,7 @@
       EditTableLabor,
       EditYearOnly,
       TablePagination,
+      SimpleEdit
     },
     data: () => ({
       loading:true,
@@ -168,9 +168,35 @@
         },
       ],
       forms: [
-        {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true, rules:value => value <= 9999 || 'Enter a lesser amount'},
-        {index:1, name:'laborCost', label:'Labor Cost', type:'Number', value:0, visible:true, rules:value => !!value || 'Required'},
-      ]
+        {
+          index:0, 
+          name:'year', 
+          label:'Year', 
+          type:'Number', 
+          value:'', 
+          edit:false, 
+          visible:true, 
+          rules:(value) => {
+            if(!value){return 'Required'} 
+            if(value >= 9999){return 'Input too long'} 
+            else{return true}
+          }
+        },
+        {
+          index:1, 
+          name:'laborCost', 
+          label:'Labor Cost', 
+          type:'Number', 
+          value:0, 
+          edit:true, 
+          visible:true, 
+          rules:(value) => {
+            if(!value){return 'Required'}
+            if(value >= 2147483647){return 'Already max'}
+            else{return true}
+          }
+        },
+      ],
     }),
 
     computed: {

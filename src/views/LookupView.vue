@@ -37,31 +37,12 @@
         :forms="forms"
         :toolbar="toolbar"
         :table="lookups"
+        :lookupTypes="lookupTypes"
         :snackbar="snackbar"
         :rules="rules"
         util="Lookup"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
-    />
-    </template>
-    <template v-slot:[`item.typeName`]="props">
-    <EditDropdownLookup
-        :table="props.item.typeName"
-        editData="typeName"
-        :data="props.item"
-        :rules="rules"
-        :input="snackbar"
-        @change="(value, id) => {props.item.typeName = value, props.item.dropDownTypeId = id}"        
-    />
-    </template>
-    <template v-slot:[`item.value`]="props">
-    <EditTableLookup
-        :table="props.item.value"
-        editData="value"
-        :data="props.item"
-        :rules="rules"
-        :input="snackbar"
-        @change="(value) => { props.item.value = value }"
     />
     </template>
     <template v-slot:[`item.isActive`]="props">
@@ -75,13 +56,21 @@
         />
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-    <DeleteAction 
-        :item="item"
-        :tableItem="lookups"
-        :input="toolbar"
-        durl="id"
-        @change="(value) => { delItem = value}"
-    />
+        <EditTableLookup
+            :input="snackbar"
+            :item="item"
+            :rules="rules"
+            :forms="forms"
+            :lookupTypes="lookupTypes"
+            @change="(value) => { item = value }"
+        />
+        <DeleteAction 
+            :item="item"
+            :tableItem="lookups"
+            :input="toolbar"
+            durl="id"
+            @change="(value) => { delItem = value}"
+        />
     </template>
 
     <ResetTable  @click="fetchData()" />
@@ -160,7 +149,7 @@ export default {
     rules: {
         required: value => !!value || 'Required.',
         tf: value => typeof value === "boolean" || 'required',
-        counter: value => value.length <= 50 || 'Input too long',
+        counter: value => (value || '').length <= 50 || 'Input too long',
         int: value => value <= 32767 || 'Enter a lesser amount',
         email: value => {
             const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -193,7 +182,8 @@ export default {
         {index:3, name:'isActive', label:'Active?', type:'Boolean', select:[true, false], value:true, visible:true},
         {index:4, name:'typeName', label:'Type Name', type:'',  select:[], value:'', visible:true},
         {index:5, name:'id', label:'ID', type:'Number', value:0, visible:false},
-    ]
+    ],
+    lookupTypes:[]
     }),
     computed: {
         getPage() {
@@ -205,6 +195,7 @@ export default {
 
     created () {
         this.fetchData()
+        this.fetchTypeName()
     },
 
     methods: {    
@@ -290,7 +281,28 @@ export default {
                 vm.loading = false, 
                 vm.tableOptions.page = pageInput
             })
-        }
+        },
+
+        fetchTypeName() {
+            let vm = this
+            if(vm.forms[4].select.length == 0) {
+                vm.loading = true
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
+                .then((res) => {
+                    vm.forms[4].select = res.data.map(({name}) => name)
+                    vm.lookupTypes = res.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                .finally(() => {
+                    vm.loading = false
+                })
+            }
+        },
     },
 }
 </script>

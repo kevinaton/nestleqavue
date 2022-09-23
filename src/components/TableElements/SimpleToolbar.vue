@@ -20,7 +20,6 @@
             :util="util"
         />
         
-        <!-- Add Raw Material data -->
         <v-dialog
             v-model="dialog"
             max-width="500px"
@@ -49,7 +48,7 @@
                 </v-card-title>
 
                 <v-card-text>
-                    <v-container>
+                    <v-container class="px-0">
                     <v-row>
                         <v-col
                         cols="12"

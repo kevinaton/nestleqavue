@@ -188,6 +188,7 @@ export default {
             this.$emit('change', value)
         },
         close () {
+            this.$refs.form.reset()
             this.dialog = false
         },
         save(valid) {

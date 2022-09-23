@@ -44,31 +44,17 @@
                 @change="getSearch($event)"
             />
         </template>
-
-        <template v-slot:[`item.testName`]="props">
-            <EditTableTesting 
-                :table="props.item.testName"
-                editData="testName"
-                :rules="[rules.counter]"
-                :data="props.item"
-                :input="snackbar"
-                @change="(value) => { props.item.testName = value }"
-            />
-        </template>
-
-        <template v-slot:[`item.testCost`]="props">
-            <EditTableTesting
-                :table="props.item.testCost"
-                editData="testCost"
-                :rules="[rules.int]"
-                :data="props.item"
-                :input="snackbar"
-                type="number"
-                @change="(value) => { props.item.testCost = value }"
-            />
-        </template>
         
         <template v-slot:[`item.actions`]="{ item }">
+            <SimpleEdit 
+                :input="snackbar"
+                :item="item"
+                :forms="forms"
+                formTitle="Edit Test Case"
+                apiUrl="TestCosts"
+                id="id"
+                :smmd="6"
+            />
             <DeleteAction 
                 :item="item"
                 :tableItem="testings"
@@ -101,6 +87,7 @@
     import EditTableTesting from '@/components/TableElements/EditTableTesting.vue'
     import EditYearOnly from '@/components/TableElements/EditYearOnly.vue'
     import TablePagination from '@/components/TableElements/TablePagination.vue'
+    import SimpleEdit from '@/components/TableElements/SimpleEdit.vue'
 
     export default {
         components: {
@@ -113,6 +100,7 @@
             EditTableTesting,
             EditYearOnly,
             TablePagination,
+            SimpleEdit
         },
         data: () => ({
         loading:true,
@@ -153,7 +141,7 @@
         },
         rules: {
             required: value => !!value || 'Required.',
-            counter: value => value.length <= 50 || 'Input too long.',
+            counter: value => (value || '').length <= 50 || 'Input too long.',
             int: value => value <= 2147483647 || 'Enter a lesser amount',
             email: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -185,9 +173,48 @@
             },
         ],
         forms: [
-            {index:0, name:'year', label:'Year', type:'Number', value:'', visible:true, rules:value => !!value || 'Required'},
-            {index:1, name:'testName', label:'Test Name', type:'', value:'', visible:true, rules:value => !!value || 'Required'},
-            {index:2, name:'testCost', label:'Test Cost', type:'Number', value:'', visible:true, rules:value => !!value || 'Required'},
+            {
+                index:0,
+                name:'year',
+                label:'Year',
+                type:'Number',
+                value:'',
+                edit:false,
+                visible:true, 
+                rules:(value) => {
+                    if(!value){return 'Required'} 
+                    if(value >= 9999){return 'Input too long'} 
+                    else{return true}
+                }
+            },
+            {
+                index:1,
+                name:'testName',
+                label:'Test Name',
+                type:'', 
+                value:'',
+                edit:true,
+                visible:true,
+                rules:(value) => {
+                    if(!value){return 'Required'}
+                    if((value || '').length >= 50){return 'Input too long'}
+                    else {return true}
+                }
+            },
+            {
+                index:2,
+                name:'testCost',
+                label:'Test Cost',
+                type:'Number',
+                value:'',
+                edit:true,
+                visible:true,
+                rules:(value) => {
+                    if(!value){return 'Required'}
+                    if(value >= 2147483647){return 'Already max'}
+                    else{return true}
+                }
+            },
             {index:3, name:'id', value:0, visible:false},
         ]
         }),
