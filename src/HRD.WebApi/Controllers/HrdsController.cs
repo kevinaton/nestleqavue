@@ -214,8 +214,8 @@ namespace HRD.WebApi.Controllers
                 ReworkApproved = hrd.ReworkApproved,
 
                 NumberOfDaysToReworkApproval = hrd.NumberOfDayToReworkApproval,
-                CaseCount = hrd.CaseCount,
-                ReasonAction = hrd.ReasonAction,
+                CaseCount = hrd.ScrapCaseCount,
+                ReasonAction = hrd.ScrapReasonAction,
                 ApprovalRequestByQa = hrd.IsApprovalRequestByQa,
                 IsPlantManagerAprpoval = hrd.IsPlantManagerAprpoval,
                 IsPlantControllerApproval = hrd.IsPlantControllerApproval,
@@ -316,8 +316,8 @@ namespace HRD.WebApi.Controllers
             //not mapped
             hrd.NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval;
             hrd.YearOfIncident = model.YearOfIncident;
-            hrd.CaseCount = model.CaseCount;
-            hrd.ReasonAction = model.ReasonAction;
+            hrd.ScrapCaseCount = model.CaseCount;
+            hrd.ScrapReasonAction = model.ReasonAction;
             hrd.IsApprovalRequestByQa = model.ApprovalRequestByQa;
             hrd.IsPlantManagerAprpoval = model.IsPlantManagerAprpoval;
             hrd.IsPlantControllerApproval = model.IsPlantControllerApproval;
@@ -526,8 +526,8 @@ namespace HRD.WebApi.Controllers
                 //not mapped
                 NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
                 YearOfIncident = model.YearOfIncident,
-                CaseCount = model.CaseCount,
-                ReasonAction = model.ReasonAction,
+                ScrapCaseCount = model.CaseCount,
+                ScrapReasonAction = model.ReasonAction,
                 IsApprovalRequestByQa = model.ApprovalRequestByQa,
                 IsPlantManagerAprpoval = model.IsPlantManagerAprpoval,
                 IsPlantControllerApproval = model.IsPlantControllerApproval,

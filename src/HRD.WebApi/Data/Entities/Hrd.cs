@@ -100,8 +100,8 @@ namespace HRD.WebApi.Data.Entities
         public int? Donate { get; set; }
         public int? Total { get; set; }
         public int? NumberOfDayToReworkApproval { get; set; }
-        public int? CaseCount { get; set; }
-        public string ReasonAction { get; set; }
+        public int? ScrapCaseCount { get; set; }
+        public string ScrapReasonAction { get; set; }
         public bool? IsApprovalRequestByQa { get; set; }
         public bool? IsPlantManagerAprpoval { get; set; }
         public bool? IsPlantControllerApproval { get; set; }
@@ -115,7 +115,6 @@ namespace HRD.WebApi.Data.Entities
         public string ApprovedByDistroyedWho { get; set; }
         public DateTime? ApprovedByDistroyedWhen { get; set; }
         public string Comments { get; set; }
-        public string CasesHeld { get; set; }
         public string Pos { get; set; }
         public string PestType { get; set; }
         public string PcocontactedImmediately { get; set; }
