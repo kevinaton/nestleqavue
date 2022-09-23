@@ -37,7 +37,8 @@ namespace HRD.WebApi.Controllers
                 .Select(s => new RoleViewModel
                 {
                     Id = s.Id,
-                    Name = s.DisplayName
+                    Name = s.Name,
+                    IsStatic = s.IsStatic
                 });
 
             //sorting 
@@ -50,8 +51,13 @@ namespace HRD.WebApi.Controllers
                     break;
                 case "name":
                     query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Id)
-                        : query.OrderBy(o => o.Id);
+                        ? query.OrderByDescending(o => o.Name)
+                        : query.OrderBy(o => o.Name);
+                    break;
+                case "isStatic":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.IsStatic)
+                        : query.OrderBy(o => o.IsStatic);
                     break;
             }
 
