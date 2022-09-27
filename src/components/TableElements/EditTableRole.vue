@@ -27,7 +27,7 @@
                 v-model="valid"
             >
                 <v-card-title>
-                    <span class="text-h5">Edit</span>
+                    <span class="text-h5">Edit Role</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -52,6 +52,8 @@
                                     <v-text-field
                                         v-model="edit.name"
                                         label="Role Name"
+                                        :readonly="edit.isStatic"
+                                        :hide-details="!edit.isStatic"
                                         hint="Cannot change name of static role"
                                         :rules="[rules.required]"
                                         outlined
@@ -140,7 +142,7 @@ export default {
             isStatic:false,
             grantedPermissionNames:[]
         },
-        selectionType:'leaf',
+        selectionType:'independent',
         selection:[],
         dialog:false,
         valid:false,
@@ -197,32 +199,24 @@ export default {
                 value = vm.origVal = vm.edit
 
             if(valid == true) {
-                // vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.item.id}`,  {
-                //     id: vm.edit.id,
-                //     year: vm.edit.year,
-                //     fert: vm.edit.fert,
-                //     description: vm.edit.description,
-                //     costPerCase: vm.edit.costPerCase,
-                //     country: vm.edit.country,
-                //     noBbdate: vm.edit.noBbdate,
-                //     holiday: vm.edit.holiday
-                // })
-                // .then(response => 
-                // {
-                //     vm.$emit('change', value)
-                //     vm.editDialog = false
-                //     response.status
-                //     vm.input.snack = true
-                //     vm.input.snackColor = 'success'
-                //     vm.input.snackText = 'Data saved'
-                //     vm.$parent.$parent.$parent.$parent.fetchData()
-                // })
-                // .catch(err => {
-                //     vm.input.snack = true
-                //     vm.input.snackColor = 'error'
-                //     vm.input.snackText = 'Something went wrong. Please try again later.'
-                //     console.warn(err)
-                // })
+                vm.edit.grantedPermissionNames = vm._selection.map(({value}) => value)
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Roles/${vm.item.id}`, vm.edit)
+                .then(response => 
+                {
+                    vm.$emit('change', value)
+                    vm.dialog = false
+                    response.status
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'success'
+                    vm.snackbar.snackText = 'Data saved'
+                    vm.$parent.$parent.$parent.$parent.fetchData()
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
             }
         },
         close() {
@@ -231,37 +225,37 @@ export default {
             this.dialog = false
         },
         setData() {
-            let vm = this
+            let vm = this, i, parent, child, x, y, temp, array=[]
             vm.origVal = vm.item
 
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles/${vm.item.id}`)
             .then(response => 
             {
-                let i, parent, child, x
-
                 response.status
+                vm.edit.id = response.data.id
                 vm.edit.name = response.data.name
                 vm.edit.displayName = response.data.displayName
                 vm.edit.isStatic = response.data.isStatic
                 vm.edit.grantedPermissionNames = response.data.grantedPermissionNames
 
-                console.log(vm.edit.grantedPermissionNames)
-
                 for(i=0; i < vm.edit.grantedPermissionNames.length; i++) {
                     parent = vm.items.filter(item => item.value.includes(vm.edit.grantedPermissionNames[i]))
+                    if(parent.length > 0) {
+                        array.push(parent[0])
+                    }
+                    let itemLength = vm.items.length - 1
+                    for(x=0;x<itemLength;x++) {
+                        temp = vm.items[x].children
+                        for(y=0; y<temp.length; y++){
+                            child = temp.filter(item => item.value === vm.edit.grantedPermissionNames[i])
+                            if(child.length > 0) {
+                                array.push(child[0])
+                            }
+                        }
+                    }   
+                }  
+                vm.selection = [...new Set(array)]
 
-                    // How to get child id
-                    
-                    vm.items.forEach((item) => 
-                        item.forEach(children => console.log(children))
-                    )
-                    
-                    
-                    // if(parent.length > 0) {
-                    //     vm.selection.push(parent[0].id)
-                    // }
-                }
-                // console.log(vm.selection)
             })
             .catch(err => {
                 vm.snackbar.snack = true
@@ -270,10 +264,12 @@ export default {
                 console.warn(err)
             })
             .finally(() => {
-                console.log(vm.selection)
                 vm.dialog = true
             })
-        }
+        },
+        validate() {
+            this.$refs.form.validate()
+        },
     }
 }
 </script>
