@@ -34,6 +34,8 @@ namespace HRD.WebApi.Authorization
             _logger.LogInformation($"Found {username} with Id = {userId}");
 
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, userId.ToString()));
+            identity.AddClaim(new Claim("UserId", userId.ToString()));
+            identity.AddClaim(new Claim("UserName", username));
 
             var roles = await _service.GetUserRoles(userId);
             foreach (var role in roles)
