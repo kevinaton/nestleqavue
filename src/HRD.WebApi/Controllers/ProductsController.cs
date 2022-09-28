@@ -216,6 +216,34 @@ namespace HRD.WebApi.Controllers
             return NoContent();
         }
 
+        [HttpGet("Search/{fert}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<ProductSearchViewModel>>> SearchProducts(string fert = "")
+        {
+            var query = _context.Products.Where(f => f.Year == DateTime.Now.Year.ToString()).Select(s => new ProductSearchViewModel { Fert = s.Gpn, Description = s.Description });
+
+            if(!string.IsNullOrEmpty(fert))
+            {
+                query = query.Where(f => f.Fert.Contains(fert));
+            }
+
+            var results = await query.ToListAsync();
+
+            return Ok(results);
+        }
+
+        [HttpGet("Search")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<ProductSearchViewModel>>> SearchProducts()
+        {
+            var query = _context.Products.Where(f => f.Year == DateTime.Now.Year.ToString())
+                            .Select(s => new ProductSearchViewModel { Fert = s.Gpn, Description = s.Description });
+
+            var results = await query.ToListAsync();
+
+            return Ok(results);
+        }
+
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);

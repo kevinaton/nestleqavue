@@ -10,5 +10,6 @@ namespace HRD.WebApi.Data.Entities
         public string DisplayName { get; set; }
         public bool IsStatic { get; set; } = true;
         public virtual ICollection<Permission> Permissions { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }
