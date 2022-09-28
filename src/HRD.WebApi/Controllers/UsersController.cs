@@ -204,6 +204,16 @@ namespace HRD.WebApi.Controllers
 
             return Ok();
         }
+        [HttpGet("HasPermission/{permissionName}")]
+        public async Task<bool> HasPermission(string permissionName)
+        {
+            var hasPermission = false;
+            var userId = User.Identities.First().Claims.First(f => f.Type == "UserId");
+
+            hasPermission = await _context.UserRoles.AnyAsync(a => a.Role.Permissions.Any(a => a.Name == permissionName && a.IsGranted));
+            
+            return hasPermission;
+        }
 
         protected async Task<bool> HasPermissionAsync(params string[] permissionsToCheck)
         {
