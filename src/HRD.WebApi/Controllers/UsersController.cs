@@ -205,14 +205,26 @@ namespace HRD.WebApi.Controllers
             return Ok();
         }
         [HttpGet("HasPermission/{permissionName}")]
-        public async Task<bool> HasPermission(string permissionName)
+        public async Task<ActionResult<bool>> HasPermission(string permissionName)
         {
             var hasPermission = false;
-            var userId = User.Identities.First().Claims.First(f => f.Type == "UserId");
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
 
-            hasPermission = await _context.UserRoles.AnyAsync(a => a.Role.Permissions.Any(a => a.Name == permissionName && a.IsGranted));
+            hasPermission = await _context.UserRoles.AnyAsync(a => a.UserId == userId && a.Role.Permissions.Any(a => a.Name == permissionName && a.IsGranted));
             
-            return hasPermission;
+            return Ok(hasPermission);
+        }
+
+        [HttpGet("GetCurrentUserPermissions")]
+        public async Task<ActionResult<IEnumerable<string>>> GetCurrentUserPermissions()
+        {
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
+
+            var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
+                                .SelectMany(s => s.Role.Permissions).ToListAsync();
+            
+            var permissions = permissionList.Select(s => s.Name).Distinct().ToList();
+            return Ok(permissions);
         }
 
         protected async Task<bool> HasPermissionAsync(params string[] permissionsToCheck)
