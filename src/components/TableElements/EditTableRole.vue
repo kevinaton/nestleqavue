@@ -1,49 +1,33 @@
 <template>
-    <v-toolbar flat>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
-        <v-spacer></v-spacer>
-
-        <v-text-field
-            :value="tableOptions.searchValue"
-            append-icon="mdi-magnify"
-            label="Search"
-            single-line
-            @change="searchVal($event)"
-            hide-details
-        ></v-text-field>
-
-        <!-- <Export
-            :item="table"
-            :tableOptions="tableOptions"
-            :snackbar="snackbar"
-            :util="util"
-        /> -->
-
-        <!-- Add Role -->
-        <v-dialog
-            v-model="dialog"
-            max-width="500px"
-        >
-            <template v-slot:activator="{ on, attrs }">
-            <v-btn
-                color="primary"
-                dark
-                large
-                class="mb-2 ml-5"
-                v-bind="attrs"
-                v-on="on"
+    <v-dialog
+        v-model="dialog"
+        max-width="500px"
+    >
+        <template v-slot:activator="{ on, attrs }">
+            <v-hover
+                v-slot="{ hover }"
+                open-delay="200"
             >
-                Add Role
-            </v-btn>
-            </template>
-            <v-card>
+                <v-icon
+                    @click="setData"
+                    v-bind="attrs"
+                    v-on="on"
+                    :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                    :class="{ 'on-hover': hover }"
+                >
+                    mdi-pencil
+                </v-icon>
+            </v-hover>
+        </template>
+
+        <v-card>
             <v-form
                 ref="form"
                 class="pa-4"
                 v-model="valid"
             >
                 <v-card-title>
-                    <span class="text-h5">{{ formTitle }}</span>
+                    <span class="text-h5">Edit Role</span>
                 </v-card-title>
 
                 <v-card-text>
@@ -66,8 +50,11 @@
                             <v-card flat>
                                 <v-card-text class="px-0">
                                     <v-text-field
-                                        @input="getRoleName($event)"
+                                        v-model="edit.name"
                                         label="Role Name"
+                                        :readonly="edit.isStatic"
+                                        :hide-details="!edit.isStatic"
+                                        hint="Cannot change name of static role"
                                         :rules="[rules.required]"
                                         outlined
                                     ></v-text-field>
@@ -113,50 +100,19 @@
                     </v-btn>
                 </v-card-actions>
             </v-form>
-            </v-card>
-        </v-dialog>
-    </v-toolbar>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
-import Export from '@/components/Exportcsv.vue'
 
 export default {
-    name: 'RolesToolbar',
+    name: 'EditTableRole',
     components: {
-        Export
+
     },
     props: {
-        title: {
-            type: String,
-            default:'',
-            required: false
-        },
-        formTitle: {
-            type: String,
-            default:'Add',
-            required: false
-        },
-        toolbar: {
-            type: Object,
-            default: () => {},
-            required: false
-        },
-        table: {
-            type: Array,
-            default: () => [],
-        },
         snackbar: {
-            type: Object,
-            default: () => {},
-            required: false
-        },
-        util: {
-            type: String,
-            default:'',
-            required: false
-        },
-        tableOptions: {
             type: Object,
             default: () => {},
             required: false
@@ -168,27 +124,31 @@ export default {
         },
         items: {
             type: Array,
-            default: () => {},
+            default: () => [],
             required: false
         },
+        item: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
     data: () => ({
-        searchInput:'',
-        dialog:false,
         origVal:[],
-        valid: false,
-        tab: null,
-        selectionType:'independent',
-        selection:[],
-        newRole:{
+        edit:{
             id:0,
             name:'',
             displayName:'',
             isStatic:false,
             grantedPermissionNames:[]
         },
+        selectionType:'independent',
+        selection:[],
+        dialog:false,
+        valid:false,
+        tab:null
     }),
-    emits: ["change"],
+    emits: ['change'],
     computed: {
         _items () {
             const replaceChildren = (obj,parent) => {
@@ -234,51 +194,82 @@ export default {
         }
     },
     methods: {
-        searchVal(value) {
-            this.searchInput = value
-            this.$emit('change', value)
-        },
-        close () {
-            this.$refs.form.reset()
-            this.dialog = false
-        },
-        save(valid) {
-            let vm = this
-            vm.newRole.grantedPermissionNames = vm._selection.map(({value}) => value)
+        save(valid) { 
+            let vm = this,
+                value = vm.origVal = vm.edit
+
             if(valid == true) {
-                this.$axios.post(`${process.env.VUE_APP_API_URL}/Roles`,  vm.newRole)
+                vm.edit.grantedPermissionNames = vm._selection.map(({value}) => value)
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Roles/${vm.item.id}`, vm.edit)
                 .then(response => 
                 {
+                    vm.$emit('change', value)
+                    vm.dialog = false
                     response.status
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'success'
-                    this.snackbar.snackText = 'Data saved'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'success'
+                    vm.snackbar.snackText = 'Data saved'
+                    vm.$parent.$parent.$parent.$parent.fetchData()
                 })
                 .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = err.response.data || 'Something went wrong'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
-                    if(err.response.statusTest == 'Conflict') {
-                        location.reload()
-                    }
-                })
-                .finally(() => {
-                    this.close()
-                    this.$parent.$parent.$parent.$parent.fetchData()
                 })
             }
+        },
+        close() {
+            let value = this.origVal
+            this.$emit('change', value)
+            this.dialog = false
+        },
+        setData() {
+            let vm = this, i, parent, child, x, y, temp, array=[]
+            vm.origVal = vm.item
+
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles/${vm.item.id}`)
+            .then(response => 
+            {
+                response.status
+                vm.edit.id = response.data.id
+                vm.edit.name = response.data.name
+                vm.edit.displayName = response.data.displayName
+                vm.edit.isStatic = response.data.isStatic
+                vm.edit.grantedPermissionNames = response.data.grantedPermissionNames
+
+                for(i=0; i < vm.edit.grantedPermissionNames.length; i++) {
+                    parent = vm.items.filter(item => item.value.includes(vm.edit.grantedPermissionNames[i]))
+                    if(parent.length > 0) {
+                        array.push(parent[0])
+                    }
+                    let itemLength = vm.items.length - 1
+                    for(x=0;x<itemLength;x++) {
+                        temp = vm.items[x].children
+                        for(y=0; y<temp.length; y++){
+                            child = temp.filter(item => item.value === vm.edit.grantedPermissionNames[i])
+                            if(child.length > 0) {
+                                array.push(child[0])
+                            }
+                        }
+                    }   
+                }  
+                vm.selection = [...new Set(array)]
+
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => {
+                vm.dialog = true
+            })
         },
         validate() {
             this.$refs.form.validate()
         },
-        getRoleName(value) {
-            if(value != null) {
-                this.newRole.name = value
-            }
-        }
     }
 }
-
-
 </script>
