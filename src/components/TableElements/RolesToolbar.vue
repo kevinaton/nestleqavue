@@ -68,7 +68,6 @@
                                     <v-text-field
                                         @input="getRoleName($event)"
                                         label="Role Name"
-                                        hint="Cannot change name of static role"
                                         :rules="[rules.required]"
                                         outlined
                                     ></v-text-field>
@@ -179,7 +178,7 @@ export default {
         origVal:[],
         valid: false,
         tab: null,
-        selectionType:'leaf',
+        selectionType:'independent',
         selection:[],
         newRole:{
             id:0,
