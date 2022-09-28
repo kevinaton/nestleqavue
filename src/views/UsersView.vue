@@ -155,6 +155,7 @@ export default {
         },
         { text: 'Name', sortable: true, value: 'name' },
         { text: 'User ID', sortable: true, value: 'userId' },
+        { text: 'User Role', sortable: true, value: 'userRoles' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],

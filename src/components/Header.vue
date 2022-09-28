@@ -177,7 +177,6 @@ export default {
     }),
     created () {
       this.fetchUser()
-      this.checkPermission()
       this.currentPage=this.$route.name
       let x = this.currentPage
       for (let i=0; i<this.reports.length; i++) {

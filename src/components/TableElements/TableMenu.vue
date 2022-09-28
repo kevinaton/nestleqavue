@@ -6,6 +6,7 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
+                @click="checkPermission"
             >
                 <v-icon small>mdi-dots-vertical</v-icon>
             </v-btn>
@@ -19,15 +20,16 @@
                 v-for="(option, i) in input.options"
                 :key="i"
                 :to="option.to"
+                :disabled="!option.access"
                 @click="menuActionClick(option.action, item)"
                 >
-                <v-list-item-icon>
-                <v-icon v-text="option.icon"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                <v-list-item-title v-text="option.text"></v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
+                    <v-list-item-icon>
+                    <v-icon v-text="option.icon"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                    <v-list-item-title v-text="option.text"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-item-group>
             </v-list>
         </v-menu>
@@ -59,6 +61,19 @@ export default {
             required:false
         }
     },
+    data: () => ({
+        permission: [
+            { request:'Pages.QARecords.Read', name:'qaRead' }, 
+            { request:"Pages.HRD.Read", name:'hrdRead' },
+            { request:"Pages.HRD.Delete", name:'hrdDelete' }
+        ],
+        access: {
+            qaRead:false,
+            hrdRead:false,
+            hrdDelete:false
+        },
+        inl:false
+    }),
     emits:['change'],
     methods: {
         menuActionClick(action, item) {
@@ -76,6 +91,24 @@ export default {
                 this.$emit('change', value)
             }
         },
+        checkPermission() {
+            let vm = this 
+            if(vm.inl == false) {
+                for(let x=0; x<vm.permission.length; x++) {
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/HasPermission/${vm.input.options[x].request}`)
+                .then((res) => {
+                    vm.input.options[x].access = res.data
+                })
+                .catch(err => {
+                    this.snackbar.snack = true
+                    this.snackbar.snackColor = 'error'
+                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
+                }
+                vm.inl = true
+            } 
+        }
     },
 }
 </script>
