@@ -116,6 +116,34 @@ namespace HRD.WebApi.Controllers
             return dropDownItems;
         }
 
+        // GET: api/Lookup/items/typename/category
+        [HttpGet("items/typename/{name}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByType(string name)
+        {
+            if(string.IsNullOrEmpty(name))
+            {
+                return BadRequest();
+            }
+
+            var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownType.Name.ToLower() == name.ToLower().Trim())
+                .Select(s => new DropDownItemViewModel
+                {
+                    Id = s.Id,
+                    DropDownTypeId = s.DropDownTypeId,
+                    IsActive = s.IsActive,
+                    SortOrder = s.SortOrder,
+                    Value = s.Value,
+                }).ToListAsync();
+
+            if (dropDownItems == null)
+            {
+                return NotFound();
+            }
+
+            return dropDownItems;
+        }
+
         // GET: api/Lookup/items/5
         [HttpGet("items/{id}")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
