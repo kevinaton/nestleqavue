@@ -221,6 +221,7 @@ export default {
             },
             matNum: value => (value || '').length >= 3 || 'Input more that 3 characters',
         },
+        lookup:[],
         qaRec:{
             additionalComments:'',
             additionalDescription:'',
@@ -403,7 +404,8 @@ export default {
         submitted:false
     }),
     created () {
-        this.currentDate()        
+        this.currentDate()
+        this.getLookupTypes()     
     },
     emits: ["change"],
     methods: {
@@ -411,6 +413,9 @@ export default {
             this.tFile = value
         },
         submitQA(value) {
+            if(this.qaRec.casesHeld == null) {
+                this.qaRec.casesHeld = 0
+            }
             let vm = this,
                 formData = new FormData(),
                 d = vm.qaRec,
@@ -525,6 +530,21 @@ export default {
             if(status == true) {
                 this.$vuetify.goTo(`#${value}`)
             }
+        },
+        getLookupTypes() {
+            let vm = this
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/types`)
+            .then(res => 
+            {
+                res.status
+                console.log(res)
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
         }
     },
     computed: {

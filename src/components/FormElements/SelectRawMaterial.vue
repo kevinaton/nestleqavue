@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    name: 'SelectDropdown',
+    name: 'SelectRawMaterial',
     props: {
         label: {
             type:String,

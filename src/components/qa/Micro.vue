@@ -315,7 +315,6 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
@@ -325,7 +324,6 @@ import RowDelete from '@/components/TableElements/RowDelete.vue'
 
 export default {
     components: {
-        SelectDropdown,
         SelectDropdownString,
         SimpleDatePicker,
 
