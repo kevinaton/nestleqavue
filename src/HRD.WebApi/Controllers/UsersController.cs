@@ -223,7 +223,7 @@ namespace HRD.WebApi.Controllers
             var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
                                 .SelectMany(s => s.Role.Permissions).ToListAsync();
             
-            var permissions = permissionList.Select(s => s.Name).Distinct().ToList();
+            var permissions = permissionList.Where(f => f.IsGranted).Select(s => s.Name).Distinct().ToList();
             return Ok(permissions);
         }
 
