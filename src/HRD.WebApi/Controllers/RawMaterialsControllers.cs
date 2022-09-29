@@ -207,20 +207,15 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<RawMaterialViewModel>>> SearchRawMaterials(string id)
         {
 
-            
-             var rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
+            var rawMaterials = new List<RawMaterialViewModel>();
+            rawMaterials = await _context.RawMaterials.Where(f => f.Id.Contains(id))
                                 .Select(s => new RawMaterialViewModel
                                 {
                                     Id = s.Id,
                                     Description = s.Description
                                 }).ToListAsync();
             
-
-
-            if (rawMaterials == null)
-            {
-                return NotFound();
-            }
+            
                 
             return rawMaterials; 
         }
