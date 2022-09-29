@@ -6,7 +6,6 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
-                @click="checkPermission"
             >
                 <v-icon small>mdi-dots-vertical</v-icon>
             </v-btn>
@@ -90,24 +89,6 @@ export default {
                 let value = this.item[this.durl].toString()
                 this.$emit('change', value)
             }
-        },
-        checkPermission() {
-            let vm = this 
-            if(vm.inl == false) {
-                for(let x=0; x<vm.permission.length; x++) {
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/HasPermission/${vm.input.options[x].request}`)
-                .then((res) => {
-                    vm.input.options[x].access = res.data
-                })
-                .catch(err => {
-                    this.snackbar.snack = true
-                    this.snackbar.snackColor = 'error'
-                    this.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-                }
-                vm.inl = true
-            } 
         }
     },
 }

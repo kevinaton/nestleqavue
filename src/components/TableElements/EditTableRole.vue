@@ -210,6 +210,7 @@ export default {
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.$parent.$parent.$parent.$parent.fetchData()
+                    vm.$parent.$parent.$parent.$parent.$parent.$parent.$parent.checkPermission()
                 })
                 .catch(err => {
                     vm.snackbar.snack = true

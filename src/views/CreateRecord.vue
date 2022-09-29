@@ -221,7 +221,6 @@ export default {
             },
             matNum: value => (value || '').length >= 3 || 'Input more that 3 characters',
         },
-        lookup:[],
         qaRec:{
             additionalComments:'',
             additionalDescription:'',

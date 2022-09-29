@@ -235,25 +235,6 @@ export default {
               console.warn(err)
           })
           .finally(() => { })
-      },
-      checkPermission() {
-        let vm = this
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/CheckPermission`)
-        .then((res) => {
-          if(res.data !== "")
-            {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'info'
-                vm.snackbar.snackText = res.data
-            }
-          })
-          .catch(err => {
-              vm.snackbar.snack = true
-              vm.snackbar.snackColor = 'error'
-              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-              console.warn(err)
-          })
-          .finally(() => { })
       }
     }
   }

@@ -30,12 +30,29 @@
     data: () => ({
       input:false
     }),
+    created() {
+      this.checkPermission()
+    },
     methods: {
       updateValue(submitted) {
         this.input = submitted
       },
       updateInput(value) {
         this.input = value
+      },
+      checkPermission() {
+        let vm = this
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUserPermissions`)
+        .then((res) => {
+              console.log(res)
+        })
+        .catch(err => {
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'error'
+            vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
+        })
+        .finally(() => { })
       }
     }
   }
