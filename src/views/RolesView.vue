@@ -38,7 +38,7 @@
                 util="Roles"
                 :tableOptions="tableOptions"
                 :rules="rules"
-                @change="getSearch($event)"
+                @change="getSearch()"
             />
         </template>
 
@@ -57,7 +57,7 @@
                 :item="item"
                 :items="items"
                 :rules="rules"
-                @change="(value) => { item = value }"
+                @change="roleUpdated($event)"
             />
             <DeleteAction 
                 :item="item"
@@ -326,7 +326,6 @@
             },
         ],
         }),
-
         computed: {
             getPage() {
                 let obj = {}
@@ -334,11 +333,17 @@
                 return obj
             },
         },
-
         created () {
             this.fetchData()
         },
-
+        emits:['change'],
+        watch: {
+            roles(x,y) {
+                if(y.length > 0){
+                    this.$emit('change', 'checkPermission')
+                }
+            }
+        },
         methods: {
             fetchData() {
                 let vm = this 
@@ -422,6 +427,9 @@
                 vm.tableOptions.page = pageInput
                 })
             },
+            roleUpdated() {
+                this.$emit('change', 'checkPermission')
+            }
 
         },
     }

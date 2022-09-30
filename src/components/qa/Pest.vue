@@ -3,7 +3,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=17
+                    dropdownValue="Pest Type"
                     :inpValue="inpValue.pestType" 
                     label="Pest Type" 
                     @change="(value) => {
@@ -13,7 +13,7 @@
             </v-col>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=7
+                    dropdownValue="YesNo"
                     :inpValue="inpValue.pcoContactedImmediately" 
                     label="PCO Contacted Immediately" 
                     @change="(value) => {
@@ -25,7 +25,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=7
+                    dropdownValue="YesNo"
                     :inpValue="inpValue.productAdultered" 
                     label="Product Adultered" 
                     @change="(value) => {

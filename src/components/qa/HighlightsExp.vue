@@ -62,7 +62,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=28
+                            dropdownValue="BU Manager"
                             :inpValue="inpValue.buManager"
                             label="BU Manager" 
                             @change="(value) => { inpValue.buManager = value }"
@@ -70,7 +70,7 @@
                     </v-col>
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=9
+                            dropdownValue="CodingType"
                             :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => { inpValue.type = value }"
@@ -101,7 +101,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=4
+                            dropdownValue="Line"
                             :inpValue="inpValue.line"
                             label="Line" 
                             @change="(value) => {
@@ -111,7 +111,7 @@
                     </v-col>
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=29
+                            dropdownValue="Line Supervisor"
                             :inpValue="inpValue.lineSupervisor"
                             label="Line Supervisor" 
                             @change="(value) => { inpValue.lineSupervisor = value }"
@@ -121,7 +121,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=11
+                            dropdownValue="Area"
                             :inpValue="inpValue.area" 
                             label="Area" 
                             @change="(value) => {
@@ -142,7 +142,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=5
+                            dropdownValue="Shift"
                             :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
@@ -156,7 +156,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=1
+                            dropdownValue="Category"
                             :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {

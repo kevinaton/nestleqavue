@@ -61,16 +61,6 @@ export default {
         }
     },
     data: () => ({
-        permission: [
-            { request:'Pages.QARecords.Read', name:'qaRead' }, 
-            { request:"Pages.HRD.Read", name:'hrdRead' },
-            { request:"Pages.HRD.Delete", name:'hrdDelete' }
-        ],
-        access: {
-            qaRead:false,
-            hrdRead:false,
-            hrdDelete:false
-        },
         inl:false
     }),
     emits:['change'],

@@ -62,7 +62,7 @@
     <v-row>
         <v-col>
             <SelectDropdownString 
-                :dropdownValue=4
+                dropdownValue="Line"
                 :inpValue="fValues.line"
                 label="Line" 
                 @change="updateLine($event)"

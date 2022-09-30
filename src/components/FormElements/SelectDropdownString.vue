@@ -26,8 +26,8 @@ export default {
             required: false
         },
         dropdownValue: {
-            type: Number,
-            default: 0,
+            type: String,
+            default: '',
             required: false
         }
     },
@@ -46,7 +46,7 @@ export default {
             let vm = this
             if(vm.lookup.length == 0) {
                 vm.loading = true
-                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typeid/${vm.dropdownValue}`)
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typename/${vm.dropdownValue}`)
                     .then((res) => {
                         let arr = []
                         res.data.forEach(item => {

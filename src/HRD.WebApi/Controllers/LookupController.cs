@@ -118,7 +118,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/typename/category
         [HttpGet("items/typename/{name}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByType(string name)
         {
             if(string.IsNullOrEmpty(name))

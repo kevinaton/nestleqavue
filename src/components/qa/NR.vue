@@ -19,7 +19,7 @@
         <v-row class="mt-0">
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=12
+                    dropdownValue="NR Category"
                     :inpValue="inpValue.nrCategory"
                     label="NR Category" 
                     @change="(value) => {
@@ -33,7 +33,7 @@
         <v-row class="mt-0">
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=13
+                    dropdownValue="Tagged"
                     :inpValue="inpValue.tagged"
                     label="Tagged" 
                     @change="(value) => {

@@ -16,7 +16,7 @@
                 </v-col>
                 <v-col class="mt-0">
                     <SelectDropdownString 
-                        :dropdownValue=7
+                        dropdownValue="YesNo"
                         :inpValue="inpValue.continuousRun" 
                         label="Continuous Run" 
                         @change="(value) => {

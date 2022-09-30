@@ -72,12 +72,12 @@
           </v-dialog>
         </template>
         <template v-slot:extension>
-            <v-tabs v-model="selectedTab" dark align-with-title slider-color="light-blue accent-2">
-              <v-tab :to="qa.to" @click="verify(qa)">{{ tabs[0].title }}</v-tab>
+            <v-tabs v-if="getAccess" v-model="selectedTab" dark align-with-title slider-color="light-blue accent-2">
+              <v-tab :disabled="tabs[0].disabled" :to="qa.to" @click="verify(qa)">{{ tabs[0].title }}</v-tab>
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab name='report' v-bind="attrs" v-on="on">{{ tabs[1].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='report' :disabled="tabs[1].disabled" v-bind="attrs" v-on="on">{{ tabs[1].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
                   <v-list-item-group
@@ -88,6 +88,7 @@
                       v-for="(report, index) in reports"
                       :key="index"
                       link
+                      :disabled="report.disabled"
                       @click="verify(report)"
                       :index="index"
                     >
@@ -99,7 +100,7 @@
 
               <v-menu offset-y>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-tab name='admin' v-bind="attrs" v-on="on">{{ tabs[2].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
+                  <v-tab name='admin' :disabled="tabs[2].disabled" v-bind="attrs" v-on="on">{{ tabs[2].title }}<v-icon right>mdi-menu-down</v-icon></v-tab>
                 </template>
                 <v-list>
                   <v-list-item-group
@@ -110,6 +111,7 @@
                       v-for="(admin, index) in adminItems"
                       :key="index"
                       link
+                      :disabled="admin.disabled"
                       @click="verify(admin)"
                     >
                       <v-list-item-title>{{ admin.title }}</v-list-item-title>
@@ -133,6 +135,11 @@ export default {
         type: Boolean,
         default: false,
         required: false
+      },
+      access: {
+        type: Object,
+        default:() => {},
+        required:true
       }
     },
     data: () => ({
@@ -150,32 +157,32 @@ export default {
         { title: 'Logout' },
       ],
       tabs: [
-        { title:'QA', name: 'qa' },
-        { title:'REPORTS', name:'reports' },
-        { title:'ADMINISTRATION', name:'administration' }
+        { title:'QA', name:'qa', access:'Pages.QARecords', disabled:true },
+        { title:'REPORTS', name:'reports', access:'', disabled:true },
+        { title:'ADMINISTRATION', name:'administration', access:'', disabled:true }
       ],
       qa: { title:'QA', name:'qa' }
       ,
       reports: [
-        { title:'Cases & Cost Held by Category', name:'casecost' },
-        { title:'Microbe Case', name:'microbecases' },
-        { title:'FM Cases', name:'fmcases' },
-        { title:'Pest Log', name:'pestlog' }
+        { title:'Cases & Cost Held by Category', name:'casecost', access:'CasesAndCostHeldByCategory', disabled:true },
+        { title:'Microbe Case', name:'microbecases', access:'MicrobeCases', disabled:true },
+        { title:'FM Cases', name:'fmcases', access:'FMCases', disabled:true },
+        { title:'Pest Log', name:'pestlog', access:'PestLog', disabled:true }
       ],
       adminItems: [
-        { title: 'Products', name:'products'},
-        { title: 'Labor', name:'labor'},
-        { title: 'Testing', name:'testing' },
-        { title: 'Roles', name:'roles' },
-        { title: 'Users', name:'users' },
-        { title: 'Lookup Lists', name:'lookup' },
-        { title: 'Raw Materials', name:'rawmaterials' },
+        { title: 'Products', name:'products', access:'Products', disabled:true},
+        { title: 'Labor', name:'labor', access:'Labor', disabled:true},
+        { title: 'Testing', name:'testing', access:'Testing', disabled:true },
+        { title: 'Roles', name:'roles', access:'Roles', disabled:true },
+        { title: 'Users', name:'users', access:'Users', disabled:true },
+        { title: 'Lookup Lists', name:'lookup', access:'LookupLists', disabled:true },
+        { title: 'Raw Materials', name:'rawmaterials', access:'RawMaterials', disabled:false },
       ],
       initialValue:false,
       redirectvalue:[],
-      user:'',
+      user:''
     }),
-    created () {
+    created() {
       this.fetchUser()
       this.currentPage=this.$route.name
       let x = this.currentPage
@@ -191,6 +198,28 @@ export default {
           this.selectedTab = 2
         }
       }
+    },
+    computed: {
+      getAccess() {
+        if(this.access.QARecords || this.access.QARecordsRead === true) {
+          this.tabs[0].disabled = false
+        }
+        if(this.access.CasesAndCostHeldByCategory || this.access.MicrobeCases || this.access.FMCases || this.PestLog  === true) {
+          this.tabs[1].disabled = false
+        }
+        if(this.access.Products || this.access.ProductsRead || this.access.Labor || this.access.LaborRead || this.access.Testing || this.access.TestingRead || this.access.Roles || this.access.RolesRead || this.access.Users || this.access.UsersRead || this.access.LookupLists || this.access.LookupListsRead === true) {
+          this.tabs[2].disabled = false
+        }
+        for(let k=0;k<this.reports.length;k++){
+          this.reports[k].disabled = !this.access[this.reports[k].access]
+        }
+        for(let j=0;j<this.adminItems.length-1;j++){
+          this.adminItems[j].disabled = !this.access[this.adminItems[j].access]
+        }
+        return true
+      }
+    },
+    watch: {
     },
     methods: {
       cancel() {
@@ -226,7 +255,7 @@ export default {
       let vm = this 
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUser`)
           .then((res) => {
-              vm.user = res.data
+              vm.user = res.data              
           })
           .catch(err => {
               vm.snackbar.snack = true
@@ -235,7 +264,7 @@ export default {
               console.warn(err)
           })
           .finally(() => { })
-      }
+      },
     }
   }
 </script>

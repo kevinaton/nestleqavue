@@ -146,9 +146,9 @@
         editedIndex: -1,
         selectedItem:null,
         options: [
-          {text: 'View QA', icon: 'mdi-eye', action: 'vqa', request:'Pages.QARecords.Read', access:false},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd', request:"Pages.HRD.Read", access:false},
-          {text: 'Delete', icon: 'mdi-delete', action: 'delete', request:"Pages.HRD.Delete", access:false}
+          {text: 'View QA', icon: 'mdi-eye', action: 'vqa', request:'Pages.QARecords.Read', access:true},
+          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd', request:"Pages.HRD.Read", access:true},
+          {text: 'Delete', icon: 'mdi-delete', action: 'delete', request:"Pages.HRD.Delete", access:true}
         ],
         editedItem: {
           report: '',

@@ -210,13 +210,15 @@ export default {
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
                     vm.$parent.$parent.$parent.$parent.fetchData()
-                    vm.$parent.$parent.$parent.$parent.$parent.$parent.$parent.checkPermission()
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'error'
                     vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
+                })
+                .finally(() => {
+                    document.location.reload(true)
                 })
             }
         },
@@ -256,7 +258,6 @@ export default {
                     }   
                 }  
                 vm.selection = [...new Set(array)]
-
             })
             .catch(err => {
                 vm.snackbar.snack = true
