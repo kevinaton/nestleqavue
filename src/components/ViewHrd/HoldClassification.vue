@@ -5,7 +5,7 @@
             <v-row class="mt-0">
                 <v-col>
                     <SelectDropdownString
-                        :dropdownValue=3
+                        dropdownValue="Classification"
                         :inpValue="inpValue.classification"
                         label="Classification" 
                         @change="(value) => {
@@ -15,7 +15,7 @@
                 </v-col>
                 <v-col>
                     <SelectDropdownString
-                        :dropdownValue=1
+                        dropdownValue="Category"
                         :inpValue="inpValue.holdCategory"
                         label="Hold Category" 
                         @change="(value) => {
@@ -27,7 +27,7 @@
             <v-row class="mt-0">
                 <v-col>
                     <SelectDropdownString
-                        :dropdownValue=2
+                        dropdownValue="Category"
                         :inpValue="inpValue.holdSubCategory"
                         label="Hold Sub-category" 
                         @change="(value) => {

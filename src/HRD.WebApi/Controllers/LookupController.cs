@@ -217,17 +217,17 @@ namespace HRD.WebApi.Controllers
 
             var item = await _context.DropDownItems.Where(x =>
 
-                    x.Value == model.Value &&
-                    x.DropDownTypeId == model.DropDownTypeId
+                   x.Value == model.Value &&
+                   x.DropDownTypeId == model.DropDownTypeId
 
-                ).FirstOrDefaultAsync(); 
+               ).FirstOrDefaultAsync(); 
 
-                if(item != null)
-                {
-                
-                    return BadRequest("Lookup already Exist");
+               if(item != null)
+               {
+              
+                   return BadRequest("Lookup already Exist");
 
-                }
+               }
 
             var dropdownitem = new DropDownItem
             {

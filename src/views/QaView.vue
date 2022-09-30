@@ -146,9 +146,9 @@
         editedIndex: -1,
         selectedItem:null,
         options: [
-          {text: 'View QA', icon: 'mdi-eye', action: 'vqa'},
-          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd'},
-          {text: 'Delete', icon: 'mdi-delete', action: 'delete'}
+          {text: 'View QA', icon: 'mdi-eye', action: 'vqa', request:'Pages.QARecords.Read', access:true},
+          {text: 'View HRD', icon: 'mdi-note', action: 'vhrd', request:"Pages.HRD.Read", access:true},
+          {text: 'Delete', icon: 'mdi-delete', action: 'delete', request:"Pages.HRD.Delete", access:true}
         ],
         editedItem: {
           report: '',
@@ -206,22 +206,23 @@
       fetchHrds() {
         let vm = this 
         vm.loading = true
+
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
-        .then((res) => {
+          .then((res) => {
             vm.tableOptions.totalPages = res.data.totalPages
             vm.tableOptions.itemsPerPage = res.data.pageSize
             vm.tableOptions.page = res.data.pageNumber
             vm.tableOptions.totalRecords = res.data.totalRecords
             vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
             vm.qa = res.data.data
-        })
-        .catch(err => {
+          })
+          .catch(err => {
             this.snackbar.snack = true
             this.snackbar.snackColor = 'error'
             this.snackbar.snackText = 'Something went wrong. Please try again later.'
             console.warn(err)
-        })
-        .finally(() => {vm.loading = false})
+          })
+          .finally(() => {vm.loading = false})
       },
 
       updateTable(value) {

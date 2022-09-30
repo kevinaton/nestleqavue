@@ -219,7 +219,7 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<string>>> GetCurrentUserPermissions()
         {
             var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
-
+            
             var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
                                 .SelectMany(s => s.Role.Permissions).ToListAsync();
             

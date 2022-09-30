@@ -62,7 +62,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=24
+                            dropdownValue="BU Manager"
                             :inpValue="inpValue.buManager"
                             label="BU Manager" 
                             @change="(value) => { inpValue.buManager = value }"
@@ -70,7 +70,7 @@
                     </v-col>
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=9
+                            dropdownValue="CodingType"
                             :inpValue="inpValue.type"
                             label="Type" 
                             @change="(value) => { inpValue.type = value }"
@@ -79,17 +79,20 @@
                 </v-row>
                 <v-row>
                     <v-col>
-                        <v-text-field 
-                            outlined 
+                        <v-autocomplete
+                            label="FERT"
                             v-model="inpValue.fert"
-                            :rules="[rules.fert]"
-                            label="FERT">
-                        </v-text-field>
+                            outlined
+                            @change="fertDescription"
+                            :items="fertId">
+                        </v-autocomplete>
                     </v-col>
                     <v-col>
                         <v-text-field 
                             outlined 
+                            readonly
                             v-model="inpValue.fertDescription"
+                            hint="This is populated based on FERT"
                             :rules="[rules.counter]"
                             label="FERT Description">
                         </v-text-field>
@@ -98,7 +101,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=4
+                            dropdownValue="Line"
                             :inpValue="inpValue.line"
                             label="Line" 
                             @change="(value) => {
@@ -108,7 +111,7 @@
                     </v-col>
                     <v-col>
                         <SelectDropdownString
-                            :dropdownValue=25
+                            dropdownValue="Line Supervisor"
                             :inpValue="inpValue.lineSupervisor"
                             label="Line Supervisor" 
                             @change="(value) => { inpValue.lineSupervisor = value }"
@@ -118,7 +121,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=11
+                            dropdownValue="Area"
                             :inpValue="inpValue.area" 
                             label="Area" 
                             @change="(value) => {
@@ -139,7 +142,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=5
+                            dropdownValue="Shift"
                             :inpValue="inpValue.shift" 
                             label="Shift" 
                             @change="(value) => {
@@ -153,7 +156,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <SelectDropdownString 
-                            :dropdownValue=1
+                            dropdownValue="Category"
                             :inpValue="inpValue.shortDescription"
                             label="Short Description" 
                             @change="(value) => {
@@ -267,6 +270,7 @@
 <script>
 import YearOnly from '@/components/FormElements/YearOnly.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
+import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import DateTimePicker from '@/components/FormElements/DateTimePicker.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import EditTableFile from '@/components/FormElements/EditTableFile.vue'
@@ -276,6 +280,7 @@ export default {
     components: {
         YearOnly,
         SelectDropdownString,
+        SelectDropdown,
         DateTimePicker,
         SnackBar,
         EditTableFile
@@ -303,7 +308,9 @@ export default {
         del: {
             dialog: false,
             item:''
-        }
+        },
+        fert:[],
+        fertId:[]
     }),
     props: {
         name: 'HighlightsExp',
@@ -353,6 +360,9 @@ export default {
         },
     },
     emits: ["change"],
+    created() {
+        this.fertItems()
+    },
     methods: {
         getFormattedDate(date) {
             return moment(date).format('MM-DD-YYYY; hh:mm')
@@ -423,6 +433,30 @@ export default {
                 vm.vFile = null
                 vm.fDetails.description = ''
             }
+        },
+
+        fertItems() {
+            let vm = this
+            vm.loading=true
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products/Search`)
+            .then((res) => {
+                vm.fert = res.data
+                vm.fertId = vm.fert.map(({fert}) => fert)
+            })
+            .catch(err => {
+                this.snackbar.snack = true
+                this.snackbar.snackColor = 'error'
+                this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+            .finally(() => {
+                vm.loading = false
+            })
+        },
+        fertDescription() {
+            let vm = this
+            let temp = vm.fert.find(x => x.fert === vm.inpValue.fert)
+            vm.inpValue.fertDescription = temp.description
         }
     }
 }

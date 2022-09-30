@@ -25,7 +25,7 @@
         <v-row class="mt-0">
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=14
+                    dropdownValue="FM Type"
                     :inpValue="inpValue.fmType"
                     label="FM Type" 
                     @change="(value) => {
@@ -40,7 +40,7 @@
         <v-row class="mt-0">
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=16
+                    dropdownValue="Equipment"
                     :inpValue="inpValue.equipment"
                     label="Equipment" 
                     @change="(value) => {
@@ -66,7 +66,7 @@
             </v-col>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=15
+                    dropdownValue="Responsibility"
                     :inpValue="inpValue.fmSource"
                     label="Source" 
                     @change="(value) => {

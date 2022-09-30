@@ -19,15 +19,16 @@
                 v-for="(option, i) in input.options"
                 :key="i"
                 :to="option.to"
+                :disabled="!option.access"
                 @click="menuActionClick(option.action, item)"
                 >
-                <v-list-item-icon>
-                <v-icon v-text="option.icon"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                <v-list-item-title v-text="option.text"></v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>
+                    <v-list-item-icon>
+                    <v-icon v-text="option.icon"></v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                    <v-list-item-title v-text="option.text"></v-list-item-title>
+                    </v-list-item-content>
+                </v-list-item>
             </v-list-item-group>
             </v-list>
         </v-menu>
@@ -59,6 +60,9 @@ export default {
             required:false
         }
     },
+    data: () => ({
+        inl:false
+    }),
     emits:['change'],
     methods: {
         menuActionClick(action, item) {
@@ -75,7 +79,7 @@ export default {
                 let value = this.item[this.durl].toString()
                 this.$emit('change', value)
             }
-        },
+        }
     },
 }
 </script>

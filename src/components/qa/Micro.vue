@@ -3,7 +3,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=18
+                    dropdownValue="Hold or Concern"
                     :inpValue="inpValue.holdConcern"
                     label="Hold/Concern" 
                     @change="(value) => {
@@ -13,7 +13,7 @@
             </v-col>
             <v-col>
                 <SelectDropdownString                                
-                    :dropdownValue=19
+                    dropdownValue="Day of Week"
                     :inpValue="inpValue.dayOfWeek"
                     label="Day of Week" 
                     @change="(value) => {
@@ -25,7 +25,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=20
+                    dropdownValue="When"
                     :inpValue="inpValue.when"
                     label="When" 
                     @change="(value) => {
@@ -53,7 +53,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=7
+                    dropdownValue="YesNo"
                     :inpValue="inpValue.meatComponent"
                     label="Meat Component" 
                     @change="(value) => {
@@ -63,7 +63,7 @@
             </v-col>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=7
+                    dropdownValue="YesNo"
                     :inpValue="inpValue.veggieComponent"
                     label="Veggie Component" 
                     @change="(value) => {
@@ -75,7 +75,7 @@
         <v-row>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=21
+                    dropdownValue="Sauce Type"
                     :inpValue="inpValue.sauceType"
                     label="Sauce Type" 
                     @change="(value) => {
@@ -85,7 +85,7 @@
             </v-col>
             <v-col>
                 <SelectDropdownString
-                    :dropdownValue=22
+                    dropdownValue="Starch Type"
                     :inpValue="inpValue.starchType"
                     label="Starch Type" 
                     @change="(value) => {
@@ -315,7 +315,6 @@
 </template>
 
 <script>
-import SelectDropdown from '@/components/FormElements/SelectDropdown.vue'
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 
@@ -325,7 +324,6 @@ import RowDelete from '@/components/TableElements/RowDelete.vue'
 
 export default {
     components: {
-        SelectDropdown,
         SelectDropdownString,
         SimpleDatePicker,
 

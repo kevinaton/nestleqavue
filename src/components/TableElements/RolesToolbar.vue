@@ -239,7 +239,10 @@ export default {
             this.$emit('change', value)
         },
         close () {
-            this.$refs.form.reset()
+            this.$nextTick(() => {
+                this.$refs.form.reset()
+                this.selection=[]
+            })
             this.dialog = false
         },
         save(valid) {

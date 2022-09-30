@@ -217,6 +217,9 @@ export default {
                     vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
+                .finally(() => {
+                    document.location.reload(true)
+                })
             }
         },
         close() {
@@ -255,7 +258,6 @@ export default {
                     }   
                 }  
                 vm.selection = [...new Set(array)]
-
             })
             .catch(err => {
                 vm.snackbar.snack = true

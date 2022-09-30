@@ -1,9 +1,10 @@
 <template>
     <v-select
         outlined
-        :value="inValue"
+        :value="inpValue"
         :items="items"
         :label="label"
+        :rules="rules"
         @input="selectoption($event)"
     ></v-select>
 </template>
@@ -22,9 +23,14 @@ export default {
             default: () => [],
             required: false,
         },
-        inValue: {
-            type: Object,
-            default: () => {},
+        inpValue: {
+            type: String,
+            default: '',
+            required: false
+        },
+        rules: {
+            type: Array,
+            default: () => [],
             required: false
         }
     },
