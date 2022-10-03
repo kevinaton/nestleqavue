@@ -19,7 +19,8 @@
                 <h2 class="mb-4">New QA Record</h2>
                 <p class="mb-0">Check the following to show the form.</p>
                 <Newqacheckbox 
-                    :inpValue="qaRec" 
+                    :inpValue="qaRec"
+                    :access="!access.QARecordsEdit"
                     @change="scrollExpansion"
                 />
             </v-col>
@@ -33,6 +34,7 @@
             <HighlightsExp 
                 :input="qaOptions"
                 :inpValue="getQaRec"
+                :access="access.QARecordsEdit"
                 :rules="rules"
                 @change="upFile($event)"
             />
@@ -42,6 +44,7 @@
                     <HRD 
                         :input="qaOptions"
                         :inpValue="getQaRec"
+                        :access="access"
                         :rules="rules"
                         v-if="qaRec.isHRD" 
                     />
@@ -53,6 +56,7 @@
                 <Pest
                     :inpValue="getQaRec"
                     :rules="rules"
+                    :access="access"
                     v-if="qaRec.isPest"
                 />
                 </v-expansion-panel-content>
@@ -63,6 +67,7 @@
                     <SMI
                         :input="getQaRec"
                         :rules="rules"
+                        :access="access"
                         :snackbar="snackbar"
                         v-if="qaRec.isSMI"
                     />
@@ -74,6 +79,7 @@
                     <FM 
                         :inpValue="getQaRec"
                         :rules="rules"
+                        :access="access"
                         v-if="qaRec.isFM"
                     />
                 </v-expansion-panel-content>
@@ -85,6 +91,7 @@
                         :input="qaOptions"
                         :inpValue="getQaRec"
                         :rules="rules"
+                        :access="access"
                         v-if="qaRec.isNR"
                     />
                 </v-expansion-panel-content>
@@ -96,6 +103,7 @@
                         :input="qaOptions"
                         :inpValue="getQaRec"
                         :rules="rules"
+                        :access="access"
                         :snackbar="snackbar"
                         v-if="qaRec.isMicro"
                     />
@@ -204,6 +212,13 @@ export default {
         Newqacheckbox,
         BackBtn,
         SnackBar
+    },
+    props:{
+        access: {
+            type: Object,
+            default:() => {},
+            required:true
+        }
     },
     data: () => ({
         loading:true,

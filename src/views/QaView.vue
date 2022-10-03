@@ -28,6 +28,7 @@
         <QaToolbar 
           title="QA Records"
           class="mt-8"
+          :access="access"
           :snackbar="snackbar"
           :table="qa"
           :tableOptions = tableOptions
@@ -52,6 +53,7 @@
       <template v-slot:[`item.actions`]="{ item }">
         <TableMenu 
           :item="item"
+          :access="access"
           :table="qa"
           :input="qatoolbar"
           durl="id"
@@ -117,6 +119,13 @@
       SnackBar,
       TextTruncate,
       TablePagination,
+    },
+    props: {
+      access: {
+        type: Object,
+        default:() => {},
+        required:true
+      }
     },
     data: () => ({
       loading:true, 

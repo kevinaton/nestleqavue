@@ -19,7 +19,8 @@
                 <h2 class="mb-4">QA Record Details</h2>
                 <p class="mb-0">Check the following to show the form.</p>
                 <Newqacheckbox
-                    :inpValue="qaRec" 
+                    :inpValue="qaRec"
+                    :access="!access.QARecordsEdit"
                     @change="scrollExpansion"
                 />
             </v-col>
@@ -32,6 +33,7 @@
         >
             <HighlightsExp 
                 :input="qaOptions"
+                :access="access.QARecordsEdit"
                 :inpValue="getQaRec"
                 :rules="rules"
                 @change="upFile($event)"
@@ -41,6 +43,7 @@
                 <v-expansion-panel-content v-if="qaRec.isHRD">
                 <HRD 
                     :input="qaOptions"
+                    :access="access"
                     :inpValue="getQaRec"
                     :rules="rules"
                 />
@@ -52,6 +55,7 @@
                 <Pest
                     id="pest"
                     :inpValue="getQaRec"
+                    :access="access"
                     :rules="rules"
                 />
                 </v-expansion-panel-content>
@@ -61,6 +65,7 @@
                 <v-expansion-panel-content v-if="qaRec.isSMI">
                 <SMI
                     :input="getQaRec"
+                    :access="access"
                     :rules="rules"
                     :snackbar="snackbar"
                 />
@@ -71,6 +76,7 @@
                 <v-expansion-panel-content v-if="qaRec.isFM">
                 <FM 
                     :inpValue="getQaRec"
+                    :access="access"
                     :rules="rules"
                 />
                 </v-expansion-panel-content>
@@ -81,6 +87,7 @@
                 <NR 
                     :input="qaOptions"
                     :inpValue="getQaRec"
+                    :access="access"
                     :rules="rules"
                 />
                 </v-expansion-panel-content>
@@ -91,6 +98,7 @@
                 <Micro 
                     :input="qaOptions"
                     :inpValue="getQaRec"
+                    :access="access"
                     :rules="rules"
                     :snackbar="snackbar"
                 />
@@ -101,6 +109,7 @@
         <SubmitDiscard 
             :input="submitdiscard"
             :submitted="submitted"
+            :access="!access.QARecordsEdit"
             :valid="valid"
             @change="submitQA($event)"
         />
@@ -135,6 +144,13 @@ export default {
         SubmitDiscard,
         BackBtn,
         SnackBar
+    },
+    props:{
+        access: {
+            type: Object,
+            default:() => {},
+            required:true
+        }
     },
     data: () => ({
         loading:true,

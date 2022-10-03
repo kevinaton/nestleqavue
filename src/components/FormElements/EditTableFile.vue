@@ -1,23 +1,28 @@
 <template>
-    <v-edit-dialog
-        :return-value.sync="table"
-        persistent
-        @save="save"
-        @cancel="cancel"
-    >
-        {{ table }}
-        <v-icon small>mdi-pencil</v-icon>
-        <template v-slot:input>
-            <v-text-field
-                :value="table"
-                @input="updateValue($event)"
-                type="String"
-                :rules="[rules.counter]"
-                single-line
-                persistent
-            ></v-text-field>
-        </template>
-    </v-edit-dialog>
+    <div>
+        <v-edit-dialog
+            :return-value.sync="table"
+            v-if="!access"
+            persistent
+            @save="save"
+            @cancel="cancel"
+        >
+            {{ table }}
+            <v-icon :disabled="access" small>mdi-pencil</v-icon>
+            <template v-slot:input>
+                <v-text-field
+                    :value="inputValue"
+                    :readonly="access"
+                    @input="updateValue($event)"
+                    type="String"
+                    :rules="[rules.counter]"
+                    single-line
+                    persistent
+                ></v-text-field>
+            </template>
+        </v-edit-dialog>
+        <div v-if="access">{{ table }}</div>
+    </div>
 </template>
 
 <script>
@@ -39,6 +44,11 @@ export default {
             default: {},
             required: false,
         },
+        access: {
+            type: Boolean,
+            default:false,
+            required:false
+        }
     },
     data: () => ({
         origVal:[],
@@ -66,7 +76,7 @@ export default {
             this.$emit('change', value)
         },
         saveOriginalValue() {
-            this.origVal = this.table
+            this.inputValue = this.origVal = this.table
         }
     }
 }

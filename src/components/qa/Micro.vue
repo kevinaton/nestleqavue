@@ -5,6 +5,7 @@
                 <SelectDropdownString
                     dropdownValue="Hold or Concern"
                     :inpValue="inpValue.holdConcern"
+                    :access="!access.QARecordsEdit"
                     label="Hold/Concern" 
                     @change="(value) => {
                         inpValue.holdConcern = value   
@@ -15,6 +16,7 @@
                 <SelectDropdownString                                
                     dropdownValue="Day of Week"
                     :inpValue="inpValue.dayOfWeek"
+                    :access="!access.QARecordsEdit"
                     label="Day of Week" 
                     @change="(value) => {
                         inpValue.dayOfWeek = value   
@@ -27,6 +29,7 @@
                 <SelectDropdownString
                     dropdownValue="When"
                     :inpValue="inpValue.when"
+                    :access="!access.QARecordsEdit"
                     label="When" 
                     @change="(value) => {
                         inpValue.when = value   
@@ -34,7 +37,7 @@
                 />
             </v-col>
             <v-col>
-                <v-text-field v-model="inpValue.whenOther" v-if="inpValue.when == 'Other'" outlined label="Other" :rules="[rules.counter]"></v-text-field>
+                <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.whenOther" v-if="inpValue.when == 'Other'" outlined label="Other" :rules="[rules.counter]"></v-text-field>
             </v-col>
         </v-row>
         <v-row>
@@ -42,6 +45,7 @@
                 <SimpleDatePicker 
                 :items="input.calendarMicro"
                 :inpValue="getDate"
+                :access="!access.QARecordsEdit"
                 :rules="[rules.required]"
                 label="Date of Resample"
                 @change="(value) => { inpValue.dateOfResample = value }"
@@ -55,6 +59,7 @@
                 <SelectDropdownString
                     dropdownValue="YesNo"
                     :inpValue="inpValue.meatComponent"
+                    :access="!access.QARecordsEdit"
                     label="Meat Component" 
                     @change="(value) => {
                         inpValue.meatComponent = value   
@@ -65,6 +70,7 @@
                 <SelectDropdownString
                     dropdownValue="YesNo"
                     :inpValue="inpValue.veggieComponent"
+                    :access="!access.QARecordsEdit"
                     label="Veggie Component" 
                     @change="(value) => {
                         inpValue.veggieComponent = value   
@@ -77,6 +83,7 @@
                 <SelectDropdownString
                     dropdownValue="Sauce Type"
                     :inpValue="inpValue.sauceType"
+                    :access="!access.QARecordsEdit"
                     label="Sauce Type" 
                     @change="(value) => {
                         inpValue.sauceType = value   
@@ -87,6 +94,7 @@
                 <SelectDropdownString
                     dropdownValue="Starch Type"
                     :inpValue="inpValue.starchType"
+                    :access="!access.QARecordsEdit"
                     label="Starch Type" 
                     @change="(value) => {
                         inpValue.starchType = value   
@@ -96,7 +104,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <v-textarea v-model="inpValue.additionalComments" outlined rows="13" label="Additional Comments?"></v-textarea>
+                <v-textarea :readonly="!access.QARecordsEdit" v-model="inpValue.additionalComments" outlined rows="13" label="Additional Comments?"></v-textarea>
             </v-col>
             <v-col>
                 <v-data-table
@@ -119,6 +127,7 @@
                             <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 class="mb-2 ml-5"
+                                :disabled="!access.QARecordsEdit"
                                 v-bind="attrs"
                                 v-on="on"
                             >
@@ -196,6 +205,7 @@
                         >
                             <v-icon
                                 @click="deleteMicroItem(item, index)"
+                                :disabled="!access.QARecordsEdit"
                                 :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                 :class="{ 'on-hover': hover }"
                             >
@@ -224,6 +234,7 @@
                             <template v-slot:activator="{ on, attrs }">
                             <v-btn
                                 class="mb-2 ml-5"
+                                :disabled="!access.QARecordsEdit"
                                 v-bind="attrs"
                                 v-on="on"
                             >
@@ -300,6 +311,7 @@
                             open-delay="200"
                         >
                             <v-icon
+                                :disabled="!access.QARecordsEdit"
                                 @click="deleteTestingItem(item, index)"
                                 :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                 :class="{ 'on-hover': hover }"
@@ -353,6 +365,11 @@ export default {
             default: {},
             required: false,
         },
+        access: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
     data: () => ({
         delItem:'',

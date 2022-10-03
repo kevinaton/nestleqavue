@@ -12,6 +12,7 @@
                             :items2="input.clock1"
                             :inpValue="getDate"
                             :rules="[rules.required]"
+                            :access="!access"
                             label1="Date"
                             label2="Time"
                             @change="(value) => { inpValue.dateHeld = value }"
@@ -21,6 +22,7 @@
                         <DateTimePicker
                             :items1="input.calendar2"
                             :items2="input.clock2"
+                            :access="!access"
                             :inpValue="getTimeofIncident"
                             :rules="[rules.required]"
                             label1="Date of Incident"
@@ -34,6 +36,7 @@
                         <YearOnly
                             :inpValue="inpValue.yearHeld"
                             label="Year"
+                            :access="!access"
                             :disabled="input.calendar1.allow"
                             @change="(value) => { inpValue.yearHeld = value }"
                         />
@@ -42,6 +45,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.dayCode"
+                            :readonly="!access"
                             :rules="[rules.required, rules.dayCode]"
                             label="Day Code"
                         ></v-text-field>
@@ -52,6 +56,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.originator"
+                            :readonly="!access"
                             :rules="[rules.counter]"
                             label="Originator"
                         ></v-text-field>
@@ -64,6 +69,7 @@
                         <SelectDropdownString
                             dropdownValue="BU Manager"
                             :inpValue="inpValue.buManager"
+                            :access="!access"
                             label="BU Manager" 
                             @change="(value) => { inpValue.buManager = value }"
                         />
@@ -72,6 +78,7 @@
                         <SelectDropdownString
                             dropdownValue="CodingType"
                             :inpValue="inpValue.type"
+                            :access="!access"
                             label="Type" 
                             @change="(value) => { inpValue.type = value }"
                         />
@@ -82,6 +89,7 @@
                         <v-autocomplete
                             label="FERT"
                             v-model="inpValue.fert"
+                            :readonly="!access"
                             outlined
                             @change="fertDescription"
                             :items="fertId">
@@ -103,6 +111,7 @@
                         <SelectDropdownString 
                             dropdownValue="Line"
                             :inpValue="inpValue.line"
+                            :access="!access"
                             label="Line" 
                             @change="(value) => {
                                 this.inpValue.line = value   
@@ -113,6 +122,7 @@
                         <SelectDropdownString
                             dropdownValue="Line Supervisor"
                             :inpValue="inpValue.lineSupervisor"
+                            :access="!access"
                             label="Line Supervisor" 
                             @change="(value) => { inpValue.lineSupervisor = value }"
                         />
@@ -123,6 +133,7 @@
                         <SelectDropdownString 
                             dropdownValue="Area"
                             :inpValue="inpValue.area" 
+                            :access="!access"
                             label="Area" 
                             @change="(value) => {
                                 this.inpValue.area = value   
@@ -133,6 +144,7 @@
                         <v-text-field 
                             outlined
                             v-model="inpValue.areaIfOther"
+                            :readonly="!access"
                             :rules="[rules.counter]"
                             v-if="showIfOther" 
                             label="If other"
@@ -143,7 +155,8 @@
                     <v-col>
                         <SelectDropdownString 
                             dropdownValue="Shift"
-                            :inpValue="inpValue.shift" 
+                            :inpValue="inpValue.shift"
+                            :access="!access"
                             label="Shift" 
                             @change="(value) => {
                                 inpValue.shift = value   
@@ -158,6 +171,7 @@
                         <SelectDropdownString 
                             dropdownValue="Category"
                             :inpValue="inpValue.shortDescription"
+                            :access="!access"
                             label="Short Description" 
                             @change="(value) => {
                                 inpValue.shortDescription = value   
@@ -167,7 +181,8 @@
                     <v-col>
                         <v-text-field 
                             outlined 
-                            v-model="inpValue.additionalDescription" 
+                            v-model="inpValue.additionalDescription"
+                            :readonly="!access"
                             :rules="[rules.counter]"
                             label="Additional Description"
                         ></v-text-field>
@@ -178,6 +193,7 @@
                         <v-textarea 
                             outlined
                             v-model="inpValue.detailedDescription"
+                            :readonly="!access"
                             label="Detailed Description"
                         ></v-textarea>
                     </v-col>
@@ -193,6 +209,7 @@
                                     show-size
                                     outlined
                                     multiply
+                                    :disabled="!access"
                                     cols="4"
                                     prepend-icon=""
                                     prepend-inner-icon="mdi-paperclip"
@@ -206,11 +223,12 @@
                                     outlined
                                     cols="4"
                                     v-model="fDetails.description"
+                                    :readonly="!access"
                                     :rules="[rules.counter]"
                                     label="Description"
                                 ></v-text-field>
                             </v-col>
-                            <v-col><v-btn cols="2" x-large elevation="2" @click="uploadFile">Upload</v-btn></v-col>
+                            <v-col><v-btn cols="2" x-large elevation="2" :disabled="!access" @click="uploadFile">Upload</v-btn></v-col>
                         </v-row>
                 </v-row>
                 <v-row> 
@@ -236,6 +254,7 @@
                             <template v-slot:[`item.description`]="props">
                                 <EditTableFile
                                     :table="props.item.description"
+                                    :access="!access"
                                     :input="snackbar"
                                     :rules="rules"
                                     @change="(value) => { props.item.description = value }"
@@ -248,6 +267,7 @@
                                 <v-icon
                                     small
                                     v-if="item.id ? true : false"
+                                    :disabled="!access"
                                     class="mr-2"
                                     @click="downloadItem(item)"
                                 >
@@ -255,6 +275,7 @@
                                 </v-icon>
                                 <v-icon
                                     small
+                                    :disabled="!access"
                                     @click="deleteDialog(item)"
                                 >
                                     mdi-delete
@@ -328,6 +349,11 @@ export default {
             type: Object,
             default: () => {},
             required: false,
+        },
+        access: {
+            type: Boolean,
+            default:false,
+            required:true
         }
     },
     computed: {

@@ -6,6 +6,7 @@
                 <v-col class="d-flex align-center">
                     <v-checkbox
                         class="mt-0 pt-0 mr-8"
+                        :readonly="!access"
                         v-model="inpValue.reworkApproved"
                         label="All Cases Accounted for?"
                     ></v-checkbox>
@@ -27,6 +28,11 @@ export default {
             default: () => {},
             required: false
         },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     }
 }
 </script>

@@ -3,6 +3,7 @@
         outlined
         :loading="loading"
         :value="inputValue"
+        :readonly="access"
         :rules="[rules.matNum]"
         :label="label"
         :items="lookup"
@@ -35,6 +36,11 @@ export default {
             type:Object,
             default: () => {},
             required: false,
+        },
+        access: {
+            type:Boolean,
+            default:false,
+            required: false
         }
     },
     data: () => ({

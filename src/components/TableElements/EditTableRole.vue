@@ -256,7 +256,7 @@ export default {
                             }
                         }
                     }   
-                }  
+                }
                 vm.selection = [...new Set(array)]
             })
             .catch(err => {

@@ -24,6 +24,7 @@
             large
             color="primary"
             dark
+            v-if="access.QARecordsEdit"
             class="mb-2 ml-3"
             to="/new-qa-record"
         >
@@ -59,6 +60,11 @@ export default {
             type: Object,
             default: () => {},
             required: false
+        },
+        access: {
+            type: Object,
+            default:() => {},
+            required:true
         }
     },
     data: () => ({

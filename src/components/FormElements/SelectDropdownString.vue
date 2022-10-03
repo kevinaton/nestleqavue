@@ -5,6 +5,7 @@
         :value="inpValue"
         :label="label"
         :items="lookup"
+        :readonly="access"
         @focus="inp"
         @change="selectOption($event)"
         return-object
@@ -29,6 +30,11 @@ export default {
             type: String,
             default: '',
             required: false
+        },
+        access: {
+            type: Boolean,
+            default:false,
+            required:false
         }
     },
     data: () => ({

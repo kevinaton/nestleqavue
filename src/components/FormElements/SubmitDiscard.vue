@@ -6,7 +6,7 @@
             max-width="290"
         >
             <template v-slot:activator="{ on, attrs }">
-                <v-btn color="primary" class="mr-3" :disabled="!valid" light large v-bind="attrs" v-on="on">
+                <v-btn color="primary" class="mr-3" :disabled="checkValid" light large v-bind="attrs" v-on="on">
                     Save
                 </v-btn>
             </template>
@@ -92,12 +92,28 @@ export default {
             type: Boolean,
             default: false,
             required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     },
     data: () => ({
         validateValue:false
     }),
     emits: ["change"],
+    computed: {
+        checkValid() {
+            if(this.access == false) {
+                if(this.valid == true) {
+                    return false
+                }
+            } else {
+                return true
+            }
+        }
+    },
     methods: {
         validate() {
             this.validateValue = this.$refs.form.validate()

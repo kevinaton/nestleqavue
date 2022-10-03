@@ -5,7 +5,7 @@
         :items="years"
         @input="updateValue($event)"
         :label="label"
-        :disabled="disabled"
+        :readonly="access"
         return-object
     ></v-autocomplete>
 </template>
@@ -19,11 +19,7 @@ export default {
             default: '',
             required: false
         },
-        disabled: {
-            type: Boolean,
-            default: false,
-            required: false
-        },
+        
         items: {
             type: Array,
             default: () => {},
@@ -33,6 +29,11 @@ export default {
             type: String,
             default: '',
             required: false
+        },
+        access: {
+            type: Boolean,
+            default:false,
+            required:false
         }
     },
     data: () => ({
