@@ -44,6 +44,13 @@ namespace HRD.WebApi.Authorization
                 _logger.LogInformation($"{username} has {role.Name}");
             }
 
+            var permissions = await _service.GetUserPermissions(userId);
+            foreach(var permission in permissions)
+            {
+                identity.AddClaim(new Claim("Permission", permission));
+                _logger.LogInformation($"{username} has {permission} permission");
+            }
+
             return await Task.FromResult(principal);
         }
     }
