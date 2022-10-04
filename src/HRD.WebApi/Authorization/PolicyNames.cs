@@ -4,6 +4,5 @@
     {
         public const string ViewHRDs = "ViewHRDsPolicy";
         public const string EditHRDs = "EditHRDsPolicy";
-        public const string EditUsers = "EditUsersPolicy";
     }
 }

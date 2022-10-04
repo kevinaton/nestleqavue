@@ -71,12 +71,23 @@ namespace HRD.WebApi
             // Add framework services.
             services.AddDbContext<HRDContext>(options => options.
                 UseSqlServer(Configuration.GetConnectionString("Default")));
-            ////Authorization
+            //Authorization
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(PolicyNames.EditUsers, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin));
-                options.AddPolicy(PolicyNames.EditHRDs, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin, RoleNames.DataEntry));
-                options.AddPolicy(PolicyNames.ViewHRDs, policy => policy.RequireClaim(ClaimTypes.Role, RoleNames.Admin, RoleNames.DataEntry, RoleNames.ReportViewer));
+                options.AddPolicy(PolicyNames.ViewHRDs, policy => policy.RequireClaim("Permission", AppPermissions.HRD_Read,
+                    AppPermissions.HRD_Edit, AppPermissions.HRD_Delete, AppPermissions.HRD_ApproveRework, AppPermissions.QARecords_Read,
+                    AppPermissions.QARecords_Edit, AppPermissions.Products_Read, AppPermissions.Products_Edit, AppPermissions.Labor_Read,
+                    AppPermissions.Labor_Edit, AppPermissions.Testing_Read, AppPermissions.Testing_Edit, AppPermissions.Roles_Read,
+                    AppPermissions.Roles_Edit, AppPermissions.LookupLists_Read, AppPermissions.Users_Read, AppPermissions.Users_Edit,
+                    AppPermissions.LookupLists_Read, AppPermissions.LookupLists_Edit, AppPermissions.CasesAndCostHeldCategory_Read,
+                    AppPermissions.CasesAndCostHeldCategory_Edit, AppPermissions.MicrobeCases_Read, AppPermissions.MicrobeCases_Edit,
+                    AppPermissions.FMCases_Read, AppPermissions.FMCases_Edit, AppPermissions.PestLog_Read, AppPermissions.PestLog_Edit));
+                options.AddPolicy(PolicyNames.EditHRDs, policy => policy.RequireClaim("Permission", AppPermissions.HRD_Edit,
+                    AppPermissions.HRD_Delete, AppPermissions.HRD_ApproveRework, AppPermissions.QARecords_Edit, AppPermissions.Products_Edit,
+                    AppPermissions.Labor_Edit, AppPermissions.Testing_Edit, AppPermissions.Roles_Edit, AppPermissions.Users_Edit,
+                    AppPermissions.LookupLists_Edit, AppPermissions.CasesAndCostHeldCategory_Edit, AppPermissions.MicrobeCases_Edit,
+                    AppPermissions.FMCases_Edit, AppPermissions.PestLog_Edit));
+
             });
             services.AddScoped<IClaimsTransformation, ClaimsTransformer>();
         }

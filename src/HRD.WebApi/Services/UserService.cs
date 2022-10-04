@@ -73,5 +73,15 @@ namespace HRD.WebApi.Services
 
             return result;
         }
+
+        public async Task<IEnumerable<string>> GetUserPermissions(int userId)
+        {
+            var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
+                                .SelectMany(s => s.Role.Permissions).ToListAsync();
+
+            var grantedPermissions = permissionList.Where(f => f.IsGranted).Select(s => s.Name).Distinct().ToList();
+
+            return grantedPermissions;
+        }
     }
 }

@@ -44,7 +44,7 @@
 
         public const string PestLog = "Pages.PestLog";
         public const string PestLog_Read = "Pages.PestLog.Read";
-        public const string PestLOg_Edit = "Pages.PestLog.Edit";
+        public const string PestLog_Edit = "Pages.PestLog.Edit";
 
         public const string HRD = "Pages.HRD";
         public const string HRD_Read = "Pages.HRD.Read";
