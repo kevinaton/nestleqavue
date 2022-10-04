@@ -6,6 +6,7 @@
                     :items1="input.calendarDateReceived"
                     :items2="input.clockDateReceived"
                     :inpValue="getDate"
+                    :access="!access.QARecordsEdit"
                     :rules="[rules.required]"
                     label1="Date Received"
                     label2="Time Received"
@@ -13,7 +14,7 @@
                 />
             </v-col>
             <v-col>
-                <v-text-field v-model="inpValue.inspectorsName" :rules="[rules.required, rules.counter]" outlined label="Inspector's Name"></v-text-field>
+                <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.inspectorsName" :rules="[rules.required, rules.counter]" outlined label="Inspector's Name"></v-text-field>
             </v-col>
         </v-row>
         <v-row class="mt-0">
@@ -21,6 +22,7 @@
                 <SelectDropdownString
                     dropdownValue="NR Category"
                     :inpValue="inpValue.nrCategory"
+                    :access="!access.QARecordsEdit"
                     label="NR Category" 
                     @change="(value) => {
                         inpValue.nrCategory = value   
@@ -35,6 +37,7 @@
                 <SelectDropdownString
                     dropdownValue="Tagged"
                     :inpValue="inpValue.tagged"
+                    :access="!access.QARecordsEdit"
                     label="Tagged" 
                     @change="(value) => {
                         inpValue.tagged = value   
@@ -42,7 +45,7 @@
                 />
             </v-col>
             <v-col>
-                <v-text-field v-if="inpValue.tagged == 'Yes'" :rules="[rules.counter]" v-model="inpValue.tagNumber" outlined label="Tag Number"></v-text-field>
+                <v-text-field :readonly="!access.QARecordsEdit" v-if="inpValue.tagged == 'Yes'" :rules="[rules.counter]" v-model="inpValue.tagNumber" outlined label="Tag Number"></v-text-field>
             </v-col>
         </v-row>
     </v-form>
@@ -70,6 +73,11 @@ export default {
             required: false,
         },
         inpValue: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        access: {
             type: Object,
             default: () => {},
             required: false

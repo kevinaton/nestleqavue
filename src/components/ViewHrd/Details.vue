@@ -6,18 +6,20 @@
                 <v-col>
                     <v-checkbox
                         v-model="inpValue.gstdrequired"
+                        :readonly="!access"
                         label="GSTD Required"
                     ></v-checkbox>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col class="mt-0">
-                    <v-text-field outlined v-model="inpValue.hourCode" :rules="[rules.counter]" label="Hour Codes"></v-text-field>
+                    <v-text-field :readonly="!access" outlined v-model="inpValue.hourCode" :rules="[rules.counter]" label="Hour Codes"></v-text-field>
                 </v-col>
                 <v-col class="mt-0">
                     <SelectDropdownString 
                         dropdownValue="YesNo"
                         :inpValue="inpValue.continuousRun" 
+                        :access="!access"
                         label="Continuous Run" 
                         @change="(value) => {
                             inpValue.continuousRun = value   
@@ -37,6 +39,7 @@
                     <v-combobox
                         :value="getPO"
                         :rules="[rules.counter]"
+                        :readonly="!access"
                         chips
                         multiple
                         outlined
@@ -62,7 +65,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-textarea v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
+                    <v-textarea :readonly="!access" v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
                 </v-col>
             </v-row>
             <v-row>
@@ -75,21 +78,22 @@
                     <SimpleDatePicker 
                         :items="input.calendarCompleted"
                         :inpValue="getDateCompleted"
+                        :access="!access"
                         :rules="[rules.required]"
                         label="Date Completion"
                         @change="(value) => { inpValue.dateCompleted = value }"
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.clear" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Clear" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.clear" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Clear" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.hrdcompletedBy" :rules="[rules.required, rules.counter]" label="Completed by*" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.hrdcompletedBy" :rules="[rules.required, rules.counter]" label="Completed by*" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.scrap" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Scrap" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.scrap" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Scrap" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -97,38 +101,41 @@
                     <SimpleDatePicker 
                         :items="input.calendarDisposition"
                         :inpValue="getDateDisposition"
+                        :access="!access"
                         :rules="[rules.required]"
                         label="Date of Disposition"
                         @change="(value) => { inpValue.dateofDisposition = value }"
                     />
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.thriftStore" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Thrift Store" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.thriftStore" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Thrift Store" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col class="d-flex" cols="5" md="6" sm="12">
                     <v-checkbox
                         v-model="inpValue.complete"
+                        :readonly="!access"
                         class="mr-5"
                         label="Complete?"
                     ></v-checkbox>
                     <v-checkbox
                         v-model="inpValue.cancelled"
+                        :readonly="!access"
                         class="mr-5"
                         label="Canceled?"
                     ></v-checkbox>
                 </v-col>
                 <v-col cols="5" md="6" sm="12">
-                    <v-text-field v-model="inpValue.samples" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Samples" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.samples" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Samples" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-text-field v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.donate" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Donate" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.donate" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Donate" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
@@ -136,6 +143,7 @@
                 <v-col class="d-flex">
                     <v-btn
                     outlined
+                    :disabled="!access"
                     color="primary"
                     @click="recalculate"
                     >
@@ -153,6 +161,7 @@
                 <v-col></v-col>
                 <v-col>
                     <v-checkbox
+                        :readonly="!access"
                         v-model="inpValue.allCasesAccountedFor"
                         label="All Cases Accounted for?"
                     ></v-checkbox>
@@ -161,18 +170,20 @@
             <v-row class="mt-0">
                 <v-col class="d-flex">
                     <v-checkbox
+                        :readonly="!access"
                         v-model="inpValue.otherHrdAffected"
                         class="mr-5"
                         label="Other HRDs Affected?"
                     ></v-checkbox>
                     <v-checkbox
+                        :readonly="!access"
                         v-model="inpValue.highRisk"
                         class="mr-5"
                         label="High Risk"
                     ></v-checkbox>
                 </v-col>
                 <v-col>
-                    <v-text-field v-model="inpValue.otherHrdNum" label="Other HRD #s" outlined></v-text-field>
+                    <v-text-field :readonly="!access" v-model="inpValue.otherHrdNum" label="Other HRD #s" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row>
@@ -193,6 +204,7 @@
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
                                             v-bind="attrs"
+                                            :disabled="!access"
                                             v-on="on"
                                             >
                                             Add Case</v-btn>
@@ -264,11 +276,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                        <v-text-field label="Username" outlined v-model="inpValue.fcUser"></v-text-field>
+                                        <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.fcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
                                                 :items="input.calendarFc"
+                                                :access="!access"
                                                 :inpValue="inpValue.fcDate"
                                                 label="Date logged in"
                                                 :hasDefault="false"
@@ -285,6 +298,7 @@
                                 >
                                     <v-icon
                                         @click="deleteFcItem(item, index)"
+                                        :disabled="!access"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -323,8 +337,9 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
-                                            v-bind="attrs"
-                                            v-on="on"
+                                                :disabled="!access"
+                                                v-bind="attrs"
+                                                v-on="on"
                                             >
                                             Add Case</v-btn>
                                         </template>
@@ -393,11 +408,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field label="Username" outlined v-model="inpValue.dcUser"></v-text-field>
+                                            <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.dcUser"></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
                                                 :items="input.calendarDc"
+                                                :access="!access"
                                                 :inpValue="inpValue.dcDate"
                                                 label="Date logged in"
                                                 :hasDefault="false"
@@ -414,6 +430,7 @@
                                 >
                                     <v-icon
                                         @click="deleteDcItem(item, index)"
+                                        :disabled="!access"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -476,6 +493,11 @@ export default {
         recalculateTotal: {
             type: Number,
             default: 0,
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
             required: false
         }
     },

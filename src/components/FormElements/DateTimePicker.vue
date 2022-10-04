@@ -20,11 +20,13 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    clearable
+                    :clearable="!access"
                 ></v-text-field>
                 </template>
                 <v-date-picker
+                    v-if="!access"
                     no-title
+                    :disabled="access"
                     @change="items1.menu = false, items1.allow = false, setDate($event)"
                 ></v-date-picker>
             </v-menu>
@@ -51,12 +53,13 @@
                     readonly
                     v-bind="attrs"
                     v-on="on"
-                    clearable
+                    :clearable="!access"
                 ></v-text-field>
                 </template>
                 <v-time-picker
-                    v-if="items2.menu"
+                    v-if="!access"
                     :value="tempTime"
+                    :disabled="access"
                     @change="items2.menu=false, setDateTime($event)"
                 ></v-time-picker>
             </v-menu>
@@ -98,6 +101,11 @@ export default {
             type: Array,
             default: () => [],
             required: false,
+        },
+        access: {
+            type: Boolean,
+            default:false,
+            required:false
         }
     },
     data: () => ({
@@ -148,7 +156,7 @@ export default {
             this.tempTime = x
             let value = moment.utc(`${this.tempDate} ${this.tempTime}`).toISOString()
             this.$emit('change', value)
-        },
+        }
     }
 }
 </script>

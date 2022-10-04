@@ -28,6 +28,7 @@
             <HighlightsExp 
                 :input="highlights"
                 :inpValue="getHRD"
+                :access="access.HRDEdit"
                 :rules="rules"
                 @change="upFile($event)"
             />
@@ -35,6 +36,7 @@
             <Details
                 :input="details"
                 :inpValue="getHRD"
+                :access="access.HRDEdit"
                 :rules="rules"
                 :recalculateTotal="recalculateTotal"
                 :snackbar="snackbar"
@@ -43,18 +45,22 @@
 
             <HoldClassification
                 :inpValue="getHRD"
+                :access="access.HRDEdit"
             />
 
             <Rework 
-                :inpValue="getHRD"    
+                :inpValue="getHRD"
+                :access="access.HRDEdit"
             />
 
             <IncidentReport
                 :input="getHRD"
+                :access="access.HRDEdit"
             />
             
             <Scrap 
-                :inpValue="getHRD"   
+                :inpValue="getHRD"
+                :access="access.HRDEdit"
                 :input="scrap" 
                 :rules="rules"
             />
@@ -62,6 +68,7 @@
 
         <SubmitDiscard 
             :input="submitdiscard"
+            :access="!access.HRDEdit"
             :valid="valid"
             @change="submitHRD($event)"
         />
@@ -91,6 +98,13 @@
             BackBtn,
             SubmitDiscard,
             SnackBar
+        },
+        props:{
+            access: {
+                type: Object,
+                default:() => {},
+                required:true
+            }
         },
         data: () => ({
             backbtn:false,

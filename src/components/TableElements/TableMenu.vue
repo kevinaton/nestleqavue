@@ -6,6 +6,7 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
+                @click="checkAccess"
             >
                 <v-icon small>mdi-dots-vertical</v-icon>
             </v-btn>
@@ -58,6 +59,11 @@ export default {
             type:String,
             default:'',
             required:false
+        },
+        access: {
+            type: Object,
+            default:() => {},
+            required:true
         }
     },
     data: () => ({
@@ -79,6 +85,11 @@ export default {
                 let value = this.item[this.durl].toString()
                 this.$emit('change', value)
             }
+        },
+        checkAccess() {
+            this.input.options[0].access = this.access.QARecordsRead
+            this.input.options[1].access = this.access.HRDRead
+            this.input.options[2].access = this.access.HRDDelete
         }
     },
 }

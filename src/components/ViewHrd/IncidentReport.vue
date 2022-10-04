@@ -6,6 +6,7 @@
                 <v-col class="d-flex align-center">
                     <YearOnly
                         :inpValue="input.yearOfIncident"
+                        :access="!access"
                         label="Year"
                         :disabled="false"
                         @change="(value) => { input.yearOfIncident = value }"
@@ -28,6 +29,11 @@ export default {
             type: Object,
             default: () => {},
         },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     }
 }
 </script>

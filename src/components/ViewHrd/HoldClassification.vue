@@ -7,6 +7,7 @@
                     <SelectDropdownString
                         dropdownValue="Classification"
                         :inpValue="inpValue.classification"
+                        :access="!access"
                         label="Classification" 
                         @change="(value) => {
                             inpValue.classification = value   
@@ -17,6 +18,7 @@
                     <SelectDropdownString
                         dropdownValue="Category"
                         :inpValue="inpValue.holdCategory"
+                        :access="!access"
                         label="Hold Category" 
                         @change="(value) => {
                             inpValue.holdCategory = value   
@@ -29,6 +31,7 @@
                     <SelectDropdownString
                         dropdownValue="Category"
                         :inpValue="inpValue.holdSubCategory"
+                        :access="!access"
                         label="Hold Sub-category" 
                         @change="(value) => {
                             inpValue.holdSubCategory = value   
@@ -72,6 +75,11 @@ export default {
             type: Object,
             default: () => {},
             required: false,
+        },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
         }
     }
 }

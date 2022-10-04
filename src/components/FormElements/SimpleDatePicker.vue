@@ -17,11 +17,13 @@
             readonly
             v-bind="attrs"
             v-on="on"
-            clearable
+            :clearable="!access"
             @click:clear="clearDate"
         ></v-text-field>
         </template>
         <v-date-picker
+            v-if="!access"
+            :disabled="access"
             no-title
             show-adjacent-months
             @change="items.menu = false, items.allow = false, setDate($event)"
@@ -54,6 +56,11 @@ export default {
         hasDefault: {
             type: Boolean,
             default: true,
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
             required: false
         }
     },
