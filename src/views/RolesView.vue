@@ -39,7 +39,7 @@
                 util="Roles"
                 :tableOptions="tableOptions"
                 :rules="rules"
-                @change="getSearch()"
+                @change="getSearch($event)"
             />
         </template>
 
