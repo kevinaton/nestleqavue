@@ -6,6 +6,7 @@
         <template v-slot:activator="{ on, attrs }">
             <v-hover
                 v-slot="{ hover }"
+                v-if="!access"
                 open-delay="200"
             >
                 <v-icon
@@ -112,6 +113,11 @@ export default {
         smmd: {
             type: Number,
             default: 12,
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
             required: false
         }
     },

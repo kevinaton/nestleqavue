@@ -34,6 +34,7 @@
         formTitle="Add Product"
         btnName="Add Product"
         util="Products"
+        :access="!access.ProductsEdit"
         :adding="true"
         :forms="forms"
         :rules="rules"
@@ -68,12 +69,14 @@
     <template v-slot:[`item.actions`]="{ item }">
       <EditTableProduct
         :input="snackbar"
+        :access="!access.ProductsEdit"
         :item="item"
         :rules="rules"
         @change="(value) => { item = value }"
       />
       <DeleteAction 
         :item="item"
+        :access="!access.ProductsEdit"
         :tableItem="products"
         :input="toolbar"
         durl="id"
@@ -119,6 +122,13 @@
       EditCheckboxProduct,
       TablePagination,
       ProdToolbar
+    },
+    props: {
+      access: {
+        type: Object,
+        default: () => {},
+        required: false
+      }
     },
     data: () => ({
       loading:true,

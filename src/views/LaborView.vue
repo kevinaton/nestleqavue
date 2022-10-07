@@ -33,6 +33,7 @@
         title="Labor"
         formTitle="Add Labor Cost"
         btnName="Add Labor Cost"
+        :access="!access.LaborEdit"
         :adding="true"
         :forms="forms"
         :toolbar='toolbar'
@@ -49,6 +50,7 @@
       <SimpleEdit 
         :input="snackbar"
         :item="item"
+        :access="!access.LaborEdit"
         :forms="forms"
         formTitle="Edit Labor"
         apiUrl="LaborCosts"
@@ -57,6 +59,7 @@
       />
       <DeleteAction 
         :item="item"
+        :access="!access.LaborEdit"
         :tableItem="labors"
         :input="toolbar"
         durl="year"
@@ -100,6 +103,13 @@
       EditYearOnly,
       TablePagination,
       SimpleEdit
+    },
+    props: {
+      access: {
+        type: Object,
+        default: () => {},
+        required: false
+      }
     },
     data: () => ({
       loading:true,

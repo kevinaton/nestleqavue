@@ -1,10 +1,13 @@
 <template>
     <v-hover
         v-slot="{ hover }"
+        v-if="!access"
         open-delay="200"
     >
         <v-icon
             @click="deleteItem(item)"
+
+            :disabled="access"
             :color="hover ? 'grey darken-3' : 'grey lighten-2'"
             :class="{ 'on-hover': hover }"
         >
@@ -35,6 +38,11 @@ export default {
         durl: {
             type:String,
             default:'',
+            required:false
+        },
+        access: {
+            type:Boolean,
+            default:false,
             required:false
         }
     },

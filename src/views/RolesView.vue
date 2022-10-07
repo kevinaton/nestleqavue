@@ -32,6 +32,7 @@
                 title="Roles"
                 formTitle="Add Role"
                 :toolbar="toolbar"
+                :access="!access.RolesEdit"
                 :items="items"
                 :table="roles"
                 :snackbar="snackbar"
@@ -55,6 +56,7 @@
             <EditTableRole
                 :snackbar="snackbar"
                 :item="item"
+                :access="!access.RolesEdit"
                 :items="items"
                 :rules="rules"
                 @change="roleUpdated($event)"
@@ -62,6 +64,7 @@
             <DeleteAction 
                 :item="item"
                 :tableItem="roles"
+                :access="!access.RolesEdit"
                 :input="toolbar"
                 durl="id"
                 @change="(value) => { delItem = value}"
@@ -105,6 +108,13 @@
             TablePagination,
             EditCheckboxRole,
             EditTableRole
+        },
+        props: {
+            access: {
+                type: Object,
+                default: () => {},
+                required: false
+            }
         },
         data: () => ({
         loading:true,
