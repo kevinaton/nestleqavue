@@ -10,6 +10,7 @@ using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using HRD.WebApi.Authorization;
+using HRD.WebApi.Services;
 
 namespace HRD.WebApi.Controllers
 {
@@ -17,11 +18,11 @@ namespace HRD.WebApi.Controllers
     [ApiController]
     public class LaborCostsController : ControllerBase
     {
-        private readonly HRDContext _context;
+        private readonly ILaborCostService _service;
 
-        public LaborCostsController(HRDContext context)
+        public LaborCostsController(HRDContext context, ILaborCostService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/LaborCosts
@@ -31,44 +32,9 @@ namespace HRD.WebApi.Controllers
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
 
-            var query = _context.LaborCosts
-                .Select(s => new LaborCostViewModel
-                {
-                    Year = s.Year,
-                    LaborCost = s.LaborCostValue
-                });
+            var pagedResponse = await _service.GetAll(validFilter);
 
-            //Sorting
-            switch (validFilter.SortColumn)
-            {
-                case "year":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Year)
-                        : query.OrderBy(o => o.Year);
-                    break;
-                case "laborcost":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.LaborCost)
-                        : query.OrderBy(o => o.LaborCost);
-                    break;
-            }
-
-            //Search
-            if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
-            {
-                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.LaborCost.ToString().Contains(filter.SearchString));
-            }
-
-            var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
-
-            //Pagination;
-            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                        .Take(validFilter.PageSize);
-
-            var laborCostList = await query.ToListAsync();
-
-            return Ok(new PagedResponse<List<LaborCostViewModel>>(laborCostList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+            return Ok(pagedResponse);
         }
 
         // GET: api/LaborCosts/5
@@ -76,20 +42,14 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<LaborCostViewModel>> GetLaborCost(string year)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(year);
+            var laborCost = await _service.GetLaborCost(year);
 
             if (laborCost == null)
             {
                 return NotFound();
             }
 
-            var model = new LaborCostViewModel
-            {
-                Year = laborCost.Year,
-                LaborCost = laborCost.LaborCostValue
-            };
-
-            return model;
+            return laborCost;
         }
 
         // PUT: api/LaborCosts/5
@@ -103,29 +63,12 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
-            var laborCost = new LaborCost
+            if (!await LaborCostExists(year))
             {
-                Year = model.Year,
-                LaborCostValue   = model.LaborCost
-            };
-
-            _context.Entry(laborCost).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!LaborCostExists(year))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
+            await _service.UpdateLaborCost(model);
 
             return NoContent();
         }
@@ -136,20 +79,14 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<LaborCostViewModel>> PostLaborCost(LaborCostViewModel model)
         {
-            var laborCost = new LaborCost
-            {
-                Year = model.Year,
-                LaborCostValue = model.LaborCost
-            };
-
-            _context.LaborCosts.Add(laborCost);
+            
             try
             {
-                await _context.SaveChangesAsync();
+                await _service.CreateLaborCost(model);
             }
             catch (DbUpdateException)
             {
-                if (LaborCostExists(laborCost.Year))
+                if (await LaborCostExists(model.Year))
                 {
                     return Conflict();
                 }
@@ -167,21 +104,20 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteLaborCost(string year)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(year);
+            var laborCost = await _service.GetLaborCost(year);
             if (laborCost == null)
             {
                 return NotFound();
             }
 
-            _context.LaborCosts.Remove(laborCost);
-            await _context.SaveChangesAsync();
+            await _service.DeleteLaborCost(laborCost);
 
             return NoContent();
         }
 
-        private bool LaborCostExists(string id)
+        private async Task<bool> LaborCostExists(string id)
         {
-            return _context.LaborCosts.Any(e => e.Year == id);
+            return await _service.IsLaborCostExists(id);
         }
     }
 }

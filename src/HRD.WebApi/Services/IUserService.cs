@@ -7,7 +7,7 @@ namespace HRD.WebApi.Services
 {
     public interface IUserService
     {
-        public UserViewModel Get(UserLoginViewModel userLogin);
+        UserViewModel Get(UserLoginViewModel userLogin);
         IEnumerable<UserViewModel> GetAll();
         Task<int> GetOrCreateUserIdByUsername(string username);
         Task<List<Role>> GetUserRoles(int id);
