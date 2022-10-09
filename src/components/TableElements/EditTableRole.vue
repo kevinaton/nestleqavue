@@ -6,10 +6,12 @@
         <template v-slot:activator="{ on, attrs }">
             <v-hover
                 v-slot="{ hover }"
+                v-if="!access"
                 open-delay="200"
             >
                 <v-icon
                     @click="setData"
+                    :disabled="access"
                     v-bind="attrs"
                     v-on="on"
                     :color="hover ? 'grey darken-3' : 'grey lighten-2'"
@@ -19,7 +21,6 @@
                 </v-icon>
             </v-hover>
         </template>
-
         <v-card>
             <v-form
                 ref="form"
@@ -29,7 +30,6 @@
                 <v-card-title>
                     <span class="text-h5">Edit Role</span>
                 </v-card-title>
-
                 <v-card-text>
                     <v-tabs
                         v-model="tab"
@@ -80,7 +80,6 @@
                         </v-tab-item>
                     </v-tabs-items>
                 </v-card-text>
-
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
@@ -130,6 +129,11 @@ export default {
         item: {
             type: Object,
             default: () => {},
+            required: false
+        },
+        access: {
+            type: Object,
+            default: false,
             required: false
         }
     },

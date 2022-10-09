@@ -33,6 +33,7 @@
                 title="Testing"
                 formTitle="Add Test Case"
                 btnName="Add Test Case"
+                :access="!access.LaborEdit"
                 :adding="true"
                 :forms="forms"
                 :toolbar="toolbar"
@@ -50,6 +51,7 @@
                 :input="snackbar"
                 :item="item"
                 :forms="forms"
+                :access="!access.LaborEdit"
                 formTitle="Edit Test Case"
                 apiUrl="TestCosts"
                 id="id"
@@ -57,6 +59,7 @@
             />
             <DeleteAction 
                 :item="item"
+                :access="!access.LaborEdit"
                 :tableItem="testings"
                 :input="toolbar"
                 durl="id"
@@ -101,6 +104,13 @@
             EditYearOnly,
             TablePagination,
             SimpleEdit
+        },
+        props: {
+            access: {
+                type: Object,
+                default: () => {},
+                required: false
+            }
         },
         data: () => ({
         loading:true,

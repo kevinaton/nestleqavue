@@ -26,6 +26,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
             <v-btn
+                v-if="!access"
                 color="primary"
                 dark
                 large
@@ -171,6 +172,11 @@ export default {
             default: () => {},
             required: false
         },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     },
     data: () => ({
         searchInput:'',

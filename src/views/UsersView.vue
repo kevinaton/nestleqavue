@@ -33,6 +33,7 @@
             title="Users"
             formTitle="Add User"
             btnName="Add User"
+            :access="!access.LaborEdit"
             :rules="rules"
             :adding="true"
             :forms="forms"
@@ -51,6 +52,7 @@
             :input="snackbar"
             :item="item"
             :forms="forms"
+            :access="!access.LaborEdit"
             formTitle="Edit User"
             apiUrl="Users"
             id="id"
@@ -58,6 +60,7 @@
         />
         <DeleteAction 
             :item="item"
+            :access="!access.LaborEdit"
             :tableItem="users"
             :input="toolbar"
             durl="id"
@@ -99,6 +102,13 @@ export default {
         EditTableUser,
         TablePagination,
         SimpleEdit
+    },
+    props: {
+        access: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
     data: () => ({
     loading:true,
