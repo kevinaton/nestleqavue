@@ -30,7 +30,7 @@
                     dropdownValue="YesNo"
                     :inpValue="inpValue.productAdultered"
                     :access="!access.QARecordsEdit"
-                    label="Product Adultered" 
+                    label="Product Adulterated" 
                     @change="(value) => {
                         this.inpValue.productAdultered = value   
                     }"

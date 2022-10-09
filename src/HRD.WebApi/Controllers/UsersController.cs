@@ -229,6 +229,19 @@ namespace HRD.WebApi.Controllers
             return Ok(permissions);
         }
 
+        [HttpGet("GetUsersByPermission")]
+        public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetUsersByPermission(string name)
+        {
+            var userRoles = await _context.UserRoles.Include(i => i.User).Where(f => f.Role.Permissions.Any(a => a.Name == name)).ToListAsync();
+            var users = userRoles.Select(s => new UserLookupDto
+                        {
+                            UserId = s.User.UserId,
+                            Name = s.User.Name
+                        });
+
+            return Ok(users);
+        }
+
         protected async Task<bool> HasPermissionAsync(params string[] permissionsToCheck)
         {
             foreach (var permissionToCheck in permissionsToCheck)
