@@ -33,7 +33,7 @@
         >
             <template v-slot:activator="{ on, attrs }">
             <v-btn
-                v-if="adding"
+                v-if="adding && !access"
                 color="primary"
                 dark
                 large
@@ -214,6 +214,11 @@ export default {
         lookupTypes: {
             type: Array,
             default: () => {},
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
             required: false
         }
     },

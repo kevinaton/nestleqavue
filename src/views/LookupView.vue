@@ -41,6 +41,7 @@
         :snackbar="snackbar"
         :rules="rules"
         util="Lookup"
+        :access="!access.LookupListsEdit"
         :tableOptions="tableOptions"
         @change="getSearch($event)"
     />
@@ -58,6 +59,7 @@
     <template v-slot:[`item.actions`]="{ item }">
         <EditTableLookup
             :input="snackbar"
+            :access="!access.LookupListsEdit"
             :item="item"
             :rules="rules"
             :forms="forms"
@@ -66,6 +68,7 @@
         />
         <DeleteAction 
             :item="item"
+            :access="!access.LookupListsEdit"
             :tableItem="lookups"
             :input="toolbar"
             durl="id"
