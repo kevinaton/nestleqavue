@@ -111,6 +111,13 @@ export default {
         TablePagination,
         EditDropdownLookup
     },
+    props: {
+        access: {
+            type: Object,
+            default: () => {},
+            required: true
+        }
+    },
     data: () => ({
     loading:true,
     delItem:'',
