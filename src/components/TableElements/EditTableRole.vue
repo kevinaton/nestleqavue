@@ -132,7 +132,7 @@ export default {
             required: false
         },
         access: {
-            type: Object,
+            type: Boolean,
             default: false,
             required: false
         }

@@ -6,10 +6,12 @@
         <template v-slot:activator="{ on, attrs }">
             <v-hover
                 v-slot="{ hover }"
+                v-if="!access"
                 open-delay="200"
             >
                 <v-icon
                     @click="setData"
+                    :disabled="access"
                     v-bind="attrs"
                     v-on="on"
                     :color="hover ? 'grey darken-3' : 'grey lighten-2'"
@@ -136,6 +138,11 @@ export default {
         lookupTypes: {
             type: Array,
             default: () => {},
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
             required: false
         }
     },

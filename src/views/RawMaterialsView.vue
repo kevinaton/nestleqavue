@@ -33,6 +33,7 @@
             title="Raw Materials"
             formTitle="Add Raw-material"
             btnName="Add Raw Material"
+            :access="!access.ProductsEdit"
             :adding="true"
             :forms="forms"
             :toolbar='toolbar'
@@ -51,6 +52,7 @@
                 :input="snackbar"
                 :item="item"
                 :forms="forms"
+                :access="!access.ProductsEdit"
                 formTitle="Edit Raw Materials"
                 apiUrl="RawMaterials"
                 id="id"
@@ -58,6 +60,7 @@
             />
             <DeleteAction 
                 :item="item"
+                :access="!access.ProductsEdit"
                 :tableItem="rawMaterials"
                 :input="toolbar"
                 durl="id"
@@ -99,6 +102,13 @@
             EditTableRawMaterials,
             TablePagination,
             SimpleEdit
+        },
+        props: {
+            access: {
+                type: Object,
+                default: () => {},
+                required: false
+            }
         },
         data: () => ({
             bcrumbs: [
