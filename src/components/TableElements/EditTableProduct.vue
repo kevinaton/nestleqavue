@@ -91,7 +91,7 @@
                         <v-select
                             v-model="edit.noBbdate"
                             :items="tfOption"
-                            label="No Birth Date"
+                            label="No Best Before Date"
                             type="Boolean"
                             :rules="[rules.tf]"
                         ></v-select>
