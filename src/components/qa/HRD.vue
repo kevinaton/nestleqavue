@@ -10,12 +10,6 @@
         </v-row>
         <v-row class="mt-0">
             <v-col>
-                <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.pOs" :rules="[rules.counter]" outlined label="POs"></v-text-field>
-            </v-col>
-            <v-col></v-col>
-        </v-row>
-        <v-row class="mt-0">
-            <v-col>
                 <v-textarea :readonly="!access.QARecordsEdit" v-model="inpValue.reworkInstructions" outlined label="Rework Instructions"></v-textarea>
             </v-col>
         </v-row>

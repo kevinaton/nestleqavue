@@ -1,6 +1,6 @@
 <template>
     <v-autocomplete
-        :value="inpValue"
+        :value="getYear"
         outlined
         :items="years"
         @input="updateValue($event)"
@@ -44,6 +44,10 @@ export default {
             let obj = Array.from({length: year - 1900}, (value, index) => (new Date().getFullYear() - index).toString())
             return obj
         },
+        getYear() {
+            if(this.inpValue == '') return new Date().getFullYear().toString()
+            else return this.inpValue
+        }
     },
     emits: ['change'],
     methods: {

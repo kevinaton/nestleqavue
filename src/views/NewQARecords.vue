@@ -21,7 +21,6 @@
                 <Newqacheckbox
                     :inpValue="qaRec"
                     :access="!access.QARecordsEdit"
-                    @change="scrollExpansion"
                 />
             </v-col>
         </v-row>
@@ -409,11 +408,13 @@ export default {
                 })
             }
         },
-        // scrollExpansion(value, status) {
-        //     if(status == true) {
-        //         this.$vuetify.goTo(`#${value}`)
-        //     }
-        // }
+        
+        // Redirect to expansion panel when selected
+        scrollExpansion(value, status) {
+            if(status == true) {
+                this.$vuetify.goTo(`#${value}`)
+            }
+        }
     },
     computed: {
         getQaRec(){

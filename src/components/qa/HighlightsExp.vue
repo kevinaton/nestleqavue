@@ -62,6 +62,7 @@
                         ></v-text-field>
                     </v-col>
                     <v-col>
+                        <v-text-field :readonly="!access" v-model="inpValue.pOs" :rules="[rules.counter]" outlined label="POs"></v-text-field>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">

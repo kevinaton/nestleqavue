@@ -21,7 +21,6 @@
                 <Newqacheckbox 
                     :inpValue="qaRec"
                     :access="!access.QARecordsEdit"
-                    @change="scrollExpansion"
                 />
             </v-col>
         </v-row>
@@ -540,6 +539,7 @@ export default {
         validate() {
             this.$refs.form.validate()
         },
+        // Redirect to expansion panel when selected
         scrollExpansion(value, status) {
             if(status == true) {
                 this.$vuetify.goTo(`#${value}`)
@@ -551,7 +551,6 @@ export default {
             .then(res => 
             {
                 res.status
-                console.log(res)
             })
             .catch(err => {
                 vm.snackbar.snack = true
