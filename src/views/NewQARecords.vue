@@ -409,11 +409,11 @@ export default {
                 })
             }
         },
-        scrollExpansion(value, status) {
-            if(status == true) {
-                this.$vuetify.goTo(`#${value}`)
-            }
-        }
+        // scrollExpansion(value, status) {
+        //     if(status == true) {
+        //         this.$vuetify.goTo(`#${value}`)
+        //     }
+        // }
     },
     computed: {
         getQaRec(){
