@@ -144,7 +144,7 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="3"
                                     >
                                         <v-text-field
                                         v-model="micro.hour"
@@ -155,7 +155,7 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="3"
                                     >
                                         <v-text-field
                                         v-model="micro.count"
@@ -166,13 +166,17 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="6"
                                     >
-                                        <v-text-field
-                                        v-model="micro.organism"
-                                        label="Organism"
-                                        placeholder="Organism"
-                                        ></v-text-field>
+                                        <SelectDropdownString
+                                            dropdownValue="Organism"
+                                            :inpValue="micro.organism"
+                                            :access="!access.QARecordsEdit"
+                                            label="Organism" 
+                                            @change="(value) => {
+                                                micro.organism = value   
+                                            }"
+                                        />
                                     </v-col>
                                     </v-row>
                                 </v-container>
@@ -251,18 +255,31 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="6"
                                     >
-                                        <v-text-field
+                                        <!-- <v-text-field
                                         v-model="testing.testName"
                                         placeholder="Enter here"
                                         label="Test Name"
-                                        ></v-text-field>
+                                        ></v-text-field> -->
+                                        <SelectTestCost
+                                            :inpValue="testing.testName"
+                                            :id="testing.id"
+                                            :access="!access.QARecordsEdit"
+                                            :cost="testing.cost"
+                                            :rules="rules"
+                                            :snackbar="snackbar"
+                                            label="Test Name" 
+                                            @change="(value, cost) => { 
+                                                testing.testName = value 
+                                                testing.cost = cost
+                                            }"
+                                        />
                                     </v-col>
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="3"
                                     >
                                         <v-text-field
                                         v-model="testing.qty"
@@ -273,7 +290,7 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="4"
+                                        md="3"
                                     >
                                         <v-text-field
                                         v-model="testing.cost"
@@ -333,16 +350,17 @@ import SimpleDatePicker from '@/components/FormElements/SimpleDatePicker.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import DeleteAction from '@/components/TableElements/DeleteAction.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
+import SelectTestCost from '@/components/FormElements/SelectTestCost.vue'
 
 export default {
     components: {
-        SelectDropdownString,
-        SimpleDatePicker,
-
-        SnackBar,
-        DeleteAction,
-        RowDelete,
-    },
+    SelectDropdownString,
+    SimpleDatePicker,
+    SnackBar,
+    DeleteAction,
+    RowDelete,
+    SelectTestCost
+},
     props: {
         name:'Micro',
         input: {
