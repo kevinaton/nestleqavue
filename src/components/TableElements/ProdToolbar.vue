@@ -126,19 +126,6 @@
                         sm="6"
                         md="6"
                         >
-                            <v-select
-                                v-if="forms[6].visible"
-                                v-model="forms[6].value"
-                                :items="forms[6].select"
-                                :label="forms[6].label"
-                                :type="forms[6].type"
-                            ></v-select>
-                        </v-col>
-                        <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        >
                             <v-text-field
                                 v-if="forms[7].visible"
                                 v-model="forms[7].value" 
