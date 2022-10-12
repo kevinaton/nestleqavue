@@ -52,11 +52,6 @@
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
             />
-
-            <IncidentReport
-                :input="getHRD"
-                :access="access.HRDEdit"
-            />
             
             <Scrap 
                 :inpValue="getHRD"
@@ -82,7 +77,6 @@
     import IncidentReport from '@/components/ViewHrd/IncidentReport.vue'
     import Scrap from '@/components/ViewHrd/Scrap.vue'
     import Details from '@/components/ViewHrd/Details.vue'
-
     import BackBtn from '@/components/FormElements/BackBtn.vue'
     import SubmitDiscard from '@/components/FormElements/SubmitDiscard.vue'
     import SnackBar from '@/components/TableElements/SnackBar.vue'
