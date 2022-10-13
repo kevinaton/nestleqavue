@@ -366,7 +366,7 @@ namespace HRD.WebApi.Controllers
             //Search
             if (!string.IsNullOrWhiteSpace(filter.SearchString))
             {
-                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
+                query = query.Where(f => f.Year.ToString().Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString));
             }
 
             byte[] exportBytes = new byte[] { };

@@ -68,7 +68,7 @@ namespace HRD.WebApi.Controllers
             //Search
             if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
             {
-                query = query.Where(f => f.Year.Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString) || (f.TestCost != null && f.TestCost.ToString().Contains(filter.SearchString)));
+                query = query.Where(f => f.Year.ToString().Contains(filter.SearchString) || f.TestName.Contains(filter.SearchString) || (f.TestCost != null && f.TestCost.ToString().Contains(filter.SearchString)));
             }
 
             var totalRecords = await query.CountAsync();
@@ -182,6 +182,17 @@ namespace HRD.WebApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("Search")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<IActionResult> GetTestCostsForLookup()
+        {
+            var queryGroup = _context.TestCosts.GroupBy(g => g.TestName);
+
+            var testCosts = await queryGroup.Select(s => s.OrderByDescending(o => o.Year).First()).ToListAsync();
+
+            return Ok(testCosts);
         }
 
         private bool TestCostExists(int id)
