@@ -307,18 +307,41 @@
                                 </v-hover>
                             </template>
                         </v-data-table>
-                        <v-alert
-                            color="blue-grey lighten-5"
-                            class="ma-3 pa-0"
-                            light
-                            rounded
-                        >
-                            <v-list-item>
-                            <v-list-item-content class="pa-0">
-                                <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
-                            </v-list-item-content>
-                            </v-list-item>
-                        </v-alert>
+                        <v-row>
+                            <v-col class="pr-1">
+                                <v-alert
+                                    color="blue-grey lighten-5"
+                                    class="mt-3 mb-3 ml-3 mr-0 pa-0"
+                                    light
+                                    rounded
+                                >
+                                    <v-list-item>
+                                    <v-list-item-content class="pa-0">
+                                        <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
+                                    </v-list-item-content>
+                                    </v-list-item>
+                                </v-alert>
+                            </v-col>
+                            <v-col class="pl-1">
+                                <v-alert
+                                    color="green lighten-5"
+                                    class="mr-3 mt-3 mb-3 ml-0 pa-0"
+                                    light
+                                    rounded
+                                >
+                                    <v-list-item>
+                                    <v-list-item-content class="pa-0">
+                                        <v-list-item-title class="font-weight-bold greenText">
+                                            First Check Acceptable
+                                            <v-icon color="green">
+                                                mdi-check-circle
+                                            </v-icon>
+                                        </v-list-item-title>
+                                    </v-list-item-content>
+                                    </v-list-item>
+                                </v-alert>
+                            </v-col>
+                        </v-row>
                     </v-card>
                 </v-col>
                 <v-col>
