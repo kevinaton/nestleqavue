@@ -257,6 +257,9 @@ namespace HRD.WebApi.Controllers
 
             var hrd = _context.Hrds.Include(i => i.HrdtestCosts)
                                     .Include(i => i.HrdMicros)
+                                    .Include(i => i.Hrdfcs)
+                                    .Include(i => i.Hrddcs)
+                                    .Include(i => i.Hrdpos)
                                     .Include(i => i.Hrdnotes)
                                     .Where(i => i.Id == id).FirstOrDefault();
 
@@ -332,73 +335,87 @@ namespace HRD.WebApi.Controllers
             hrd.ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen;
             hrd.Comments = model.Comments;
 
-            if (model.HrdDc != null)
-            {
-                foreach (var item in model.HrdDc)
-                {
-                    var hrdDc = _context.Hrddcs.FirstOrDefault(f => f.Id == item.Id);
-                    if (hrdDc != null)
-                    {
-                        hrdDc.Id = hrdDc.Id;
-                        hrdDc.Hrdid = id;
-                        hrdDc.Location = item.Location;
-                        hrdDc.NumberOfCases = item.NumberOfCases;
-                    }
-                    else
-                    {
-                        hrdDc = new Hrddc();
-                        hrdDc.Hrdid = id;
-                        hrdDc.Location = item.Location;
-                        hrdDc.NumberOfCases = item.NumberOfCases;
-                    }
-
-                    hrd.Hrddcs.Add(hrdDc);
-                }
-            }
-
+            //HRD First Check
             if (model.HrdFc != null)
             {
                 foreach (var item in model.HrdFc)
                 {
-                    var hrdFc = _context.Hrdfcs.FirstOrDefault(f => f.Id == item.Id);
-                    if (hrdFc != null)
+                    if(item.Id < 1)
                     {
-                        hrdFc.Id = hrdFc.Id;
-                        hrdFc.Hrdid = id;
-                        hrdFc.Location = item.Location;
-                        hrdFc.NumberOfCases = item.NumberOfCases;
-                    }
-                    else
-                    {
-                        hrdFc = new Hrdfc();
-                        hrdFc.Hrdid = id;
-                        hrdFc.Location = item.Location;
-                        hrdFc.NumberOfCases = item.NumberOfCases;
-                    }
+                        var hrdFc = new Hrdfc()
+                        {
+                            Hrdid = id,
+                            Location = item.Location,
+                            NumberOfCases = item.NumberOfCases
+                        };
 
-                    hrd.Hrdfcs.Add(hrdFc);
+                        hrd.Hrdfcs.Add(hrdFc);
+                    }
                 }
             }
 
+            //Delete HrdFc
+            foreach (var item in hrd.Hrdfcs)
+            {
+                if (!model.HrdFc.Any(a => a.Id == item.Id))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
+                }
+            }
+
+            //HRd Double Check
+            if (model.HrdDc != null)
+            {
+                foreach (var item in model.HrdDc)
+                {
+                    if(item.Id < 1)
+                    {
+                        var hrdDc = new Hrddc()
+                        {
+                            Hrdid = id,
+                            Location = item.Location,
+                            NumberOfCases = item.NumberOfCases
+                        };
+
+                        hrd.Hrddcs.Add(hrdDc);
+                    }
+                }
+            }
+
+
+            //Delete HrdDc
+            foreach (var item in hrd.Hrddcs)
+            {
+                if (!model.HrdDc.Any(a => a.Id == item.Id))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
+                }
+            }
+
+            //Hrd PO Number
             if (model.HrdPo != null)
             {
                 foreach (var item in model.HrdPo)
                 {
-                    var po = _context.Hrdpos.FirstOrDefault(f => f.Id == item.Id);
-                    if (po != null)
+                    if(!hrd.Hrdpos.Any(a => a.Ponumber == item.PONumber))
                     {
-                        po.Id = po.Id;
-                        po.Hrdid = id;
-                        po.Ponumber = item.PONumber;
+                        var po = new Hrdpo()
+                        {
+                            Id = item.Id,
+                            Hrdid = id,
+                            Ponumber = item.PONumber
+                        };
+                        hrd.Hrdpos.Add(po);
                     }
-                    else
-                    {
-                        po = new Hrdpo();
-                        po.Hrdid = id;
-                        po.Ponumber = item.PONumber;
-                    }
+                }
+            }
 
-                    hrd.Hrdpos.Add(po);
+            //Delete Hrd Po
+            foreach (var item in hrd.Hrdpos)
+            {
+                if (!model.HrdPo.Any(a => a.PONumber == item.Ponumber))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
                 }
             }
 
