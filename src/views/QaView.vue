@@ -251,19 +251,22 @@
       },
 
       customSort(par, event) {
+        console.log(par)
+        console.log(event)
         let vm = this        
         if(event[0] != undefined) {
           if(par == 'by') {
             vm.tableOptions.sortBy = event[0]
-            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
           }
           if(par == 'desc') {
-            vm.tableOptions.sortDesc = event[0]
+            vm.tableOptions.sortDesc[0] = event[0]
             if(event == 'true') {
-              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], true, 'desc')
+              vm.tableOptions.desc = 'desc'
+              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], 'desc')
             }
             if(event == 'false') {
-              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], false, 'asc')
+              vm.tableOptions.desc = 'asc'
+              vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], 'asc')
             }
           }
         }

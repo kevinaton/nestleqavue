@@ -59,7 +59,7 @@
         </v-row>
         <v-row class="mt-0">
             <v-col>
-                <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.rohMaterial" :rules="[rules.rohMat]" outlined label="ROH Material"></v-text-field>
+                <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.rohMaterial" :rules="[rules.rohMat]" outlined label="Raw Material"></v-text-field>
             </v-col>
             <v-col>
                 <v-text-field :readonly="!access.QARecordsEdit" v-model="inpValue.piecesTotal" :rules="[rules.int]" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" outlined label="Pieces Total" type="number" placeholder=0 suffix="pcs"></v-text-field>
