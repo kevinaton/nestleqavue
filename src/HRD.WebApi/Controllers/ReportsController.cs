@@ -126,11 +126,11 @@ namespace HRD.WebApi.Controllers
                     var queryByAllocation = await query
                                                     .GroupBy(g => new
                                                     {
-                                                        g.HoldCategory,
+                                                        MonthHeld = g.DateHeld.Value.Month
                                                     })
                                                     .Select(s => new
                                                     {
-                                                        s.Key.HoldCategory,
+                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
                                                         TotalCost = s.Sum(a => a.CostofProductonHold),
                                                     }).ToListAsync();
                     return Ok(queryByAllocation);
@@ -157,11 +157,11 @@ namespace HRD.WebApi.Controllers
                     var queryByCategory = await query
                                                     .GroupBy(g => new
                                                     {
-                                                        MonthHeld = g.DateHeld.Value.Month
+                                                        g.HoldCategory,
                                                     })
                                                     .Select(s => new
                                                     {
-                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
+                                                        s.Key.HoldCategory,
                                                         TotalCost = s.Sum(a => a.Cases),
                                                     }).ToListAsync();
                     return Ok(queryByCategory);
