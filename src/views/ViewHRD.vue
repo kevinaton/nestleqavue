@@ -34,13 +34,14 @@
             />
 
             <Details
+                v-if="checkHRD"
                 :input="details"
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
                 :rules="rules"
                 :recalculateTotal="recalculateTotal"
                 :snackbar="snackbar"
-                @change="(value) => { recalculateTotal = value }"
+                @change="emitDetails"
             />
 
             <HoldClassification
@@ -277,6 +278,7 @@
                 snackText: '',
             },
             recalculateTotal:0,
+            checkRecalculate:true,
             tFile:null,
             submitted:false
         }),
@@ -290,7 +292,10 @@
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`)
                 .then((res) => {
                     vm.hrd = res.data
-                    this.fetchRecalculate()
+                    if(vm.checkRecalculate == true){
+                        this.fetchRecalculate()
+                        vm.checkRecalculate = false
+                    }
                 })
                 .catch(err => {
                     this.snackbar.snack = true
@@ -431,14 +436,27 @@
                     console.warn(err)
                 })
             }
-        }
+            },
+            emitDetails({x,y}) {
+                if(y == "recalculate") {
+                    this.recalculateTotal = x
+                }
+                if(y == "detailsCheck") {
+                    this.submitHRD(x)
+                }
+            }
         },
         computed: {
             getHRD(){
-            let obj = {}
-            obj = this.hrd
-            return obj
+                let obj = {}
+                obj = this.hrd
+                return obj
             },
+            checkHRD(){
+                if(this.hrd.cases != undefined) {
+                    return true
+                } else return false
+            }
         },
     }
 </script>
