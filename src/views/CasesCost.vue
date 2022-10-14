@@ -166,7 +166,7 @@ export default {
         let vm = this 
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
-            vm.caseheldChart.xValues = res.data.map(({monthHeld}) => monthHeld)
+            vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
             vm.fValues.dates = [moment.utc(this.fValues.periodBegin).format('YYYY-MM-DD'), moment.utc(this.fValues.periodEnd).format('YYYY-MM-DD')]
         })
