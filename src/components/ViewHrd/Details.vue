@@ -330,7 +330,7 @@
                         <v-row>
                             <v-col class="pr-1">
                                 <v-alert
-                                    color="blue-grey lighten-5"
+                                    color="blue-grey lighten-5" 
                                     class="mt-3 mb-3 ml-3 mr-0 pa-0"
                                     light
                                     rounded
@@ -343,9 +343,6 @@
                                 </v-alert>
                             </v-col>
                             <v-col class="pl-1">
-
-
-                                <!-- IN PROGRESS -->
                                 <v-alert
                                     :color="fcStatus.alertColor"
                                     class="mr-3 mt-3 mb-3 ml-0 pa-0"
@@ -502,17 +499,17 @@
                             </v-col>
                             <v-col class="pl-1">
                                 <v-alert
-                                    color="green lighten-5"
+                                    :color="dcStatus.alertColor"
                                     class="mr-3 mt-3 mb-3 ml-0 pa-0"
                                     light
                                     rounded
                                 >
                                     <v-list-item>
                                     <v-list-item-content class="pa-0">
-                                        <v-list-item-title class="font-weight-bold greenText">
-                                            Second Check Acceptable
-                                            <v-icon color="green">
-                                                mdi-check-circle
+                                        <v-list-item-title :class="`${dcStatus.titleColor}`">
+                                            {{ dcStatus.dialog }}
+                                            <v-icon :color="dcStatus.iconColor">
+                                                {{ dcStatus.icon }}
                                             </v-icon>
                                         </v-list-item-title>
                                     </v-list-item-content>
@@ -587,7 +584,14 @@ export default {
             icon:"",
             iconColor:"blue-grey lighten-5",
         },
-        fcDefault:{
+        dcStatus:{
+            alertColor:"blue-grey lighten-5",
+            titleColor:"font-weight",
+            dialog:"",
+            icon:"",
+            iconColor:"blue-grey lighten-5",
+        },
+        checkDefault:{
             alertColor:"blue-grey lighten-5",
             titleColor:"font-weight",
             dialog:"",
@@ -601,7 +605,14 @@ export default {
             icon:"mdi-check-circle",
             iconColor:"green"
         },
-        fcDoubleCheck:{
+        dcAcceptable:{
+            alertColor:"green lighten-5",
+            titleColor:"font-weight-bold greenText",
+            dialog:"Second Check Acceptable",
+            icon:"mdi-check-circle",
+            iconColor:"green"
+        },
+        checkDoubleCheck:{
             alertColor:"red lighten-5",
             titleColor:"font-weight-bold redText",
             dialog:"Double Check Qty not the same as Held Cases",
@@ -702,9 +713,11 @@ export default {
             this.$refs.dc.validate()
         },
         closeFc() {
+            this.$refs.fc.reset()
             this.fcDialog = false
         },
         closeDc() {
+            this.$refs.dc.reset()
             this.dcDialog = false
         },
         saveFc(fcForm) {
@@ -724,12 +737,14 @@ export default {
                     location: this.dcLocation,
                     numberOfCases: this.dcNumberOfCases
                 })
+                this.$emit('change', {x:true, y:'detailsCheck'})
+                this.checkFcDcCases()
                 this.closeDc()
             }
         },
         deleteFcItem(item, index) {
             this.inpValue.hrdFc.splice(index, 1)
-            // this.$emit('change', {x:true, y:'detailsCheck'})
+            this.$emit('change', {x:true, y:'detailsCheck'})
         },
         deleteDcItem(item, index) {
             this.inpValue.hrdDc.splice(index, 1)
@@ -738,13 +753,24 @@ export default {
         checkFcDcCases() {
             if(this.inpValue.hrdFcTotalCases != this.inpValue.cases) {
                 if(this.inpValue.hrdFcTotalCases == 0) {
-                    this.fcStatus = this.fcDefault
+                    this.fcStatus = this.checkDefault
                 }
                 else {
-                    this.fcStatus = this.fcDoubleCheck
+                    this.fcStatus = this.checkDoubleCheck
                 }
             } else {
                 this.fcStatus = this.fcAcceptable
+            }
+
+            if(this.inpValue.hrdDcTotalCases != this.inpValue.cases) {
+                if(this.inpValue.hrdDcTotalCases == 0) {
+                    this.dcStatus = this.checkDefault
+                }
+                else {
+                    this.dcStatus = this.checkDoubleCheck
+                }
+            } else {
+                this.dcStatus = this.dcAcceptable
             }
         }
     }
