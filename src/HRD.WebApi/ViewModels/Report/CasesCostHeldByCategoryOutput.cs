@@ -6,7 +6,7 @@ namespace HRD.WebApi.ViewModels.Report
     {
         public int WeekHeld { get; set; }
         public string DayCode { get; set; }
-        public DateTime DateHeld { get; set; }
+        public DateTime? DateHeld { get; set; }
         public string Fert { get; set; }
         public string ProductDescription { get; set; }
         public string Line { get; set; }
@@ -18,6 +18,6 @@ namespace HRD.WebApi.ViewModels.Report
         public string HoldSubCategory { get; set; }
         public string Originator { get; set; }
         public string TLForU { get; set; }
-        public decimal CostofProductonHold { get; set; }
+        public decimal? CostofProductonHold { get; set; }
     }
 }
