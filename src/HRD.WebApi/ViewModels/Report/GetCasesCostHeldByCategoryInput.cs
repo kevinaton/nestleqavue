@@ -7,7 +7,6 @@ namespace HRD.WebApi.ViewModels.Report
     {
         public EnumStatus Status { get; set; }
         public EnumCostGraph CostGraphOption { get; set; }
-        public EnumWeekHeld WeekHeld { get; set; }
         public string Line { get; set; }
     }
 }
