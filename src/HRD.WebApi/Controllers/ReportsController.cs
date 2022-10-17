@@ -39,73 +39,66 @@ namespace HRD.WebApi.Controllers
             public decimal FmCases { get; set; }
         }
 
-        // GET: api/Reports
+        // GET: api/Reports/CasesCostByCategory
         [HttpGet("CasesCostByCategory")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
             var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder);
+            validFilter.ReportFilter.Line = !string.IsNullOrEmpty(validFilter.ReportFilter.Line) && validFilter.ReportFilter.Line.ToLower() == "all" ? string.Empty : validFilter.ReportFilter.Line;
 
-            var query = _context.Hrds
-                            .GroupBy(g => new
-                            {
-                                g.DateHeld,
-                                g.YearHeld,
-                                g.HoldCategory,
-                                g.Line,
-                                g.Complete
-                            })
-                            .Select(s => new CasesCostHeldByCategoryOutput
-                            {
-                                TotalCases = s.Sum(s => s.Cases),
-                                TotalCost = s.Sum(s => s.CostofProductonHold),
-                                Line = s.Key.Line,
-                            });
 
-            //Sorting
-            switch (validFilter.SortColumn)
-            {
-                case "line":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Line)
-                        : query.OrderBy(o => o.Line);
-                    break;
-                case "totalcases":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.TotalCases)
-                        : query.OrderBy(o => o.TotalCases);
-                    break;
-                case "totalcost":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.TotalCost)
-                        : query.OrderBy(o => o.TotalCost);
-                    break;
-            }
+            var query = _context.Hrds.Where(x => x.DateHeld >= filter.ReportFilter.PeriodBegin && x.DateHeld <= filter.ReportFilter.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (filter.ReportFilter.Status == EnumStatus.All
+                                                        || (filter.ReportFilter.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                        || (filter.ReportFilter.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (string.IsNullOrEmpty(filter.ReportFilter.Line) || x.Line == filter.ReportFilter.Line));
 
-            var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+            
 
-            //Pagination
-            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                .Take(validFilter.PageSize);
 
-            var allCasesCostHeld = await query.ToListAsync();
-
-            return Ok(new PagedResponse<List<CasesCostHeldByCategoryOutput>>(allCasesCostHeld, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+            return Ok(new List<CasesCostHeldByCategoryOutput> { new CasesCostHeldByCategoryOutput { Line = "test" } });
         }
 
-        // GET: api/Reports
-        [HttpGet("CostHeldByCategory")]
+        // GET: api/Reports/CasesCostByLine
+        [HttpGet("CasesCostByLine")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
+        public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByLine([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
+
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                         || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                         || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString()) || input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))));
+                                                    && (string.IsNullOrEmpty(input.Line) || x.Line == input.Line));
+
+            var results = await query.GroupBy(g => new
+            {
+                g.Line
+            }).Select(s => new CasesCostByLineOutput
+            {
+                Line = s.Key.Line,
+                TotalCases = s.Sum(a => a.Cases),
+                TotalCost = s.Sum(a => a.CostofProductonHold)
+            }).ToListAsync();
+            
+
+            return Ok(results);
+        }
+
+        // GET: api/Reports/CostHeldByCategory
+        [HttpGet("CostHeldByCategory")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
+        {
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
+
+            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+                                                    && (input.Status == EnumStatus.All
+                                                        || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
+                                                        || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
+                                                    && (string.IsNullOrEmpty(input.Line) || x.Line == input.Line));
 
             switch (input.CostGraphOption)
             {
@@ -139,18 +132,19 @@ namespace HRD.WebApi.Controllers
             return Ok();
         }
 
-        // GET: api/Reports
+        // GET: api/Reports/CasesHeldByCategory
         [HttpGet("CasesHeldByCategory")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
+
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                         || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                         || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
-                                                    && (!string.IsNullOrEmpty(input.Line) && x.Line == input.Line)
-                                                    && (!string.IsNullOrEmpty(input.WeekHeld.ToString()) || input.WeekHeld == EnumWeekHeld.Select
-                                                            || (x.DateHeld.HasValue && input.WeekHeld.ToString() == x.DateHeld.Value.DayOfWeek.ToString("F"))));
+                                                    && (string.IsNullOrEmpty(input.Line) || x.Line == input.Line));
+            
             switch (input.CostGraphOption)
             {
                 case EnumCostGraph.CostByCategory:
@@ -183,7 +177,7 @@ namespace HRD.WebApi.Controllers
             return Ok();
         }
 
-        // GET: api/Reports
+        // GET: api/Reports/FMCases
         [HttpGet("FMCases")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
@@ -250,7 +244,7 @@ namespace HRD.WebApi.Controllers
             return Ok();
         }
 
-        // GET: api/Reports
+        // GET: api/Reports/PestLog
         [HttpGet("PestLog")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetPestLogGraphData([FromQuery] GetPestLogGraphDataInput input)
@@ -269,7 +263,7 @@ namespace HRD.WebApi.Controllers
             return Ok(queryByPest);
         }
 
-        // GET: api/Reports
+        // GET: api/Reports/Microbe
         [HttpGet("Microbe")]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetMicrobeGraphData([FromQuery] GetMicrobeGraphDataInput input)
