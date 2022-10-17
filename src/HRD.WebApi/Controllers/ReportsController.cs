@@ -44,7 +44,7 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
-            var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder);
+            var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.ReportFilter);
             validFilter.ReportFilter.Line = !string.IsNullOrEmpty(validFilter.ReportFilter.Line) && validFilter.ReportFilter.Line.ToLower() == "all" ? string.Empty : validFilter.ReportFilter.Line;
 
 
@@ -54,10 +54,35 @@ namespace HRD.WebApi.Controllers
                                                         || (filter.ReportFilter.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (string.IsNullOrEmpty(filter.ReportFilter.Line) || x.Line == filter.ReportFilter.Line));
 
-            
+            var totalRecords = await query.CountAsync();
+            var totalPages =  (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+
+            //Pagination
+            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
+                        .Take(validFilter.PageSize);
+
+            var results = await query.Select(s =>
+                                new CasesCostHeldByCategoryOutput
+                                {
+                                    Cases = s.Cases,
+                                    CostofProductonHold = s.CostofProductonHold,
+                                    DateHeld = s.DateHeld,
+                                    DayCode = s.DayCode,
+                                    Fert = s.Globenum,
+                                    HoldCategory = s.HoldCategory,
+                                    HoldSubCategory = s.HoldSubCategory,
+                                    HourCode = s.HourCode,
+                                    Line = s.Line,
+                                    Originator = s.Originator,
+                                    ProductDescription = _context.Products.Where(x => x.Gpn == s.Globenum).Select(s => s.Description).First(),
+                                    Shift = s.Shift,
+                                    ShortDescription = s.ShortDescription,
+                                    TLForU = s.TlforFu,
+                                    WeekHeld =  CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(s.DateHeld.Value, CalendarWeekRule.FirstDay, DayOfWeek.Monday)
+                                }).ToListAsync();
 
 
-            return Ok(new List<CasesCostHeldByCategoryOutput> { new CasesCostHeldByCategoryOutput { Line = "test" } });
+            return Ok(new PagedResponse<List<CasesCostHeldByCategoryOutput>>(results, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
         // GET: api/Reports/CasesCostByLine
