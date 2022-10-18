@@ -46,11 +46,7 @@
     <v-row>
       <CaseTable 
         :input="table"
-        :items="caseCostTable"
-        :fValues="fValues"
-        @change="(value) => {
-            caseCostTable = value   
-        }"
+        :fValues="getfValues"
       />
     </v-row>
   </v-card>
@@ -138,8 +134,20 @@ export default {
       table: {
         header: [
           { text:'Line', value: 'line' },
-          { text:'Total Cases', value: 'totalCases' },
-          { text:'Total Cost', value: 'totalCost' },
+          { text:'Prod Cost Hold', value: 'costofProductonHold' },
+          { text:'Date Held', value: 'dateHeld' },
+          { text:'Daycode', value:'dayCode'},
+          { text:'FERT', value:'fert'},
+          { text:'Hold Cat', value:'holdCategory'},
+          { text:'Hold Subcat', value:'holdSubCategory'},
+          { text:'Hr Code', value:'hourCode'},
+          { text:'Originator', value:'originator'},
+          { text:'Prod Description', value:'productDescription'},
+          { text:'Shift', value:'shift'},
+          { text:'Short Desc', value:'shortDescription'},
+          { text:'L Sup', value:'tlForU'},
+          { text:'Week Held', value:'weekHeld'}
+
         ],
       },
       caseheldChart: {
@@ -149,8 +157,7 @@ export default {
       costheldChart: {
           xValues: [],
           barData: []
-      },
-      caseCostTable:[],
+      }
     }),
 
     created() {

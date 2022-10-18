@@ -251,8 +251,6 @@
       },
 
       customSort(par, event) {
-        console.log(par)
-        console.log(event)
         let vm = this        
         if(event[0] != undefined) {
           if(par == 'by') {

@@ -1,11 +1,11 @@
 <template>
-    <v-col class="mt-8">
+    <v-col v-if="fValues" class="mt-8">
         <v-card elevation="0" outlined>
             <v-data-table
                 :loading="loading"
                 loading-text="Loading... Please wait"
                 :headers="input.header"
-                :items="items"
+                :items="cases"
                 :options.sync="tableOptions"
                 :sort-by="tableOptions.sortBy"
                 :sort-desc="tableOptions.sortDesc"
@@ -14,6 +14,9 @@
                 @update:sort-desc="customSort('desc', $event)"
                 hide-default-footer
             >
+                <template v-slot:[`item.dateHeld`]="{ item }">
+                    {{ formatDate(item.dateHeld) }}
+                </template>
             </v-data-table>
 
             <TablePagination 
@@ -27,6 +30,7 @@
 
 <script>
 import TablePagination from '@/components/TableElements/TablePagination.vue'
+import moment from 'moment'
 
 export default {
     name:'CaseTable',
@@ -36,11 +40,6 @@ export default {
     props: {
         input: {
             type: Object,
-            default: () => {},
-            required:false,
-        },
-        items: {
-            type: Array,
             default: () => {},
             required:false,
         },
@@ -59,17 +58,19 @@ export default {
             totalPages:1,
             totalRecords:1,
             numToSearch:0,
-            sortBy: ['line'],
-            sortDesc: [false],
-            desc:'asc',
+            status:2,
+            line:1,
+            periodBegin:'2000-01-01T00:00:00.000Z',
+            periodEnd:''
         },
         firstload:true,
-        filter:{}
+        cases:[]
     }),
 
     emits: ["change"],
 
-    created () {
+    created() {
+        this.setValues(this.fValues)
         this.fetchCases()
         this.checkValue()
     },
@@ -78,26 +79,34 @@ export default {
         fValues: {
             immediate: true,
             handler(n,o) {
-                this.filter = n
-                console.log(this.filter)
+                this.setValues(n)
+                let d = this.tableOptions
+                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
             }
         }
     },
 
+    computed: {
+        getPage() {
+            let obj = {}
+            obj = this.tableOptions
+            return obj
+        }
+    },
+
     methods: {
-        getData(pageInput, pageSize, By, Desc, desc) {
+        getData(pageInput, pageSize, status, line, periodBegin, periodEnd) {
             let vm = this
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&SortColumn=${By}&SortOrder=${desc}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&ReportFilter.Status=${status}&ReportFilter.Line=${line}&ReportFilter.PeriodBegin=${periodBegin}&ReportFilter.PeriodEnd=${periodEnd}`)
             .then((res) => {
+                vm.cases = res.data.data,
                 vm.tableOptions.totalPages = res.data.totalPages,
                 vm.tableOptions.itemsPerPage = res.data.pageSize,
                 vm.tableOptions.page = pageInput,
                 vm.tableOptions.totalRecords = res.data.totalRecords,
-                this.$emit('change', res.data.data) 
-                vm.tableOptions.sortBy = By,
-                vm.tableOptions.sortDesc = Desc,
-                vm.tableOptions.desc = desc
+                this.$emit('change', res.data.data)
+                console.log('triggered getData')
             })
             .catch(err => {
                 this.snackbar.snack = true
@@ -110,17 +119,17 @@ export default {
                 vm.tableOptions.page = pageInput
             })
         },
+
         fetchCases() {
             let vm = this 
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?ReportFilter.Status=${vm.fValues.closeOpen.value}&ReportFilter.Line=${vm.fValues.line}&ReportFilter.PeriodBegin=${vm.fValues.periodBegin}&ReportFilter.PeriodEnd=${vm.fValues.periodEnd}&PageNumber=${vm.tableOptions.page}&PageSize=20`)
             .then((res) => {
-                vm.tableOptions.totalPages = res.data.totalPages
-                vm.tableOptions.itemsPerPage = res.data.pageSize
-                vm.tableOptions.page = res.data.pageNumber
-                vm.tableOptions.totalRecords = res.data.totalRecords
-                vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
-                this.$emit('change', res.data.data)
+                vm.cases = res.data.data,
+                vm.tableOptions.totalPages = res.data.totalPages,
+                vm.tableOptions.itemsPerPage = res.data.pageSize,
+                vm.tableOptions.page = res.data.pageNumber,
+                vm.tableOptions.totalRecords = res.data.totalRecords  
             })
             .catch(err => {
                 this.snackbar.snack = true
@@ -134,48 +143,32 @@ export default {
         updateTable(value) {
             let vm = this
             vm.tableOptions.page = value          
-            vm.getData(value, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            vm.getData(value, 20, vm.tableOptions.status, vm.tableOptions.line, vm.tableOptions.periodBegin, vm.tableOptions.periodEnd)
 
             if(vm.firstload == true) {
-                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.status, vm.tableOptions.line, vm.tableOptions.periodBegin, vm.tableOptions.periodEnd)
                 vm.firstload = false
             }
         },
 
-        customSort(par, event) {
-            let vm = this        
-            if(event[0] != undefined) {
-                if(par == 'by') {
-                    vm.tableOptions.sortBy = event[0]
-                    vm.getData(vm.tableOptions.page, 20, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
-                }
-                if(par == 'desc') {
-                    vm.tableOptions.sortDesc = event[0]
-                    if(event == 'true') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], true, 'desc')
-                    }
-                    if(event == 'false') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], false, 'asc')
-                    }
-                }
-            }
-        },
-
         checkValue() {
-            if(this.items == null) {
+            if(this.cases == null) {
                 this.showCheckBox = false
             } else {
                 this.showCheckBox = true
             }
         },
-    },
 
-    computed: {
-        getPage() {
-            let obj = {}
-            obj = this.tableOptions
-            return obj
+        setValues(value) {
+            this.tableOptions.status = value.closeOpen.value
+            this.tableOptions.line = parseInt(value.line)
+            this.tableOptions.periodBegin = value.periodBegin
+            this.tableOptions.periodEnd = value.periodEnd
         },
+
+        formatDate(value) {
+            return moment(value).format('MM/DD/YY, hh:mm')
+        }
     }
 }
 </script>
