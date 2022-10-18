@@ -125,6 +125,9 @@ export default {
             required: false
         }
     },
+    data: () => ({
+        filterVal:{}
+    }),
     emits: ["change"],
     computed: {
         getDateRange() {
@@ -141,11 +144,14 @@ export default {
     methods: {
         updateLine(value) {
             let d = this.fValues
+            this.$emit('change', this.fValues)
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+
         },
         updateCloseOpen(value) {
             let d = this.fValues
+            this.$emit('change', d)
             this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, value, d.costGraph.value)
             this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, value, d.costGraph.value)
         },

@@ -16,7 +16,8 @@
     <v-row class="mt-0 pt-0">
       <CaseFilter 
         :input="filter"
-        :fValues="fValues"
+        :fValues="getfValues"
+        @change="updatefValues($event)"
       />
     </v-row>
     <v-divider class="mt-4"></v-divider>
@@ -46,6 +47,7 @@
       <CaseTable 
         :input="table"
         :items="caseCostTable"
+        :fValues="fValues"
         @change="(value) => {
             caseCostTable = value   
         }"
@@ -157,6 +159,12 @@ export default {
       this.getLatestDate()
     },
 
+    computed: {
+      getfValues() {
+        return this.fValues
+      }
+    },
+
     methods: {
       getLatestDate() {
         this.fValues.periodEnd = new Date().toISOString()
@@ -240,6 +248,10 @@ export default {
           })
           .finally(() => { })
       },
+
+      updatefValues(fValues) {
+        this.fValues = fValues
+      }
     }
 }
 </script>

@@ -44,6 +44,11 @@ export default {
             default: () => {},
             required:false,
         },
+        fValues: {
+            type: Object,
+            default: () => {},
+            required: false
+        }
     },
 
     data:() => ({
@@ -59,6 +64,7 @@ export default {
             desc:'asc',
         },
         firstload:true,
+        filter:{}
     }),
 
     emits: ["change"],
@@ -66,6 +72,16 @@ export default {
     created () {
         this.fetchCases()
         this.checkValue()
+    },
+
+    watch: {
+        fValues: {
+            immediate: true,
+            handler(n,o) {
+                this.filter = n
+                console.log(this.filter)
+            }
+        }
     },
 
     methods: {
