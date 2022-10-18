@@ -116,12 +116,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-text-field
-                            v-model="edit.country" 
-                            label="Country" 
-                            v-on:keypress="isLetter($event)"
-                            :rules="[rules.country, rules.required]"
-                        ></v-text-field>
+                    <SelectDropdownString                        
+                        dropdownValue="Country"
+                        :inpValue="edit.country"                        
+                        label="Country" 
+                        @change="(value) => {
+                            edit.country = value   
+                        }"
+                    />                        
                     </v-col>
                 </v-row>
 
@@ -152,7 +154,11 @@
 </template>
 
 <script>
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 export default {
+    components:{
+        SelectDropdownString
+    },
     name:'EditTableProduct',
     props: {
         input: {
