@@ -4,7 +4,7 @@ namespace HRD.WebApi.ViewModels.Report
 {
     public class CasesCostHeldByCategoryOutput
     {
-        public int WeekHeld { get; set; }
+        public int? WeekHeld { get; set; }
         public string DayCode { get; set; }
         public DateTime? DateHeld { get; set; }
         public string Fert { get; set; }
