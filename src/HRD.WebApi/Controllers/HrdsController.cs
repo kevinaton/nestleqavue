@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace HRD.WebApi.Controllers
 {
@@ -208,8 +209,8 @@ namespace HRD.WebApi.Controllers
                 HoldCategory = hrd.HoldCategory,
                 HoldSubCategory = hrd.HoldSubCategory,
 
-                MonthHeld = hrd.DateHeld.Value.ToString("MMMM"),//MonthHeld,
-                WeekHeld = hrd.DateHeld.Value.DayOfWeek.ToString("F"),//hrd.WeekHeld,
+                MonthHeld = hrd.DateHeld.HasValue ? hrd.DateHeld.Value.ToString("MMMM") : string.Empty,//MonthHeld,
+                WeekHeld = hrd.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(hrd.DateHeld.Value) : null,
                 CostofProductonHold = hrd.CostofProductonHold,
                 ReworkApproved = hrd.ReworkApproved,
 
