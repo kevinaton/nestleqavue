@@ -92,7 +92,6 @@ export default {
       ],
       fValues: {
         line:'1',
-        weekHeld:{value:-1},
         closeOpen:{value:2},
         costGraph:{value:1},
         timeSelect:'dateRange',
@@ -111,16 +110,6 @@ export default {
           { text: '5', value:'5', disabled: false },
           { text: '6', value:'6', disabled: false },
         ],
-        weekheld: [
-          { text: 'Select', value:-1, disabled: false },
-          { text: 'Sunday', value:0, disabled: false },
-          { text: 'Monday', value:1, disabled: false },
-          { text: 'Tuesday', value:2, disabled: false },
-          { text: 'Wednesday', value:3, disabled: false },
-          { text: 'Thursday', value:4, disabled: false },
-          { text: 'Friday', value:5, disabled: false },
-          { text: 'Saturday', value:6, disabled: false },
-        ],
         closeopen: [
           { text: 'Open', value:0, disabled: false },
           { text: 'Closed', value:1, disabled: false },
@@ -133,20 +122,20 @@ export default {
       },
       table: {
         header: [
-          { text:'Line', value: 'line' },
-          { text:'Prod Cost Hold', value: 'costofProductonHold' },
-          { text:'Date Held', value: 'dateHeld' },
-          { text:'Daycode', value:'dayCode'},
+          { text:'Line', value:'line', width:'5%' },
+          { text:'P.C. Hold', value: 'costofProductonHold' },
+          { text:'Date', value: 'dateHeld' },
+          { text:'DCode', value:'dayCode', width:'6%'},
           { text:'FERT', value:'fert'},
           { text:'Hold Cat', value:'holdCategory'},
           { text:'Hold Subcat', value:'holdSubCategory'},
-          { text:'Hr Code', value:'hourCode'},
-          { text:'Originator', value:'originator'},
-          { text:'Prod Description', value:'productDescription'},
-          { text:'Shift', value:'shift'},
+          { text:'Hr Code', value:'hourCode', width:'7%'},
+          { text:'Origin', value:'originator'},
+          { text:'Prod Desc', value:'productDescription'},
+          { text:'Shift', value:'shift', sortable:false},
           { text:'Short Desc', value:'shortDescription'},
-          { text:'L Sup', value:'tlForU'},
-          { text:'Week Held', value:'weekHeld'}
+          { text:'L Spvr', value:'tlForU'},
+          { text:'W Held', value:'weekHeld', sortable:false}
 
         ],
       },
@@ -179,7 +168,7 @@ export default {
 
       fetchCaseGraph() {
         let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -196,7 +185,7 @@ export default {
 
       fetchCostGraph() {
         let vm = this
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -210,9 +199,9 @@ export default {
         .finally(() => { })
       },
 
-      getCaseGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+      getCaseGraph(periodBegin, periodEnd, line, closeOpen, costGraph) {
           let vm = this
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&WeekHeld=${weekHeld}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
               vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -220,7 +209,6 @@ export default {
               vm.fValues.periodEnd = periodEnd
               vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
               vm.fValues.line = line
-              vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen
               vm.fValues.costGraph.value = costGraph
           })
@@ -233,9 +221,9 @@ export default {
           .finally(() => { })
       },
         
-      getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+      getCostGraph(periodBegin, periodEnd, line, closeOpen, costGraph) {
           let vm = this
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&WeekHeld=${weekHeld}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
               vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
               vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -243,7 +231,6 @@ export default {
               vm.fValues.periodEnd = periodEnd
               vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
               vm.fValues.line = line
-              vm.fValues.weekHeld.value = weekHeld
               vm.fValues.closeOpen.value = closeOpen
               vm.fValues.costGraph.value = costGraph
           })

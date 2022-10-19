@@ -1,5 +1,5 @@
 <template>
-    <v-col v-if="fValues" class="mt-8">
+    <v-col v-if="getCases" class="mt-8">
         <v-card elevation="0" outlined>
             <v-data-table
                 :loading="loading"
@@ -17,6 +17,30 @@
                 <template v-slot:[`item.dateHeld`]="{ item }">
                     {{ formatDate(item.dateHeld) }}
                 </template>
+                <template v-slot:[`item.holdCategory`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
+                <template v-slot:[`item.holdSubCategory`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
+                <template v-slot:[`item.productDescription`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="150px"
+                    />
+                </template>
+                <template v-slot:[`item.shortDescription`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
             </v-data-table>
 
             <TablePagination 
@@ -30,12 +54,14 @@
 
 <script>
 import TablePagination from '@/components/TableElements/TablePagination.vue'
+import TextTruncate from '@/components/TableElements/TextTruncate.vue'
 import moment from 'moment'
 
 export default {
     name:'CaseTable',
     components: {
         TablePagination,
+        TextTruncate
     },
     props: {
         input: {
@@ -64,33 +90,28 @@ export default {
             periodEnd:''
         },
         firstload:true,
-        cases:[]
+        cases:[],
     }),
 
     emits: ["change"],
-
-    created() {
-        this.setValues(this.fValues)
-        this.fetchCases()
-        this.checkValue()
-    },
-
-    watch: {
-        fValues: {
-            immediate: true,
-            handler(n,o) {
-                this.setValues(n)
-                let d = this.tableOptions
-                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
-            }
-        }
-    },
 
     computed: {
         getPage() {
             let obj = {}
             obj = this.tableOptions
             return obj
+        },
+
+        // HAS ISSUE IF USE PAGINATION
+        getCases() {
+            let d = this.tableOptions
+            this.setValues(this.fValues)
+            console.log(this.tableOptions)
+            console.log(this.fValues)
+            this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
+            if(this.fValues) {
+                return true
+            }
         }
     },
 
@@ -100,13 +121,12 @@ export default {
             vm.loading = true
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&ReportFilter.Status=${status}&ReportFilter.Line=${line}&ReportFilter.PeriodBegin=${periodBegin}&ReportFilter.PeriodEnd=${periodEnd}`)
             .then((res) => {
-                vm.cases = res.data.data,
+                vm.cases = res.data.data
+                console.log('triggered getData')
                 vm.tableOptions.totalPages = res.data.totalPages,
                 vm.tableOptions.itemsPerPage = res.data.pageSize,
-                vm.tableOptions.page = pageInput,
-                vm.tableOptions.totalRecords = res.data.totalRecords,
-                this.$emit('change', res.data.data)
-                console.log('triggered getData')
+                vm.tableOptions.page = res.data.pageNumber,
+                vm.tableOptions.totalRecords = res.data.totalRecords  
             })
             .catch(err => {
                 this.snackbar.snack = true
@@ -115,8 +135,7 @@ export default {
                 console.warn(err)
             })
             .finally(() => {
-                vm.loading = false, 
-                vm.tableOptions.page = pageInput
+                vm.loading = false
             })
         },
 
@@ -142,7 +161,7 @@ export default {
 
         updateTable(value) {
             let vm = this
-            vm.tableOptions.page = value          
+            vm.tableOptions.page = value   
             vm.getData(value, 20, vm.tableOptions.status, vm.tableOptions.line, vm.tableOptions.periodBegin, vm.tableOptions.periodEnd)
 
             if(vm.firstload == true) {
@@ -151,23 +170,15 @@ export default {
             }
         },
 
-        checkValue() {
-            if(this.cases == null) {
-                this.showCheckBox = false
-            } else {
-                this.showCheckBox = true
-            }
-        },
-
         setValues(value) {
             this.tableOptions.status = value.closeOpen.value
-            this.tableOptions.line = parseInt(value.line)
+            this.tableOptions.line = value.line
             this.tableOptions.periodBegin = value.periodBegin
             this.tableOptions.periodEnd = value.periodEnd
         },
 
         formatDate(value) {
-            return moment(value).format('MM/DD/YY, hh:mm')
+            return moment(value).format('MM/DD/YY')
         }
     }
 }
