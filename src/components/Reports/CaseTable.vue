@@ -83,15 +83,19 @@ export default {
             itemsPerPage:20,
             totalPages:1,
             totalRecords:1,
-            numToSearch:0,
             status:2,
             line:1,
             periodBegin:'2000-01-01T00:00:00.000Z',
             periodEnd:''
         },
-        firstload:true,
+        firstLoad:true,
         cases:[],
     }),
+
+    created() {
+        this.fetchCases()
+        this.setValues(this.fValues)
+    },
 
     emits: ["change"],
 
@@ -102,13 +106,17 @@ export default {
             return obj
         },
 
-        // HAS ISSUE IF USE PAGINATION
         getCases() {
-            let d = this.tableOptions
-            this.setValues(this.fValues)
-            console.log(this.tableOptions)
-            console.log(this.fValues)
-            this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
+            if(
+                this.tableOptions.line != this.fValues.line || 
+                this.tableOptions.status != this.fValues.closeOpen.value ||
+                this.tableOptions.periodBegin != this.fValues.periodBegin ||
+                this.tableOptions.periodEnd != this.fValues.periodEnd
+            ) {
+                let d = this.tableOptions
+                this.setValues(this.fValues)
+                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
+            }
             if(this.fValues) {
                 return true
             }
@@ -122,7 +130,6 @@ export default {
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&ReportFilter.Status=${status}&ReportFilter.Line=${line}&ReportFilter.PeriodBegin=${periodBegin}&ReportFilter.PeriodEnd=${periodEnd}`)
             .then((res) => {
                 vm.cases = res.data.data
-                console.log('triggered getData')
                 vm.tableOptions.totalPages = res.data.totalPages,
                 vm.tableOptions.itemsPerPage = res.data.pageSize,
                 vm.tableOptions.page = res.data.pageNumber,
@@ -140,9 +147,9 @@ export default {
         },
 
         fetchCases() {
-            let vm = this 
+            let vm = this
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?ReportFilter.Status=${vm.fValues.closeOpen.value}&ReportFilter.Line=${vm.fValues.line}&ReportFilter.PeriodBegin=${vm.fValues.periodBegin}&ReportFilter.PeriodEnd=${vm.fValues.periodEnd}&PageNumber=${vm.tableOptions.page}&PageSize=20`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${vm.tableOptions.page}&PageSize=20&ReportFilter.Status=${vm.tableOptions.status}&ReportFilter.Line=${vm.fValues.line}&ReportFilter.PeriodBegin=${vm.tableOptions.periodBegin}&ReportFilter.PeriodEnd=${vm.fValues.periodEnd}`)
             .then((res) => {
                 vm.cases = res.data.data,
                 vm.tableOptions.totalPages = res.data.totalPages,
@@ -160,12 +167,13 @@ export default {
         },
 
         updateTable(value) {
-            let vm = this
+            let vm = this,
+                d = this.tableOptions
             vm.tableOptions.page = value   
-            vm.getData(value, 20, vm.tableOptions.status, vm.tableOptions.line, vm.tableOptions.periodBegin, vm.tableOptions.periodEnd)
+            this.getData(value, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
 
             if(vm.firstload == true) {
-                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.status, vm.tableOptions.line, vm.tableOptions.periodBegin, vm.tableOptions.periodEnd)
+                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
                 vm.firstload = false
             }
         },

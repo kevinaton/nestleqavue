@@ -203,7 +203,8 @@ export default {
           let vm = this
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
-              vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              let x = Object.keys(res.data[0])[0]
+              vm.caseheldChart.xValues = res.data.map((e) => e[x])
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
               vm.fValues.periodBegin = periodBegin
               vm.fValues.periodEnd = periodEnd
@@ -225,7 +226,8 @@ export default {
           let vm = this
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
-              vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+              let x = Object.keys(res.data[0])[0]
+              vm.costheldChart.xValues = res.data.map((e) => e[x])
               vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
               vm.fValues.periodBegin = periodBegin
               vm.fValues.periodEnd = periodEnd
