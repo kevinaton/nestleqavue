@@ -246,10 +246,6 @@ namespace HRD.WebApi.Data
                     .HasMaxLength(4)
                     .IsFixedLength();
 
-                entity.Property(e => e.Pos)
-                    .HasMaxLength(50)
-                    .HasColumnName("POs");
-
                 entity.Property(e => e.ProductAdultered).HasMaxLength(50);
 
                 entity.Property(e => e.Qacomments).HasColumnName("QAComments");
