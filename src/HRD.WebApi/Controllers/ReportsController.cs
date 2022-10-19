@@ -78,7 +78,7 @@ namespace HRD.WebApi.Controllers
                                     Shift = s.Shift,
                                     ShortDescription = s.ShortDescription,
                                     TLForU = s.TlforFu,
-                                    WeekHeld =  CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(s.DateHeld.Value, CalendarWeekRule.FirstDay, DayOfWeek.Monday)
+                                    WeekHeld =  s.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(s.DateHeld.Value) : null
                                 }).ToListAsync();
 
 

@@ -126,14 +126,16 @@
                         sm="6"
                         md="6"
                         >
-                            <v-text-field
-                                v-if="forms[7].visible"
-                                v-model="forms[7].value" 
-                                :label="forms[7].label" 
-                                :type="forms[7].type"
-                                v-on:keypress="isLetter($event)"
-                                :rules="[rules.country, rules.required]"
-                            ></v-text-field>
+                            <SelectDropdownString
+                                v-if="forms[7].visible"                                
+                                :dropdownValue="forms[7].label"
+                                :inpValue="forms[7].value"                        
+                                :label="forms[7].label"
+                                :type="forms[5].type"
+                                @change="(value) => {
+                                    forms[7].value = value   
+                                }"
+                            />                            
                         </v-col>
                     </v-row>
 
@@ -166,10 +168,12 @@
 
 <script>
 import Export from '@/components/Exportcsv.vue'
+import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 export default {
     name:'ProdToolbar',
     components: {
         Export,
+        SelectDropdownString
     },
     props: {
         table: {

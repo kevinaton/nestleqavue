@@ -257,11 +257,6 @@
                                         sm="6"
                                         md="6"
                                     >
-                                        <!-- <v-text-field
-                                        v-model="testing.testName"
-                                        placeholder="Enter here"
-                                        label="Test Name"
-                                        ></v-text-field> -->
                                         <SelectTestCost
                                             :inpValue="testing.testName"
                                             :id="testing.id"
