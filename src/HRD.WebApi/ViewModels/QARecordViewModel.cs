@@ -10,6 +10,7 @@ namespace HRD.WebApi.ViewModels
             HrdTestCosts = new List<HrdTestCostViewModel>();
             HrdNotes = new List<HrdNoteViewModel>();
             HrdMicros = new List<HRDMicroViewModel>();
+            HrdPo = new List<HrdPoViewModel>();
         }
 
         public int Id { get; set; }
@@ -42,7 +43,6 @@ namespace HRD.WebApi.ViewModels
         //HRD
         public int? CasesHeld { get; set; }
         public string HourCode { get; set; }
-        public string POs { get; set; }
         public string ReworkInstructions { get; set; }
 
         //PEST
@@ -98,5 +98,6 @@ namespace HRD.WebApi.ViewModels
         public List<HrdTestCostViewModel> HrdTestCosts { get; set; }
         public List<HrdNoteViewModel> HrdNotes { get; set; }
         public List<HRDMicroViewModel> HrdMicros { get; set; }
+        public List<HrdPoViewModel> HrdPo { get; set; }
     }
 }
