@@ -17,7 +17,7 @@ namespace HRD.WebApi.ViewModels.Report
         public string HoldCategory { get; set; }
         public string HoldSubCategory { get; set; }
         public string Originator { get; set; }
-        public string TLForU { get; set; }
+        public string TLForFU { get; set; }
         public decimal? CostofProductonHold { get; set; }
     }
 }

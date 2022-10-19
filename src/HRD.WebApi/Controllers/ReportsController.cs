@@ -73,11 +73,11 @@ namespace HRD.WebApi.Controllers
                                     HoldSubCategory = s.HoldSubCategory,
                                     HourCode = s.HourCode,
                                     Line = s.Line,
-                                    Originator = s.Originator,
-                                    ProductDescription = _context.Products.Where(x => x.Gpn == s.Globenum).Select(s => s.Description).First(),
+                                    Originator = _context.Users.FirstOrDefault(f => f.UserId == s.Originator).Name,
+                                    ProductDescription = _context.Products.FirstOrDefault(x => x.Gpn == s.Globenum).Description,
                                     Shift = s.Shift,
                                     ShortDescription = s.ShortDescription,
-                                    TLForU = s.TlforFu,
+                                    TLForFU = _context.Users.FirstOrDefault(f => f.UserId == s.TlforFu).Name,
                                     WeekHeld =  s.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(s.DateHeld.Value) : null
                                 }).ToListAsync();
 
