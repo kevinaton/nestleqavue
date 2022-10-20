@@ -83,6 +83,21 @@ namespace HRD.WebApi.Controllers
             return Ok(new PagedResponse<List<UserViewModel>>(itemList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
         }
 
+        [HttpGet("GetAll")]
+        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetAll()
+        {
+            var query = _context.Users.OrderBy(o => o.Name).Select(s => new UserViewModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                UserId = s.UserId
+            });
+
+            var results = await query.ToListAsync();
+
+            return Ok(results);
+        }
+
         // GET: api/Users/5
         [HttpGet("{id}")]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
@@ -241,6 +256,8 @@ namespace HRD.WebApi.Controllers
 
             return Ok(users);
         }
+
+
 
         protected async Task<bool> HasPermissionAsync(params string[] permissionsToCheck)
         {

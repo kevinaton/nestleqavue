@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using System.Globalization;
+using HRD.WebApi.ViewModels.Enums;
 
 namespace HRD.WebApi.Controllers
 {
@@ -35,11 +36,33 @@ namespace HRD.WebApi.Controllers
         // GET: api/Hrds
         [HttpGet]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
-        public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] PaginationFilter filter)
+        public async Task<ActionResult<IEnumerable<QAListViewModel>>> GetHrds([FromQuery] HrdPaginationFilter filter)
         {
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
+            var validFilter = new HrdPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString, filter.FilterCriteria);
 
             var query = _context.Hrds
+                .Where(f => (validFilter.FilterCriteria.CompleteStatus == null
+                                || (validFilter.FilterCriteria.CompleteStatus == 0 && !f.Complete.Value)
+                                || (validFilter.FilterCriteria.CompleteStatus == 1 && f.Complete.Value))
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.Line)
+                                || validFilter.FilterCriteria.Line == f.Line)
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.Shift)
+                                || validFilter.FilterCriteria.Shift == f.Shift)
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.TeamLeader)
+                                || validFilter.FilterCriteria.TeamLeader == f.TlforFu)
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.BusinessUnitManager)
+                                || validFilter.FilterCriteria.BusinessUnitManager == f.Bumanager)
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.Originator)
+                                || validFilter.FilterCriteria.Originator == f.Originator)
+                            && (string.IsNullOrEmpty(validFilter.FilterCriteria.Type)
+                                || (validFilter.FilterCriteria.Type == "pest" && f.IsPest.HasValue && f.IsPest.Value)
+                                || (validFilter.FilterCriteria.Type == "smi" && f.IsSmi.HasValue && f.IsSmi.Value)
+                                || (validFilter.FilterCriteria.Type == "nr" && f.IsNr.HasValue && f.IsNr.Value)
+                                || (validFilter.FilterCriteria.Type == "fm" && f.IsFm.HasValue && f.IsFm.Value)
+                                || (validFilter.FilterCriteria.Type == "micro" && f.IsMicro.HasValue && f.IsMicro.Value)
+                                || (validFilter.FilterCriteria.Type == "reworks" && (f.ReworkStarted.HasValue || f.ReworkApprovedBy != null))
+                                )
+                                )
                 .Select(s => new QAListViewModel
                 {
                     Id = s.Id,
@@ -50,7 +73,7 @@ namespace HRD.WebApi.Controllers
                     IsNR = s.IsNr,
                     IsFM = s.IsFm,
                     IsMicro = s.IsMicro,
-                    Fert = s.Globenum, //TODO: Not mapped
+                    Fert = s.Globenum,
                     ProductDescription = _context.Products.Where(x => x.Gpn == s.Globenum).Select(s => s.Description).First(),//s.ShortDescription, //TODO: Confirm if correct
                     Line = s.Line,
                     Shift = s.Shift,
@@ -59,6 +82,22 @@ namespace HRD.WebApi.Controllers
                     ShortDescription = s.ShortDescription,
                     Originator = s.Originator,
                 });
+
+
+            //Search
+            if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
+            {
+                query = query.Where(f => f.DayCode.Contains(filter.SearchString)
+                                        || f.ProductDescription.Contains(filter.SearchString)
+                                        || f.ShortDescription.Contains(filter.SearchString)
+                                        || f.Fert.Contains(filter.SearchString)
+                                        || f.Originator.Contains(filter.SearchString)
+                                        || f.Line.Contains(filter.SearchString)
+                                        || f.Shift.Contains(filter.SearchString)
+                                        || f.HourCode.Contains(filter.SearchString)
+                                        || f.Cases.ToString().Contains(filter.SearchString));
+
+            }
 
             //Sorting
             switch (validFilter.SortColumn)
@@ -115,20 +154,7 @@ namespace HRD.WebApi.Controllers
                     break;
             }
 
-            //Search
-            if (!string.IsNullOrWhiteSpace(validFilter.SearchString))
-            {
-                query = query.Where(f => f.DayCode.Contains(filter.SearchString)
-                                        || f.ProductDescription.Contains(filter.SearchString)
-                                        || f.ShortDescription.Contains(filter.SearchString)
-                                        || f.Fert.Contains(filter.SearchString)
-                                        || f.Originator.Contains(filter.SearchString)
-                                        || f.Line.Contains(filter.SearchString)
-                                        || f.Shift.Contains(filter.SearchString)
-                                        || f.HourCode.Contains(filter.SearchString)
-                                        || f.Cases.ToString().Contains(filter.SearchString));
-
-            }
+            
 
             var totalRecords = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
@@ -893,6 +919,33 @@ namespace HRD.WebApi.Controllers
                 }
             }
 
+            //Hrd PO Number
+            if (model.HrdPo != null)
+            {
+                foreach (var item in model.HrdPo)
+                {
+                    if (!hrd.Hrdpos.Any(a => a.Ponumber == item.PONumber))
+                    {
+                        var po = new Hrdpo()
+                        {
+                            Id = item.Id,
+                            Hrdid = id,
+                            Ponumber = item.PONumber
+                        };
+                        hrd.Hrdpos.Add(po);
+                    }
+                }
+            }
+
+            //Delete Hrd Po
+            foreach (var item in hrd.Hrdpos)
+            {
+                if (!model.HrdPo.Any(a => a.PONumber == item.Ponumber))
+                {
+                    _context.Entry(item).State = EntityState.Deleted;
+                }
+            }
+
             //Hrd Notes
             foreach (var item in model.HrdNotes)
             {
@@ -1032,6 +1085,7 @@ namespace HRD.WebApi.Controllers
                 HrdtestCosts = model.HrdTestCosts.Select(s => new HrdtestCost { Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
                 Hrdnotes = model.HrdNotes.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, UserId = s.UserId, Size = s.Size }).ToList(),
                 HrdMicros = model.HrdMicros.Select(s => new HrdMicro { Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
+                Hrdpos = model.HrdPo.Select(s => new Hrdpo { Ponumber = s.PONumber }).ToList()
             };
 
             _context.Hrds.Add(hrd);
