@@ -36,4 +36,11 @@
         CostByCategory = 1,
         CostByAllocation = 2,
     }
+
+    public enum EnumCompleteStatus
+    {
+        All = 2,
+        Incomplete = 0,
+        Complete = 1
+    }
 }
