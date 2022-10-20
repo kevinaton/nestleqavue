@@ -41,7 +41,7 @@ namespace HRD.WebApi.ViewModels
         public string DetailedDescription { get; set; }
 
         //HRD
-        public int? CasesHeld { get; set; }
+        public int? Cases { get; set; }
         public string HourCode { get; set; }
         public string ReworkInstructions { get; set; }
 
