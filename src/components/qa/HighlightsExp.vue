@@ -62,7 +62,32 @@
                         ></v-text-field>
                     </v-col>
                     <v-col>
-                        <v-text-field :readonly="!access" v-model="inpValue.pOs" :rules="[rules.counter]" outlined label="POs"></v-text-field>
+                        <v-combobox
+                            :value="getPO"
+                            :readonly="!access"
+                            label="PO"
+                            small-chips
+                            multiple
+                            outlined
+                            :rules="[rules.po]"
+                            class="remarr"
+                            @input="inputPO($event)"
+                        >
+                            <template v-slot:selection="{ attrs, item, index, select, selected }">
+                            <v-chip 
+                                v-bind="attrs"
+                                :input-value="selected"
+                                :rules="[rules.counter]"
+                                close
+                                color="info"
+                                text-color="white"
+                                @click="select"
+                                @click:close="remove(index)"
+                            >
+                                <strong>{{ item.poNumber }}</strong>&nbsp;
+                            </v-chip>
+                            </template>
+                        </v-combobox>
                     </v-col>
                 </v-row>
                 <v-row class="mt-0">
@@ -385,6 +410,11 @@ export default {
             }
             return show
         },
+        getPO() {
+            let vm = this
+            vm.oPoLength = vm.inpValue.hrdPo?.length
+            return vm.inpValue?.hrdPo
+        },
     },
     emits: ["change"],
     created() {
@@ -394,6 +424,7 @@ export default {
         getFormattedDate(date) {
             return moment(date).format('MM-DD-YYYY; hh:mm')
         },
+
         downloadItem(item) {
             let vm = this
 
@@ -419,10 +450,12 @@ export default {
                 console.warn(err)
             })
         },
+
         deleteDialog(item) {
             this.del.dialog = true
             this.del.item = item
         },
+
         deleteItem() {
             let vm = this
             vm.del.dialog = false
@@ -431,6 +464,7 @@ export default {
             vm.snackbar.snackColor = 'info'
             vm.snackbar.snackText = 'Submit the form to delete file'
         },
+
         uploadFile() {
             let vm = this,
                 date = new Date().toISOString()
@@ -480,11 +514,27 @@ export default {
                 vm.loading = false
             })
         },
+
         fertDescription() {
             let vm = this
             let temp = vm.fert.find(x => x.fert === vm.inpValue.fert)
             vm.inpValue.fertDescription = temp.description
-        }
+        },
+
+        inputPO(value) {
+        let vm = this,
+            npoNumber = value[vm.oPoLength]
+
+            vm.inpValue.hrdPo.push({
+                id: 0,
+                hrdId: vm.inpValue.id,
+                poNumber: npoNumber
+            })
+        },
+        remove(index) {
+            let vm = this
+            vm.inpValue.hrdPo.splice(index, 1)
+        },
     }
 }
 </script>

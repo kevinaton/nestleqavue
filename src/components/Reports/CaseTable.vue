@@ -1,11 +1,11 @@
 <template>
-    <v-col class="mt-8">
+    <v-col v-if="getCases" class="mt-8">
         <v-card elevation="0" outlined>
             <v-data-table
                 :loading="loading"
                 loading-text="Loading... Please wait"
                 :headers="input.header"
-                :items="items"
+                :items="cases"
                 :options.sync="tableOptions"
                 :sort-by="tableOptions.sortBy"
                 :sort-desc="tableOptions.sortDesc"
@@ -14,6 +14,33 @@
                 @update:sort-desc="customSort('desc', $event)"
                 hide-default-footer
             >
+                <template v-slot:[`item.dateHeld`]="{ item }">
+                    {{ formatDate(item.dateHeld) }}
+                </template>
+                <template v-slot:[`item.holdCategory`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
+                <template v-slot:[`item.holdSubCategory`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
+                <template v-slot:[`item.productDescription`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="150px"
+                    />
+                </template>
+                <template v-slot:[`item.shortDescription`]="{ value }">
+                    <TextTruncate 
+                        :input="value"
+                        maxWidth="100px"
+                    />
+                </template>
             </v-data-table>
 
             <TablePagination 
@@ -27,11 +54,14 @@
 
 <script>
 import TablePagination from '@/components/TableElements/TablePagination.vue'
+import TextTruncate from '@/components/TableElements/TextTruncate.vue'
+import moment from 'moment'
 
 export default {
     name:'CaseTable',
     components: {
         TablePagination,
+        TextTruncate
     },
     props: {
         input: {
@@ -39,11 +69,11 @@ export default {
             default: () => {},
             required:false,
         },
-        items: {
-            type: Array,
+        fValues: {
+            type: Object,
             default: () => {},
-            required:false,
-        },
+            required: false
+        }
     },
 
     data:() => ({
@@ -53,35 +83,57 @@ export default {
             itemsPerPage:20,
             totalPages:1,
             totalRecords:1,
-            numToSearch:0,
-            sortBy: ['line'],
-            sortDesc: [false],
-            desc:'asc',
+            status:2,
+            line:1,
+            periodBegin:'2000-01-01T00:00:00.000Z',
+            periodEnd:''
         },
-        firstload:true,
+        firstLoad:true,
+        cases:[],
     }),
+
+    created() {
+        this.fetchCases()
+        this.setValues(this.fValues)
+    },
 
     emits: ["change"],
 
-    created () {
-        this.fetchCases()
-        this.checkValue()
+    computed: {
+        getPage() {
+            let obj = {}
+            obj = this.tableOptions
+            return obj
+        },
+
+        getCases() {
+            if(
+                this.tableOptions.line != this.fValues.line || 
+                this.tableOptions.status != this.fValues.closeOpen.value ||
+                this.tableOptions.periodBegin != this.fValues.periodBegin ||
+                this.tableOptions.periodEnd != this.fValues.periodEnd
+            ) {
+                let d = this.tableOptions
+                this.setValues(this.fValues)
+                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
+            }
+            if(this.fValues) {
+                return true
+            }
+        }
     },
 
     methods: {
-        getData(pageInput, pageSize, By, Desc, desc) {
+        getData(pageInput, pageSize, status, line, periodBegin, periodEnd) {
             let vm = this
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&SortColumn=${By}&SortOrder=${desc}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${pageInput}&PageSize=${pageSize}&ReportFilter.Status=${status}&ReportFilter.Line=${line}&ReportFilter.PeriodBegin=${periodBegin}&ReportFilter.PeriodEnd=${periodEnd}`)
             .then((res) => {
+                vm.cases = res.data.data
                 vm.tableOptions.totalPages = res.data.totalPages,
                 vm.tableOptions.itemsPerPage = res.data.pageSize,
-                vm.tableOptions.page = pageInput,
-                vm.tableOptions.totalRecords = res.data.totalRecords,
-                this.$emit('change', res.data.data) 
-                vm.tableOptions.sortBy = By,
-                vm.tableOptions.sortDesc = Desc,
-                vm.tableOptions.desc = desc
+                vm.tableOptions.page = res.data.pageNumber,
+                vm.tableOptions.totalRecords = res.data.totalRecords  
             })
             .catch(err => {
                 this.snackbar.snack = true
@@ -90,21 +142,20 @@ export default {
                 console.warn(err)
             })
             .finally(() => {
-                vm.loading = false, 
-                vm.tableOptions.page = pageInput
+                vm.loading = false
             })
         },
+
         fetchCases() {
-            let vm = this 
+            let vm = this
             vm.loading = true
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesCostByCategory?PageNumber=${vm.tableOptions.page}&PageSize=20&ReportFilter.Status=${vm.tableOptions.status}&ReportFilter.Line=${vm.fValues.line}&ReportFilter.PeriodBegin=${vm.tableOptions.periodBegin}&ReportFilter.PeriodEnd=${vm.fValues.periodEnd}`)
             .then((res) => {
-                vm.tableOptions.totalPages = res.data.totalPages
-                vm.tableOptions.itemsPerPage = res.data.pageSize
-                vm.tableOptions.page = res.data.pageNumber
-                vm.tableOptions.totalRecords = res.data.totalRecords
-                vm.tableOptions.numToSearch = vm.tableOptions.totalPages * 20
-                this.$emit('change', res.data.data)
+                vm.cases = res.data.data,
+                vm.tableOptions.totalPages = res.data.totalPages,
+                vm.tableOptions.itemsPerPage = res.data.pageSize,
+                vm.tableOptions.page = res.data.pageNumber,
+                vm.tableOptions.totalRecords = res.data.totalRecords  
             })
             .catch(err => {
                 this.snackbar.snack = true
@@ -116,50 +167,27 @@ export default {
         },
 
         updateTable(value) {
-            let vm = this
-            vm.tableOptions.page = value          
-            vm.getData(value, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+            let vm = this,
+                d = this.tableOptions
+            vm.tableOptions.page = value   
+            this.getData(value, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
 
             if(vm.firstload == true) {
-                vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+                this.getData(d.page, d.itemsPerPage, d.status, d.line, d.periodBegin, d.periodEnd)
                 vm.firstload = false
             }
         },
 
-        customSort(par, event) {
-            let vm = this        
-            if(event[0] != undefined) {
-                if(par == 'by') {
-                    vm.tableOptions.sortBy = event[0]
-                    vm.getData(vm.tableOptions.page, 20, event[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
-                }
-                if(par == 'desc') {
-                    vm.tableOptions.sortDesc = event[0]
-                    if(event == 'true') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], true, 'desc')
-                    }
-                    if(event == 'false') {
-                    vm.getData(vm.tableOptions.page, 20, vm.tableOptions.sortBy[0], false, 'asc')
-                    }
-                }
-            }
+        setValues(value) {
+            this.tableOptions.status = value.closeOpen.value
+            this.tableOptions.line = value.line
+            this.tableOptions.periodBegin = value.periodBegin
+            this.tableOptions.periodEnd = value.periodEnd
         },
 
-        checkValue() {
-            if(this.items == null) {
-                this.showCheckBox = false
-            } else {
-                this.showCheckBox = true
-            }
-        },
-    },
-
-    computed: {
-        getPage() {
-            let obj = {}
-            obj = this.tableOptions
-            return obj
-        },
+        formatDate(value) {
+            return moment(value).format('MM/DD/YY')
+        }
     }
 }
 </script>

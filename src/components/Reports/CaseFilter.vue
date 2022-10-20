@@ -70,17 +70,6 @@
         </v-col>
         <v-col>
             <SelectDropdownObj 
-                :items="input.weekheld" 
-                :inpValue="fValues.weekHeld.value" 
-                name="weekheld" 
-                item-text="text"
-                item-value="value"
-                label="Week Held" 
-                @change="updateWeekHeld($event)"
-            />
-        </v-col>
-        <v-col>
-            <SelectDropdownObj 
                 item-text="text"
                 item-value="value"
                 label="Close/Open"
@@ -125,6 +114,9 @@ export default {
             required: false
         }
     },
+    data: () => ({
+        filterVal:{}
+    }),
     emits: ["change"],
     computed: {
         getDateRange() {
@@ -141,23 +133,21 @@ export default {
     methods: {
         updateLine(value) {
             let d = this.fValues
-            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
-            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, value, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            this.$emit('change', this.fValues)
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, value, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, value, d.closeOpen.value, d.costGraph.value)
+
         },
         updateCloseOpen(value) {
             let d = this.fValues
-            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, value, d.costGraph.value)
-            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, value, d.costGraph.value)
+            this.$emit('change', d)
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, value, d.costGraph.value)
         },
         updateCostGraph(value) {
             let d = this.fValues
-            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, value)
-            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, value)
-        },
-        updateWeekHeld(value) {
-            let d = this.fValues
-            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, value, d.closeOpen.value, d.costGraph.value)
-            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, value, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, value)
         },
         updateTime(value) {
             let d = this.fValues
@@ -170,16 +160,16 @@ export default {
                 d.periodBegin = moment.utc(`${date} ${itime}`).toISOString()
                 d.periodEnd = new Date().toISOString()
 
-                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
-                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
             }
             if(value == 'lastWeek') {
                 d.timeSelect = 'lastWeek'
                 d.periodBegin = moment.utc().subtract(1, 'weeks').startOf('week').toISOString()
                 d.periodEnd = moment.utc().subtract(1, 'weeks').endOf('week').toISOString()
 
-                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
-                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
+                this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
             }
             if(value == 'lastMonth') {
                 d.timeSelect = 'lastMonth'
@@ -188,8 +178,8 @@ export default {
                     d.periodBegin = moment(date).subtract(1,'months').startOf('month').toISOString()
                     d.periodEnd = moment(date).subtract(1,'months').endOf('month').toISOString()
 
-                    this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
-                    this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+                    this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
+                    this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
             }
             if(value == 'dateRange') {
                 d.timeSelect = 'dateRange'
@@ -200,8 +190,8 @@ export default {
             let d = this.fValues
             d.periodBegin = moment.utc(`${this.fValues.dates[0]} 00:00:00`).toISOString(),
             d.periodEnd = moment.utc(`${this.fValues.dates[1]} 23:59:59`).toISOString()
-            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
-            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.weekHeld.value, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCaseGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
+            this.$parent.$parent.getCostGraph(d.periodBegin, d.periodEnd, d.line, d.closeOpen.value, d.costGraph.value)
         }
     }
 }

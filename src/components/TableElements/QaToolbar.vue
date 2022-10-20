@@ -13,6 +13,10 @@
             hide-details
         ></v-text-field>
 
+        <FilterBtn
+            :snackbar="snackbar"
+        />
+
         <Export
             :item="table"
             :tableOptions="tableOptions"
@@ -36,15 +40,17 @@
 
 <script>
 import Export from '@/components/Exportcsv.vue'
+import FilterBtn from '@/components/FilterBtn.vue'
 export default {
     name:'QaToolbar',
     components: {
         Export,
+        FilterBtn
     },
     props: {
         table: {
             type: Array,
-            default: [],
+            default:[],
         },
         title: {
             type: String,

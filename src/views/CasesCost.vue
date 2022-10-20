@@ -14,10 +14,20 @@
       titleContent="Cases & Cost Held by Category"
     />
     <v-row class="mt-0 pt-0">
-      <CaseFilter 
-        :input="filter"
-        :fValues="fValues"
-      />
+      <v-col cols="12" md="6" sm="12">
+        <CaseFilter 
+          :input="filter"
+          :fValues="getfValues"
+          @change="updatefValues($event)"
+        />
+      </v-col>
+      <v-col cols="12"  md="6" sm="12">
+        <CaseCostLine
+          :header="lineHeader"
+          :fValues="getfValues"
+          :item="getLineTable"
+        />
+      </v-col>
     </v-row>
     <v-divider class="mt-4"></v-divider>
     <v-row>
@@ -45,10 +55,7 @@
     <v-row>
       <CaseTable 
         :input="table"
-        :items="caseCostTable"
-        @change="(value) => {
-            caseCostTable = value   
-        }"
+        :fValues="getfValues"
       />
     </v-row>
   </v-card>
@@ -60,9 +67,10 @@ import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 import BarChart from '@/components/Reports/BarChart.vue'
 import CaseFilter from '@/components/Reports/CaseFilter.vue'
 import CaseTable from '@/components/Reports/CaseTable.vue'
+import CaseCostLine from '@/components/Reports/CaseCostLine.vue'
 import ReportTitle from '@/components/Reports/ReportTitle.vue'
-import moment from 'moment'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
+import moment from 'moment'
 
 export default {
     name: "CasesCost",
@@ -72,6 +80,7 @@ export default {
       BarChart,
       CaseFilter,
       CaseTable,
+      CaseCostLine,
       ReportTitle,
       SnackBar
     },
@@ -94,7 +103,6 @@ export default {
       ],
       fValues: {
         line:'1',
-        weekHeld:{value:-1},
         closeOpen:{value:2},
         costGraph:{value:1},
         timeSelect:'dateRange',
@@ -113,16 +121,6 @@ export default {
           { text: '5', value:'5', disabled: false },
           { text: '6', value:'6', disabled: false },
         ],
-        weekheld: [
-          { text: 'Select', value:-1, disabled: false },
-          { text: 'Sunday', value:0, disabled: false },
-          { text: 'Monday', value:1, disabled: false },
-          { text: 'Tuesday', value:2, disabled: false },
-          { text: 'Wednesday', value:3, disabled: false },
-          { text: 'Thursday', value:4, disabled: false },
-          { text: 'Friday', value:5, disabled: false },
-          { text: 'Saturday', value:6, disabled: false },
-        ],
         closeopen: [
           { text: 'Open', value:0, disabled: false },
           { text: 'Closed', value:1, disabled: false },
@@ -135,11 +133,29 @@ export default {
       },
       table: {
         header: [
-          { text:'Line', value: 'line' },
-          { text:'Total Cases', value: 'totalCases' },
-          { text:'Total Cost', value: 'totalCost' },
+          { text:'Line', value:'line', width:'5%' },
+          { text:'P.C. Hold', value: 'costofProductonHold' },
+          { text:'Date', value: 'dateHeld' },
+          { text:'DCode', value:'dayCode', width:'6%'},
+          { text:'FERT', value:'fert'},
+          { text:'Hold Cat', value:'holdCategory'},
+          { text:'Hold Subcat', value:'holdSubCategory'},
+          { text:'Hr Code', value:'hourCode', width:'7%'},
+          { text:'Origin', value:'originator'},
+          { text:'Prod Desc', value:'productDescription'},
+          { text:'Shift', value:'shift', sortable:false},
+          { text:'Short Desc', value:'shortDescription'},
+          { text:'L Spvr', value:'tlForU'},
+          { text:'W Held', value:'weekHeld', sortable:false}
+
         ],
       },
+      lineHeader: [
+        { text:'Line', value:'line' },
+        { text:'Total Case', value:'totalCases' },
+        { text:'Total Cost', value:'totalCost' }
+
+      ],
       caseheldChart: {
           xValues: [],
           barData: []
@@ -148,13 +164,24 @@ export default {
           xValues: [],
           barData: []
       },
-      caseCostTable:[],
+      lineTable:[]
     }),
 
     created() {
       this.fetchCaseGraph()
       this.fetchCostGraph()
       this.getLatestDate()
+    },
+
+    computed: {
+      getfValues() {
+        return this.fValues
+      },
+      getLineTable() {
+        if(this.lineTable) {
+          return this.lineTable
+        }
+      }
     },
 
     methods: {
@@ -164,7 +191,7 @@ export default {
 
       fetchCaseGraph() {
         let vm = this 
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.caseheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -181,7 +208,7 @@ export default {
 
       fetchCostGraph() {
         let vm = this
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&WeekHeld=${vm.fValues.weekHeld.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${vm.fValues.closeOpen.value}&CostGraphOption=${vm.fValues.costGraph.value}&Line=${vm.fValues.line}&PeriodBegin=${vm.fValues.periodBegin}&PeriodEnd=${vm.fValues.periodEnd}`)
         .then((res) => {
             vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
             vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
@@ -195,19 +222,24 @@ export default {
         .finally(() => { })
       },
 
-      getCaseGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+      getCaseGraph(periodBegin, periodEnd, line, closeOpen, costGraph) {
           let vm = this
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&WeekHeld=${weekHeld}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
-              vm.caseheldChart.xValues = res.data.map(({monthHeld}) => monthHeld)
+            if(res.data.length != 0) {
+              let x = Object.keys(res.data[0])[0]
+              vm.caseheldChart.xValues = res.data.map((e) => e[x])
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
-              vm.fValues.periodBegin = periodBegin
-              vm.fValues.periodEnd = periodEnd
-              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
-              vm.fValues.line = line
-              vm.fValues.weekHeld.value = weekHeld
-              vm.fValues.closeOpen.value = closeOpen
-              vm.fValues.costGraph.value = costGraph
+            } else {
+              vm.caseheldChart.xValues = []
+              vm.caseheldChart.barData = []
+            }
+            vm.fValues.periodBegin = periodBegin
+            vm.fValues.periodEnd = periodEnd
+            vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
+            vm.fValues.line = line
+            vm.fValues.closeOpen.value = closeOpen
+            vm.fValues.costGraph.value = costGraph
           })
           .catch(err => {
               this.snackbar.snack = true
@@ -218,19 +250,24 @@ export default {
           .finally(() => { })
       },
         
-      getCostGraph(periodBegin, periodEnd, line, weekHeld, closeOpen, costGraph) {
+      getCostGraph(periodBegin, periodEnd, line, closeOpen, costGraph) {
           let vm = this
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&WeekHeld=${weekHeld}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
-              vm.costheldChart.xValues = res.data.map(({holdCategory}) => holdCategory)
+            if(res.data.length != 0) {
+              let x = Object.keys(res.data[0])[0]
+              vm.costheldChart.xValues = res.data.map((e) => e[x])
               vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
-              vm.fValues.periodBegin = periodBegin
-              vm.fValues.periodEnd = periodEnd
-              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
-              vm.fValues.line = line
-              vm.fValues.weekHeld.value = weekHeld
-              vm.fValues.closeOpen.value = closeOpen
-              vm.fValues.costGraph.value = costGraph
+            } else {
+              vm.costheldChart.xValues = []
+              vm.costheldChart.barData = []
+            }
+            vm.fValues.periodBegin = periodBegin
+            vm.fValues.periodEnd = periodEnd
+            vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
+            vm.fValues.line = line
+            vm.fValues.closeOpen.value = closeOpen
+            vm.fValues.costGraph.value = costGraph
           })
           .catch(err => {
               this.snackbar.snack = true
@@ -240,6 +277,10 @@ export default {
           })
           .finally(() => { })
       },
+
+      updatefValues(fValues) {
+        this.fValues = fValues 
+      }
     }
 }
 </script>

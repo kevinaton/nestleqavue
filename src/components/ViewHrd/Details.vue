@@ -27,7 +27,7 @@
                     />
                 </v-col>
             </v-row>
-            <v-row class="mt-0">
+            <!-- <v-row class="mt-0">
                 <v-col class="d-flex align-center">
                     <span class="text-h6 mr-4">PO</span>
                     <v-divider vertical></v-divider>
@@ -62,7 +62,7 @@
                         </template>
                     </v-combobox>
                 </v-col>
-            </v-row>
+            </v-row> -->
             <v-row class="mt-0">
                 <v-col>
                     <v-textarea :readonly="!access" v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
