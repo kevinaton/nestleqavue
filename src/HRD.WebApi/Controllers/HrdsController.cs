@@ -691,7 +691,7 @@ namespace HRD.WebApi.Controllers
                 DetailedDescription = qa.DetailedDescription,
 
                 //HRD                                  
-                CasesHeld = qa.Cases,
+                Cases = qa.Cases,
                 HourCode = qa.HourCode,
                 ReworkInstructions = qa.ReworkInstructions,
 
@@ -797,7 +797,7 @@ namespace HRD.WebApi.Controllers
             hrd.DetailedDescription = model.DetailedDescription;
 
             //HRD                                  
-            hrd.Cases = model.CasesHeld;
+            hrd.Cases = model.Cases;
             hrd.HourCode = model.HourCode;
             hrd.ReworkInstructions = model.ReworkInstructions;
 
@@ -1040,7 +1040,7 @@ namespace HRD.WebApi.Controllers
                 AdditionalDescription = model.AdditionalDescription,
                 DetailedDescription = model.DetailedDescription,
 
-                Cases = model.CasesHeld,
+                Cases = model.Cases,
                 HourCode = model.HourCode,
                 ReworkInstructions = model.ReworkInstructions,
 
