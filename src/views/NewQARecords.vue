@@ -303,110 +303,119 @@ export default {
         submitQA(value) {
             let vm = this,
                 formData = new FormData(),
+
+            // WALA PANI NAHUMAN
+
                 d = vm.qaRec,
-                jsonFile = {
-                    additionalComments: d.additionalComments,
-                    additionalDescription: d.additionalDescription,
-                    area: d.area,
-                    areaIfOther: d.areaIfOther,
-                    buManager: d.buManager,
-                    casesHeld: d.casesHeld,
-                    dateHeld: d.dateHeld,
-                    dateOfResample: d.dateOfResample,
-                    dateReceived: d.dateReceived,
-                    dayCode: d.dayCode,
-                    dayOfWeek: d.dayOfWeek,
-                    detailedDescription: d.detailedDescription,
-                    equipment: d.equipment,
-                    equipmentIfOther: d.equipmentIfOther,
-                    fert: d.fert,
-                    fertDescription: d.fertDescription,
-                    fmDescription: d.fmDescription,
-                    fmMaterial: d.fmMaterial,
-                    fmSource: d.fmSource,
-                    fmType: d.fmType,
-                    fmVendorBatch: d.fmVendorBatch,
-                    holdConcern: d.holdConcern,
-                    hourCode: d.hourCode,
-                    hrdMicros: d.hrdMicros,
-                    hrdNotes: d.hrdNotes,
-                    hrdTestCosts: d.hrdTestCosts,
-                    id: d.id,
-                    ifYesAffectedProduct: d.ifYesAffectedProduct,
-                    inspectorsName: d.inspectorsName,
-                    isFM: d.isFM,
-                    isHRD: d.isHRD,
-                    isInspections: d.isInspections,
-                    isMetalDetector: d.isMetalDetector,
-                    isMicro: d.isMicro,
-                    isNR: d.isNR,
-                    isPest: d.isPest,
-                    isSMI: d.isSMI,
-                    isXray: d.isXray,
-                    line: d.line,
-                    lineSupervisor: d.lineSupervisor,
-                    materialNumber: d.materialNumber,
-                    meatComponent: d.meatComponent,
-                    nrCategory: d.nrCategory,
-                    originator: d.originator,
-                    pOs: d.pOs,
-                    pcoContactedImmediately: d.pcoContactedImmediately,
-                    pestType: d.pestType,
-                    piecesTotal: d.piecesTotal,
-                    productAdultered: d.productAdultered,
-                    rawMaterialDescription: d.rawMaterialDescription,
-                    response: d.response,
-                    reworkInstructions: d.reworkInstructions,
-                    rohMaterial: d.rohMaterial,
-                    sauceType: d.sauceType,
-                    shift: d.shift,
-                    shortDescription: d.shortDescription,
-                    size: d.size,
-                    smiVendorBatch: d.smiVendorBatch,
-                    starchType: d.starchType,
-                    tagNumber: d.tagNumber,
-                    tagged: d.tagged,
-                    timeOfIncident: d.timeOfIncident,
-                    type: d.type,
-                    veggieComponent: d.veggieComponent,
-                    vendorName: d.vendorName,
-                    vendorNumber: d.vendorNumber,
-                    vendorSiteNumber: d.vendorSiteNumber,
-                    when: d.when,
-                    whenOther: d.whenOther,
-                    whereFound: d.whereFound,
-                    yearHeld: d.yearHeld
-                }
+                keys = Object.keys(this.qaRec),
+                json = {}
 
-            formData.append('files', vm.tFile)
-            formData.append('jsonString', JSON.stringify(jsonFile))
+                json = keys.forEach((key, index) => { key = d.key })
+                console.log(json)
+                
+            //     jsonFile = {
+            //         additionalComments: d.additionalComments,
+            //         additionalDescription: d.additionalDescription,
+            //         area: d.area,
+            //         areaIfOther: d.areaIfOther,
+            //         buManager: d.buManager,
+            //         casesHeld: d.casesHeld,
+            //         dateHeld: d.dateHeld,
+            //         dateOfResample: d.dateOfResample,
+            //         dateReceived: d.dateReceived,
+            //         dayCode: d.dayCode,
+            //         dayOfWeek: d.dayOfWeek,
+            //         detailedDescription: d.detailedDescription,
+            //         equipment: d.equipment,
+            //         equipmentIfOther: d.equipmentIfOther,
+            //         fert: d.fert,
+            //         fertDescription: d.fertDescription,
+            //         fmDescription: d.fmDescription,
+            //         fmMaterial: d.fmMaterial,
+            //         fmSource: d.fmSource,
+            //         fmType: d.fmType,
+            //         fmVendorBatch: d.fmVendorBatch,
+            //         holdConcern: d.holdConcern,
+            //         hourCode: d.hourCode,
+            //         hrdMicros: d.hrdMicros,
+            //         hrdNotes: d.hrdNotes,
+            //         hrdPos: d.hrdPos,
+            //         hrdTestCosts: d.hrdTestCosts,
+            //         id: d.id,
+            //         ifYesAffectedProduct: d.ifYesAffectedProduct,
+            //         inspectorsName: d.inspectorsName,
+            //         isFM: d.isFM,
+            //         isHRD: d.isHRD,
+            //         isInspections: d.isInspections,
+            //         isMetalDetector: d.isMetalDetector,
+            //         isMicro: d.isMicro,
+            //         isNR: d.isNR,
+            //         isPest: d.isPest,
+            //         isSMI: d.isSMI,
+            //         isXray: d.isXray,
+            //         line: d.line,
+            //         lineSupervisor: d.lineSupervisor,
+            //         materialNumber: d.materialNumber,
+            //         meatComponent: d.meatComponent,
+            //         nrCategory: d.nrCategory,
+            //         originator: d.originator,
+            //         pcoContactedImmediately: d.pcoContactedImmediately,
+            //         pestType: d.pestType,
+            //         piecesTotal: d.piecesTotal,
+            //         productAdultered: d.productAdultered,
+            //         rawMaterialDescription: d.rawMaterialDescription,
+            //         response: d.response,
+            //         reworkInstructions: d.reworkInstructions,
+            //         rohMaterial: d.rohMaterial,
+            //         sauceType: d.sauceType,
+            //         shift: d.shift,
+            //         shortDescription: d.shortDescription,
+            //         size: d.size,
+            //         smiVendorBatch: d.smiVendorBatch,
+            //         starchType: d.starchType,
+            //         tagNumber: d.tagNumber,
+            //         tagged: d.tagged,
+            //         timeOfIncident: d.timeOfIncident,
+            //         type: d.type,
+            //         veggieComponent: d.veggieComponent,
+            //         vendorName: d.vendorName,
+            //         vendorNumber: d.vendorNumber,
+            //         vendorSiteNumber: d.vendorSiteNumber,
+            //         when: d.when,
+            //         whenOther: d.whenOther,
+            //         whereFound: d.whereFound,
+            //         yearHeld: d.yearHeld
+            //     }
 
-            vm.valid = value
-            if(vm.valid == true) {
-                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`, formData, 
-                {
-                    headers: {
-                        'Content-Type': 'multipart/form-data' 
-                    }
-                }
-                )
-                .then(res => 
-                {
-                    res.status
-                    vm.snackbar.snack = true
-                    vm.snackbar.snackColor = 'success'
-                    vm.snackbar.snackText = 'Data saved'
-                    vm.fetchQaRecords()
-                    vm.submitted = true
-                    this.$emit('change', true)
-                })
-                .catch(err => {
-                    vm.snackbar.snack = true
-                    vm.snackbar.snackColor = 'error'
-                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                    console.warn(err)
-                })
-            }
+            // formData.append('files', vm.tFile)
+            // formData.append('jsonString', JSON.stringify(jsonFile))
+
+            // vm.valid = value
+            // if(vm.valid == true) {
+            //     vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Qa/${vm.$route.params.id}`, formData, 
+            //     {
+            //         headers: {
+            //             'Content-Type': 'multipart/form-data' 
+            //         }
+            //     }
+            //     )
+            //     .then(res => 
+            //     {
+            //         res.status
+            //         vm.snackbar.snack = true
+            //         vm.snackbar.snackColor = 'success'
+            //         vm.snackbar.snackText = 'Data saved'
+            //         vm.fetchQaRecords()
+            //         vm.submitted = true
+            //         this.$emit('change', true)
+            //     })
+            //     .catch(err => {
+            //         vm.snackbar.snack = true
+            //         vm.snackbar.snackColor = 'error'
+            //         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+            //         console.warn(err)
+            //     })
+            // }
         },
         
         // Redirect to expansion panel when selected
