@@ -628,6 +628,7 @@ namespace HRD.WebApi.Controllers
             var qa = await _context.Hrds.Include(i => i.HrdtestCosts)
                                         .Include(i => i.Hrdnotes)
                                         .Include(i => i.HrdMicros)
+                                        .Include(i => i.Hrdpos)
                                         .FirstOrDefaultAsync(f => f.Id == id);
 
             if (qa == null)
@@ -666,7 +667,6 @@ namespace HRD.WebApi.Controllers
                 //HRD                                  
                 CasesHeld = qa.Cases,
                 HourCode = qa.HourCode,
-                POs = qa.Pos,
                 ReworkInstructions = qa.ReworkInstructions,
 
                 //PEST                                     
@@ -720,6 +720,7 @@ namespace HRD.WebApi.Controllers
                 HrdTestCosts = qa.HrdtestCosts.Select(s => new HrdTestCostViewModel { Id = s.Id, HrdId = s.Hrdid, Cost = s.Cost, Qty = s.Qty, TestName = s.TestName }).ToList(),
                 HrdNotes = qa.Hrdnotes.Select(s => new HrdNoteViewModel { Id = s.Id, HrdId = s.Hrdid, Category = s.Category, Date = s.Date, Description = s.Description, Filename = s.FileName, Size = s.Size, UserId = s.UserId }).ToList(),
                 HrdMicros = qa.HrdMicros.Select(s => new HRDMicroViewModel { Id = s.Id, HrdId = s.HrdId, Hour = s.Hour, Count = s.Count, Organism = s.Organism }).ToList(),
+                HrdPo = qa.Hrdpos.Select(s => new HrdPoViewModel { Id = s.Id, HrdId = s.Hrdid, PONumber = s.Ponumber }).ToList()
             };
 
             return model;
@@ -772,7 +773,6 @@ namespace HRD.WebApi.Controllers
             //HRD                                  
             hrd.Cases = model.CasesHeld;
             hrd.HourCode = model.HourCode;
-            hrd.Pos = model.POs;
             hrd.ReworkInstructions = model.ReworkInstructions;
 
             //PEST                                     
@@ -989,7 +989,6 @@ namespace HRD.WebApi.Controllers
 
                 Cases = model.CasesHeld,
                 HourCode = model.HourCode,
-                Pos = model.POs,
                 ReworkInstructions = model.ReworkInstructions,
 
                 PestType = model.PestType,

@@ -115,7 +115,6 @@ namespace HRD.WebApi.Data.Entities
         public string ApprovedByDistroyedWho { get; set; }
         public DateTime? ApprovedByDistroyedWhen { get; set; }
         public string Comments { get; set; }
-        public string Pos { get; set; }
         public string PestType { get; set; }
         public string PcocontactedImmediately { get; set; }
         public string ProductAdultered { get; set; }
