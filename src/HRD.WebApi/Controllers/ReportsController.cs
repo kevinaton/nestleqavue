@@ -87,7 +87,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesCostByLine
         [HttpGet("CasesCostByLine")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByLine([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
