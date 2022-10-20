@@ -185,7 +185,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("Search")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<IActionResult> GetTestCostsForLookup()
         {
             var queryGroup = _context.TestCosts.GroupBy(g => g.TestName);

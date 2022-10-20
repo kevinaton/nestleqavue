@@ -144,7 +144,7 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="3"
+                                        md="6"
                                     >
                                         <v-text-field
                                         v-model="micro.hour"
@@ -155,7 +155,7 @@
                                     <v-col
                                         cols="12"
                                         sm="6"
-                                        md="3"
+                                        md="6"
                                     >
                                         <v-text-field
                                         v-model="micro.count"
@@ -163,21 +163,23 @@
                                         type="number"
                                         ></v-text-field>
                                     </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="6"
-                                    >
-                                        <SelectDropdownString
-                                            dropdownValue="Organism"
-                                            :inpValue="micro.organism"
-                                            :access="!access.QARecordsEdit"
-                                            label="Organism" 
-                                            @change="(value) => {
-                                                micro.organism = value   
-                                            }"
-                                        />
-                                    </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            sm="12"
+                                            md="12"
+                                        >
+                                            <SelectDropdownString
+                                                dropdownValue="Organism"
+                                                :inpValue="micro.organism"
+                                                :access="!access.QARecordsEdit"
+                                                label="Organism" 
+                                                @change="(value) => {
+                                                    micro.organism = value   
+                                                }"
+                                            />
+                                        </v-col>
                                     </v-row>
                                 </v-container>
                                 </v-card-text>
@@ -252,47 +254,49 @@
                                 <v-card-text>
                                 <v-container>
                                     <v-row>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="6"
-                                    >
-                                        <SelectTestCost
-                                            :inpValue="testing.testName"
-                                            :id="testing.id"
-                                            :access="!access.QARecordsEdit"
-                                            :cost="testing.cost"
-                                            :rules="rules"
-                                            :snackbar="snackbar"
-                                            label="Test Name" 
-                                            @change="(value, cost) => { 
-                                                testing.testName = value 
-                                                testing.cost = cost
-                                            }"
-                                        />
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="3"
-                                    >
-                                        <v-text-field
-                                        v-model="testing.qty"
-                                        label="Quantity"
-                                        type="number"
-                                        ></v-text-field>
-                                    </v-col>
-                                    <v-col
-                                        cols="12"
-                                        sm="6"
-                                        md="3"
-                                    >
-                                        <v-text-field
-                                        v-model="testing.cost"
-                                        label="Cost"
-                                        type="number"
-                                        ></v-text-field>
-                                    </v-col>
+                                        <v-col
+                                            cols="12"
+                                            sm="12"
+                                            md="12"
+                                        >
+                                            <SelectTestCost
+                                                :inpValue="testing.testName"
+                                                :id="testing.id"
+                                                :access="!access.QARecordsEdit"
+                                                :cost="testing.cost"
+                                                :rules="rules"
+                                                :snackbar="snackbar"
+                                                label="Test Name" 
+                                                @change="(value, cost) => { 
+                                                    testing.testName = value 
+                                                    testing.cost = cost
+                                                }"
+                                            />
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col
+                                            cols="12"
+                                            sm="6"
+                                            md="6"
+                                        >
+                                            <v-text-field
+                                            v-model="testing.qty"
+                                            label="Quantity"
+                                            type="number"
+                                            ></v-text-field>
+                                        </v-col>
+                                        <v-col
+                                            cols="12"
+                                            sm="6"
+                                            md="6"
+                                        >
+                                            <v-text-field
+                                            v-model="testing.cost"
+                                            label="Cost"
+                                            type="number"
+                                            ></v-text-field>
+                                        </v-col>
                                     </v-row>
                                 </v-container>
                                 </v-card-text>

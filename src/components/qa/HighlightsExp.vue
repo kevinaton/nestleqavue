@@ -64,12 +64,12 @@
                     <v-col>
                         <v-combobox
                             :value="getPO"
-                            :rules="[rules.counter]"
                             :readonly="!access"
                             label="PO"
                             small-chips
                             multiple
                             outlined
+                            :rules="[rules.po]"
                             class="remarr"
                             @input="inputPO($event)"
                         >
