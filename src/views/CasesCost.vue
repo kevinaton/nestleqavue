@@ -14,11 +14,20 @@
       titleContent="Cases & Cost Held by Category"
     />
     <v-row class="mt-0 pt-0">
-      <CaseFilter 
-        :input="filter"
-        :fValues="getfValues"
-        @change="updatefValues($event)"
-      />
+      <v-col cols="12" md="6" sm="12">
+        <CaseFilter 
+          :input="filter"
+          :fValues="getfValues"
+          @change="updatefValues($event)"
+        />
+      </v-col>
+      <v-col cols="12"  md="6" sm="12">
+        <CaseCostLine
+          :header="lineHeader"
+          :fValues="getfValues"
+          :item="getLineTable"
+        />
+      </v-col>
     </v-row>
     <v-divider class="mt-4"></v-divider>
     <v-row>
@@ -58,9 +67,10 @@ import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 import BarChart from '@/components/Reports/BarChart.vue'
 import CaseFilter from '@/components/Reports/CaseFilter.vue'
 import CaseTable from '@/components/Reports/CaseTable.vue'
+import CaseCostLine from '@/components/Reports/CaseCostLine.vue'
 import ReportTitle from '@/components/Reports/ReportTitle.vue'
-import moment from 'moment'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
+import moment from 'moment'
 
 export default {
     name: "CasesCost",
@@ -70,6 +80,7 @@ export default {
       BarChart,
       CaseFilter,
       CaseTable,
+      CaseCostLine,
       ReportTitle,
       SnackBar
     },
@@ -139,6 +150,12 @@ export default {
 
         ],
       },
+      lineHeader: [
+        { text:'Line', value:'line' },
+        { text:'Total Case', value:'totalCases' },
+        { text:'Total Cost', value:'totalCost' }
+
+      ],
       caseheldChart: {
           xValues: [],
           barData: []
@@ -146,7 +163,8 @@ export default {
       costheldChart: {
           xValues: [],
           barData: []
-      }
+      },
+      lineTable:[]
     }),
 
     created() {
@@ -158,6 +176,11 @@ export default {
     computed: {
       getfValues() {
         return this.fValues
+      },
+      getLineTable() {
+        if(this.lineTable) {
+          return this.lineTable
+        }
       }
     },
 
@@ -203,15 +226,20 @@ export default {
           let vm = this
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CasesHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
+            if(res.data.length != 0) {
               let x = Object.keys(res.data[0])[0]
               vm.caseheldChart.xValues = res.data.map((e) => e[x])
               vm.caseheldChart.barData = res.data.map(({totalCost}) => totalCost)
-              vm.fValues.periodBegin = periodBegin
-              vm.fValues.periodEnd = periodEnd
-              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
-              vm.fValues.line = line
-              vm.fValues.closeOpen.value = closeOpen
-              vm.fValues.costGraph.value = costGraph
+            } else {
+              vm.caseheldChart.xValues = []
+              vm.caseheldChart.barData = []
+            }
+            vm.fValues.periodBegin = periodBegin
+            vm.fValues.periodEnd = periodEnd
+            vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
+            vm.fValues.line = line
+            vm.fValues.closeOpen.value = closeOpen
+            vm.fValues.costGraph.value = costGraph
           })
           .catch(err => {
               this.snackbar.snack = true
@@ -226,15 +254,20 @@ export default {
           let vm = this
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Reports/CostHeldByCategory?Status=${closeOpen}&CostGraphOption=${costGraph}&Line=${line}&PeriodBegin=${periodBegin}&PeriodEnd=${periodEnd}`)
           .then((res) => {
+            if(res.data.length != 0) {
               let x = Object.keys(res.data[0])[0]
               vm.costheldChart.xValues = res.data.map((e) => e[x])
               vm.costheldChart.barData = res.data.map(({totalCost}) => totalCost)
-              vm.fValues.periodBegin = periodBegin
-              vm.fValues.periodEnd = periodEnd
-              vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
-              vm.fValues.line = line
-              vm.fValues.closeOpen.value = closeOpen
-              vm.fValues.costGraph.value = costGraph
+            } else {
+              vm.costheldChart.xValues = []
+              vm.costheldChart.barData = []
+            }
+            vm.fValues.periodBegin = periodBegin
+            vm.fValues.periodEnd = periodEnd
+            vm.fValues.dates = [moment.utc(periodBegin).format('YYYY-MM-DD'), moment.utc(periodEnd).format('YYYY-MM-DD')]
+            vm.fValues.line = line
+            vm.fValues.closeOpen.value = closeOpen
+            vm.fValues.costGraph.value = costGraph
           })
           .catch(err => {
               this.snackbar.snack = true
@@ -246,7 +279,7 @@ export default {
       },
 
       updatefValues(fValues) {
-        this.fValues = fValues
+        this.fValues = fValues 
       }
     }
 }
