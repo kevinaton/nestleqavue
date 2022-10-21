@@ -223,8 +223,7 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<bool>> HasPermission(string permissionName)
         {
             var hasPermission = false;
-            // var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
-            var userId = 1;
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
 
             hasPermission = await _context.UserRoles.AnyAsync(a => a.UserId == userId && a.Role.Permissions.Any(a => a.Name == permissionName && a.IsGranted));
             
@@ -235,7 +234,6 @@ namespace HRD.WebApi.Controllers
         public async Task<ActionResult<IEnumerable<string>>> GetCurrentUserPermissions()
         {
             var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
-            
             
             var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
                                 .SelectMany(s => s.Role.Permissions).ToListAsync();

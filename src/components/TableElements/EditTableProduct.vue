@@ -103,18 +103,11 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            v-model="edit.holiday"
-                            :items="tfOption"
-                            label="Holiday"
-                            type="Boolean"
-                            :rules="[rules.tf]"
-                        ></v-select>
                     </v-col>
                     <v-col
                     cols="12"
-                    sm="6"
-                    md="6"
+                    sm="12"
+                    md="12"
                     >
                     <SelectDropdownString                        
                         dropdownValue="Country"
@@ -204,8 +197,7 @@ export default {
                     description: vm.edit.description,
                     costPerCase: vm.edit.costPerCase,
                     country: vm.edit.country,
-                    noBbdate: vm.edit.noBbdate,
-                    holiday: vm.edit.holiday
+                    noBbdate: vm.edit.noBbdate
                 })
                 .then(response => 
                 {

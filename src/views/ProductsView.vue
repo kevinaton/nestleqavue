@@ -198,7 +198,6 @@
         { text: 'Cost per Case', value: 'costPerCase' },
         { text: 'Country', value: 'country' },
         { text: 'No Best Before Date', value: 'noBbdate' },
-        { text: 'Holiday', value: 'holiday' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
       ],
       products:[],
@@ -220,8 +219,7 @@
         {index:3, name:'description', label:'Description', type:'', value:'', visible:true},
         {index:4, name:'costPerCase', label:'Cost/Case', type:'Number', value:'', visible:true},
         {index:5, name:'noBbdate', label:'No Best Before Date', type:'Boolean', select:[true, false], value:null, visible:true},
-        {index:6, name:'holiday', label:'Holiday', type:'Boolean', select:[true, false], value:true, visible:true},
-        {index:7, name:'country', label:'Country', type:'', value:'', visible:true},
+        {index:6, name:'country', label:'Country', type:'', value:'', visible:true}
       ],
       editDialog: false,
       valid: false
