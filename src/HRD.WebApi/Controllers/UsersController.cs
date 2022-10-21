@@ -84,13 +84,13 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<ActionResult<IEnumerable<UserViewModel>>> GetAll()
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetAll()
         {
-            var query = _context.Users.OrderBy(o => o.Name).Select(s => new UserViewModel
+            var query = _context.Users.OrderBy(o => o.Name).Select(s => new UserLookupDto
             {
-                Id = s.Id,
-                Name = s.Name,
-                UserId = s.UserId
+                UserId = s.UserId,
+                Name = s.Name
             });
 
             var results = await query.ToListAsync();
@@ -234,8 +234,7 @@ namespace HRD.WebApi.Controllers
         [HttpGet("GetCurrentUserPermissions")]
         public async Task<ActionResult<IEnumerable<string>>> GetCurrentUserPermissions()
         {
-            // var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
-            var userId = 113;
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
             
             var permissionList = await _context.UserRoles.Include(i => i.Role.Permissions).Where(f => f.UserId == userId)
                                 .SelectMany(s => s.Role.Permissions).ToListAsync();
@@ -252,7 +251,21 @@ namespace HRD.WebApi.Controllers
                         {
                             UserId = s.User.UserId,
                             Name = s.User.Name
-                        });
+                        }).DistinctBy(d => d.UserId).OrderBy(o => o.Name);
+
+            return Ok(users);
+        }
+
+        [HttpGet("GetUsersByRole/{role}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetUsersByRole(string role)
+        {
+            var userRoles = await _context.UserRoles.Include(i => i.User).Where(f => f.Role.Name == role).ToListAsync();
+            var users = userRoles.Select(s => new UserLookupDto
+            {
+                UserId = s.User.UserId,
+                Name = s.User.Name
+            }).OrderBy(o => o.Name);
 
             return Ok(users);
         }
