@@ -113,6 +113,20 @@
                 email: value => {
                     const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
                     return pattern.test(value) || 'Invalid e-mail.'
+                },
+                po: v => {
+                    if(!v || v.length < 1){ 
+                        return 'Input required'
+                    }
+                    else if(v.length > 0) {
+                        let status = 0
+                        for(let i=0;i < v.length; i++) {
+                            if(v[i].poNumber.length > 10 || v[i].poNumber.length < 1) {status++}
+                        }
+                        if(status > 0) return 'Only 10 character max'
+                        else return true
+                    }  
+                    else return true
                 }
             },
             loading:true,
@@ -331,85 +345,10 @@
             },
             submitHRD(value) {
             let vm = this,
-                formData = new FormData(),
-                d = vm.hrd,
-                jsonFile = {
-                    additionalDescription: d.additionalDescription,
-                    allCasesAccountedFor: d.allCasesAccountedFor,
-                    approvalRequestByQa: d.approvalRequestByQa,
-                    approvedByDistroyedWhen: d.approvedByDistroyedWhen,
-                    approvedByDistroyedWho: d.approvedByDistroyedWho,
-                    approvedByPlantControllerWhen: d.approvedByPlantControllerWhen,
-                    approvedByPlantControllerWho: d.approvedByPlantControllerWho,
-                    approvedByPlantManagerWho: d.approvedByPlantManagerWho,
-                    approvedByQAWhen: d.approvedByQAWhen,
-                    approvedByQAWho: d.approvedByQAWho,
-                    approvedPlantManagerQAWhen: d.approvedPlantManagerQAWhen,
-                    area: d.area,
-                    areaIfOther: d.areaIfOther,
-                    buManager: d.buManager,
-                    cancelled: d.cancelled,
-                    caseCount: d.caseCount,
-                    cases: d.cases,
-                    classification: d.classification,
-                    clear: d.clear,
-                    comments: d.comments,
-                    complete: d.complete,
-                    continuousRun: d.continuousRun,
-                    costofProductonHold: d.costofProductonHold,
-                    date: d.date,
-                    dateCompleted: d.dateCompleted,
-                    dateHeld: d.dateHeld,
-                    dateofDisposition: d.dateofDisposition,
-                    dayCode: d.dayCode,
-                    dcDate: d.dcDate,
-                    dcUser: d.dcUser,
-                    detailedDescription: d.detailedDescription,
-                    donate: d.donate,
-                    fcDate: d.fcDate,
-                    fcUser: d.fcUser,
-                    fert: d.fert,
-                    fertDescription: d.fertDescription,
-                    gstdrequired: d.gstdrequired,
-                    highRisk: d.highRisk,
-                    holdCategory: d.holdCategory,
-                    holdSubCategory: d.holdSubCategory,
-                    hourCode: d.hourCode,
-                    hrdDc: d.hrdDc,
-                    hrdFc: d.hrdFc,
-                    hrdNotes: d.hrdNotes,
-                    hrdPo: d.hrdPo,
-                    hrdcompletedBy: d.hrdcompletedBy,
-                    id: d.id,
-                    isDestroyed: d.isDestroyed,
-                    isPlantControllerApproval: d.isPlantControllerApproval,
-                    isPlantManagerAprpoval: d.isPlantManagerAprpoval,
-                    line: d.line,
-                    lineSupervisor: d.lineSupervisor,
-                    monthHeld: d.monthHeld,
-                    numberOfDaysHeld: d.numberOfDaysHeld,
-                    numberOfDaysToReworkApproval: d.numberOfDaysToReworkApproval,
-                    originator: d.originator,
-                    otherHrdAffected: d.otherHrdAffected,
-                    otherHrdNum: d.otherHrdNum,
-                    plant: d.plant,
-                    qaComments: d.qaComments,
-                    reasonAction: d.reasonAction,
-                    reworkApproved: d.reworkApproved,
-                    samples: d.samples,
-                    scrap: d.scrap,
-                    shift: d.shift,
-                    shortDescription: d.shortDescription,
-                    thriftStore: d.thriftStore,
-                    timeOfIncident: d.timeOfIncident,
-                    type: d.type,
-                    weekHeld: d.weekHeld,
-                    yearHeld: d.yearHeld,
-                    yearOfIncident: d.yearOfIncident
-                }
+                formData = new FormData()  
 
             formData.append('files', vm.tFile)
-            formData.append('jsonString', JSON.stringify(jsonFile))
+            formData.append('jsonString', JSON.stringify(vm.hrd))
             vm.valid = value
             if(vm.valid == true) {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  formData,

@@ -54,14 +54,14 @@
                     sm="6"
                     md="6"
                     >
-                        <SelectDropdownObj 
+                        <v-autocomplete
+                            label="Type"
+                            v-model="filterValues.type"
+                            :items="filter.type"
                             item-text="text"
                             item-value="value"
-                            label="Type"
-                            :inpValue="filter.type.value"
-                            :items="filter.type" 
-                            @change="value => filterValues.type = value"
-                        />
+                            outlined
+                        ></v-autocomplete>
                     </v-col>
                     <v-col
                     cols="12"
@@ -96,12 +96,14 @@
                     sm="6"
                     md="6"
                     >
-                        <!-- <v-select
+                        <v-autocomplete
+                            label="Team Leader"
+                            v-model="filterValues.teamLeader"
+                            :items="filter.gstd"
+                            item-text="name"
+                            item-value="userId"
                             outlined
-                            v-model="filter[4].value"
-                            :label="filter[4].label"
-                            :rules="[rules.required]"
-                        ></v-select> -->
+                        ></v-autocomplete>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -110,26 +112,28 @@
                     sm="6"
                     md="6"
                     >
-                        <!-- <v-select
+                        <v-autocomplete
+                            label="Business Unit Manager"
+                            v-model="filterValues.businessUnitManager"
+                            :items="filter.bum"
+                            item-text="name"
+                            item-value="userId"
                             outlined
-                            v-model="filter[5].value"
-                            :label="filter[5].label"
-                            :items="filter[5].select"
-                            :rules="[rules.required]"
-                        ></v-select> -->
+                        ></v-autocomplete>
                     </v-col>
                     <v-col
                     cols="12"
                     sm="6"
                     md="6"
                     >
-                        <!-- <v-select
+                        <v-autocomplete
+                            label="Originator"
+                            v-model="filterValues.originator"
+                            :items="filter.originator"
+                            item-text="name"
+                            item-value="userId"
                             outlined
-                            v-model="filter[6].value"
-                            :label="filter[6].label"
-                            :items="filter[6].select"
-                            :rules="[rules.required]"
-                        ></v-select> -->
+                        ></v-autocomplete>
                     </v-col>
                 </v-row>
 
@@ -189,6 +193,10 @@ export default {
         filterValues:{
             completeStatus:null,
             type:'',
+            line:'',
+            originator:'',
+            teamLeader:'',
+            businessUnitManager:''
         },
         filter:{
             completeStatus: [
@@ -207,6 +215,9 @@ export default {
                 { text: 'FM', value:'fm', disabled: false },
                 { text: 'Micros', value:'micro', disabled: false },
             ],
+            originator:[],
+            gstd:[],
+            bum:[]
         },
         
         sFilter:[
@@ -214,6 +225,10 @@ export default {
             {label:'Shift', value:'All', select:[]}
         ],
         filterLookups:[{name:'line',num:0}, {name:'shift', num:1}],
+        roleLookups:[
+            {role:'GSTD', items:[]}, 
+            {role:'BuManager', items:[]}
+        ],
         rules: {
             required: value => !!value || 'Required',
             counter: value => (value || '').length <= 50 || 'Input too long.',
@@ -231,22 +246,36 @@ export default {
             this.$refs.form.reset()
             this.dialog = false
         },
-        fetchLookup() {
+        async fetchLookup() {
             let vm = this
             if(vm.initial == true){
                 vm.loading = true
 
+                // Line and Shift dropdown
                 for(let x=0; x < vm.filterLookups.length; x++) {
                     vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typename/${vm.filterLookups[x].name}`)
-                    .then((res) => {
-                        let arr = []
-                        arr.push('All')
-                        res.data.forEach(item => {
-                            if(item.isActive == true){
-                                arr.push(item.value)
-                            }
+                        .then((res) => {
+                            let arr = []
+                            arr.push('All')
+                            res.data.forEach(item => {
+                                if(item.isActive == true){
+                                    arr.push(item.value)
+                                }
+                            })
+                        vm.sFilter[vm.filterLookups[x].num].select = arr
                         })
-                    vm.sFilter[vm.filterLookups[x].num].select = arr
+                        .catch(err => {
+                            vm.snackbar.snack = true
+                            vm.snackbar.snackColor = 'error'
+                            vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                            console.warn(err)
+                        })
+                }
+
+                // Originator list
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetAll`)
+                    .then((res) => {
+                        vm.filter.originator = res.data
                     })
                     .catch(err => {
                         vm.snackbar.snack = true
@@ -254,7 +283,24 @@ export default {
                         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                         console.warn(err)
                     })
-                }
+
+                // team leader and BUM list
+                vm.roleLookups.forEach((role) => {
+                    vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetUsersByRole/${role.role}`)
+                    .then((res) => {
+                        role.items = res.data
+                    })
+                    .catch(err => {
+                        vm.snackbar.snack = true
+                        vm.snackbar.snackColor = 'error'
+                        vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                        console.warn(err)
+                    })
+                })
+                
+                vm.filter.gstd = vm.roleLookups[0].items
+                vm.filter.bum = vm.roleLookups[1].items
+                console.log(vm.roleLookups[0])
                 
                 vm.loading = false
             }

@@ -23,7 +23,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-textarea outlined label="Batch Codes" placeholder="Write here"></v-textarea>
+                    <v-textarea :readonly="!access" outlined v-model="inpValue.batchCodes" :rules="[rules.counter]" label="Batch Codes" placeholder="Write here"></v-textarea>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
