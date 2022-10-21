@@ -84,6 +84,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("GetAll")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetAll()
         {
             var query = _context.Users.OrderBy(o => o.Name).Select(s => new UserLookupDto
@@ -251,7 +252,21 @@ namespace HRD.WebApi.Controllers
                         {
                             UserId = s.User.UserId,
                             Name = s.User.Name
-                        });
+                        }).DistinctBy(d => d.UserId).OrderBy(o => o.Name);
+
+            return Ok(users);
+        }
+
+        [HttpGet("GetUsersByRole/{role}")]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetUsersByRole(string role)
+        {
+            var userRoles = await _context.UserRoles.Include(i => i.User).Where(f => f.Role.Name == role).ToListAsync();
+            var users = userRoles.Select(s => new UserLookupDto
+            {
+                UserId = s.User.UserId,
+                Name = s.User.Name
+            }).OrderBy(o => o.Name);
 
             return Ok(users);
         }
