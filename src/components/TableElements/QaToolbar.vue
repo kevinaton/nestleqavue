@@ -15,6 +15,8 @@
 
         <FilterBtn
             :snackbar="snackbar"
+            :tableOptions="tableOptions"
+            @change="updateQA"
         />
 
         <Export
@@ -50,7 +52,7 @@ export default {
     props: {
         table: {
             type: Array,
-            default:[],
+            default:() => [],
         },
         title: {
             type: String,
@@ -80,7 +82,10 @@ export default {
     methods: {
         searchVal(value) {
             this.searchInput = value
-            this.$emit('change', value)
+            this.$emit('change', value, 'search')
+        },
+        updateQA(value, param) {
+            this.$emit('change', value, param)
         }
     }
 }

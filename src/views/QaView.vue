@@ -32,7 +32,7 @@
           :snackbar="snackbar"
           :table="qa"
           :tableOptions = tableOptions
-          @change="getSearch($event)"
+          @change="toolbarUpdates"
         />
       </template>
 
@@ -245,9 +245,19 @@
           }
       },
 
-      getSearch(value) {
+      toolbarUpdates({value, param}) {
         let vm = this
-        vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        if(param = 'search') {
+          vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        }
+        if(param = 'table') {
+          console.log('table')
+          vm.qa = value
+        }
+        if(param = 'clear') {
+          console.log('clear')
+          vm.fetchHrds()
+        }
       },
 
       customSort(par, event) {

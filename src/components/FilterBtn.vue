@@ -7,7 +7,7 @@
     >
         <template v-slot:activator="{ on, attrs }">
         <v-btn
-            color="secondary"
+            :color="filterBtn"
             dark
             large
             outlined
@@ -16,7 +16,7 @@
             v-on="on"
             @click="fetchLookup"
         >
-            <v-icon>mdi-filter-outline</v-icon>
+            <v-icon :color="filterBtn">mdi-filter-outline</v-icon>
             Filter
         </v-btn>
         </template>
@@ -99,7 +99,7 @@
                         <v-autocomplete
                             label="Team Leader"
                             v-model="filterValues.teamLeader"
-                            :items="filter.gstd"
+                            :items="roleLookups[0].items"
                             item-text="name"
                             item-value="userId"
                             outlined
@@ -115,7 +115,7 @@
                         <v-autocomplete
                             label="Business Unit Manager"
                             v-model="filterValues.businessUnitManager"
-                            :items="filter.bum"
+                            :items="roleLookups[1].items"
                             item-text="name"
                             item-value="userId"
                             outlined
@@ -146,7 +146,7 @@
                     color="primary"
                     clear
                     text
-                    @click="() => {this.$refs.form.reset()}"
+                    @click="clear"
                 >
                     Clear
                 </v-btn>
@@ -183,7 +183,12 @@ export default {
             type: Object,
             default: () => {},
             required: false
-        }
+        },
+        tableOptions: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
     },
     data: () => ({
         dialog:false,
@@ -191,16 +196,17 @@ export default {
         initial:true,
         loading:true,
         filterValues:{
-            completeStatus:null,
+            completeStatus:-1,
             type:'',
-            line:'',
-            originator:'',
+            line:'All',
+            shift:'All',
             teamLeader:'',
-            businessUnitManager:''
+            businessUnitManager:'',
+            originator:'',
         },
         filter:{
             completeStatus: [
-                { text: 'All', value:null, disabled: false },
+                { text: 'All', value:-1, disabled: false },
                 { text: 'Complete', value:1, disabled: false },
                 { text: 'Incomplete', value:0, disabled: false },
             ],
@@ -219,7 +225,6 @@ export default {
             gstd:[],
             bum:[]
         },
-        
         sFilter:[
             {label:'Line', value:'All', select:[]},
             {label:'Shift', value:'All', select:[]}
@@ -234,19 +239,45 @@ export default {
             counter: value => (value || '').length <= 50 || 'Input too long.',
             int: value => value <= 2147483647 || 'Enter a lesser amount',
         },
+        filterBtn:'secondary'
     }),
+    emits: ["change"],
     methods: {
         validate() {
             this.$refs.form.validate()
         },
         applyFilter(valid) {
-            console.log(this.filterValues)
+            let vm = this
+            if(valid) {
+                vm.filterBtn = 'error'
+                vm.dialog = false
+
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?FilterCriteria.Type=${vm.filterValues.type}&FilterCriteria.CompleteStatus=${vm.filterValues.completeStatus}&FilterCriteria.Line=${vm.filterValues.line}&FilterCriteria.Shift=${vm.filterValues.shift}&FilterCriteria.TeamLeader=${vm.filterValues.teamLeader}&FilterCriteria.BusinessUnitManager=${vm.filterValues.businessUnitManager}&FilterCriteria.Originator=${vm.filterValues.originator}&PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
+                    .then((res) => {
+                        vm.$emit('change', res.data, 'table')
+                    })
+                    .catch(err => {
+                        vm.snackbar.snack = true
+                        vm.snackbar.snackColor = 'error'
+                        vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                        console.warn(err)
+                    })
+                    .finally(() => {
+                        vm.loading = false
+                    })
+            }
         },
         close() {
             this.$refs.form.reset()
             this.dialog = false
         },
-        async fetchLookup() {
+        clear() {
+            this.$refs.form.reset()
+            this.$emit('change', 1, 'clear')
+            this.filterBtn = 'secondary'
+            this.dialog = false
+        },
+        fetchLookup() {
             let vm = this
             if(vm.initial == true){
                 vm.loading = true
@@ -297,11 +328,6 @@ export default {
                         console.warn(err)
                     })
                 })
-                
-                vm.filter.gstd = vm.roleLookups[0].items
-                vm.filter.bum = vm.roleLookups[1].items
-                console.log(vm.roleLookups[0])
-                
                 vm.loading = false
             }
 
