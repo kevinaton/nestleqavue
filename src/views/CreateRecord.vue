@@ -235,13 +235,18 @@ export default {
             },
             matNum: value => (value || '').length >= 3 || 'Input more than 3 characters',
             po: v => {
-                if(v.length > 0) {
+                if(!v || v.length < 1){ 
+                    return 'Input required'
+                }
+                else if(v.length > 0) {
+                    let status = 0
                     for(let i=0;i < v.length; i++) {
-                        if(v[i].length > 10){ return 'Only 10 characters or less' } 
-                        else return true 
+                        if(v[i].poNumber.length > 10) {status++}
                     }
+                    if(status > 0) return 'Only 10 character max'
+                    else return true
                 }  
-                else { return true }
+                else return true
             }
         },
         qaRec:{

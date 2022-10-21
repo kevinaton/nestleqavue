@@ -54,11 +54,8 @@ export default {
     computed: {
         getfValues() {
             this.getCostLine()
-            console.log('niagi diri')
             if(this.fValues) return true 
             else return false
-
-
         }
     },
 

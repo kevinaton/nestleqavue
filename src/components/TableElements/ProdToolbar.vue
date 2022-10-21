@@ -57,7 +57,6 @@
                         md="6"
                         >
                             <v-text-field
-                                v-if="forms[1].visible"
                                 v-model="forms[1].value"
                                 :label="forms[1].label"
                                 :type="forms[1].type"
@@ -70,7 +69,6 @@
                         md="6"
                         >
                             <v-text-field
-                                v-if="forms[2].visible"
                                 v-model="forms[2].value"
                                 :label="forms[2].label"
                                 :type="forms[2].type"
@@ -85,7 +83,6 @@
                         md="12"
                         >
                             <v-text-field
-                                v-if="forms[3].visible"
                                 v-model="forms[3].value"
                                 :label="forms[3].label"
                                 :type="forms[3].type"
@@ -99,7 +96,6 @@
                         md="6"
                         >
                             <v-text-field
-                                v-if="forms[4].visible"
                                 v-model="forms[4].value"
                                 :label="forms[4].label"
                                 :type="forms[4].type"
@@ -112,7 +108,6 @@
                         md="6"
                         >
                             <v-select
-                                v-if="forms[5].visible"
                                 v-model="forms[5].value"
                                 :items="forms[5].select"
                                 :label="forms[5].label"
@@ -123,17 +118,16 @@
                     <v-row>
                         <v-col
                         cols="12"
-                        sm="6"
-                        md="6"
+                        sm="12"
+                        md="12"
                         >
-                            <SelectDropdownString
-                                v-if="forms[7].visible"                                
-                                :dropdownValue="forms[7].label"
-                                :inpValue="forms[7].value"                        
-                                :label="forms[7].label"
-                                :type="forms[5].type"
+                            <SelectDropdownString                             
+                                :dropdownValue="forms[6].label"
+                                :inpValue="forms[6].value"                        
+                                :label="forms[6].label"
+                                :type="forms[6].type"
                                 @change="(value) => {
-                                    forms[7].value = value   
+                                    forms[6].value = value   
                                 }"
                             />                            
                         </v-col>

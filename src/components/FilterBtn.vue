@@ -38,12 +38,12 @@
                     sm="12"
                     md="12"
                     >
-                        <v-radio-group v-model="filter[0].value" row>
+                        <v-radio-group v-model="filterValues.completeStatus" row>
                         <v-radio
                             v-for="(n, i) in 3"
                             :key="n"
-                            :label="filter[0].select[i]"
-                            :value="filter[0].select[i]"
+                            :label="filter.completeStatus[i].text"
+                            :value="filter.completeStatus[i].value"
                         ></v-radio>
                         </v-radio-group>
                     </v-col>
@@ -54,13 +54,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            outlined
-                            v-model="filter[1].value"
-                            :label="filter[1].label"
-                            :items="filter[1].select"
-                            :rules="[rules.required]"
-                        ></v-select>
+                        <SelectDropdownObj 
+                            item-text="text"
+                            item-value="value"
+                            label="Type"
+                            :inpValue="filter.type.value"
+                            :items="filter.type" 
+                            @change="value => filterValues.type = value"
+                        />
                     </v-col>
                     <v-col
                     cols="12"
@@ -69,9 +70,9 @@
                     >
                         <v-select
                             outlined
-                            v-model="filter[2].value"
-                            :label="filter[2].label"
-                            :items="filter[2].select"
+                            v-model="filterValues.line"
+                            label="Line"
+                            :items="sFilter[0].select"
                             :rules="[rules.required]"
                         ></v-select>
                     </v-col>
@@ -84,9 +85,9 @@
                     >
                         <v-select
                             outlined
-                            v-model="filter[3].value"
-                            :label="filter[3].label"
-                            :items="filter[3].select"
+                            v-model="filterValues.shift"
+                            label="Shift"
+                            :items="sFilter[1].select"
                             :rules="[rules.required]"
                         ></v-select>
                     </v-col>
@@ -95,13 +96,12 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
+                        <!-- <v-select
                             outlined
                             v-model="filter[4].value"
                             :label="filter[4].label"
-                            :items="filter[4].select"
                             :rules="[rules.required]"
-                        ></v-select>
+                        ></v-select> -->
                     </v-col>
                 </v-row>
                 <v-row>
@@ -110,26 +110,26 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
+                        <!-- <v-select
                             outlined
                             v-model="filter[5].value"
                             :label="filter[5].label"
                             :items="filter[5].select"
                             :rules="[rules.required]"
-                        ></v-select>
+                        ></v-select> -->
                     </v-col>
                     <v-col
                     cols="12"
                     sm="6"
                     md="6"
                     >
-                        <v-select
+                        <!-- <v-select
                             outlined
                             v-model="filter[6].value"
                             :label="filter[6].label"
                             :items="filter[6].select"
                             :rules="[rules.required]"
-                        ></v-select>
+                        ></v-select> -->
                     </v-col>
                 </v-row>
 
@@ -139,11 +139,19 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                color="blue darken-1"
-                text
-                @click="close"
+                    color="primary"
+                    clear
+                    text
+                    @click="() => {this.$refs.form.reset()}"
                 >
-                Cancel
+                    Clear
+                </v-btn>
+                <v-btn
+                    color="blue darken-1"
+                    outlined
+                    @click="close"
+                >
+                    Cancel
                 </v-btn>
                 <v-btn
                     :disabled="!valid"
@@ -151,7 +159,7 @@
                     color="primary"
                     @click="applyFilter(valid), validate"
                 >
-                Save
+                Apply
                 </v-btn>
             </v-card-actions>
             </v-form>
@@ -160,8 +168,12 @@
 </template>
 
 <script>
+import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
     name:'FilterBtn',
+    components: {
+        SelectDropdownObj
+    },
     props:{
         snackbar: {
             type: Object,
@@ -174,16 +186,34 @@ export default {
         valid:false,
         initial:true,
         loading:true,
-        filter:[
-            {label:'Complete', value:'All', select:['All', 'Complete', 'Incomplete']},
-            {label:'Type', value:'All', select:['All', 'Reworks', 'Pest', 'SMI', 'NR', 'FM', 'Micro']},
+        filterValues:{
+            completeStatus:null,
+            type:'',
+        },
+        filter:{
+            completeStatus: [
+                { text: 'All', value:null, disabled: false },
+                { text: 'Complete', value:1, disabled: false },
+                { text: 'Incomplete', value:0, disabled: false },
+            ],
+            type: [
+                { text: 'All', value:'', disabled: false },
+                { text: 'Reworks', value:'reworks', disabled: false },
+                { text: 'Pest', value:'pest', disabled: false },
+                { text: 'SMI', value:'smi', disabled: false },
+                { text: 'Pest', value:'pest', disabled: false },
+                { text: 'SMI', value:'smi', disabled: false },
+                { text: 'NR', value:'nr', disabled: false },
+                { text: 'FM', value:'fm', disabled: false },
+                { text: 'Micros', value:'micro', disabled: false },
+            ],
+        },
+        
+        sFilter:[
             {label:'Line', value:'All', select:[]},
-            {label:'Shift', value:'All', select:[]},
-            {label:'Team Leader', value:'All', select:[]},
-            {label:'BUM', value:'All', select:[]},
-            {label:'Originator', value:'All', select:[]}
+            {label:'Shift', value:'All', select:[]}
         ],
-        filterLookups:[{name:'line',num:2}, {name:'shift', num:3}],
+        filterLookups:[{name:'line',num:0}, {name:'shift', num:1}],
         rules: {
             required: value => !!value || 'Required',
             counter: value => (value || '').length <= 50 || 'Input too long.',
@@ -195,7 +225,7 @@ export default {
             this.$refs.form.validate()
         },
         applyFilter(valid) {
-            console.log('test')
+            console.log(this.filterValues)
         },
         close() {
             this.$refs.form.reset()
@@ -216,7 +246,7 @@ export default {
                                 arr.push(item.value)
                             }
                         })
-                    vm.filter[vm.filterLookups[x].num].select = arr
+                    vm.sFilter[vm.filterLookups[x].num].select = arr
                     })
                     .catch(err => {
                         vm.snackbar.snack = true
