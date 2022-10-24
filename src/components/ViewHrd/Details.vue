@@ -146,10 +146,10 @@
                 <v-col>
                     <v-row class="mt-0">
                         <v-col class="pt-0">
-                            <v-text-field readonly label="Cost of Testing" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.costOfTesting" readonly label="Cost of Testing" outlined></v-text-field>
                         </v-col>
                         <v-col class="pt-0">
-                            <v-text-field readonly label="Cost of Labor" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.costOfLabor" readonly label="Cost of Labor" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">

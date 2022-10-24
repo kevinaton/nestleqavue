@@ -82,10 +82,11 @@ export default {
     methods: {
         searchVal(value) {
             this.searchInput = value
-            this.$emit('change', value, 'search')
+            console.log('nagsearch')
+            this.$emit('change', {data:value, param:'search'})
         },
-        updateQA(value, param) {
-            this.$emit('change', value, param)
+        updateQA({data, param}) {
+            this.$emit('change', {data:data, param:param})
         }
     }
 }
