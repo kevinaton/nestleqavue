@@ -10,10 +10,7 @@
                     :rules="rules"
                     :snackbar="snackbar"
                     label="Material Number" 
-                    @change="(value, description) => { 
-                        input.materialNumber = value 
-                        input.rawMaterialDescription = description
-                    }"
+                    @change="rawMaterials"
                 />
             </v-col>
             <v-col>
@@ -69,6 +66,15 @@ export default {
         }
     },
     methods: {
+        rawMaterials({value, description}) {
+            console.log(value)
+            if(value="") {
+                this.input.rawMaterialDescription = ''
+            } else {
+                this.input.materialNumber = value 
+                this.input.rawMaterialDescription = description
+            }
+        }
     }
 }
 </script>

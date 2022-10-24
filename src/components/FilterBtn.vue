@@ -85,7 +85,7 @@
                     md="6"
                     >
                         <v-autocomplete
-                            label="Line"
+                            label="Shift"
                             v-model="filterValues.shift"
                             :items="sFilter[1].select"
                             item-text="text"

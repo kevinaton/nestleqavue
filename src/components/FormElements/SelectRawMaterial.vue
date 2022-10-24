@@ -74,14 +74,19 @@ export default {
         changeValue(value) {
             let vm = this
 
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/${value}`)
+            if(value == null || '') {
+                vm.$emit('change', {value:value, description:''})
+            } else {
+                vm.$axios.get(`${process.env.VUE_APP_API_URL}/RawMaterials/${value}`)
                     .then((res) => {
-                        vm.$emit('change', value, res.data.description)
+                        vm.$emit('change', {value:value, description:res.data.description})
                     })
                     .catch(err => {
+                        vm.$emit('change', {value:value, description:''})
                         console.warn(err)
                     })
                     .finally(() => (vm.loading = false))
+            }
         }
     }
 }
