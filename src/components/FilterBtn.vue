@@ -68,13 +68,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            outlined
-                            v-model="filterValues.line"
+                        <v-autocomplete
                             label="Line"
+                            v-model="filterValues.line"
                             :items="sFilter[0].select"
-                            :rules="[rules.required]"
-                        ></v-select>
+                            item-text="text"
+                            item-value="value"
+                            outlined
+                        ></v-autocomplete>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -83,13 +84,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            outlined
+                        <v-autocomplete
+                            label="Line"
                             v-model="filterValues.shift"
-                            label="Shift"
                             :items="sFilter[1].select"
-                            :rules="[rules.required]"
-                        ></v-select>
+                            item-text="text"
+                            item-value="value"
+                            outlined
+                        ></v-autocomplete>
                     </v-col>
                     <v-col
                     cols="12"
@@ -196,10 +198,10 @@ export default {
         initial:true,
         loading:true,
         filterValues:{
-            completeStatus:-1,
+            completeStatus:2,
             type:'',
-            line:'All',
-            shift:'All',
+            line:'',
+            shift:'',
             teamLeader:'',
             businessUnitManager:'',
             originator:'',
@@ -207,8 +209,8 @@ export default {
         defaultFilterValues:{
             completeStatus:2,
             type:'',
-            line:'All',
-            shift:'All',
+            line:'',
+            shift:'',
             teamLeader:'',
             businessUnitManager:'',
             originator:'',
@@ -294,10 +296,11 @@ export default {
                     vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typename/${vm.filterLookups[x].name}`)
                         .then((res) => {
                             let arr = []
-                            arr.push('All')
                             res.data.forEach(item => {
                                 if(item.isActive == true){
-                                    arr.push(item.value)
+                                    if(item.value == 'All') {arr.push({text:item.value, value:''})} else {
+                                        arr.push({text:item.value, value:item.value})
+                                    }
                                 }
                             })
                         vm.sFilter[vm.filterLookups[x].num].select = arr
