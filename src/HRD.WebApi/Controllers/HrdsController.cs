@@ -41,7 +41,7 @@ namespace HRD.WebApi.Controllers
             var validFilter = new HrdPaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString, filter.FilterCriteria);
 
             var query = _context.Hrds
-                .Where(f => (validFilter.FilterCriteria.CompleteStatus == null
+                .Where(f => ((validFilter.FilterCriteria.CompleteStatus == null || validFilter.FilterCriteria.CompleteStatus == 2)
                                 || (validFilter.FilterCriteria.CompleteStatus == 0 && !f.Complete.Value)
                                 || (validFilter.FilterCriteria.CompleteStatus == 1 && f.Complete.Value))
                             && (string.IsNullOrEmpty(validFilter.FilterCriteria.Line)
