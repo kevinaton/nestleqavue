@@ -68,13 +68,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            outlined
-                            v-model="filterValues.line"
+                        <v-autocomplete
                             label="Line"
+                            v-model="filterValues.line"
                             :items="sFilter[0].select"
-                            :rules="[rules.required]"
-                        ></v-select>
+                            item-text="text"
+                            item-value="value"
+                            outlined
+                        ></v-autocomplete>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -83,13 +84,14 @@
                     sm="6"
                     md="6"
                     >
-                        <v-select
-                            outlined
-                            v-model="filterValues.shift"
+                        <v-autocomplete
                             label="Shift"
+                            v-model="filterValues.shift"
                             :items="sFilter[1].select"
-                            :rules="[rules.required]"
-                        ></v-select>
+                            item-text="text"
+                            item-value="value"
+                            outlined
+                        ></v-autocomplete>
                     </v-col>
                     <v-col
                     cols="12"
@@ -172,12 +174,8 @@
 </template>
 
 <script>
-import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
     name:'FilterBtn',
-    components: {
-        SelectDropdownObj
-    },
     props:{
         snackbar: {
             type: Object,
@@ -196,17 +194,26 @@ export default {
         initial:true,
         loading:true,
         filterValues:{
-            completeStatus:-1,
+            completeStatus:2,
             type:'',
-            line:'All',
-            shift:'All',
+            line:'',
+            shift:'',
+            teamLeader:'',
+            businessUnitManager:'',
+            originator:'',
+        },
+        defaultFilterValues:{
+            completeStatus:2,
+            type:'',
+            line:'',
+            shift:'',
             teamLeader:'',
             businessUnitManager:'',
             originator:'',
         },
         filter:{
             completeStatus: [
-                { text: 'All', value:-1, disabled: false },
+                { text: 'All', value:2, disabled: false },
                 { text: 'Complete', value:1, disabled: false },
                 { text: 'Incomplete', value:0, disabled: false },
             ],
@@ -226,8 +233,8 @@ export default {
             bum:[]
         },
         sFilter:[
-            {label:'Line', value:'All', select:[]},
-            {label:'Shift', value:'All', select:[]}
+            {label:'Line', value:'', select:[]},
+            {label:'Shift', value:'', select:[]}
         ],
         filterLookups:[{name:'line',num:0}, {name:'shift', num:1}],
         roleLookups:[
@@ -254,7 +261,7 @@ export default {
 
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?FilterCriteria.Type=${vm.filterValues.type}&FilterCriteria.CompleteStatus=${vm.filterValues.completeStatus}&FilterCriteria.Line=${vm.filterValues.line}&FilterCriteria.Shift=${vm.filterValues.shift}&FilterCriteria.TeamLeader=${vm.filterValues.teamLeader}&FilterCriteria.BusinessUnitManager=${vm.filterValues.businessUnitManager}&FilterCriteria.Originator=${vm.filterValues.originator}&PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
                     .then((res) => {
-                        vm.$emit('change', res.data, 'table')
+                        vm.$emit('change', {data:res.data, param:'table'})
                     })
                     .catch(err => {
                         vm.snackbar.snack = true
@@ -268,14 +275,12 @@ export default {
             }
         },
         close() {
-            this.$refs.form.reset()
             this.dialog = false
         },
         clear() {
-            this.$refs.form.reset()
-            this.$emit('change', 1, 'clear')
+            this.filterValues = this.defaultFilterValues
+            this.$emit('change', {data:1, param:'clear'})
             this.filterBtn = 'secondary'
-            this.dialog = false
         },
         fetchLookup() {
             let vm = this
@@ -287,10 +292,11 @@ export default {
                     vm.$axios.get(`${process.env.VUE_APP_API_URL}/Lookup/items/typename/${vm.filterLookups[x].name}`)
                         .then((res) => {
                             let arr = []
-                            arr.push('All')
                             res.data.forEach(item => {
                                 if(item.isActive == true){
-                                    arr.push(item.value)
+                                    if(item.value == 'All') {arr.push({text:item.value, value:''})} else {
+                                        arr.push({text:item.value, value:item.value})
+                                    }
                                 }
                             })
                         vm.sFilter[vm.filterLookups[x].num].select = arr
@@ -300,6 +306,9 @@ export default {
                             vm.snackbar.snackColor = 'error'
                             vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                             console.warn(err)
+                        })
+                        .finally(() => {
+                            vm.loading = false
                         })
                 }
 
@@ -314,6 +323,9 @@ export default {
                         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                         console.warn(err)
                     })
+                    .finally(() => {
+                        vm.loading = false
+                    })
 
                 // team leader and BUM list
                 vm.roleLookups.forEach((role) => {
@@ -327,8 +339,10 @@ export default {
                         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                         console.warn(err)
                     })
+                    .finally(() => {
+                        vm.loading = false
+                    })
                 })
-                vm.loading = false
             }
 
         }

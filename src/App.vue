@@ -9,6 +9,7 @@
       <Header 
         :submitted="input"
         :access="getAccess"
+        :user="user.userId"
         v-if="isHeader"
         @change="updateInput($event)"
       />
@@ -132,10 +133,12 @@
         'Pages.Users.Read'
       ],
       isHeader:false,
-      isMain:false
+      isMain:false,
+      user:{}
     }),
     created() {
       this.checkPermission()
+      this.fetchUser()
     },
     computed: {
       getAccess() {
@@ -186,6 +189,20 @@
           this.isHeader = true
           this.isMain = true
         })
+      },
+      fetchUser() {
+      let vm = this 
+          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUser`)
+          .then((res) => {
+              vm.user = res.data              
+          })
+          .catch(err => {
+              vm.snackbar.snack = true
+              vm.snackbar.snackColor = 'error'
+              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+              console.warn(err)
+          })
+          .finally(() => { })
       }
     }
   }

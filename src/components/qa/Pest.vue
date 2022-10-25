@@ -52,6 +52,7 @@
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
 
 export default {
+    name:'Pest',
     components: {
         SelectDropdownString,
     },

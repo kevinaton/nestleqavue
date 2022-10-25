@@ -146,10 +146,10 @@
                 <v-col>
                     <v-row class="mt-0">
                         <v-col class="pt-0">
-                            <v-text-field readonly label="Cost of Testing" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.costOfTesting" readonly label="Cost of Testing" outlined></v-text-field>
                         </v-col>
                         <v-col class="pt-0">
-                            <v-text-field readonly label="Cost of Labor" outlined></v-text-field>
+                            <v-text-field v-model="inpValue.costOfLabor" readonly label="Cost of Labor" outlined></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
@@ -223,6 +223,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                            outlined
                                             v-bind="attrs"
                                             :disabled="!access"
                                             v-on="on"
@@ -380,6 +381,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                outlined
                                                 :disabled="!access"
                                                 v-bind="attrs"
                                                 v-on="on"
@@ -612,10 +614,17 @@ export default {
             icon:"mdi-check-circle",
             iconColor:"green"
         },
-        checkDoubleCheck:{
+        checkFirstCheck:{
             alertColor:"red lighten-5",
             titleColor:"font-weight-bold redText",
-            dialog:"Double Check Qty not the same as Held Cases",
+            dialog:"First Check Qty not the same as Held Cases",
+            icon:"",
+            iconColor:"red"
+        },
+        checkSecondCheck:{
+            alertColor:"red lighten-5",
+            titleColor:"font-weight-bold redText",
+            dialog:"Second Check Qty not the same as Held Cases",
             icon:"",
             iconColor:"red"
         }
@@ -756,7 +765,7 @@ export default {
                     this.fcStatus = this.checkDefault
                 }
                 else {
-                    this.fcStatus = this.checkDoubleCheck
+                    this.fcStatus = this.checkFirstCheck
                 }
             } else {
                 this.fcStatus = this.fcAcceptable
@@ -767,7 +776,7 @@ export default {
                     this.dcStatus = this.checkDefault
                 }
                 else {
-                    this.dcStatus = this.checkDoubleCheck
+                    this.dcStatus = this.checkSecondCheck
                 }
             } else {
                 this.dcStatus = this.dcAcceptable

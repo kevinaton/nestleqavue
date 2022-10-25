@@ -245,17 +245,15 @@
           }
       },
 
-      toolbarUpdates({value, param}) {
+      toolbarUpdates({data, param}) {
         let vm = this
-        if(param = 'search') {
-          vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        if(param == 'search') {
+          vm.getData(vm.tableOptions.page, 20, data, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
         }
-        if(param = 'table') {
-          console.log('table')
-          vm.qa = value
+        if(param == 'table') {
+          vm.qa = data.data
         }
-        if(param = 'clear') {
-          console.log('clear')
+        if(param == 'clear') {
           vm.fetchHrds()
         }
       },

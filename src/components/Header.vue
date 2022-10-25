@@ -140,6 +140,11 @@ export default {
         type: Object,
         default:() => {},
         required:true
+      },
+      user: {
+        type: String,
+        default:'',
+        required:false
       }
     },
     data: () => ({
@@ -179,11 +184,9 @@ export default {
         { title: 'Raw Materials', name:'rawmaterials', access:'RawMaterials', disabled:false },
       ],
       initialValue:false,
-      redirectvalue:[],
-      user:''
+      redirectvalue:[]
     }),
     created() {
-      this.fetchUser()
       this.currentPage=this.$route.name
       let x = this.currentPage
       for (let i=0; i<this.reports.length; i++) {
@@ -250,21 +253,7 @@ export default {
       redirect() {
         this.$router.push({name:this.redirectvalue.name}).catch(()=>{})
         this.initialValue = false
-      },
-      fetchUser() {
-      let vm = this 
-          vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUser`)
-          .then((res) => {
-              vm.user = res.data              
-          })
-          .catch(err => {
-              vm.snackbar.snack = true
-              vm.snackbar.snackColor = 'error'
-              vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-              console.warn(err)
-          })
-          .finally(() => { })
-      },
+      }
     }
   }
 </script>
