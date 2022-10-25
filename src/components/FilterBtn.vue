@@ -174,12 +174,8 @@
 </template>
 
 <script>
-import SelectDropdownObj from "@/components/FormElements/SelectDropdownObj.vue"
 export default {
     name:'FilterBtn',
-    components: {
-        SelectDropdownObj
-    },
     props:{
         snackbar: {
             type: Object,
@@ -311,6 +307,9 @@ export default {
                             vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                             console.warn(err)
                         })
+                        .finally(() => {
+                            vm.loading = false
+                        })
                 }
 
                 // Originator list
@@ -323,6 +322,9 @@ export default {
                         vm.snackbar.snackColor = 'error'
                         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                         console.warn(err)
+                    })
+                    .finally(() => {
+                        vm.loading = false
                     })
 
                 // team leader and BUM list
@@ -337,8 +339,10 @@ export default {
                         vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                         console.warn(err)
                     })
+                    .finally(() => {
+                        vm.loading = false
+                    })
                 })
-                vm.loading = false
             }
 
         }

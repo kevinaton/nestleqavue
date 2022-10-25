@@ -52,6 +52,7 @@
             <Rework 
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
+                :approveRework="access.HRDApproveRework"
             />
             
             <Scrap 
@@ -83,6 +84,7 @@
     import SnackBar from '@/components/TableElements/SnackBar.vue'
 
     export default {
+        name:'ViewHRD',
         components: {
             HighlightsExp,
             HoldClassification,

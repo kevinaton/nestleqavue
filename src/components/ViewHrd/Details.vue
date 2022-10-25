@@ -223,6 +223,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                            outlined
                                             v-bind="attrs"
                                             :disabled="!access"
                                             v-on="on"
@@ -380,6 +381,7 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
+                                                outlined
                                                 :disabled="!access"
                                                 v-bind="attrs"
                                                 v-on="on"

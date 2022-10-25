@@ -14,7 +14,7 @@
 
 <script>
 export default {
-    name: 'SelectDropdown',
+    name:'SelectDropdownString',
     props: {
         label: {
             type:String,
