@@ -612,10 +612,17 @@ export default {
             icon:"mdi-check-circle",
             iconColor:"green"
         },
-        checkDoubleCheck:{
+        checkFirstCheck:{
             alertColor:"red lighten-5",
             titleColor:"font-weight-bold redText",
-            dialog:"Double Check Qty not the same as Held Cases",
+            dialog:"First Check Qty not the same as Held Cases",
+            icon:"",
+            iconColor:"red"
+        },
+        checkSecondCheck:{
+            alertColor:"red lighten-5",
+            titleColor:"font-weight-bold redText",
+            dialog:"Second Check Qty not the same as Held Cases",
             icon:"",
             iconColor:"red"
         }
@@ -756,7 +763,7 @@ export default {
                     this.fcStatus = this.checkDefault
                 }
                 else {
-                    this.fcStatus = this.checkDoubleCheck
+                    this.fcStatus = this.checkFirstCheck
                 }
             } else {
                 this.fcStatus = this.fcAcceptable
@@ -767,7 +774,7 @@ export default {
                     this.dcStatus = this.checkDefault
                 }
                 else {
-                    this.dcStatus = this.checkDoubleCheck
+                    this.dcStatus = this.checkSecondCheck
                 }
             } else {
                 this.dcStatus = this.dcAcceptable
