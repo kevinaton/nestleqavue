@@ -238,7 +238,18 @@ namespace HRD.WebApi.Controllers
                 MonthHeld = hrd.DateHeld.HasValue ? hrd.DateHeld.Value.ToString("MMMM") : string.Empty,//MonthHeld,
                 WeekHeld = hrd.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(hrd.DateHeld.Value) : null,
                 CostofProductonHold = hrd.CostofProductonHold,
+
+                //Rework Section
+                Schedule = !string.IsNullOrEmpty(hrd.Schedule) && hrd.Schedule.ToLower() == "yes",
+                TlforFu = hrd.TlforFu,
                 ReworkApproved = hrd.ReworkApproved,
+                ReworkApprovedBy = hrd.ReworkApprovedBy,
+                Problem = hrd.Problem,
+                ReworkInstructions = hrd.ReworkInstructions,
+                ReworkStarted = hrd.ReworkStarted,
+                ReworkComplete = hrd.ReworkComplete,
+                ReworkCompletedBy = hrd.ReworkCompletedBy,
+                LaborHours = hrd.LaborHours,
 
                 NumberOfDaysToReworkApproval = hrd.NumberOfDayToReworkApproval,
                 CaseCount = hrd.ScrapCaseCount,
@@ -341,7 +352,19 @@ namespace HRD.WebApi.Controllers
             hrd.HoldSubCategory = model.HoldSubCategory;
 
             hrd.CostofProductonHold = model.CostofProductonHold;
+
+
+            //Rework Section
+            hrd.Schedule = model.Schedule.HasValue && model.Schedule.Value ? "Yes" : "No";
+            hrd.TlforFu = model.TlforFu;
             hrd.ReworkApproved = model.ReworkApproved;
+            hrd.ReworkApprovedBy = model.ReworkApprovedBy;  
+            hrd.Problem = model.Problem;
+            hrd.ReworkInstructions = model.ReworkInstructions;
+            hrd.ReworkStarted = model.ReworkStarted;
+            hrd.ReworkComplete = model.ReworkComplete;
+            hrd.ReworkCompletedBy = model.ReworkCompletedBy;
+            hrd.LaborHours = model.LaborHours;
 
             //not mapped
             hrd.NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval;
@@ -565,7 +588,18 @@ namespace HRD.WebApi.Controllers
                 HoldSubCategory = model.HoldSubCategory,
 
                 CostofProductonHold = model.CostofProductonHold,
+                
+                //Rework Section
+                Schedule = model.Schedule.HasValue ? model.Schedule.Value ? "Yes" : "No" : string.Empty,
+                TlforFu = model.TlforFu,
                 ReworkApproved = model.ReworkApproved,
+                ReworkApprovedBy = model.ReworkApprovedBy,
+                Problem = model.Problem,
+                ReworkInstructions = model.ReworkInstructions,
+                ReworkStarted = model.ReworkStarted,
+                ReworkComplete = model.ReworkComplete,
+                ReworkCompletedBy = model.ReworkCompletedBy,
+                LaborHours = model.LaborHours,
 
                 //not mapped
                 NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
