@@ -205,7 +205,8 @@ namespace HRD.WebApi.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             
-            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
+            // var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
+            var userId = 113;
             var user = await _context.Users.FirstAsync(e => e.Id == userId);
             var result = new CurrentUserDto {
                             UserId = user.UserId,
