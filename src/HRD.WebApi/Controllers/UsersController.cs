@@ -105,6 +105,7 @@ namespace HRD.WebApi.Controllers
         {
             var user = await _context.Users.FindAsync(id);
 
+
             if (user == null)
             {
                 return NotFound();
@@ -201,10 +202,16 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("GetCurrentUser")]
-        public IActionResult GetCurrentUser()
+        public async Task<IActionResult> GetCurrentUser()
         {
-            var currentUser = User.Identities.First().Name;
-            return Ok(currentUser);
+            
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
+            var user = await _context.Users.FirstAsync(e => e.Id == userId);
+            var result = new CurrentUserDto {
+                            UserId = user.UserId,
+                            Name = user.Name,
+                        };
+            return Ok(result);
         }
 
         [HttpGet("CheckPermission")]
