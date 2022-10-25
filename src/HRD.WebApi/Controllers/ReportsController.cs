@@ -41,7 +41,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesCostByCategory
         [HttpGet("CasesCostByCategory")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
             var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.ReportFilter);
@@ -87,7 +87,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesCostByLine
         [HttpGet("CasesCostByLine")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByLine([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
@@ -114,7 +114,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CostHeldByCategory
         [HttpGet("CostHeldByCategory")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
@@ -159,7 +159,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesHeldByCategory
         [HttpGet("CasesHeldByCategory")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
             input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
@@ -204,7 +204,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/FMCases
         [HttpGet("FMCases")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
@@ -271,7 +271,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/PestLog
         [HttpGet("PestLog")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetPestLogGraphData([FromQuery] GetPestLogGraphDataInput input)
         {
             var queryByPest = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.PestType))
@@ -290,7 +290,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/Microbe
         [HttpGet("Microbe")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetMicrobeGraphData([FromQuery] GetMicrobeGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && 
