@@ -53,6 +53,7 @@
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
                 :approveRework="access.HRDApproveRework"
+                :user="user"
             />
             
             <Scrap 
@@ -101,6 +102,11 @@
                 type: Object,
                 default:() => {},
                 required:true
+            },
+            user: {
+                type: String,
+                default:'',
+                required:false
             }
         },
         data: () => ({

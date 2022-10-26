@@ -1,6 +1,6 @@
 <template>
     <v-expansion-panel>
-        <v-expansion-panel-header class="font-weight-bold text-h6 mb-6 rounded-b-0">Rework</v-expansion-panel-header>
+        <v-expansion-panel-header class="font-weight-bold text-h6 rounded-b-0">Rework</v-expansion-panel-header>
         <v-expansion-panel-content>
             <v-row>
                 <v-col class="d-flex align-center">
@@ -15,19 +15,23 @@
                     </v-alert>
                 </v-col>
             </v-row>
-            <v-divider></v-divider>
-            <v-col v-if="approveRework">
+            <v-col class="mt-0" v-if="approveRework">
+                <v-divider></v-divider>
                 <v-row class="mt-3 mb-6">
                     <v-col class="d-flex justify-end">
                         <v-btn
                         outlined
                         :disabled="!access"
+                        large
                         class="mr-2"
+                        @click="startRework"
                         >
                         Start Rework</v-btn>
                         <v-btn
                         color="success"
                         :disabled="!access"
+                        large
+                        @click="reworkCompleted"
                         >
                         Rework Completed</v-btn>
                     </v-col>
@@ -64,20 +68,18 @@
                     </v-col>
                     <v-col cols="12" md="6" sm="6">
                         <v-row>
-                            <v-col class="d-flex align-center mb-6">
+                            <v-col cols="4" sm="4" md="4" class="d-flex align-center justify-end">
                                 <v-checkbox
-                                    class="mt-1 pt-0 mr-8"
+                                    class="mt-0 pt-0"
                                     :readonly="!access"
                                     v-model="inpValue.reworkApproved"
                                     label="Rework Approved?"
                                 ></v-checkbox>
                             </v-col>
-                        </v-row>
-                        <v-row>
-                            <v-col>
+                            <v-col cols="8" sm="8" md="8">
                                 <v-text-field 
                                     outlined
-                                    v-model="inpValue.reworkApprovedBy"
+                                    v-model="getBy"
                                     readonly
                                     label="By"
                                 ></v-text-field>
@@ -95,6 +97,57 @@
                         ></v-textarea>
                     </v-col>
                 </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <v-textarea 
+                            outlined
+                            v-model="inpValue.reworkInstructions"
+                            :readonly="!access"
+                            label="Rework / Disposition Instructions"
+                        ></v-textarea>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <v-text-field
+                            v-model="reworkStart"
+                            outlined
+                            readonly
+                            label="Rework Started"
+                            clearable
+                            @click:clear="clearReworkStarted"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field
+                            v-model="reworkComplete"
+                            outlined
+                            readonly
+                            label="Date Rework Completed"
+                            clearable
+                            @click:clear="clearReworkCompleted"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
+                <v-row class="mt-0">
+                    <v-col>
+                        <v-text-field
+                            v-model="getLaborHours"
+                            outlined
+                            readonly
+                            suffix="hrs"
+                            label="Labor Hours"
+                        ></v-text-field>
+                    </v-col>
+                    <v-col>
+                        <v-text-field 
+                            outlined
+                            v-model="completedBy"
+                            readonly
+                            label="Rework Completed by"
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
             </v-col>
         </v-expansion-panel-content>
     </v-expansion-panel>
@@ -102,6 +155,7 @@
 
 <script>
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
+import moment from 'moment'
 
 export default {
     name:'Rework',
@@ -123,6 +177,11 @@ export default {
             type: Boolean,
             default: false,
             required: false
+        },
+        user: {
+            type: String,
+            default:'',
+            required:false
         }
     },
     data: () => ({
@@ -130,8 +189,25 @@ export default {
         yesno:[
             {name:'Yes', value:true},
             {name:'No', value:false}
-        ]
+        ],
+        reworkStart:'',
+        reworkComplete:'',
+        focusReworkStarted:false
     }),
+    computed:{
+        getBy() {
+            if(this.inpValue.reworkApproved == true)
+                return this.inpValue.reworkApprovedBy = this.user
+        },
+        completedBy() {
+            if(this.reworkComplete)
+                return this.inpValue.reworkCompletedBy = this.user
+        },
+        getLaborHours() {
+            if(this.inpValue.reworkStarted && this.inpValue.reworkComplete)
+                return ((this.inpValue.reworkComplete-this.inpValue.reworkStarted) / 3600000)
+        }
+    },
     methods: {
         fetchTeamLeader() {
             let vm = this
@@ -151,7 +227,23 @@ export default {
                 })
             }
 
-        }
+        },
+        startRework() {
+            let start = new Date()
+            this.inpValue.reworkStarted = start
+            this.reworkStart = moment(start).format('MM/DD/YYYY; hh:mm')
+        },
+        clearReworkStarted() {
+            this.inpValue.reworkStarted = ''
+        },
+        reworkCompleted() {
+            let completed = new Date()
+            this.inpValue.reworkComplete = completed
+            this.reworkComplete = moment(completed).format('MM/DD/YYYY; hh:mm')
+        },
+        clearReworkCompleted() {
+            this.inpValue.reworkComplete = ''
+        },
     }
 }
 </script>
