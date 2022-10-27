@@ -15,31 +15,15 @@
 
         <v-btn plain color="white">
           {{user}}
+          <v-icon class="ml-1">
+            mdi-account-circle
+          </v-icon>
         </v-btn>
 
         <SnackBar 
           :input="snackbar"
           :timeOut="20000"
         />
-
-        <!-- <v-menu offset-y>
-          <template v-slot:activator="{ on, attrs }">
-            <v-avatar size="36">
-              <v-icon dark v-bind="attrs" v-on="on">
-                mdi-account-circle
-              </v-icon>
-            </v-avatar>
-          </template>
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in items"
-              :key="index"
-              link
-            >
-              <v-list-item-title  @click="verify(item)">{{ item.title }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu> -->
         
         <template>
           <v-dialog
