@@ -54,6 +54,7 @@
                         <v-row>
                             <v-col class="pt-0">
                                 <v-autocomplete
+                                    v-if="teamLeader.length > 0"
                                     label="Team Leader"
                                     :readonly="!access"
                                     v-model="inpValue.tlforFu"
@@ -61,7 +62,6 @@
                                     item-text="name"
                                     item-value="userId"
                                     outlined
-                                    @click="fetchTeamLeader"
                                 ></v-autocomplete>
                             </v-col>
                         </v-row>
@@ -192,8 +192,13 @@ export default {
         ],
         reworkStart:'',
         reworkComplete:'',
-        focusReworkStarted:false
+        focusReworkStarted:false,
+        dateStart:null,
+        dateComplete:null,
     }),
+    created() {
+        this.fetchTeamLeader()
+    },
     computed:{
         getBy() {
             if(this.inpValue.reworkApproved == true)
@@ -204,8 +209,10 @@ export default {
                 return this.inpValue.reworkCompletedBy = this.user
         },
         getLaborHours() {
-            if(this.inpValue.reworkStarted && this.inpValue.reworkComplete)
-                return ((this.inpValue.reworkComplete-this.inpValue.reworkStarted) / 3600000)
+            if(this.inpValue.reworkStarted && this.inpValue.reworkComplete) {
+                let x = (this.dateComplete-this.dateStart) / 3600000
+                return this.inpValue.laborHours = parseFloat(x).toFixed(2)
+            }
         }
     },
     methods: {
@@ -229,17 +236,17 @@ export default {
 
         },
         startRework() {
-            let start = new Date()
-            this.inpValue.reworkStarted = start
-            this.reworkStart = moment(start).format('MM/DD/YYYY; hh:mm')
+            this.dateStart = new Date()
+            this.inpValue.reworkStarted = this.dateStart.toISOString()
+            this.reworkStart = moment(this.dateStart).format('MM/DD/YYYY; hh:mm A')
         },
         clearReworkStarted() {
             this.inpValue.reworkStarted = ''
         },
         reworkCompleted() {
-            let completed = new Date()
-            this.inpValue.reworkComplete = completed
-            this.reworkComplete = moment(completed).format('MM/DD/YYYY; hh:mm')
+            this.dateComplete = new Date()
+            this.inpValue.reworkComplete = this.dateComplete.toISOString()
+            this.reworkComplete = moment(this.dateComplete).format('MM/DD/YYYY; hh:mm A')
         },
         clearReworkCompleted() {
             this.inpValue.reworkComplete = ''
