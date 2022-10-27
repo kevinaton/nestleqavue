@@ -3,7 +3,7 @@
         ref="form"
         v-model="valid"
         elevation="0"
-        class="mx-auto mt-6 pa-8"
+        class="mx-auto pa-8"
         lazy-validation
     >
         <SnackBar 
@@ -53,6 +53,7 @@
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
                 :approveRework="access.HRDApproveRework"
+                :user="user"
             />
             
             <Scrap 
@@ -101,6 +102,11 @@
                 type: Object,
                 default:() => {},
                 required:true
+            },
+            user: {
+                type: String,
+                default:'',
+                required:false
             }
         },
         data: () => ({

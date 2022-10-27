@@ -129,7 +129,7 @@ export default {
             let value = this.inpValue
             let t
             if(value != null) {
-                t = this.tempTime = moment.utc(value).format('hh:mm:ss')
+                t = this.tempTime = moment.utc(value).format('hh:mm:ss A')
             } else {
                 
             }

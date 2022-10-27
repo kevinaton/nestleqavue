@@ -1,11 +1,6 @@
 <template>
     <v-app id="inspire">
-      <!-- <v-navigation-drawer
-        v-model="drawer"
-        app
-      >
-      </v-navigation-drawer> -->
-  
+
       <Header 
         :submitted="input"
         :access="getAccess"
@@ -13,15 +8,18 @@
         v-if="isHeader"
         @change="updateInput($event)"
       />
+
       <v-main>
         <router-view 
         :access="access"
+        :user="user.name"
         v-if="isMain"
         @change="updateValue($event)">
         </router-view>
       </v-main>
 
       <Footer />
+      
     </v-app>
 </template>
   
@@ -156,7 +154,6 @@
           if(value === 'checkPermission') {
             this.checkPermission()
             this.getAccess
-            console.log('na emit')
           }
         }
         

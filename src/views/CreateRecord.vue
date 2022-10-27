@@ -1,9 +1,10 @@
 <template>
+    <div>    
     <v-form
         ref="form"
         v-model="valid"
         elevation="0"
-        class="mx-auto mt-6 pt-0 pa-8"
+        class="mx-auto pt-0 pa-8"
     >   
         <SnackBar 
         :input="snackbar"
@@ -109,9 +110,8 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
         </v-expansion-panels>
-
         <v-row>
-            <v-col class="mt-8 d-flex flex-row-reverse align-end">
+            <v-col class="my-8 d-flex flex-row-reverse align-end">
                 <v-dialog
                     v-model="submitdiscard.submitDialog"
                     max-width="290"
@@ -184,6 +184,7 @@
             </v-col>
         </v-row>
     </v-form>
+    </div>
 </template>
 
 <script>
