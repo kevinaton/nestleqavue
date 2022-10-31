@@ -59,7 +59,7 @@ namespace HRD.WebApi.Controllers
 
                 if (query != null)
                 {
-                    return new UserViewModel { UserId = query.UserId, Name = query.Name, UserRoles = roles.Select(s => s.Name).ToList() };
+                    return new UserViewModel { UserId = query.UserId, Name = query.Name};
                 }
             }
             return null;
@@ -76,10 +76,10 @@ namespace HRD.WebApi.Controllers
             };
 
             var claimsList = new List<Claim>(claims);
-            foreach (var role in user.UserRoles)
-            {
-                claimsList.Add(new Claim("role", role));
-            }
+            //foreach (var role in user.UserRoles)
+            //{
+            //    claimsList.Add(new Claim("role", role));
+            //}
             claims = claimsList.ToArray();
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"], _config["Jwt:Audience"], claims, 

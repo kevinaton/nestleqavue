@@ -103,8 +103,7 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
-            var user = await _context.Users.FindAsync(id);
-
+            var user = await _context.Users.Include("UserRoles.Role").FirstOrDefaultAsync(f => f.Id == id);
 
             if (user == null)
             {
@@ -115,7 +114,13 @@ namespace HRD.WebApi.Controllers
             {
                 Id = id,
                 Name = user.Name,
-                UserId = user.UserId
+                UserId = user.UserId,
+                Roles = user.UserRoles.Select(s => new RoleViewModel
+                {
+                    Id = s.Role.Id,
+                    Name = s.Role.Name,
+                    DisplayName = s.Role.DisplayName
+                }).ToList()
             };
 
             return model;
@@ -140,6 +145,30 @@ namespace HRD.WebApi.Controllers
             };
 
             _context.Entry(user).State = EntityState.Modified;
+
+            //Add Or Update Role
+            foreach (var role in model.Roles)
+            {
+                var userRoleEntity = await _context.UserRoles.FirstOrDefaultAsync(f => f.UserId == model.Id && f.RoleId == role.Id);
+
+                if (userRoleEntity == null)
+                {
+                    var userRole = new UserRole
+                    {
+                        UserId = model.Id,
+                        RoleId = role.Id
+                    };
+
+                    _context.UserRoles.Add(userRole);
+                }                
+            }
+
+            //Delete Role
+            var toDeleteRoleList = await _context.UserRoles.Where(f => f.UserId == model.Id && !model.Roles.Select(s => s.Id).Any(a => a == f.RoleId)).ToListAsync();
+            foreach (var userRole in toDeleteRoleList)
+            {
+                _context.Entry(userRole).State = EntityState.Deleted;
+            }
 
             try
             {
@@ -170,11 +199,19 @@ namespace HRD.WebApi.Controllers
             {
                 Id = model.Id,
                 Name = model.Name,
-                UserId = model.UserId
-            };
-
+                UserId = model.UserId,
+                UserRoles = model.Roles.Select(s => new UserRole { RoleId = s.Id }).ToList()
+            };            
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
 
             model.Id = user.Id;
             return CreatedAtAction("GetUser", new { id = model.Id }, model);
