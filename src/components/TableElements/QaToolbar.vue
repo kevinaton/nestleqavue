@@ -16,6 +16,7 @@
         <FilterBtn
             :snackbar="snackbar"
             :tableOptions="tableOptions"
+            :access="access.QARecordsRead"
             @change="updateQA"
         />
 

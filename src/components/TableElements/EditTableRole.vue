@@ -207,13 +207,12 @@ export default {
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Roles/${vm.item.id}`, vm.edit)
                 .then(response => 
                 {
-                    vm.$emit('change', value)
+                    vm.$emit('change', true)
                     vm.dialog = false
                     response.status
                     vm.snackbar.snack = true
                     vm.snackbar.snackColor = 'success'
                     vm.snackbar.snackText = 'Data saved'
-                    vm.$parent.$parent.$parent.$parent.fetchData()
                 })
                 .catch(err => {
                     vm.snackbar.snack = true
@@ -222,7 +221,6 @@ export default {
                     console.warn(err)
                 })
                 .finally(() => {
-                    document.location.reload(true)
                 })
             }
         },

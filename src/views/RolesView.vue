@@ -438,7 +438,9 @@
                 })
             },
             roleUpdated() {
+                this.fetchData()
                 this.$emit('change', 'checkPermission')
+                document.location.reload(true)
             }
 
         },
