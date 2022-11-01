@@ -251,6 +251,7 @@ namespace HRD.WebApi.Controllers
                 ReworkCompletedBy = hrd.ReworkCompletedBy,
                 LaborHours = hrd.LaborHours,
 
+                //Scrap
                 NumberOfDaysToReworkApproval = hrd.NumberOfDayToReworkApproval,
                 CaseCount = hrd.ScrapCaseCount,
                 ReasonAction = hrd.ScrapReasonAction,
@@ -268,6 +269,7 @@ namespace HRD.WebApi.Controllers
                 ApprovedByDistroyedWhen = hrd.ApprovedByDistroyedWhen,
                 Comments = hrd.Comments,
                 YearOfIncident = hrd.YearOfIncident,
+                BatchCodes = hrd.BatchCodes,
 
                 HrdDcTotalCases = hrd.Hrddcs.Sum(s => s.NumberOfCases),
                 HrdFcTotalCases = hrd.Hrdfcs.Sum(s => s.NumberOfCases),
@@ -366,23 +368,30 @@ namespace HRD.WebApi.Controllers
             hrd.ReworkCompletedBy = model.ReworkCompletedBy;
             hrd.LaborHours = model.LaborHours;
 
-            //not mapped
-            hrd.NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval;
-            hrd.YearOfIncident = model.YearOfIncident;
+            //Scrap
             hrd.ScrapCaseCount = model.CaseCount;
             hrd.ScrapReasonAction = model.ReasonAction;
+            hrd.BatchCodes = model.BatchCodes;
+
             hrd.IsApprovalRequestByQa = model.ApprovalRequestByQa;
-            hrd.IsPlantManagerAprpoval = model.IsPlantManagerAprpoval;
-            hrd.IsPlantControllerApproval = model.IsPlantControllerApproval;
-            hrd.IsDestroyed = model.IsDestroyed;
             hrd.ApprovedByQawho = model.ApprovedByQAWho;
             hrd.ApprovedByQawhen = model.ApprovedByQAWhen;
+
+            hrd.IsPlantManagerAprpoval = model.IsPlantManagerAprpoval;
             hrd.ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho;
             hrd.ApprovedPlantManagerQawhen = model.ApprovedPlantManagerQAWhen;
+
+            hrd.IsPlantControllerApproval = model.IsPlantControllerApproval;
             hrd.ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho;
             hrd.ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen;
+
+            hrd.IsDestroyed = model.IsDestroyed;
             hrd.ApprovedByDistroyedWho = model.ApprovedByDistroyedWho;
             hrd.ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen;
+
+            //not mapped
+            hrd.NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval;
+            hrd.YearOfIncident = model.YearOfIncident;                        
             hrd.Comments = model.Comments;
 
             //HRD First Check
@@ -601,23 +610,30 @@ namespace HRD.WebApi.Controllers
                 ReworkCompletedBy = model.ReworkCompletedBy,
                 LaborHours = model.LaborHours,
 
+                //Scrap
+                ScrapCaseCount = model.CaseCount,
+                ScrapReasonAction = model.ReasonAction,
+                BatchCodes = model.BatchCodes,
+
+                IsApprovalRequestByQa = model.ApprovalRequestByQa,
+                ApprovedByQawho = model.ApprovedByQAWho,
+                ApprovedByQawhen = model.ApprovedByQAWhen,
+
+                IsPlantManagerAprpoval = model.IsPlantManagerAprpoval,
+                ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho,
+                ApprovedPlantManagerQawhen = model.ApprovedPlantManagerQAWhen,
+
+                IsPlantControllerApproval = model.IsPlantControllerApproval,
+                ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho,
+                ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen,
+
+                IsDestroyed = model.IsDestroyed,
+                ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
+                ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
+
                 //not mapped
                 NumberOfDayToReworkApproval = model.NumberOfDaysToReworkApproval,
                 YearOfIncident = model.YearOfIncident,
-                ScrapCaseCount = model.CaseCount,
-                ScrapReasonAction = model.ReasonAction,
-                IsApprovalRequestByQa = model.ApprovalRequestByQa,
-                IsPlantManagerAprpoval = model.IsPlantManagerAprpoval,
-                IsPlantControllerApproval = model.IsPlantControllerApproval,
-                IsDestroyed = model.IsDestroyed,
-                ApprovedByQawho = model.ApprovedByQAWho,
-                ApprovedByQawhen = model.ApprovedByQAWhen,
-                ApprovedByPlantManagerWho = model.ApprovedByPlantManagerWho,
-                ApprovedPlantManagerQawhen = model.ApprovedPlantManagerQAWhen,
-                ApprovedByPlantControllerWho = model.ApprovedByPlantControllerWho,
-                ApprovedByPlantControllerWhen = model.ApprovedByPlantControllerWhen,
-                ApprovedByDistroyedWho = model.ApprovedByDistroyedWho,
-                ApprovedByDistroyedWhen = model.ApprovedByDistroyedWhen,
                 Comments = model.Comments,
 
                 Hrdnotes = model.HrdNotes.Select(s => new Hrdnote { Category = s.Category, Date = s.Date, Description = s.Description, FileName = s.Filename, UserId = s.UserId, Size = s.Size }).ToList(),
