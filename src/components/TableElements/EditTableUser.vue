@@ -1,107 +1,204 @@
 <template>
-    <v-edit-dialog
-        :return-value.sync="table"
-        light
-        @save="save($event)"
-        @cancel="cancel"
+    <v-dialog
+        v-model="dialog"
+        max-width="500px"
     >
-        {{ table }}
-        <template v-slot:input>
-            <v-text-field
-                :value="table"
-                @input="updateValue($event)"
-                :rules="rules"
-                :type="type"
-                label="Edit"
-                single-line
-                persistent
-            ></v-text-field>
+        <template v-slot:activator="{ on, attrs }">
+            <v-hover
+                v-slot="{ hover }"
+                v-if="!access"
+                open-delay="200"
+            >
+                <v-icon
+                    @click="setData"
+                    v-bind="attrs"
+                    v-on="on"
+                    :color="hover ? 'grey darken-3' : 'grey lighten-2'"
+                    :class="{ 'on-hover': hover }"
+                >
+                    mdi-pencil
+                </v-icon>
+            </v-hover>
         </template>
-    </v-edit-dialog>
+        <v-card>
+                <v-form
+                    ref="form"
+                    class="pa-4"
+                    v-model="valid"
+                >
+                    <v-card-title>
+                        <span class="text-h5">Edit User</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container class="px-0">
+                            <v-row>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="6"
+                                >
+                                    <v-text-field
+                                        v-model="edit.name"
+                                        :label="forms[0].label"
+                                        :rules="[rules.required]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="6"
+                                >
+                                    <v-text-field
+                                        v-model="edit.userId"
+                                        :label="forms[1].label"
+                                        :rules="[rules.required]"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col
+                                    cols="12"
+                                    sm="12"
+                                    md="12"
+                                >
+                                    <v-autocomplete
+                                        v-model="edit.roles"
+                                        :items="role"
+                                        outlined
+                                        chips
+                                        small-chips
+                                        label="Roles"
+                                        multiple
+                                        item-text="name"
+                                        return-object
+                                    >
+                                    </v-autocomplete>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            color="blue darken-1"
+                            text
+                            @click="cancel"
+                        >
+                        Cancel
+                        </v-btn>
+                        <v-btn
+                            :disabled="!valid"
+                            light
+                            color="primary"
+                            @click="save(valid), validate"
+                        >
+                        Save
+                        </v-btn>
+                    </v-card-actions>
+                </v-form>
+            </v-card>
+    </v-dialog>
 </template>
 
 <script>
 export default {
-    name:'EditTableNumber',
+    name:'EditTableUser',
     props: {
         input: {
             type:Object,
             default: () => {},
             required: false,
         },
-        table: {
+        item: {
             required: false
-        },
-        type: {
-            type:String,
-            default: '',
-            required: false
-        },
-        data: {
-            type:Object,
-            default: () => {},
-            required:false
-        },
-        editData: {
-            type:String,
-            default:'',
-            required:false
         },
         rules: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        role: {
+            type: Array,
+            default: () => [],
+            required: false
+        },
+        access: {
+            type: Boolean,
+            default: false,
+            required: false
+        },
+        forms: {
             type: Array,
             default: () => [],
             required: false
         }
     },
     data: () => ({
-        max50chars: v => v.length <= 50 || 'Input too long!',
-        required: value => !!value || 'Required.',
+        dialog:false,
         origVal:[],
+        edit:{},
+        roleItems:[],
+        valid: false
     }),
     created () {
-        this.saveOriginalValue()
+        
     },
     emits: ['change'],
     methods: {
-        save() {            
-            let ed = this.editData
-            let value
-            value = this.data.ed = this.origVal = this.table
+        save(valid) { 
+            let vm = this,
+                value = vm.origVal = vm.edit
 
-
-            this.$axios.put(`${process.env.VUE_APP_API_URL}/Users/${this.data.id}`,  {
-                id:this.data.id,
-                name:this.data.name,
-                userId:this.data.userId,
-            })
-            .then(response => 
-            {
-                this.$emit('change', value)
-                response.status
-                this.input.snack = true
-                this.input.snackColor = 'success'
-                this.input.snackText = 'Data saved'
-            })
-            .catch(err => {
-                this.input.snack = true
-                this.input.snackColor = 'error'
-                this.input.snackText = 'Something went wrong. Please try again later. ' + err
-                console.warn(err)
-            }) 
+            if(valid == true) {
+                console.log(vm.edit)
+                // vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.item.id}`,  {
+                //     id: vm.edit.id,
+                //     year: vm.edit.year,
+                //     fert: vm.edit.fert,
+                //     description: vm.edit.description,
+                //     costPerCase: vm.edit.costPerCase,
+                //     country: vm.edit.country,
+                //     noBbdate: vm.edit.noBbdate
+                // })
+                // .then(response => 
+                // {
+                //     vm.$emit('change', value)
+                //     vm.editDialog = false
+                //     response.status
+                //     vm.input.snack = true
+                //     vm.input.snackColor = 'success'
+                //     vm.input.snackText = 'Data saved'
+                //     vm.$parent.$parent.$parent.$parent.fetchData()
+                // })
+                // .catch(err => {
+                //     vm.input.snack = true
+                //     vm.input.snackColor = 'error'
+                //     vm.input.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
+            }
         },
-        cancel() {
-            this.input.snack = true
-            this.input.snackColor = 'info'
-            this.input.snackText = 'Canceled'
+        cancel () {
             let value = this.origVal
             this.$emit('change', value)
+            this.dialog = false
         },
-        updateValue(value) {
-            this.$emit('change', value)
+        setData() {
+            let vm = this
+            vm.origVal = vm.item
+            vm.edit = {
+                id: vm.item.id,
+                name: vm.item.name,
+                userId: vm.item.userId,
+                roles: vm.item.roles
+            }
+
+            vm.dialog = true
         },
-        saveOriginalValue() {
-            this.origVal = this.table
-        }
+        validate() {
+            this.$refs.form.validate()
+        },
     }
 }
 </script>

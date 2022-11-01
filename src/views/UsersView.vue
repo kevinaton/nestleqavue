@@ -33,7 +33,7 @@
             title="Users"
             formTitle="Add User"
             btnName="Add User"
-            :access="!access.LaborEdit"
+            :access="!access.UsersEdit"
             :rules="rules"
             :adding="true"
             :forms="forms"
@@ -48,19 +48,17 @@
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-        <SimpleEdit 
+        <EditTableUser
             :input="snackbar"
             :item="item"
+            :role="role.data"
+            :rules="rules"
+            :access="!access.UsersEdit"
             :forms="forms"
-            :access="!access.LaborEdit"
-            formTitle="Edit User"
-            apiUrl="Users"
-            id="id"
-            :smmd="6"
         />
         <DeleteAction 
             :item="item"
-            :access="!access.LaborEdit"
+            :access="!access.UsersEdit"
             :tableItem="users"
             :input="toolbar"
             durl="id"
@@ -147,15 +145,16 @@ export default {
             username: ''
         },
     },
+    role:{},
     rules: {
-            required: value => !!value || 'Required',
-            counter: value => value.length <= 50 || 'Input too long.',
-            int: value => value <= 2147483647 || 'Enter a lesser amount',
-            email: value => {
-                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                return pattern.test(value) || 'Invalid e-mail.'
-            },
+        required: value => !!value || 'Required',
+        counter: value => value.length <= 50 || 'Input too long.',
+        int: value => value <= 2147483647 || 'Enter a lesser amount',
+        email: value => {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return pattern.test(value) || 'Invalid e-mail.'
         },
+    },
     headers: [
         {
         text: 'ID',
@@ -195,7 +194,8 @@ export default {
             index:1,
             name:'userId',
             label:'User ID',
-            type:'', value:'',
+            type:'',
+            value:'',
             edit:true,
             visible:true,
             rules:value => !!value || 'Required'
@@ -221,7 +221,13 @@ export default {
     },
 
     created () {
-    this.fetchData()
+        this.fetchData()
+        this.getRoles()
+
+        if(this.role.totalPages > 1) {
+            console.log('niagi diri')
+            this.getRoles()
+        }
     },
 
     methods: {
@@ -297,9 +303,9 @@ export default {
             vm.tableOptions.desc = desc
         })
         .catch(err => {
-            this.snackbar.snack = true
-            this.snackbar.snackColor = 'error'
-            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'error'
+            vm.snackbar.snackText = 'Something went wrong. Please try again later.'
             console.warn(err)
         })
         .finally(() => {
@@ -307,8 +313,20 @@ export default {
             vm.tableOptions.page = pageInput
         })
     },
-    
 
+    getRoles() {
+        let vm = this
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=1&PageSize=100`)
+            .then((res) => {
+                vm.role = res.data
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+    }
     },
 }
 </script>

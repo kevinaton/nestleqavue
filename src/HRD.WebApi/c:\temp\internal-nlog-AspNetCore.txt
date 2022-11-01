@@ -1,8 +1,0 @@
-2022-11-01 22:01:57.6892 Info Message Template Auto Format enabled
-2022-11-01 22:01:57.7341 Info Loading assembly: NLog.Web.AspNetCore
-2022-11-01 22:01:57.8394 Info Adding target FileTarget(Name=allfile)
-2022-11-01 22:01:57.8429 Info Adding target ConsoleTarget(Name=lifetimeConsole)
-2022-11-01 22:01:57.8883 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: Microsoft.Hosting.Lifetime.
-2022-11-01 22:01:57.8910 Warn Error has been raised. Exception: NLog.NLogConfigurationException: Target 'ownFile-web' not found for logging rule: *.
-2022-11-01 22:01:57.9855 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config
-2022-11-01 22:01:59.1467 Info Validating config: TargetNames=allfile, lifetimeConsole, ConfigItems=29, FilePath=/Users/kevinaton/Documents/Project/JW/Nestle HRD/Nestle_QA/nestleqa/src/HRD.WebApi/bin/Release/net6.0/NLog.config
