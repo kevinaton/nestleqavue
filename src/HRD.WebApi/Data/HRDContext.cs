@@ -313,6 +313,8 @@ namespace HRD.WebApi.Data
                 entity.Property(e => e.YearHeld).HasMaxLength(4);
 
                 entity.Property(e => e.YearOfIncident).HasMaxLength(4);
+
+                entity.Property(e => e.BatchCodes).HasMaxLength(512);
             });
 
             modelBuilder.Entity<Hrddc>(entity =>

@@ -154,6 +154,7 @@ namespace HRD.WebApi.Data.Entities
         public string StarchType { get; set; }
         public string AdditionalComments { get; set; }
         public string YearOfIncident { get; set; }
+        public string BatchCodes { get; set; }
         public virtual ICollection<Hrddc> Hrddcs { get; set; }
         public virtual ICollection<Hrdfc> Hrdfcs { get; set; }
         public virtual ICollection<Hrdnote> Hrdnotes { get; set; }
