@@ -126,7 +126,7 @@
                     </v-row>
                     <v-row class="mt-0">
                         <v-col cols="12" class="pt-0">
-                            <v-text-field :readonly="!access" v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
+                            <v-text-field v-model="getNumberOfDaysHeld" label="Number of Days Held" outlined readonly></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
@@ -688,6 +688,12 @@ export default {
                 return 'No date'
             } else
             return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
+        getNumberOfDaysHeld() {
+            let complete = new Date(this.inpValue.dateCompleted),
+                start = new Date(this.inpValue.dateofDisposition)
+            
+            return Math.round((complete - start) / 86400000)
         }
     },
     emits: ['change'],
@@ -796,7 +802,6 @@ export default {
             }
         },
         getUsers() {
-            
         }
     }
 }
