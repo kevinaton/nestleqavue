@@ -26,6 +26,9 @@
                         }"
                     />
                 </v-col>
+                <v-col>
+                    <v-text-field v-model="inpValue.cases" type="Number" :readonly="!access" outlined :rules="[rules.int]" label="Cases Held"></v-text-field>
+                </v-col>
             </v-row>
             <!-- <v-row class="mt-0">
                 <v-col class="d-flex align-center">
@@ -297,7 +300,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                        <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.fcUser"></v-text-field>
+                                            <v-text-field
+                                                v-model="inpValue.fcUser"
+                                                label="Username"
+                                                outlined
+                                                readonly
+                                            ></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
@@ -453,7 +461,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.dcUser"></v-text-field>
+                                            <v-text-field
+                                                v-model="inpValue.dcUser"
+                                                label="Username"
+                                                outlined
+                                                readonly
+                                            ></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
@@ -627,8 +640,8 @@ export default {
             dialog:"Second Check Qty not the same as Held Cases",
             icon:"",
             iconColor:"red"
-        }
-
+        },
+        userList:[]
     }),
     created() {
         this.checkFcDcCases()
@@ -781,6 +794,9 @@ export default {
             } else {
                 this.dcStatus = this.dcAcceptable
             }
+        },
+        getUsers() {
+            
         }
     }
 }

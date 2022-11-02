@@ -306,6 +306,7 @@
         }),
         created() {
             this.fetchHRD()
+            this.getUserRole()
         },
         emits: ["change"],
         methods: {
@@ -391,7 +392,21 @@
                 if(y == "detailsCheck") {
                     this.submitHRD(x)
                 }
+            },
+            getUserRole() {
+                // let vm = this 
+                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.$route.params.id}`)
+                // .then((res) => {
+                //     console.log(res)
+                // })
+                // .catch(err => {
+                //     this.snackbar.snack = true
+                //     this.snackbar.snackColor = 'error'
+                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
             }
+
         },
         computed: {
             getHRD(){
