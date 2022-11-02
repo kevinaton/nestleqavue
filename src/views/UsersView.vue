@@ -29,20 +29,15 @@
             url="Users"
             :snackbar="snackbar"
         />
-        <SimpleToolbar 
-            title="Users"
-            formTitle="Add User"
-            btnName="Add User"
-            :access="!access.UsersEdit"
-            :rules="rules"
-            :adding="true"
-            :forms="forms"
-            :toolbar="toolbar"
+        <UserToolbar
             :table="users"
+            :tableOptions="tableOptions"
             :snackbar="snackbar"
             util="Users"
-            apiUrl="Users"
-            :tableOptions="tableOptions"
+            :adding="true"
+            :access="!access.UsersEdit"
+            :rules="rules"
+            :role="role.data"
             @change="getSearch($event)"
         />
     </template>
@@ -82,6 +77,7 @@
 <script>
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
+import UserToolbar from '@/components/TableElements/UserToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -94,6 +90,7 @@ export default {
     components: {
         Breadcrumbs,
         SimpleToolbar,
+        UserToolbar,
         ResetTable,
         SnackBar,
         RowDelete,
@@ -266,7 +263,11 @@ export default {
 
     getSearch(value) {
         let vm = this
-        vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        if(value == true) {
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        } else {
+            vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        }
     },
 
     customSort(par, event) {
@@ -335,7 +336,7 @@ export default {
     },
 
     editUser() {
-        console.log('niagi diri')
+        let vm = this
         this.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
     }
     },
