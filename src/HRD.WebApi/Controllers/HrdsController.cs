@@ -341,6 +341,7 @@ namespace HRD.WebApi.Controllers
             hrd.NumberOfDaysHeld = model.NumberOfDaysHeld;
             hrd.Donate = model.Donate;
             hrd.AllCasesAccountedFor = model.AllCasesAccountedFor;
+            hrd.Cases = model.Cases;
             hrd.OtherHrdaffected = model.OtherHrdAffected;
             hrd.HighRisk = model.HighRisk;
             hrd.OtherHrdnum = model.OtherHrdNum;
@@ -584,6 +585,7 @@ namespace HRD.WebApi.Controllers
                 NumberOfDaysHeld = model.NumberOfDaysHeld,
                 Donate = model.Donate,
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
+                Cases = model.Cases,
                 OtherHrdaffected = model.OtherHrdAffected,
                 HighRisk = model.HighRisk,
                 OtherHrdnum = model.OtherHrdNum,
