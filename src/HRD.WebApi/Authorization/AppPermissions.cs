@@ -52,6 +52,11 @@
         public const string HRD_Delete = "Pages.HRD.Delete";
         public const string HRD_ApproveRework = "Pages.HRD.ApproveRework";
         public const string HRD_EmailNotification = "Pages.HRD.EmailNotification";
+        public const string HRD_ApprovalRequestByQa = "Pages.HRD.ApprovalRequestByQa";
+        public const string HRD_PlantManagerApproval = "Pages.HRD.PlantManagerApproval";
+        public const string HRD_PlantControllerApproval = "Pages.HRD.PlantControllerApproval";
+        public const string HRD_Destroyed = "Pages.HRD.Destroyed";
+
 
         public const string BestBeforeCalculator = "Pages.BestBeforeCalculator";
         public const string BestBeforeCalculator_BasedOnCountry = "Pages.BestBeforeCalculator.BasedOnCountry";
