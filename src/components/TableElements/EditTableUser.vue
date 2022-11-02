@@ -151,32 +151,22 @@ export default {
                 value = vm.origVal = vm.edit
 
             if(valid == true) {
-                console.log(vm.edit)
-                // vm.$axios.put(`${process.env.VUE_APP_API_URL}/Products/${vm.item.id}`,  {
-                //     id: vm.edit.id,
-                //     year: vm.edit.year,
-                //     fert: vm.edit.fert,
-                //     description: vm.edit.description,
-                //     costPerCase: vm.edit.costPerCase,
-                //     country: vm.edit.country,
-                //     noBbdate: vm.edit.noBbdate
-                // })
-                // .then(response => 
-                // {
-                //     vm.$emit('change', value)
-                //     vm.editDialog = false
-                //     response.status
-                //     vm.input.snack = true
-                //     vm.input.snackColor = 'success'
-                //     vm.input.snackText = 'Data saved'
-                //     vm.$parent.$parent.$parent.$parent.fetchData()
-                // })
-                // .catch(err => {
-                //     vm.input.snack = true
-                //     vm.input.snackColor = 'error'
-                //     vm.input.snackText = 'Something went wrong. Please try again later.'
-                //     console.warn(err)
-                // })
+                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`, vm.edit)
+                .then(response => 
+                {
+                    response.status
+                    vm.$emit('change', true)
+                    vm.dialog = false
+                    vm.input.snack = true
+                    vm.input.snackColor = 'success'
+                    vm.input.snackText = 'Data saved'
+                })
+                .catch(err => {
+                    vm.input.snack = true
+                    vm.input.snackColor = 'error'
+                    vm.input.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
             }
         },
         cancel () {

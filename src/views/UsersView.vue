@@ -55,6 +55,7 @@
             :rules="rules"
             :access="!access.UsersEdit"
             :forms="forms"
+            @change="editUser"
         />
         <DeleteAction 
             :item="item"
@@ -209,7 +210,8 @@ export default {
             edit:false,
             visible:false
         },
-    ]
+    ],
+    roleSize:100
     }),
 
     computed: {
@@ -225,8 +227,7 @@ export default {
         this.getRoles()
 
         if(this.role.totalPages > 1) {
-            console.log('niagi diri')
-            this.getRoles()
+            this.getRoles(true)
         }
     },
 
@@ -314,9 +315,14 @@ export default {
         })
     },
 
-    getRoles() {
+    getRoles(value) {
         let vm = this
-        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=1&PageSize=100`)
+        
+        if(value == true) {
+            this.roleSize = this.roleSize + 200
+        }
+
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=1&PageSize=${this.roleSize}`)
             .then((res) => {
                 vm.role = res.data
             })
@@ -326,6 +332,11 @@ export default {
                 vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                 console.warn(err)
             })
+    },
+
+    editUser() {
+        console.log('niagi diri')
+        this.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
     }
     },
 }
