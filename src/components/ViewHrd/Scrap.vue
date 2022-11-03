@@ -6,7 +6,7 @@
                 <v-col class="d-flex align-end flex-column">
                         <v-btn
                             tile
-                            :disabled="!access"
+                            :disabled="!access.HRDEdit"
                         >
                         <v-icon left>mdi-printer</v-icon>
                             Print Scrap Ticket Only
@@ -15,39 +15,39 @@
             </v-row>
             <v-row>
                 <v-col>
-                    <v-text-field :readonly="!access" v-model="inpValue.caseCount" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDEdit" v-model="inpValue.caseCount" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Case Count" outlined></v-text-field>
                 </v-col>
                 <v-col>
-                    <v-text-field :readonly="!access" v-model="inpValue.reasonAction" :rules="[rules.counter]" label="Reason Action" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDEdit" v-model="inpValue.reasonAction" :rules="[rules.counter]" label="Reason Action" outlined></v-text-field>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-textarea :readonly="!access" outlined v-model="inpValue.batchCodes" :rules="[rules.counter]" label="Batch Codes" placeholder="Write here"></v-textarea>
+                    <v-textarea :readonly="!access.HRDEdit" outlined v-model="inpValue.batchCodes" :rules="[rules.counter]" label="Batch Codes" placeholder="Write here"></v-textarea>
                 </v-col>
             </v-row>
             <v-row class="mt-0">
                 <v-col class="d-flex justify-space-around">
                     <v-checkbox
-                        :readonly="!access"
+                        :disabled="!access.HRDApprovalRequestByQa"
                         v-model="inpValue.approvalRequestByQa"
                         label="Approval Request by QA"
                         class="mr-5"
                     ></v-checkbox>
                     <v-checkbox
-                        :readonly="!access"
+                        :disabled="!access.HRDPlantManagerApproval"
                         v-model="inpValue.isPlantManagerAprpoval"
                         label="Plant Manager Approval"
                         class="mr-5"
                     ></v-checkbox>
                     <v-checkbox
-                        :readonly="!access"
+                        :disabled="!access.HRDPlantControllerApproval"
                         v-model="inpValue.isPlantControllerApproval"
                         label="Plant Controller Approval"
                         class="mr-5"
                     ></v-checkbox>
                     <v-checkbox
-                        :readonly="!access"
+                        :disabled="!access.HRDDestroyed"
                         v-model="inpValue.isDestroyed"
                         label="Destroyed"
                         class="mr-5"
@@ -72,13 +72,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field :readonly="!access" v-model="inpValue.approvedByQAWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDApprovalRequestByQa" v-model="inpValue.approvedByQAWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
                         :items1="input.qaCalendar"
                         :items2="input.qaClock"
-                        :access="!access"
+                        :access="!access.HRDApprovalRequestByQa"
                         :inpValue="qaDate"
                         :rules="[rules.required]"
                         label1="Date"
@@ -105,13 +105,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field :readonly="!access" v-model="inpValue.approvedByPlantManagerWho" :rules="[rules.counter]"  label="Who" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDEdit" v-model="inpValue.approvedByPlantManagerWho" :rules="[rules.counter]"  label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
                         :items1="input.pmCalendar"
                         :items2="input.pmClock"
-                        :acces="!access"
+                        :acces="!access.HRDEdit"
                         :inpValue="pmDate"
                         :rules="[rules.required]"
                         label1="Date"
@@ -138,14 +138,14 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field :readonly="!access" v-model="inpValue.approvedByPlantControllerWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDEdit" v-model="inpValue.approvedByPlantControllerWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
                         :items1="input.pcCalendar"
                         :items2="input.pcClock"
                         :inpValue="pcDate"
-                        :access="!access"
+                        :access="!access.HRDEdit"
                         :rules="[rules.required]"
                         label1="Date"
                         label2="Time"
@@ -171,13 +171,13 @@
                     </v-alert>
                 </v-col>
                 <v-col class="py-0">
-                    <v-text-field :readonly="!access" v-model="inpValue.approvedByDistroyedWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
+                    <v-text-field :readonly="!access.HRDEdit" v-model="inpValue.approvedByDistroyedWho" :rules="[rules.counter]" label="Who" outlined></v-text-field>
                 </v-col>
                 <v-col class="py-0">
                     <DateTimePicker
                         :items1="input.dCalendar"
                         :items2="input.dClock"
-                        :access="!access"
+                        :access="!access.HRDEdit"
                         :inpValue="dDate"
                         :rules="[rules.required]"
                         label1="Date"
@@ -214,8 +214,8 @@ export default {
             required: false
         },
         access: {
-            type: Boolean,
-            default: false,
+            type: Object,
+            default: () => {},
             required: false
         }
     },

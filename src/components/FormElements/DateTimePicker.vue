@@ -111,27 +111,42 @@ export default {
     data: () => ({
         tempDate:'',
         tempTime:'',
+        dateTime:null
     }),
     created() {
     },
     computed: {
         getDate() {
-            let value = this.inpValue
-            let d
+            let value = this.inpValue, 
+                d,
+                newDate = new Date().toISOString()
+
             if(value != null) {
                 d = this.tempDate = moment.utc(value).format('MM-DD-YYYY')
             } else {
-                
+                d = this.tempDate = moment.utc(newDate).format('MM-DD-YYYY')
+
+                if(this.tempTime != null) {
+                    this.dateTime = moment.utc(`${this.tempDate} ${this.tempTime}`, "MM-DD-YYYY hh:mm:ss A").toISOString()
+                    this.$emit('change', this.dateTime)
+                }
             }
             return d
         },
         getTime() {
-            let value = this.inpValue
-            let t
+            let value = this.inpValue,
+                t,
+                newDate = new Date().toISOString()
+
             if(value != null) {
                 t = this.tempTime = moment.utc(value).format('hh:mm:ss A')
             } else {
-                
+                t = this.tempTime = moment.utc(newDate).format('hh:mm:ss A')
+
+                if(this.tempDate != null) {
+                    this.dateTime = moment.utc(`${this.tempDate} ${this.tempTime}`, "MM-DD-YYYY hh:mm:ss A").toISOString()
+                    this.$emit('change', this.dateTime)
+                }
             }
             return t
         },

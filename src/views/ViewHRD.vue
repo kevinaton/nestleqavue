@@ -58,7 +58,7 @@
             
             <Scrap 
                 :inpValue="getHRD"
-                :access="access.HRDEdit"
+                :access="access"
                 :input="scrap" 
                 :rules="rules"
             />
@@ -360,6 +360,9 @@
             formData.append('jsonString', JSON.stringify(vm.hrd))
             vm.valid = value
             if(vm.valid == true) {
+
+                console.log(vm.hrd)
+
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  formData,
                 {
                     headers: {
