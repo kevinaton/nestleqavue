@@ -105,6 +105,8 @@
                             item-text="name"
                             item-value="userId"
                             outlined
+                            clearable
+                            @click:clear="checkNull('filterValues.teamLeader')"
                         ></v-autocomplete>
                     </v-col>
                 </v-row>
@@ -121,6 +123,8 @@
                             item-text="name"
                             item-value="userId"
                             outlined
+                            clearable
+                            @click:clear="checkNull('filterValues.businessUnitManager')"
                         ></v-autocomplete>
                     </v-col>
                     <v-col
@@ -135,6 +139,8 @@
                             item-text="name"
                             item-value="userId"
                             outlined
+                            clearable
+                            @click:clear="checkNull('filterValues.originator')"
                         ></v-autocomplete>
                     </v-col>
                 </v-row>
@@ -187,6 +193,11 @@ export default {
             default: () => {},
             required: false
         },
+        access: {
+            type: Boolean,
+            default: true,
+            required: false
+        }
     },
     data: () => ({
         dialog:false,
@@ -248,6 +259,8 @@ export default {
         },
         filterBtn:'secondary'
     }),
+    computed: {
+    },
     emits: ["change"],
     methods: {
         validate() {
@@ -271,6 +284,7 @@ export default {
                     })
                     .finally(() => {
                         vm.loading = false
+                        vm.initial = false
                     })
             }
         },
@@ -343,8 +357,14 @@ export default {
                         vm.loading = false
                     })
                 })
-            }
 
+                vm.initial = false
+            }
+        },
+        checkNull() {
+            // NOT DONE
+            console.log('niagi diri')
+            Object.values(this.filterValues).every(x => {if(x === null) x = ''})
         }
     }
 }

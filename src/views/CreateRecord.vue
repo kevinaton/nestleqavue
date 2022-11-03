@@ -4,7 +4,7 @@
         ref="form"
         v-model="valid"
         elevation="0"
-        class="mx-auto pt-0 pa-8"
+        class="mx-auto pa-8"
     >   
         <SnackBar 
         :input="snackbar"
@@ -110,79 +110,81 @@
                 </v-expansion-panel-content>
             </v-expansion-panel>
         </v-expansion-panels>
-        <v-row>
-            <v-col class="my-8 d-flex flex-row-reverse align-end">
-                <v-dialog
-                    v-model="submitdiscard.submitDialog"
-                    max-width="290"
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn @click="validate" color="primary" class="mr-3" :disabled="!valid" light large v-bind="attrs" v-on="on">
-                            Save
-                        </v-btn>
-                    </template>
-                    <v-card>
-                        <v-card-title class="text-h5">
-                        Are you sure?
-                        </v-card-title>
-                        <v-card-text>You are about to submit your entries.</v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color=""
-                            text
-                            large
-                            @click="submitdiscard.submitDialog = false"
-                        >
-                            Cancel
-                        </v-btn>
-                        <v-btn
-                            color="primary"
-                            text
-                            large
-                            @click="submitdiscard.submitDialog = false, submitQA(valid), validate"
-                        >
-                            Save
-                        </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-                <v-dialog
-                    v-model="submitdiscard.discardDialog"
-                    max-width="290"
-                >
-                    <template v-slot:activator="{ on, attrs }">
-                        <v-btn class="mr-3" :disabled="submitted" light large v-bind="attrs" v-on="on">
-                            Cancel
-                        </v-btn>
-                    </template>
-                    <v-card>
-                        <v-card-title class="text-h5">
-                        Are you sure?
-                        </v-card-title>
-                        <v-card-text>Any unsaved data will be lost.</v-card-text>
-                        <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn
-                            color="primary"
-                            text
-                            @click="submitdiscard.discardDialog = false"
-                        >
-                            Back
-                        </v-btn>
-                        <v-btn
-                            color=""
-                            text
-                            to='/'
-                            @click="submitdiscard.discardDialog = false"
-                        >
-                            Cancel
-                        </v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-col>
-        </v-row>
+        <v-card class="mt-10 pa-6">
+            <v-row>
+                <v-col class="d-flex flex-row-reverse align-end">
+                    <v-dialog
+                        v-model="submitdiscard.submitDialog"
+                        max-width="290"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn @click="validate" color="primary" :disabled="!valid" light large v-bind="attrs" v-on="on">
+                                Save
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title class="text-h5">
+                            Are you sure?
+                            </v-card-title>
+                            <v-card-text>You are about to submit your entries.</v-card-text>
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color=""
+                                text
+                                large
+                                @click="submitdiscard.submitDialog = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            <v-btn
+                                color="primary"
+                                text
+                                large
+                                @click="submitdiscard.submitDialog = false, submitQA(valid), validate"
+                            >
+                                Save
+                            </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                    <v-dialog
+                        v-model="submitdiscard.discardDialog"
+                        max-width="290"
+                    >
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-btn class="mr-3" :disabled="submitted" light large v-bind="attrs" v-on="on">
+                                Cancel
+                            </v-btn>
+                        </template>
+                        <v-card>
+                            <v-card-title class="text-h5">
+                            Are you sure?
+                            </v-card-title>
+                            <v-card-text>Any unsaved data will be lost.</v-card-text>
+                            <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                                color="primary"
+                                text
+                                @click="submitdiscard.discardDialog = false"
+                            >
+                                Back
+                            </v-btn>
+                            <v-btn
+                                color=""
+                                text
+                                to='/'
+                                @click="submitdiscard.discardDialog = false"
+                            >
+                                Cancel
+                            </v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-col>
+            </v-row>
+        </v-card>
     </v-form>
     </div>
 </template>

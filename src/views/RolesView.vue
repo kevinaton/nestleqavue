@@ -305,31 +305,35 @@
                     { id:36, name:'Edit', value:"Pages.HRD.Edit" },
                     { id:37, name:'Delete HRD', value:"Pages.HRD.Delete" },
                     { id:38, name:'Approve Rework', value:"Pages.HRD.ApproveRework" },
-                    { id:39, name:'Gets Email Notifications', value:"Pages.HRD.EmailNotification" }
+                    { id:39, name:'Gets Email Notifications', value:"Pages.HRD.EmailNotification" },
+                    { id:40, name:'Approval Request by QA', value:'Pages.HRD.ApprovalRequestByQa'},
+                    { id:41, name:'Plant Manager Approval', value:'Pages.HRD.PlantManagerApproval'},
+                    { id:42, name:'Plant Controller Approval', value:'Pages.HRD.PlantControllerApproval'},
+                    { id:43, name:'Destroyed', value:'Pages.HRD.Destroyed'}
                 ]
             },
             {
-                id:40,
+                id:44,
                 name:'Best before calculator',
                 locked:false,
                 value:"Pages.BestBeforeCalculator",
                 children:[
-                    { id:41, name:'Based on Country', value:"Pages.BestBeforeCalculator.BasedOnCountry" },
-                    { id:42, name:'Based on GPN', value:"Pages.BestBeforeCalculator.BasedOnGPN" }
+                    { id:45, name:'Based on Country', value:"Pages.BestBeforeCalculator.BasedOnCountry" },
+                    { id:46, name:'Based on GPN', value:"Pages.BestBeforeCalculator.BasedOnGPN" }
                 ]
             },
             {
-                id:43,
+                id:47,
                 name:'GSTD',
                 locked:false,
                 value:'Pages.GSTD',
                 children:[
-                    { id:44, name:'Member', value:"Pages.GSTD.Member" },
-                    { id:45, name:'Get notifications', value:"Pages.GSTD.Notification" }
+                    { id:48, name:'Member', value:"Pages.GSTD.Member" },
+                    { id:49, name:'Get notifications', value:"Pages.GSTD.Notification" }
                 ]
             },
             {
-                id:46,
+                id:50,
                 name:'Business Unit Manager',
                 locked:false,
                 value:"Pages.BusinessUnitManager"
@@ -439,6 +443,7 @@
             },
             roleUpdated() {
                 this.$emit('change', 'checkPermission')
+                document.location.reload(true)
             }
 
         },

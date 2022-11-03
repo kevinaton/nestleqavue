@@ -6,6 +6,7 @@
             loading-text="Loading... Please wait"
             :headers="header"
             :items="lineTable"
+            hide-default-footer
         ></v-data-table>
         </v-card>
     </v-col>

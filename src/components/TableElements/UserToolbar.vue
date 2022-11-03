@@ -1,56 +1,74 @@
 <template>
-    <v-dialog
-        v-model="dialog"
-        max-width="500px"
-    >
-        <template v-slot:activator="{ on, attrs }">
-            <v-hover
-                v-slot="{ hover }"
-                v-if="!access"
-                open-delay="200"
+    <v-toolbar flat>
+        <v-toolbar-title>Users</v-toolbar-title>
+        <v-spacer></v-spacer>
+
+        <!-- Search input -->
+        <v-text-field
+            :value="searchInput"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            @change="searchVal($event)"
+            hide-details
+        ></v-text-field>
+
+        <Export
+            :item="table"
+            :tableOptions="tableOptions"
+            :snackbar="snackbar"
+            :util="util"
+        />
+
+        <!-- Add User -->
+        <v-dialog
+            v-model="dialog"
+            max-width="500px"
+        >
+            <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                v-if="adding && !access"
+                color="primary"
+                dark
+                large
+                class="mb-2 ml-5"
+                v-bind="attrs"
+                v-on="on"
             >
-                <v-icon
-                    @click="setData"
-                    v-bind="attrs"
-                    v-on="on"
-                    :color="hover ? 'grey darken-3' : 'grey lighten-2'"
-                    :class="{ 'on-hover': hover }"
-                >
-                    mdi-pencil
-                </v-icon>
-            </v-hover>
-        </template>
-        <v-card>
+                Add User
+            </v-btn>
+            </template>
+            <v-card>
                 <v-form
                     ref="form"
                     class="pa-4"
                     v-model="valid"
                 >
                     <v-card-title>
-                        <span class="text-h5">Edit User</span>
+                        <span class="text-h5">Add User</span>
                     </v-card-title>
                     <v-card-text>
                         <v-container class="px-0">
                             <v-row>
                                 <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="6"
+                                cols="12"
+                                sm="6"
+                                md="6"
                                 >
                                     <v-text-field
-                                        v-model="edit.name"
-                                        :label="forms[0].label"
+                                        v-model="addUser.name"
+                                        label="Name"
                                         :rules="[rules.required]"
                                     ></v-text-field>
                                 </v-col>
                                 <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="6"
+                                cols="12"
+                                sm="6"
+                                md="6"
                                 >
                                     <v-text-field
-                                        v-model="edit.userId"
-                                        :label="forms[1].label"
+                                        v-model="addUser.userId"
+                                        label="User ID"
                                         :rules="[rules.required]"
                                     ></v-text-field>
                                 </v-col>
@@ -62,7 +80,7 @@
                                     md="12"
                                 >
                                     <v-autocomplete
-                                        v-model="edit.roles"
+                                        v-model="addUser.roles"
                                         :items="role"
                                         outlined
                                         chips
@@ -77,13 +95,12 @@
                             </v-row>
                         </v-container>
                     </v-card-text>
-
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
-                            color="blue darken-1"
-                            text
-                            @click="cancel"
+                        color="blue darken-1"
+                        text
+                        @click="cancel"
                         >
                         Cancel
                         </v-btn>
@@ -98,29 +115,41 @@
                     </v-card-actions>
                 </v-form>
             </v-card>
-    </v-dialog>
+        </v-dialog>
+    </v-toolbar>
 </template>
 
 <script>
+import Export from '@/components/Exportcsv.vue'
+
 export default {
-    name:'EditTableUser',
+    name:'UserToolbar',
+    components: {
+        Export
+    },
     props: {
-        input: {
-            type:Object,
-            default: () => {},
-            required: false,
+        table: {
+            type: Array,
+            default: () => [],
         },
-        item: {
-            required: false
-        },
-        rules: {
+        tableOptions: {
             type: Object,
             default: () => {},
             required: false
         },
-        role: {
-            type: Array,
-            default: () => [],
+        snackbar: {
+            type: Object,
+            default: () => {},
+            required: false
+        },
+        util: {
+            type: String,
+            default:'',
+            required: false
+        },
+        adding: {
+            type: Boolean,
+            default: false,
             required: false
         },
         access: {
@@ -128,74 +157,65 @@ export default {
             default: false,
             required: false
         },
-        forms: {
+        rules: {
+            type: Object,
+            deafult: () => {},
+            required: false
+        },
+        role: {
             type: Array,
             default: () => [],
             required: false
-        }
+        },
     },
     data: () => ({
+        searchInput:'',
         dialog:false,
         origVal:[],
-        edit:{},
-        roleItems:[],
-        valid: false
+        valid:false,
+        addUser:{
+            id:0,
+            name:'',
+            userId:'',
+            roles:[]
+        },
+        defaultUser:{
+            id:0,
+            name:'',
+            userId:'',
+            roles:[]
+        }
     }),
-    created () {
-        
-    },
-    emits: ['change'],
     methods: {
-        save(valid) { 
-            let vm = this,
-                value = vm.origVal = vm.edit
-
+        searchVal(value) {
+            this.searchInput = value
+            this.$emit('change', value)
+        },
+        cancel() {
+            this.$refs.form.reset()
+            this.dialog = false
+        },
+        save(valid) {
+            let vm = this
+            
             if(valid == true) {
-                vm.$axios.put(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`, vm.edit)
+                vm.$axios.post(`${process.env.VUE_APP_API_URL}/Users`, vm.addUser)
                 .then(response => 
                 {
                     response.status
                     vm.$emit('change', true)
                     vm.dialog = false
-                    vm.input.snack = true
-                    vm.input.snackColor = 'success'
-                    vm.input.snackText = 'Data saved'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'success'
+                    vm.snackbar.snackText = 'Data saved'
                 })
                 .catch(err => {
-                    vm.input.snack = true
-                    vm.input.snackColor = 'error'
-                    vm.input.snackText = 'Something went wrong. Please try again later.'
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
                     console.warn(err)
                 })
             }
-        },
-        cancel () {
-            let value = this.origVal
-            this.$emit('change', value)
-            this.dialog = false
-        },
-        setData() {
-            let vm = this
-            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`)
-            .then((res) => {
-                console.log(res)
-                vm.edit = {
-                    id: res.data.id,
-                    name: res.data.name,
-                    userId: res.data.userId,
-                    roles: res.data.roles
-                }
-                vm.origVal = vm.edit
-                console.log(vm.edit)
-            })
-            .catch(err => {
-                vm.snackbar.snack = true
-                vm.snackbar.snackColor = 'error'
-                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
-                console.warn(err)
-            })
-
-            vm.dialog = true
         },
         validate() {
             this.$refs.form.validate()

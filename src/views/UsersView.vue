@@ -29,38 +29,32 @@
             url="Users"
             :snackbar="snackbar"
         />
-        <SimpleToolbar 
-            title="Users"
-            formTitle="Add User"
-            btnName="Add User"
-            :access="!access.LaborEdit"
-            :rules="rules"
-            :adding="true"
-            :forms="forms"
-            :toolbar="toolbar"
+        <UserToolbar
             :table="users"
+            :tableOptions="tableOptions"
             :snackbar="snackbar"
             util="Users"
-            apiUrl="Users"
-            :tableOptions="tableOptions"
+            :adding="true"
+            :access="!access.UsersEdit"
+            :rules="rules"
+            :role="role.data"
             @change="getSearch($event)"
         />
     </template>
 
     <template v-slot:[`item.actions`]="{ item }">
-        <SimpleEdit 
+        <EditTableUser
             :input="snackbar"
             :item="item"
+            :role="role.data"
+            :rules="rules"
+            :access="!access.UsersEdit"
             :forms="forms"
-            :access="!access.LaborEdit"
-            formTitle="Edit User"
-            apiUrl="Users"
-            id="id"
-            :smmd="6"
+            @change="editUser"
         />
         <DeleteAction 
             :item="item"
-            :access="!access.LaborEdit"
+            :access="!access.UsersEdit"
             :tableItem="users"
             :input="toolbar"
             durl="id"
@@ -83,6 +77,7 @@
 <script>
 import Breadcrumbs from '@/components/BreadCrumbs.vue'
 import SimpleToolbar from '@/components/TableElements/SimpleToolbar.vue'
+import UserToolbar from '@/components/TableElements/UserToolbar.vue'
 import ResetTable from '@/components/TableElements/ResetTable.vue'
 import SnackBar from '@/components/TableElements/SnackBar.vue'
 import RowDelete from '@/components/TableElements/RowDelete.vue'
@@ -95,6 +90,7 @@ export default {
     components: {
         Breadcrumbs,
         SimpleToolbar,
+        UserToolbar,
         ResetTable,
         SnackBar,
         RowDelete,
@@ -147,15 +143,16 @@ export default {
             username: ''
         },
     },
+    role:{},
     rules: {
-            required: value => !!value || 'Required',
-            counter: value => value.length <= 50 || 'Input too long.',
-            int: value => value <= 2147483647 || 'Enter a lesser amount',
-            email: value => {
-                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                return pattern.test(value) || 'Invalid e-mail.'
-            },
+        required: value => !!value || 'Required',
+        counter: value => value.length <= 50 || 'Input too long.',
+        int: value => value <= 2147483647 || 'Enter a lesser amount',
+        email: value => {
+            const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            return pattern.test(value) || 'Invalid e-mail.'
         },
+    },
     headers: [
         {
         text: 'ID',
@@ -165,7 +162,6 @@ export default {
         },
         { text: 'Name', sortable: true, value: 'name' },
         { text: 'User ID', sortable: true, value: 'userId' },
-        { text: 'User Role', sortable: true, value: 'userRoles' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],
@@ -195,7 +191,8 @@ export default {
             index:1,
             name:'userId',
             label:'User ID',
-            type:'', value:'',
+            type:'',
+            value:'',
             edit:true,
             visible:true,
             rules:value => !!value || 'Required'
@@ -209,7 +206,8 @@ export default {
             edit:false,
             visible:false
         },
-    ]
+    ],
+    roleSize:100
     }),
 
     computed: {
@@ -221,7 +219,12 @@ export default {
     },
 
     created () {
-    this.fetchData()
+        this.fetchData()
+        this.getRoles()
+
+        if(this.role.totalPages > 1) {
+            this.getRoles(true)
+        }
     },
 
     methods: {
@@ -259,7 +262,11 @@ export default {
 
     getSearch(value) {
         let vm = this
-        vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        if(value == true) {
+            vm.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        } else {
+            vm.getData(vm.tableOptions.page, 20, value, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+        }
     },
 
     customSort(par, event) {
@@ -297,9 +304,9 @@ export default {
             vm.tableOptions.desc = desc
         })
         .catch(err => {
-            this.snackbar.snack = true
-            this.snackbar.snackColor = 'error'
-            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            vm.snackbar.snack = true
+            vm.snackbar.snackColor = 'error'
+            vm.snackbar.snackText = 'Something went wrong. Please try again later.'
             console.warn(err)
         })
         .finally(() => {
@@ -307,8 +314,30 @@ export default {
             vm.tableOptions.page = pageInput
         })
     },
-    
 
+    getRoles(value) {
+        let vm = this
+        
+        if(value == true) {
+            this.roleSize = this.roleSize + 200
+        }
+
+        vm.$axios.get(`${process.env.VUE_APP_API_URL}/Roles?PageNumber=1&PageSize=${this.roleSize}`)
+            .then((res) => {
+                vm.role = res.data
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
+    },
+
+    editUser() {
+        let vm = this
+        this.getData(vm.tableOptions.page, 20, vm.tableOptions.searchValue, vm.tableOptions.sortBy[0], vm.tableOptions.sortDesc[0], vm.tableOptions.desc)
+    }
     },
 }
 </script>

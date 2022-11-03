@@ -26,6 +26,9 @@
                         }"
                     />
                 </v-col>
+                <v-col>
+                    <v-text-field v-model="inpValue.cases" type="Number" :readonly="!access" outlined :rules="[rules.int]" label="Cases Held"></v-text-field>
+                </v-col>
             </v-row>
             <!-- <v-row class="mt-0">
                 <v-col class="d-flex align-center">
@@ -123,7 +126,7 @@
                     </v-row>
                     <v-row class="mt-0">
                         <v-col cols="12" class="pt-0">
-                            <v-text-field :readonly="!access" v-model="inpValue.numberOfDaysHeld" :rules="[rules.int]" type="number" onkeypress="return event.keyCode === 8 || event.charCode >= 48 && event.charCode <= 57" label="Number of Days Held" outlined></v-text-field>
+                            <v-text-field v-model="getNumberOfDaysHeld" label="Number of Days Held" outlined readonly></v-text-field>
                         </v-col>
                     </v-row>
                     <v-row class="mt-0">
@@ -297,7 +300,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                        <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.fcUser"></v-text-field>
+                                            <v-text-field
+                                                v-model="inpValue.fcUser"
+                                                label="Username"
+                                                outlined
+                                                readonly
+                                            ></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
@@ -453,7 +461,12 @@
                                 <v-col>
                                     <v-row>
                                         <v-col>
-                                            <v-text-field :readonly="!access" label="Username" outlined v-model="inpValue.dcUser"></v-text-field>
+                                            <v-text-field
+                                                v-model="inpValue.dcUser"
+                                                label="Username"
+                                                outlined
+                                                readonly
+                                            ></v-text-field>
                                         </v-col>
                                         <v-col>
                                             <SimpleDatePicker 
@@ -627,8 +640,8 @@ export default {
             dialog:"Second Check Qty not the same as Held Cases",
             icon:"",
             iconColor:"red"
-        }
-
+        },
+        userList:[]
     }),
     created() {
         this.checkFcDcCases()
@@ -675,6 +688,17 @@ export default {
                 return 'No date'
             } else
             return moment.utc(this.inpValue.dcDate).format('YYYY/MM/DD | hh:mm:ss')
+        },
+        getNumberOfDaysHeld() {
+            let complete = new Date(this.inpValue.dateCompleted),
+                start = new Date(this.inpValue.dateofDisposition),
+                range = Math.round((complete - start) / 86400000)
+
+            if(range > 0) {
+                return range
+            } else {
+                return 0
+            }
         }
     },
     emits: ['change'],
@@ -781,6 +805,8 @@ export default {
             } else {
                 this.dcStatus = this.dcAcceptable
             }
+        },
+        getUsers() {
         }
     }
 }

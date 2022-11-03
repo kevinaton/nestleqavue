@@ -58,7 +58,7 @@
             
             <Scrap 
                 :inpValue="getHRD"
-                :access="access.HRDEdit"
+                :access="access"
                 :input="scrap" 
                 :rules="rules"
             />
@@ -306,6 +306,7 @@
         }),
         created() {
             this.fetchHRD()
+            this.getUserRole()
         },
         emits: ["change"],
         methods: {
@@ -359,6 +360,9 @@
             formData.append('jsonString', JSON.stringify(vm.hrd))
             vm.valid = value
             if(vm.valid == true) {
+
+                console.log(vm.hrd)
+
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  formData,
                 {
                     headers: {
@@ -391,7 +395,21 @@
                 if(y == "detailsCheck") {
                     this.submitHRD(x)
                 }
+            },
+            getUserRole() {
+                // let vm = this 
+                // vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.$route.params.id}`)
+                // .then((res) => {
+                //     console.log(res)
+                // })
+                // .catch(err => {
+                //     this.snackbar.snack = true
+                //     this.snackbar.snackColor = 'error'
+                //     this.snackbar.snackText = 'Something went wrong. Please try again later.'
+                //     console.warn(err)
+                // })
             }
+
         },
         computed: {
             getHRD(){
