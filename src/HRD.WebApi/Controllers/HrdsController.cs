@@ -177,6 +177,7 @@ namespace HRD.WebApi.Controllers
                                          .Include(i => i.Hrdfcs)
                                          .Include(i => i.Hrdpos)
                                          .Include(i => i.Hrdnotes)
+                                         .Include(i => i.HrdtestCosts)
                                          .FirstOrDefaultAsync(f => f.Id == id);
 
             if (hrd == null)
@@ -219,13 +220,14 @@ namespace HRD.WebApi.Controllers
                 Complete = hrd.Complete,
                 Cancelled = hrd.Cancelled,
                 Samples = hrd.Samples ?? 0,
-                NumberOfDaysHeld = hrd.NumberOfDaysHeld,
                 Donate = hrd.Donate ?? 0,
                 AllCasesAccountedFor = hrd.AllCasesAccountedFor,
                 Cases = hrd.Cases,
                 OtherHrdAffected = hrd.OtherHrdaffected,
                 HighRisk = hrd.HighRisk,
                 OtherHrdNum = hrd.OtherHrdnum,
+                CostOfTesting = hrd.HrdtestCosts.Sum(s => s.Cost),
+                CostOfLabor = hrd.LaborHours,
 
                 FcDate = hrd.Fcdate,
                 FcUser = hrd.Fcuser,
@@ -338,7 +340,6 @@ namespace HRD.WebApi.Controllers
             hrd.Cancelled = model.Cancelled;
 
             hrd.Samples = model.Samples;
-            hrd.NumberOfDaysHeld = model.NumberOfDaysHeld;
             hrd.Donate = model.Donate;
             hrd.AllCasesAccountedFor = model.AllCasesAccountedFor;
             hrd.Cases = model.Cases;
@@ -582,7 +583,6 @@ namespace HRD.WebApi.Controllers
                 Cancelled = model.Cancelled,
 
                 Samples = model.Samples,
-                NumberOfDaysHeld = model.NumberOfDaysHeld,
                 Donate = model.Donate,
                 AllCasesAccountedFor = model.AllCasesAccountedFor,
                 Cases = model.Cases,

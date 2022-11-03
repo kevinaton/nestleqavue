@@ -53,7 +53,6 @@ namespace HRD.WebApi.ViewModels
         public bool? Complete { get; set; }
         public bool? Cancelled { get; set; }
         public int? Samples { get; set; }
-        public int? NumberOfDaysHeld { get; set; }
         public int? Donate { get; set; }
         public bool? AllCasesAccountedFor { get; set; }
         public int? Cases { get; set; }
@@ -107,8 +106,8 @@ namespace HRD.WebApi.ViewModels
         public string Comments { get; set; }
         public int HrdFcTotalCases { get; set; }
         public int HrdDcTotalCases { get; set; }
-        public int CostOfTesting { get; set; }
-        public int CostOfLabor { get; set; }
+        public decimal? CostOfTesting { get; set; }
+        public decimal? CostOfLabor { get; set; }
         public string BatchCodes { get; set; }
     }
 }
