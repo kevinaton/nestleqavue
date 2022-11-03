@@ -176,13 +176,24 @@ export default {
         },
         setData() {
             let vm = this
-            vm.origVal = vm.item
-            vm.edit = {
-                id: vm.item.id,
-                name: vm.item.name,
-                userId: vm.item.userId,
-                roles: vm.item.roles
-            }
+            vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`)
+            .then((res) => {
+                console.log(res)
+                vm.edit = {
+                    id: res.data.id,
+                    name: res.data.name,
+                    userId: res.data.userId,
+                    roles: res.data.roles
+                }
+                vm.origVal = vm.edit
+                console.log(vm.edit)
+            })
+            .catch(err => {
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                console.warn(err)
+            })
 
             vm.dialog = true
         },
