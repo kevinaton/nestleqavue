@@ -691,9 +691,14 @@ export default {
         },
         getNumberOfDaysHeld() {
             let complete = new Date(this.inpValue.dateCompleted),
-                start = new Date(this.inpValue.dateofDisposition)
-            
-            return Math.round((complete - start) / 86400000)
+                start = new Date(this.inpValue.dateofDisposition),
+                range = Math.round((complete - start) / 86400000)
+
+            if(range > 0) {
+                return range
+            } else {
+                return 0
+            }
         }
     },
     emits: ['change'],
