@@ -12,7 +12,7 @@
       <v-main>
         <router-view 
         :access="access"
-        :user="user.name"
+        :user="user"
         v-if="isMain"
         @change="updateValue($event)">
         </router-view>
