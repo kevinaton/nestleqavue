@@ -227,8 +227,8 @@
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
                                             outlined
+                                            :disabled="checkFcUser"
                                             v-bind="attrs"
-                                            :disabled="!access"
                                             v-on="on"
                                             >
                                             Add Case</v-btn>
@@ -242,7 +242,6 @@
                                             <v-card-title>
                                                 <span class="text-h5">Add First Check</span>
                                             </v-card-title>
-
                                             <v-card-text>
                                                 <v-container>
                                                 <v-row>
@@ -301,7 +300,7 @@
                                     <v-row>
                                         <v-col>
                                             <v-text-field
-                                                v-model="inpValue.fcUser"
+                                                v-model="getFcUsername"
                                                 label="Username"
                                                 outlined
                                                 readonly
@@ -327,7 +326,7 @@
                                 >
                                     <v-icon
                                         @click="deleteFcItem(item, index)"
-                                        :disabled="!access"
+                                        v-if="!checkFcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -336,41 +335,44 @@
                                 </v-hover>
                             </template>
                         </v-data-table>
-                        <v-row>
-                            <v-col class="pr-1">
-                                <v-alert
-                                    color="blue-grey lighten-5" 
-                                    class="mt-3 mb-3 ml-3 mr-0 pa-0"
-                                    light
-                                    rounded
-                                >
-                                    <v-list-item>
-                                    <v-list-item-content class="pa-0">
-                                        <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
-                                    </v-list-item-content>
-                                    </v-list-item>
-                                </v-alert>
-                            </v-col>
-                            <v-col class="pl-1">
-                                <v-alert
-                                    :color="fcStatus.alertColor"
-                                    class="mr-3 mt-3 mb-3 ml-0 pa-0"
-                                    light
-                                    rounded
-                                >
-                                    <v-list-item>
-                                    <v-list-item-content class="pa-0">
-                                        <v-list-item-title :class="`${fcStatus.titleColor}`">
-                                            {{ fcStatus.dialog }}
-                                            <v-icon :color="fcStatus.iconColor">
-                                                {{ fcStatus.icon }}
-                                            </v-icon>
-                                        </v-list-item-title>
-                                    </v-list-item-content>
-                                    </v-list-item>
-                                </v-alert>
-                            </v-col>
-                        </v-row>
+                        <v-card-actions class="px-5">
+                            <v-row>
+                                <v-col cols="12" sm="12" md="6" class="ma-0 px-1">
+                                    <v-alert
+                                        color="blue-grey lighten-5" 
+                                        class="ma-0 pa-0"
+                                        light
+                                        rounded
+                                    >
+                                        <v-list-item>
+                                        <v-list-item-content class="pa-0">
+                                            <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdFcTotalCases}}</v-list-item-title>
+                                        </v-list-item-content>
+                                        </v-list-item>
+                                    </v-alert>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="6" class="ma-0 px-1">
+                                    <v-alert
+                                        :color="fcStatus.alertColor"
+                                        class="ma-0 pa-0"
+                                        light
+                                        rounded
+                                        style="overflow:hidden; text-overflow:ellipsis; white-space: nowrap; width:100%"
+                                    >
+                                        <v-list-item>
+                                        <v-list-item-content class="pa-0">
+                                            <v-list-item-title :class="`${fcStatus.titleColor}`">
+                                                {{ fcStatus.dialog }}
+                                                <v-icon :color="fcStatus.iconColor">
+                                                    {{ fcStatus.icon }}
+                                                </v-icon>
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                        </v-list-item>
+                                    </v-alert>
+                                </v-col>
+                            </v-row>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
                 <v-col>
@@ -389,10 +391,10 @@
                                     >
                                         <template v-slot:activator="{ on, attrs }">
                                             <v-btn
-                                                outlined
-                                                :disabled="!access"
-                                                v-bind="attrs"
-                                                v-on="on"
+                                            outlined
+                                            :disabled="checkDcUser"
+                                            v-bind="attrs"
+                                            v-on="on"
                                             >
                                             Add Case</v-btn>
                                         </template>
@@ -462,7 +464,7 @@
                                     <v-row>
                                         <v-col>
                                             <v-text-field
-                                                v-model="inpValue.dcUser"
+                                                v-model="getDcUsername"
                                                 label="Username"
                                                 outlined
                                                 readonly
@@ -488,7 +490,7 @@
                                 >
                                     <v-icon
                                         @click="deleteDcItem(item, index)"
-                                        :disabled="!access"
+                                        v-if="!checkDcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -497,41 +499,44 @@
                                 </v-hover>
                             </template>
                         </v-data-table>
-                        <v-row>
-                            <v-col class="pr-1">
-                                <v-alert
-                                    color="blue-grey lighten-5"
-                                    class="mt-3 mb-3 ml-3 mr-0 pa-0"
-                                    light
-                                    rounded
-                                >
-                                <v-list-item>
-                                <v-list-item-content class="pa-0">
-                                    <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdDcTotalCases}}</v-list-item-title>
-                                </v-list-item-content>
-                                </v-list-item>
-                                </v-alert>
-                            </v-col>
-                            <v-col class="pl-1">
-                                <v-alert
-                                    :color="dcStatus.alertColor"
-                                    class="mr-3 mt-3 mb-3 ml-0 pa-0"
-                                    light
-                                    rounded
-                                >
+                        <v-card-actions class="px-5">
+                            <v-row>
+                                <v-col cols="12" sm="12" md="6" class="ma-0 px-1">
+                                    <v-alert
+                                        color="blue-grey lighten-5"
+                                        class="ma-0 pa-0"
+                                        light
+                                        rounded
+                                    >
                                     <v-list-item>
                                     <v-list-item-content class="pa-0">
-                                        <v-list-item-title :class="`${dcStatus.titleColor}`">
-                                            {{ dcStatus.dialog }}
-                                            <v-icon :color="dcStatus.iconColor">
-                                                {{ dcStatus.icon }}
-                                            </v-icon>
-                                        </v-list-item-title>
+                                        <v-list-item-title class="font-weight-bold">Total Cases: {{inpValue.hrdDcTotalCases}}</v-list-item-title>
                                     </v-list-item-content>
                                     </v-list-item>
-                                </v-alert>
-                            </v-col>
-                        </v-row>
+                                    </v-alert>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="6" class="ma-0 px-1">
+                                    <v-alert
+                                        :color="dcStatus.alertColor"
+                                        class="ma-0 pa-0"
+                                        light
+                                        rounded
+                                        style="overflow:hidden; text-overflow:ellipsis; white-space: nowrap; width:100%"
+                                    >
+                                        <v-list-item>
+                                        <v-list-item-content class="pa-0">
+                                            <v-list-item-title :class="`${dcStatus.titleColor}`">
+                                                {{ dcStatus.dialog }}
+                                                <v-icon :color="dcStatus.iconColor">
+                                                    {{ dcStatus.icon }}
+                                                </v-icon>
+                                            </v-list-item-title>
+                                        </v-list-item-content>
+                                        </v-list-item>
+                                    </v-alert>
+                                </v-col>
+                            </v-row>
+                        </v-card-actions>
                     </v-card>
                 </v-col>
             </v-row>
@@ -579,6 +584,11 @@ export default {
         access: {
             type: Boolean,
             default: false,
+            required: false
+        },
+        user: {
+            type: Object,
+            default: () => {},
             required: false
         }
     },
@@ -699,6 +709,45 @@ export default {
             } else {
                 return 0
             }
+        },
+        getFcUsername() {
+            if(this.inpValue.hrdFc.length > 0) {
+                return this.inpValue.fcUser
+            } else {
+                this.inpValue.fcDate = null
+                return this.inpValue.fcUser = ''
+            }
+        },
+        getDcUsername() {
+            if(this.inpValue.hrdDc.length > 0) {
+                return this.inpValue.dcUser
+            } else {
+                this.inpValue.dcDate = null
+                return this.inpValue.dcUser = ''
+            }
+        },
+        checkFcUser() {
+            if(this.access == false || this.inpValue.fcUser != this.user.userId) {
+                if(this.inpValue.fcUser == '') {
+                    return false
+                } else {
+                    return true
+                }
+            } else {
+                return false
+            }
+        },
+        checkDcUser() {
+            if(this.access == false || this.inpValue.dcUser != this.user.userId) {
+                if(this.inpValue.dcUser == '') {
+                    return false
+                } else {
+                    return true
+                }
+            }
+            else {
+                return false
+            }
         }
     },
     emits: ['change'],
@@ -707,7 +756,6 @@ export default {
         let vm = this,
             lastObj = value[vm.oPoLength - 1],
             npoNumber = value[vm.oPoLength]
-
             vm.inpValue.hrdPo.push({
                 id: 0,
                 hrdId: vm.inpValue.id,
@@ -754,25 +802,37 @@ export default {
             this.dcDialog = false
         },
         saveFc(fcForm) {
-                if(fcForm == true) {
+            if(fcForm == true) {
+                if(this.inpValue.fcUser == '' || this.inpValue.fcUser == this.user.userId) {
+                    if(this.inpValue.fcUser == '') {
+                        this.inpValue.fcUser = this.user.userId
+                    }
                     this.inpValue.hrdFc.push({
-                    location: this.fcLocation,
-                    numberOfCases: this.fcNumberOfCases
-                })
-                this.$emit('change', {x:true, y:'detailsCheck'})
-                this.checkFcDcCases()
-                this.closeFc()
+                        location: this.fcLocation,
+                        numberOfCases: this.fcNumberOfCases
+                    })
+                    this.inpValue.fcDate = new Date().toISOString()
+                    this.$emit('change', {x:true, y:'detailsCheck'})
+                    this.checkFcDcCases()
+                    this.closeFc()
+                }
             }
         },
         saveDc(dcForm) {
-                if(dcForm == true) {
+            if(dcForm == true) {
+                if(this.inpValue.dcUser == '' || this.inpValue.dcUser == this.user.userId) {
+                    if(this.inpValue.dcUser == '') {
+                        this.inpValue.dcUser = this.user.userId
+                    }
                     this.inpValue.hrdDc.push({
-                    location: this.dcLocation,
-                    numberOfCases: this.dcNumberOfCases
-                })
-                this.$emit('change', {x:true, y:'detailsCheck'})
-                this.checkFcDcCases()
-                this.closeDc()
+                        location: this.dcLocation,
+                        numberOfCases: this.dcNumberOfCases
+                    })
+                    this.inpValue.dcDate = new Date().toISOString()
+                    this.$emit('change', {x:true, y:'detailsCheck'})
+                    this.checkFcDcCases()
+                    this.closeDc()
+                }
             }
         },
         deleteFcItem(item, index) {
@@ -805,8 +865,6 @@ export default {
             } else {
                 this.dcStatus = this.dcAcceptable
             }
-        },
-        getUsers() {
         }
     }
 }

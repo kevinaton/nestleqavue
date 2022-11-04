@@ -233,7 +233,7 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpGet("Search")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<ProductSearchViewModel>>> SearchProducts()
         {
             var query = _context.Products.Where(f => f.Year == DateTime.Now.Year.ToString())

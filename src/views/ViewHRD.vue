@@ -39,6 +39,7 @@
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
                 :rules="rules"
+                :user="user"
                 :recalculateTotal="recalculateTotal"
                 :snackbar="snackbar"
                 @change="emitDetails"
@@ -53,7 +54,7 @@
                 :inpValue="getHRD"
                 :access="access.HRDEdit"
                 :approveRework="access.HRDApproveRework"
-                :user="user"
+                :user="user.name"
             />
             
             <Scrap 
@@ -104,8 +105,8 @@
                 required:true
             },
             user: {
-                type: String,
-                default:'',
+                type: Object,
+                default:() => {},
                 required:false
             }
         },
@@ -360,9 +361,6 @@
             formData.append('jsonString', JSON.stringify(vm.hrd))
             vm.valid = value
             if(vm.valid == true) {
-
-                console.log(vm.hrd)
-
                 vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${vm.$route.params.id}`,  formData,
                 {
                     headers: {
