@@ -286,11 +286,11 @@
                             <template v-slot:[`item.actions`]="{ item, index }">
                                 <v-hover
                                     v-slot="{ hover }"
+                                    v-if="!checkFcUser"
                                     open-delay="200"
                                 >
                                     <v-icon
                                         @click="deleteFcItem(item, index)"
-                                        v-if="!checkFcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -450,11 +450,11 @@
                             <template v-slot:[`item.actions`]="{ item, index }">
                                 <v-hover
                                     v-slot="{ hover }"
+                                    v-if="!checkDcUser"
                                     open-delay="200"
                                 >
                                     <v-icon
                                         @click="deleteDcItem(item, index)"
-                                        v-if="!checkDcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
