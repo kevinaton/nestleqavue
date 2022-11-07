@@ -441,9 +441,12 @@
                 vm.tableOptions.page = pageInput
                 })
             },
-            roleUpdated() {
+
+            roleUpdated(value) {
                 this.$emit('change', 'checkPermission')
-                document.location.reload(true)
+                if(value == true) {
+                    document.location.reload()
+                }
             }
 
         },
