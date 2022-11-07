@@ -27,7 +27,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/LaborCosts
         [HttpGet]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<LaborCostViewModel>>> GetLaborCosts([FromQuery]PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -39,7 +39,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/LaborCosts/5
         [HttpGet("{year}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<LaborCostViewModel>> GetLaborCost(string year)
         {
             var laborCost = await _service.GetLaborCost(year);
@@ -55,7 +55,7 @@ namespace HRD.WebApi.Controllers
         // PUT: api/LaborCosts/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{year}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutLaborCost(string year, LaborCostViewModel model)
         {
             if (year != model.Year)
@@ -76,7 +76,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/LaborCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<LaborCostViewModel>> PostLaborCost(LaborCostViewModel model)
         {
             
@@ -101,7 +101,7 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/LaborCosts/5
         [HttpDelete("{year}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteLaborCost(string year)
         {
             var laborCost = await _service.GetLaborCost(year);
