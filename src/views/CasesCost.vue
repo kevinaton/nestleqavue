@@ -102,7 +102,7 @@ export default {
         },
       ],
       fValues: {
-        line:'1',
+        line:'All',
         closeOpen:{value:2},
         costGraph:{value:1},
         timeSelect:'dateRange',
