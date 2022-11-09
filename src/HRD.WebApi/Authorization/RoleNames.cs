@@ -18,5 +18,9 @@
         public const string BUManager = "BUManager";
         public const string LaborCostList = "LaborCostList";
         public const string Notification = "Notification";
+        public const string QAScrapNotification = "QAScrapNotification";
+        public const string PlantManagerScrapNotification = "PlantManagerScrapNotification";
+        public const string ControllerScrapNotification = "ControllerScrapNotification";
+        public const string ScrapDestroyedNotification = "ScrapDestroyedNotification";
     }
 }

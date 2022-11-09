@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using System.Globalization;
 using HRD.WebApi.ViewModels.Enums;
+using HRD.WebApi.Services;
 
 namespace HRD.WebApi.Controllers
 {
@@ -24,13 +25,19 @@ namespace HRD.WebApi.Controllers
     public class HrdsController : ControllerBase
     {
         private readonly HRDContext _context;
+        private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
         protected IConfiguration Configuration { get; }
 
         public HrdsController(HRDContext context,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IUserService userService,
+            IEmailService emailService)
         {
             _context = context;
             Configuration = configuration;
+            _userService = userService;
+            _emailService = emailService;
         }
 
         // GET: api/Hrds
@@ -173,6 +180,7 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<HRDDetailViewModel>> GetHrd(int id)
         {
+
             var hrd = await _context.Hrds.Include(i => i.Hrddcs)
                                          .Include(i => i.Hrdfcs)
                                          .Include(i => i.Hrdpos)
@@ -291,6 +299,10 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> PutHrd(int id, [FromForm] string jsonString, [FromForm] List<IFormFile> files)
         {
+            var isNotifyQaScrap = false;
+            var isNotifyPlantManagerScrap = false;
+            var isNotifyPlantControllerScrap = false;
+            var isNotifyScrapDestroyed = false;
             var model = JsonConvert.DeserializeObject<HRDDetailViewModel>(jsonString);
             if (id != model.Id)
             {
@@ -304,6 +316,19 @@ namespace HRD.WebApi.Controllers
                                     .Include(i => i.Hrdpos)
                                     .Include(i => i.Hrdnotes)
                                     .Where(i => i.Id == id).FirstOrDefault();
+
+
+            isNotifyQaScrap = (!hrd.IsApprovalRequestByQa.HasValue || !hrd.IsApprovalRequestByQa.Value) 
+                                        && (model.ApprovalRequestByQa.HasValue && model.ApprovalRequestByQa.Value);
+
+            isNotifyPlantManagerScrap = (!hrd.IsPlantManagerAprpoval.HasValue || !hrd.IsPlantManagerAprpoval.Value)
+                                        && (model.IsPlantManagerAprpoval.HasValue && model.IsPlantManagerAprpoval.Value);
+
+            isNotifyPlantControllerScrap = (!hrd.IsPlantControllerApproval.HasValue || !hrd.IsPlantControllerApproval.Value)
+                                        && (model.IsPlantControllerApproval.HasValue && model.IsPlantControllerApproval.Value);
+
+            isNotifyScrapDestroyed = (!hrd.IsDestroyed.HasValue || !hrd.IsDestroyed.Value)
+                                        && (model.IsDestroyed.HasValue && model.IsDestroyed.Value);
 
             hrd.Id = id;
             hrd.DateHeld = model.DateHeld;
@@ -525,6 +550,10 @@ namespace HRD.WebApi.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+
+                //Send Notificatoin for Scrap
+                //TODO Finalize Subject and Email Body Message
+                //await SendEmailNotification(isNotifyQaScrap, isNotifyPlantManagerScrap, isNotifyPlantControllerScrap, isNotifyScrapDestroyed);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -1281,6 +1310,50 @@ namespace HRD.WebApi.Controllers
                 var bytes = await System.IO.File.ReadAllBytesAsync(path);
                 return File(bytes, contentType, Path.GetFileName(path));
             }
+        }
+
+        private async Task SendEmailNotification(bool isNotifyQaScrap, bool isNotifyPlantManagerScrap, bool isNotifyPlantControllerScrap, bool isNotifyScrapDestroyed)
+        {
+            if(isNotifyQaScrap)
+            {
+                var users = (await _userService.GetUsersByRole(RoleNames.QAScrapNotification))
+                    .Where(f => !string.IsNullOrWhiteSpace(f.Email)).ToList();
+                //Send Email
+                foreach(var user in users)
+                {
+                    //await WebMail.Send(user.Email, "", "hello");
+                }
+                _emailService.SendEmail(users.Select(s => s.Email).ToList(), _emailService.EmailSubject(EnumEmailNotificationType.QAScrap),
+                    _emailService.EmailBodyMessage(EnumEmailNotificationType.QAScrap));
+            }
+
+            if (isNotifyPlantManagerScrap)
+            {
+                var users = (await _userService.GetUsersByRole(RoleNames.PlantManagerScrapNotification))
+                    .Where(f => !string.IsNullOrWhiteSpace(f.Email)).ToList();
+                //Send Email                
+                _emailService.SendEmail(users.Select(s => s.Email).ToList(), _emailService.EmailSubject(EnumEmailNotificationType.PlantManager),
+                    _emailService.EmailBodyMessage(EnumEmailNotificationType.PlantManager));
+            }
+
+            if (isNotifyPlantControllerScrap)
+            {
+                var users = (await _userService.GetUsersByRole(RoleNames.ControllerScrapNotification))
+                    .Where(f => !string.IsNullOrWhiteSpace(f.Email)).ToList();
+                //Send Email                
+                _emailService.SendEmail(users.Select(s => s.Email).ToList(), _emailService.EmailSubject(EnumEmailNotificationType.ControllerScrap),
+                    _emailService.EmailBodyMessage(EnumEmailNotificationType.ControllerScrap));
+            }
+
+            if (isNotifyScrapDestroyed)
+            {
+                var users = (await _userService.GetUsersByRole(RoleNames.ScrapDestroyedNotification))
+                    .Where(f => !string.IsNullOrWhiteSpace(f.Email)).ToList();
+                //Send Email                
+                _emailService.SendEmail(users.Select(s => s.Email).ToList(), _emailService.EmailSubject(EnumEmailNotificationType.ScrapDestroyed),
+                    _emailService.EmailBodyMessage(EnumEmailNotificationType.ScrapDestroyed));
+            }
+
         }
     }
 }
