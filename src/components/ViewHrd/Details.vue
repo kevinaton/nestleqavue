@@ -30,42 +30,6 @@
                     <v-text-field v-model="inpValue.cases" type="Number" :readonly="!access" outlined :rules="[rules.int]" label="Cases Held"></v-text-field>
                 </v-col>
             </v-row>
-            <!-- <v-row class="mt-0">
-                <v-col class="d-flex align-center">
-                    <span class="text-h6 mr-4">PO</span>
-                    <v-divider vertical></v-divider>
-                    <span class="ml-4">Add by typing on the space below.</span>
-                </v-col>
-            </v-row>
-            <v-row class="mt-0">
-                <v-col>
-                    <v-combobox
-                        :value="getPO"
-                        :rules="[rules.counter]"
-                        :readonly="!access"
-                        chips
-                        multiple
-                        outlined
-                        class="remarr"
-                        @input="inputPO($event)"
-                    >
-                        <template v-slot:selection="{ attrs, item, index, select, selected }">
-                        <v-chip 
-                            v-bind="attrs"
-                            :input-value="selected"
-                            :rules="[rules.counter]"
-                            close
-                            color="info"
-                            text-color="white"
-                            @click="select"
-                            @click:close="remove(index)"
-                        >
-                            <strong>{{ item.poNumber }}</strong>&nbsp;
-                        </v-chip>
-                        </template>
-                    </v-combobox>
-                </v-col>
-            </v-row> -->
             <v-row class="mt-0">
                 <v-col>
                     <v-textarea :readonly="!access" v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
@@ -322,11 +286,11 @@
                             <template v-slot:[`item.actions`]="{ item, index }">
                                 <v-hover
                                     v-slot="{ hover }"
+                                    v-if="!checkFcUser"
                                     open-delay="200"
                                 >
                                     <v-icon
                                         @click="deleteFcItem(item, index)"
-                                        v-if="!checkFcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >
@@ -486,11 +450,11 @@
                             <template v-slot:[`item.actions`]="{ item, index }">
                                 <v-hover
                                     v-slot="{ hover }"
+                                    v-if="!checkDcUser"
                                     open-delay="200"
                                 >
                                     <v-icon
                                         @click="deleteDcItem(item, index)"
-                                        v-if="!checkDcUser"
                                         :color="hover ? 'grey darken-3' : 'grey lighten-2'"
                                         :class="{ 'on-hover': hover }"
                                     >

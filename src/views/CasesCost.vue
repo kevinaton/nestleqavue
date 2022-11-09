@@ -32,10 +32,10 @@
     <v-divider class="mt-4"></v-divider>
     <v-row>
       <BarChart 
-        barLabel="Cases Held by Category"
+        barLabel="Case Held by Category"
         barColor='rgba(75, 192, 192, 0.3)'
         borderColor='rgb(75, 192, 192)'
-        barTitle="Cases Held by Category"
+        barTitle="Case Held by Category"
         :snackbar="snackbar"
         :xValues="caseheldChart.xValues"
         :barData="caseheldChart.barData"
@@ -43,10 +43,10 @@
     </v-row>
     <v-row>
       <BarChart 
-        barLabel="Cost Held by Category"
+        :barLabel="getTableLabel"
         barColor='rgba(255, 159, 64, 0.2)'
         borderColor='rgb(255, 159, 64)'
-        barTitle="Cost Held by Category"
+        :barTitle="getTableTitle"
         :snackbar="snackbar"
         :xValues="costheldChart.xValues"
         :barData="costheldChart.barData"
@@ -102,7 +102,7 @@ export default {
         },
       ],
       fValues: {
-        line:'1',
+        line:'All',
         closeOpen:{value:2},
         costGraph:{value:1},
         timeSelect:'dateRange',
@@ -164,7 +164,8 @@ export default {
           xValues: [],
           barData: []
       },
-      lineTable:[]
+      lineTable:[],
+      xValues: ['Clear', 'Thrift', 'Scrap', 'Sample']
     }),
 
     created() {
@@ -181,6 +182,18 @@ export default {
         if(this.lineTable) {
           return this.lineTable
         }
+      },
+      getTableTitle() {
+        if(this.costheldChart.xValues.includes('Clear')) {
+          return ''
+        }
+        return "Cost Held by Category"
+      },
+      getTableLabel() {
+        if(this.costheldChart.xValues.includes('Clear')) {
+          return ''
+        }
+        return "Cost Held by Category"
       }
     },
 

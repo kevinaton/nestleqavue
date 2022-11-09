@@ -75,6 +75,7 @@
                             item-text="text"
                             item-value="value"
                             outlined
+                            clearable
                         ></v-autocomplete>
                     </v-col>
                 </v-row>
@@ -106,7 +107,6 @@
                             item-value="userId"
                             outlined
                             clearable
-                            @click:clear="checkNull('filterValues.teamLeader')"
                         ></v-autocomplete>
                     </v-col>
                 </v-row>
@@ -124,7 +124,6 @@
                             item-value="userId"
                             outlined
                             clearable
-                            @click:clear="checkNull('filterValues.businessUnitManager')"
                         ></v-autocomplete>
                     </v-col>
                     <v-col
@@ -140,7 +139,6 @@
                             item-value="userId"
                             outlined
                             clearable
-                            @click:clear="checkNull('filterValues.originator')"
                         ></v-autocomplete>
                     </v-col>
                 </v-row>
@@ -272,6 +270,12 @@ export default {
                 vm.filterBtn = 'error'
                 vm.dialog = false
 
+                // Convert null values to ''
+                Object.keys(this.filterValues).map((key) => {
+                    this.filterValues[key] = this.filterValues[key] === null ? '' : this.filterValues[key]
+                })
+                console.log(this.filterValues)
+                
                 vm.$axios.get(`${process.env.VUE_APP_API_URL}/Hrds?FilterCriteria.Type=${vm.filterValues.type}&FilterCriteria.CompleteStatus=${vm.filterValues.completeStatus}&FilterCriteria.Line=${vm.filterValues.line}&FilterCriteria.Shift=${vm.filterValues.shift}&FilterCriteria.TeamLeader=${vm.filterValues.teamLeader}&FilterCriteria.BusinessUnitManager=${vm.filterValues.businessUnitManager}&FilterCriteria.Originator=${vm.filterValues.originator}&PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
                     .then((res) => {
                         vm.$emit('change', {data:res.data, param:'table'})
@@ -360,11 +364,6 @@ export default {
 
                 vm.initial = false
             }
-        },
-        checkNull() {
-            // NOT DONE
-            console.log('niagi diri')
-            Object.values(this.filterValues).every(x => {if(x === null) x = ''})
         }
     }
 }

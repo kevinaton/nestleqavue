@@ -1,7 +1,6 @@
 <template>
     <v-menu 
         v-model="menu"
-        open-on-hover
         offset-y
     >
         <template v-slot:activator="{ on, attrs }">

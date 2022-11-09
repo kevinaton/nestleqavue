@@ -57,8 +57,12 @@ export default {
                         let arr = []
                         res.data.forEach(item => {
                             arr.push(item.value)
-                        });
-                    vm.lookup = arr
+                        })
+                        let checkAll = arr.includes('All')
+                        if(vm.dropdownValue == 'Line' && checkAll == false) {
+                            arr.push('All')
+                        }
+                        vm.lookup = arr.sort()
                     })
                     .catch(err => {
                         vm.snackbar.snack = true

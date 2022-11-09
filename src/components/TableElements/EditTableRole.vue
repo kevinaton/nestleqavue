@@ -199,8 +199,9 @@ export default {
     },
     methods: {
         save(valid) { 
-            let vm = this,
-                value = vm.origVal = vm.edit
+            let vm = this
+
+            vm.origVal = vm.edit
 
             if(valid == true) {
                 vm.edit.grantedPermissionNames = vm._selection.map(({value}) => value)
@@ -225,8 +226,7 @@ export default {
             }
         },
         close() {
-            let value = this.origVal
-            this.$emit('change', value)
+            this.$emit('change', false)
             this.dialog = false
         },
         setData() {
