@@ -41,7 +41,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesCostByCategory
         [HttpGet("CasesCostByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByCategoryReport([FromQuery] ReportPaginationFilter filter)
         {
             var validFilter = new ReportPaginationFilter(filter.PageNumber, filter.PageSize, filter.ReportFilter);
@@ -55,7 +55,7 @@ namespace HRD.WebApi.Controllers
                                                     && (string.IsNullOrEmpty(filter.ReportFilter.Line) || x.Line == filter.ReportFilter.Line));
 
             var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
+            var totalPages =  (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
 
             //Pagination
             query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
@@ -78,7 +78,7 @@ namespace HRD.WebApi.Controllers
                                     Shift = s.Shift,
                                     ShortDescription = s.ShortDescription,
                                     TLForFU = _context.Users.FirstOrDefault(f => f.UserId == s.TlforFu).Name,
-                                    WeekHeld = s.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(s.DateHeld.Value) : null
+                                    WeekHeld =  s.DateHeld.HasValue ? ISOWeek.GetWeekOfYear(s.DateHeld.Value) : null
                                 }).ToListAsync();
 
 
@@ -87,10 +87,10 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesCostByLine
         [HttpGet("CasesCostByLine")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<CasesCostHeldByCategoryOutput>>> GetCasesCostByLine([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
-            input.Line = string.IsNullOrWhiteSpace(input.Line) || input.Line.ToLower() == "all" ? string.Empty : input.Line;
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
 
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
@@ -107,17 +107,17 @@ namespace HRD.WebApi.Controllers
                 TotalCases = s.Sum(a => a.Cases),
                 TotalCost = s.Sum(a => a.CostofProductonHold)
             }).ToListAsync();
-
+            
 
             return Ok(results);
         }
 
         // GET: api/Reports/CostHeldByCategory
         [HttpGet("CostHeldByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCostHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
-            input.Line = string.IsNullOrWhiteSpace(input.Line) || input.Line.ToLower() == "all" ? string.Empty : input.Line;
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
 
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
@@ -132,7 +132,7 @@ namespace HRD.WebApi.Controllers
                                                     .GroupBy(g => new
                                                     {
                                                         g.HoldCategory,
-                                                    })
+                                                    }) 
                                                     .Select(s => new
                                                     {
                                                         s.Key.HoldCategory,
@@ -141,43 +141,16 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-                    //var queryByAllocation = await query
-                    //                                .GroupBy(g => new
-                    //                                {
-                    //                                    MonthHeld = g.DateHeld.Value.Month
-                    //                                })
-                    //                                .Select(s => new
-                    //                                {
-                    //                                    MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-                    //                                    TotalCost = s.Sum(a => a.CostofProductonHold),
-                    //                                }).ToListAsync();
-
-                    var queryByAllocation = new []
-                    {
-                        new 
-                        { 
-                            Type =  "Clear",
-                            TotalCost = 1088982.50
-                        },
-                        new
-                        {
-                             Type = "Thrift",
-                             TotalCost = 29228.35
-
-                        },
-                        new
-                        {
-                             Type = "Scrap",
-                             TotalCost = 269729.54
-
-                        },
-                        new
-                        {
-                             Type = "Samples",
-                             TotalCost = 512.35
-
-                        }
-                    };
+                    var queryByAllocation = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        MonthHeld = g.DateHeld.Value.Month
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
+                                                        TotalCost = s.Sum(a => a.CostofProductonHold),
+                                                    }).ToListAsync();
                     return Ok(queryByAllocation);
             }
 
@@ -186,63 +159,52 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/CasesHeldByCategory
         [HttpGet("CasesHeldByCategory")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetCasesHeldByCategoryGraphData([FromQuery] GetCasesCostHeldByCategoryInput input)
         {
-            input.Line = string.IsNullOrWhiteSpace(input.Line) || input.Line.ToLower() == "all" ? string.Empty : input.Line;
+            input.Line = !string.IsNullOrEmpty(input.Line) && input.Line.ToLower() == "all" ? string.Empty : input.Line;
 
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                         || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                         || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (string.IsNullOrEmpty(input.Line) || x.Line == input.Line));
+            
+            switch (input.CostGraphOption)
+            {
+                case EnumCostGraph.CostByCategory:
+                    var queryByCategory = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        g.HoldCategory,
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        s.Key.HoldCategory,
+                                                        TotalCost = s.Sum(a => a.Cases),
+                                                    }).ToListAsync();
+                    return Ok(queryByCategory);
 
-            //switch (input.CostGraphOption)
-            //{
-            //    case EnumCostGraph.CostByCategory:
-            //        var queryByCategory = await query
-            //                                        .GroupBy(g => new
-            //                                        {
-            //                                            g.HoldCategory,
-            //                                        })
-            //                                        .Select(s => new
-            //                                        {
-            //                                            s.Key.HoldCategory,
-            //                                            TotalCost = s.Sum(a => a.Cases),
-            //                                        }).ToListAsync();
-            //        return Ok(queryByCategory);
+                case EnumCostGraph.CostByAllocation:
+                    var queryByAllocation = await query
+                                                    .GroupBy(g => new
+                                                    {
+                                                        MonthHeld = g.DateHeld.Value.Month
+                                                    })
+                                                    .Select(s => new
+                                                    {
+                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
+                                                        TotalCost = s.Sum(a => a.Cases),
+                                                    }).ToListAsync();
+                    return Ok(queryByAllocation);
+            }
 
-            //    case EnumCostGraph.CostByAllocation:
-            //        var queryByAllocation = await query
-            //                                        .GroupBy(g => new
-            //                                        {
-            //                                            MonthHeld = g.DateHeld.Value.Month
-            //                                        })
-            //                                        .Select(s => new
-            //                                        {
-            //                                            MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-            //                                            TotalCost = s.Sum(a => a.Cases),
-            //                                        }).ToListAsync();
-            //        return Ok(queryByAllocation);
-            //}
-
-            var queryByCategory = await query
-                                    .GroupBy(g => new
-                                    {
-                                        g.HoldCategory,
-                                    })
-                                    .Select(s => new
-                                    {
-                                        s.Key.HoldCategory,
-                                        TotalCost = s.Sum(a => a.Cases),
-                                    }).ToListAsync();
-
-            return Ok(queryByCategory);
+            return Ok();
         }
 
         // GET: api/Reports/FMCases
         [HttpGet("FMCases")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetFMCasesGraphData([FromQuery]GetFMCasesGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.Fmtype)
@@ -309,7 +271,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/PestLog
         [HttpGet("PestLog")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetPestLogGraphData([FromQuery] GetPestLogGraphDataInput input)
         {
             var queryByPest = await _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrEmpty(x.PestType))
@@ -328,7 +290,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Reports/Microbe
         [HttpGet("Microbe")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult> GetMicrobeGraphData([FromQuery] GetMicrobeGraphDataInput input)
         {
             var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && 
