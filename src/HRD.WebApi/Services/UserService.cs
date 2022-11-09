@@ -83,5 +83,20 @@ namespace HRD.WebApi.Services
 
             return grantedPermissions;
         }
+
+        public async Task<List<User>> GetUsersByRole(string roleName)
+        {
+            var users = await (from ur in _context.UserRoles
+                                join r in _context.Roles on ur.RoleId equals r.Id
+                                join u in _context.Users on ur.UserId equals u.Id
+                                where r.Name == roleName && !string.IsNullOrEmpty(u.Email)
+                                select new User
+                                {
+                                    Name = r.Name,
+                                    Email = u.Email
+                                }).ToListAsync();
+
+            return users;
+        }
     }
 }

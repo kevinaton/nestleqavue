@@ -12,5 +12,7 @@ namespace HRD.WebApi.Services
         Task<int> GetOrCreateUserIdByUsername(string username);
         Task<List<Role>> GetUserRoles(int id);
         Task<IEnumerable<string>> GetUserPermissions(int userId);
+
+        Task<List<User>> GetUsersByRole(string roleName);
     }
 }
