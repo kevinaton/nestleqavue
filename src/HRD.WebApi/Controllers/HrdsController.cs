@@ -860,8 +860,8 @@ namespace HRD.WebApi.Controllers
             hrd.IsMicro = model.IsMicro;
 
             hrd.DateHeld = model.DateHeld;
+            hrd.YearHeld = string.IsNullOrWhiteSpace(model.YearHeld) ? model.DateHeld.Value.Year.ToString() : model.YearHeld;
             hrd.TimeOfIncident = model.TimeOfIncident;
-            hrd.YearHeld = model.YearHeld;
             hrd.DayCode = model.DayCode;
             hrd.Originator = model.Originator;
             hrd.Bumanager = model.BUManager;
@@ -1104,8 +1104,8 @@ namespace HRD.WebApi.Controllers
                 IsMicro = model.IsMicro,
 
                 DateHeld = model.DateHeld,
-                TimeOfIncident = model.TimeOfIncident,
-                YearHeld = model.YearHeld,
+                YearHeld = string.IsNullOrWhiteSpace(model.YearHeld) ? model.DateHeld.Value.Year.ToString() : model.YearHeld,
+                TimeOfIncident = model.TimeOfIncident,                
                 DayCode = model.DayCode,
                 Originator = model.Originator,
                 Bumanager = model.BUManager,

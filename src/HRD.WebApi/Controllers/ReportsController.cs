@@ -119,11 +119,14 @@ namespace HRD.WebApi.Controllers
         {
             input.Line = string.IsNullOrWhiteSpace(input.Line) || input.Line.ToLower() == "all" ? string.Empty : input.Line;
 
-            var query = _context.Hrds.Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
+            var query = _context.Hrds
+                        .Where(x => x.DateHeld >= input.PeriodBegin && x.DateHeld <= input.PeriodEnd && !string.IsNullOrWhiteSpace(x.HoldCategory)
                                                     && (input.Status == EnumStatus.All
                                                         || (input.Status == EnumStatus.Closed && x.Complete.HasValue && x.Complete.Value)
                                                         || (input.Status == EnumStatus.Open && (!x.Complete.HasValue || !x.Complete.Value)))
                                                     && (string.IsNullOrEmpty(input.Line) || x.Line == input.Line));
+
+            
 
             switch (input.CostGraphOption)
             {
@@ -141,40 +144,42 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-                    //var queryByAllocation = await query
-                    //                                .GroupBy(g => new
-                    //                                {
-                    //                                    MonthHeld = g.DateHeld.Value.Month
-                    //                                })
-                    //                                .Select(s => new
-                    //                                {
-                    //                                    MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-                    //                                    TotalCost = s.Sum(a => a.CostofProductonHold),
-                    //                                }).ToListAsync();
+
+                    var list = await (from items in query
+                                join product in _context.Products on new { ProductId = items.Globenum, Year = items.YearHeld } 
+                                                            equals new { ProductId = product.Gpn, Year = product.Year }
+                                                                        
+                                select new {
+                                    Clear = items.Clear,
+                                    Thrift = items.ThriftStore,
+                                    Scrap = items.Scrap,
+                                    Samples = items.Samples,
+                                    CostPerCase = product.CostPerCase
+                                }).ToListAsync();
 
                     var queryByAllocation = new []
                     {
                         new 
                         { 
                             Type =  "Clear",
-                            TotalCost = 1088982.50
+                            TotalCost = list.Sum(s => s.Clear * s.CostPerCase)
                         },
                         new
                         {
-                             Type = "Thrift",
-                             TotalCost = 29228.35
+                            Type = "Thrift",
+                            TotalCost = list.Sum(s => s.Thrift * s.CostPerCase)
 
                         },
                         new
                         {
-                             Type = "Scrap",
-                             TotalCost = 269729.54
+                            Type = "Scrap",
+                            TotalCost = list.Sum(s => s.Scrap * s.CostPerCase)
 
                         },
                         new
                         {
-                             Type = "Samples",
-                             TotalCost = 512.35
+                            Type = "Samples",
+                            TotalCost = list.Sum(s => s.Samples * s.CostPerCase)
 
                         }
                     };
