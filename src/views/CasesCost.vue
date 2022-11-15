@@ -43,14 +43,67 @@
     </v-row>
     <v-row>
       <BarChart 
-        :barLabel="getTableLabel"
+        v-if="showSecondTable"
+        barLabel="Cost Held by Category"
         barColor='rgba(255, 159, 64, 0.2)'
         borderColor='rgb(255, 159, 64)'
-        :barTitle="getTableTitle"
+        barTitle="Cost Held by Category"
         :snackbar="snackbar"
         :xValues="costheldChart.xValues"
         :barData="costheldChart.barData"
       />
+    </v-row>
+    <v-row>
+      <v-col>
+        <BarChart 
+          v-if="showMiniTable"
+          barLabel=""
+          barColor='rgba(153, 102, 255, 0.2)'
+          borderColor='rgb(153, 102, 255)'
+          barTitle="Clear"
+          :snackbar="snackbar"
+          :xValues="['Clear']"
+          :barData="[costheldChart.barData[0]]"
+        />
+      </v-col>
+      <v-col>
+        <BarChart 
+          v-if="showMiniTable"
+          barLabel=""
+          barColor='rgba(54, 162, 235, 0.2)'
+          borderColor='rgb(54, 162, 235)'
+          barTitle="Thrift"
+          :snackbar="snackbar"
+          :xValues="['Thrift']"
+          :barData="[costheldChart.barData[1]]"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <BarChart 
+          v-if="showMiniTable"
+          barLabel=""
+          barColor='rgba(255, 99, 132, 0.2)'
+          borderColor='rgb(255, 99, 132)'
+          barTitle="Scrap"
+          :snackbar="snackbar"
+          :xValues="['Scrap']"
+          :barData="[costheldChart.barData[2]]"
+        />
+      </v-col>
+      <v-col>
+        <BarChart 
+          v-if="showMiniTable"
+          barLabel=""
+          barColor='rgba(201, 203, 207, 0.2)'
+          borderColor='rgb(201, 203, 207)'
+          barTitle="Samples"
+          :snackbar="snackbar"
+          :xValues="['Samples']"
+          :barData="[costheldChart.barData[3]]"
+        />
+      </v-col>
     </v-row>
     <v-row>
       <CaseTable 
@@ -165,7 +218,6 @@ export default {
           barData: []
       },
       lineTable:[],
-      xValues: ['Clear', 'Thrift', 'Scrap', 'Sample']
     }),
 
     created() {
@@ -183,17 +235,17 @@ export default {
           return this.lineTable
         }
       },
-      getTableTitle() {
+      showSecondTable() {
         if(this.costheldChart.xValues.includes('Clear')) {
-          return ''
+          return false
         }
-        return "Cost Held by Category"
+        return true
       },
-      getTableLabel() {
+      showMiniTable() {
         if(this.costheldChart.xValues.includes('Clear')) {
-          return ''
+          return true
         }
-        return "Cost Held by Category"
+        return false
       }
     },
 
@@ -283,16 +335,15 @@ export default {
             vm.fValues.costGraph.value = costGraph
           })
           .catch(err => {
-              this.snackbar.snack = true
-              this.snackbar.snackColor = 'error'
-              this.snackbar.snackText = 'Something went wrong. Please try again later.'
-              console.warn(err)
+            this.snackbar.snack = true
+            this.snackbar.snackColor = 'error'
+            this.snackbar.snackText = 'Something went wrong. Please try again later.'
+            console.warn(err)
           })
-          .finally(() => { })
       },
 
       updatefValues(fValues) {
-        this.fValues = fValues 
+        this.fValues = fValues
       }
     }
 }
