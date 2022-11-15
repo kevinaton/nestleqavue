@@ -41,6 +41,7 @@ namespace HRD.WebApi
             // Add application services.
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ILaborCostService, LaborCostService>();
+            services.AddTransient<IEmailService, EmailService>();
             
             services.AddAuthentication(options =>
             {
