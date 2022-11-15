@@ -144,18 +144,6 @@ namespace HRD.WebApi.Controllers
                     return Ok(queryByCategory);
 
                 case EnumCostGraph.CostByAllocation:
-<<<<<<< HEAD
-                    var queryByAllocation = await query
-                                                    .GroupBy(g => new
-                                                    {
-                                                        MonthHeld = g.DateHeld.Value.Month
-                                                    })
-                                                    .Select(s => new
-                                                    {
-                                                        MonthHeld = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(s.Key.MonthHeld),
-                                                        TotalCost = s.Sum(a => a.CostofProductonHold),
-                                                    }).ToListAsync();
-=======
 
                     var list = await (from items in query
                                 join product in _context.Products on new { ProductId = items.Globenum, Year = items.YearHeld } 
@@ -195,7 +183,6 @@ namespace HRD.WebApi.Controllers
 
                         }
                     };
->>>>>>> master
                     return Ok(queryByAllocation);
             }
 
