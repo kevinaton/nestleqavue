@@ -210,6 +210,11 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
+            if(await _context.Hrds.AnyAsync(a => a.Globenum == product.Gpn.Trim() && a.YearHeld == product.Year))
+            {
+                return BadRequest($"Cannot delete Product: {product.Gpn}. It is being used in HRD Record");
+            }
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 

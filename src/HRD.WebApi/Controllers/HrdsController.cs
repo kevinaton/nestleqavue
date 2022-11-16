@@ -193,6 +193,11 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
+            //Get Current Labor Cost                        
+            var laborCostObject = await _context.LaborCosts.FirstOrDefaultAsync(f => f.Year == f.Year);
+            var laborCost = laborCostObject != null ? laborCostObject.LaborCostValue : 0;
+
+
             var model = new HRDDetailViewModel
             {
                 Id = id,
@@ -235,7 +240,7 @@ namespace HRD.WebApi.Controllers
                 HighRisk = hrd.HighRisk,
                 OtherHrdNum = hrd.OtherHrdnum,
                 CostOfTesting = hrd.HrdtestCosts.Sum(s => s.Cost),
-                CostOfLabor = hrd.LaborHours,
+                CostOfLabor = hrd.LaborHours.HasValue ? hrd.LaborHours.Value * laborCost : 0,
 
                 FcDate = hrd.Fcdate,
                 FcUser = hrd.Fcuser,
