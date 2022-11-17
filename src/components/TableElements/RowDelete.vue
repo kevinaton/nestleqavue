@@ -46,6 +46,7 @@ export default {
             val || this.closeDelete()
         },
     },
+    emits:['change'],
     methods: {
         closeDelete () {
             this.input.dialogDelete = false
@@ -68,9 +69,10 @@ export default {
             })
             .catch( err => { 
                 console.warn(err)
-                vm.input.snack = true
-                vm.input.snackColor = 'error'
-                vm.input.snackText = 'Something went wrong. Please try again later.'
+                vm.snackbar.snack = true
+                vm.snackbar.snackColor = 'error'
+                vm.snackbar.snackText = err.response.data
+                this.$emit('change', true)
             }) 
         },
     }

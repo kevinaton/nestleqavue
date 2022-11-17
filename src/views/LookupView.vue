@@ -28,6 +28,7 @@
         editData="id"
         :data="delItem"
         url="Lookup/items"
+        @change="value => value == true ? fetchData() : ''"
     />
     <LookupToolbar
         title="Lookup Lists"

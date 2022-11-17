@@ -72,7 +72,6 @@ export default {
             } else {
                 this.input.materialNumber = value 
                 this.input.rawMaterialDescription = description
-                console.log(this.input)
             }
         }
     }
