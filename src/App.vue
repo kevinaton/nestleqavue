@@ -199,8 +199,7 @@
       let vm = this 
           vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/GetCurrentUser`)
           .then((res) => {
-              // vm.user = res.data
-              console.log(res)           
+              vm.user = res.data      
           })
           .catch(err => {
               vm.snackbar.snack = true

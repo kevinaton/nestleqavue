@@ -67,12 +67,12 @@ export default {
     },
     methods: {
         rawMaterials({value, description}) {
-            console.log(value)
-            if(value="") {
+            if(value=="") {
                 this.input.rawMaterialDescription = ''
             } else {
                 this.input.materialNumber = value 
                 this.input.rawMaterialDescription = description
+                console.log(this.input)
             }
         }
     }
