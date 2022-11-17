@@ -178,6 +178,11 @@ namespace HRD.WebApi.Controllers
                 return NotFound();
             }
 
+            if(await _context.HrdtestCosts.AnyAsync(a => a.TestName == testCost.TestName && a.Hrd.YearHeld  == testCost.Year.ToString()))
+            {
+                return BadRequest($"Cannot delete Test Cost: {testCost.TestName}. It is being used in HRD Record");
+            }
+
             _context.TestCosts.Remove(testCost);
             await _context.SaveChangesAsync();
 

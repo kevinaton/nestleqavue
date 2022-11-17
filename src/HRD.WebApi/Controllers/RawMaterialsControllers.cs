@@ -185,14 +185,20 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteRawMaterial(string Id)
         {
-            var description = await _context.RawMaterials.FindAsync(Id);
 
-            if (description == null)
+            var rawMaterial = await _context.RawMaterials.FindAsync(Id);                        
+
+            if (rawMaterial == null)
             {
                 return NotFound();
             }
 
-            _context.RawMaterials.Remove(description);
+            if (await _context.Hrds.AnyAsync(a => a.MaterialNumber == Id))
+            {
+                return BadRequest($"Cannot delete Material Number: { rawMaterial.Id }. It is being used in HRD Record");
+            }
+
+            _context.RawMaterials.Remove(rawMaterial);
             await _context.SaveChangesAsync();
             return NoContent();
         }
