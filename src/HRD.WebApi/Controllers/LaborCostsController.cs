@@ -20,7 +20,7 @@ namespace HRD.WebApi.Controllers
     {
         private readonly ILaborCostService _service;
 
-        public LaborCostsController(HRDContext context, ILaborCostService service)
+        public LaborCostsController(ILaborCostService service)
         {
             _service = service;
         }
@@ -104,13 +104,19 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteLaborCost(string year)
         {
-            var laborCost = await _service.GetLaborCost(year);
-            if (laborCost == null)
+            //var laborCost = await _service.GetLaborCost(year);
+            if(!await LaborCostExists(year))
             {
                 return NotFound();
             }
+            
 
-            await _service.DeleteLaborCost(laborCost);
+            if(await _service.IsLaborCostYearUsed(year))
+            {
+                return BadRequest($"Cannot delete Labor Cost Year: { year }. It is being used in HRD Record");
+            }
+
+            await _service.DeleteLaborCost(year);
 
             return NoContent();
         }

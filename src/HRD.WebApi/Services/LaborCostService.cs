@@ -18,15 +18,11 @@ namespace HRD.WebApi.Services
             _context = context;
         }
 
-        public async Task DeleteLaborCost(LaborCostViewModel model)
+        public async Task DeleteLaborCost(string year)
         {
             try
             {
-                var laborCost = new LaborCost
-                {
-                    Year = model.Year,
-                    LaborCostValue = model.LaborCost
-                };
+                var laborCost = await _context.LaborCosts.FindAsync(year);
 
                 _context.LaborCosts.Remove(laborCost);
                 await _context.SaveChangesAsync();
@@ -40,9 +36,9 @@ namespace HRD.WebApi.Services
 
         public async Task<LaborCostViewModel> GetLaborCost(string year)
         {
-            var laborCost = await _context.LaborCosts.FindAsync(year);
+            var laborCost = await _context.LaborCosts.FirstOrDefaultAsync(f => f.Year == year);
 
-            if(laborCost == null)
+            if(laborCost != null)
             {
                 var model = new LaborCostViewModel
                 {
@@ -142,6 +138,12 @@ namespace HRD.WebApi.Services
         public async Task<bool> IsLaborCostExists(string id)
         {
             return await _context.LaborCosts.AnyAsync(e => e.Year == id);
+        }
+
+        public async Task<bool> IsLaborCostYearUsed(string year)
+        {
+            var result = await _context.Hrds.AnyAsync(a => a.LaborHours.HasValue && a.LaborHours.Value > 0 && a.YearHeld == year);            
+            return result;
         }
     }
 }
