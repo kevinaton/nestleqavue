@@ -113,11 +113,16 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
+            if (await _context.Roles.AnyAsync(a => a.Name.ToLower() == model.Name.ToLower() && a.Id != model.Id))
+            {
+                return BadRequest($"Role name: {model.Name} already exists.");
+            }
+
             var role = new Role
             {
                 Id = model.Id,
                 Name = model.Name,
-                DisplayName = model.DisplayName,
+                DisplayName = string.IsNullOrEmpty(model.DisplayName) ? model.Name : model.DisplayName,
                 IsStatic = model.IsStatic
             };
 
@@ -181,10 +186,15 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RoleViewModel>> PostRole(RoleViewModel model)
         {
+            if(await _context.Roles.AnyAsync(a => a.Name.ToLower() == model.Name.ToLower()))
+            {
+                return BadRequest($"Role name: {model.Name} already exists.");
+            }
+
             var role = new Role
             {
                 Name = model.Name,
-                DisplayName = model.DisplayName,
+                DisplayName = string.IsNullOrEmpty(model.DisplayName) ? model.Name : model.DisplayName,
                 IsStatic = model.IsStatic,
                 Permissions = new List<Permission>()
             };
@@ -224,6 +234,11 @@ namespace HRD.WebApi.Controllers
             if (role == null)
             {
                 return NotFound();
+            }
+
+            if(await _context.UserRoles.AnyAsync(a => a.RoleId == role.Id))
+            {
+                return BadRequest($"Cannot delete Role: {role.Name}. It is being referenced to a User");
             }
 
             try
