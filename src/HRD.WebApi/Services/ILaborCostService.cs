@@ -11,7 +11,8 @@ namespace HRD.WebApi.Services
         Task<LaborCostViewModel> GetLaborCost(string year);
         Task CreateLaborCost(LaborCostViewModel model);
         Task UpdateLaborCost(LaborCostViewModel model);
-        Task DeleteLaborCost(LaborCostViewModel model);
+        Task DeleteLaborCost(string year);
         Task<bool> IsLaborCostExists(string id);
+        Task<bool> IsLaborCostYearUsed(string year);
     }
 }
