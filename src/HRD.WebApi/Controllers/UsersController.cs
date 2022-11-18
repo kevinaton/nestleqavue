@@ -30,7 +30,7 @@ namespace HRD.WebApi.Controllers
             AuthorizationService = authorizationService;
             Configuration = configuration;
         }
-        
+
         // GET: api/Users
         [HttpGet]
         [Authorize(Policy = PolicyNames.ViewHRDs)]
@@ -38,12 +38,12 @@ namespace HRD.WebApi.Controllers
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
 
-            var query = _context.Users.Select(s => new UserViewModel 
-                                                {
-                                                    Id = s.Id,
-                                                    Name = s.Name,
-                                                    UserId = s.UserId
-                                                });
+            var query = _context.Users.Select(s => new UserViewModel
+            {
+                Id = s.Id,
+                Name = s.Name,
+                UserId = s.UserId
+            });
 
             //Sorting
             switch (validFilter.SortColumn)
@@ -137,6 +137,11 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
+            if (await _context.Users.AnyAsync(a => a.Id != model.Id && (a.Name.ToLower() == model.Name.ToLower() || a.UserId == model.UserId)))
+            {
+                return BadRequest($"User name: {model.Name} with userId {model.UserId} already exists.");
+            }
+
             var user = new User
             {
                 Id = model.Id,
@@ -160,7 +165,7 @@ namespace HRD.WebApi.Controllers
                     };
 
                     _context.UserRoles.Add(userRole);
-                }                
+                }
             }
 
             //Delete Role
@@ -195,20 +200,25 @@ namespace HRD.WebApi.Controllers
         [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<UserViewModel>> PostUser(UserViewModel model)
         {
+            if (await _context.Users.AnyAsync(a => a.Name.ToLower() == model.Name.ToLower() || a.UserId == model.UserId))
+            {
+                return BadRequest($"User name: {model.Name} with userId {model.UserId} already exists.");
+            }
+
             var user = new User
             {
                 Id = model.Id,
                 Name = model.Name,
                 UserId = model.UserId,
                 UserRoles = model.Roles.Select(s => new UserRole { RoleId = s.Id }).ToList()
-            };            
+            };
             _context.Users.Add(user);
 
             try
             {
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw;
             }
@@ -226,6 +236,14 @@ namespace HRD.WebApi.Controllers
             if (user == null)
             {
                 return NotFound();
+            }
+
+            if (await _context.Hrds.AnyAsync(a => a.Bumanager == user.UserId || a.Originator == user.UserId || a.LineSupervisor == user.UserId ||
+                            a.HrdcompletedBy == user.UserId || a.ApprovedByDistroyedWho == user.UserId || a.ApprovedByPlantControllerWho == user.UserId ||
+                            a.ApprovedByPlantManagerWho == user.UserId || a.ApprovedByQawho == user.UserId || a.ReworkApprovedBy == user.UserId ||
+                            a.ReworkCompletedBy == user.UserId || a.Fcuser == user.UserId || a.Dcuser == user.UserId))
+            {
+                return BadRequest($"Cannot delete Role: {user.Name}. It is being used in HRD Record");
             }
 
             _context.Users.Remove(user);
