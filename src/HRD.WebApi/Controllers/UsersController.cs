@@ -42,6 +42,7 @@ namespace HRD.WebApi.Controllers
             {
                 Id = s.Id,
                 Name = s.Name,
+                Email = s.Email,
                 UserId = s.UserId
             });
 
@@ -63,12 +64,18 @@ namespace HRD.WebApi.Controllers
                         ? query.OrderByDescending(o => o.UserId)
                         : query.OrderBy(o => o.UserId);
                     break;
+                case "email":
+                    query = validFilter.SortOrder == "desc"
+                        ? query.OrderByDescending(o => o.Email)
+                        : query.OrderBy(o => o.Email);
+                    break;
             }
 
             if (!string.IsNullOrEmpty(validFilter.SearchString))
             {
                 query = query.Where(f => f.Name.Contains(filter.SearchString)
-                                        || f.UserId.Contains(filter.SearchString));
+                                        || f.UserId.Contains(filter.SearchString)
+                                        || f.Email.Contains(filter.SearchString));
             }
 
             var totalRecords = await query.CountAsync();
@@ -146,6 +153,7 @@ namespace HRD.WebApi.Controllers
             {
                 Id = model.Id,
                 UserId = model.UserId,
+                Email = model.Email,
                 Name = model.Name
             };
 
@@ -209,6 +217,7 @@ namespace HRD.WebApi.Controllers
             {
                 Id = model.Id,
                 Name = model.Name,
+                Email = model.Email,
                 UserId = model.UserId,
                 UserRoles = model.Roles.Select(s => new UserRole { RoleId = s.Id }).ToList()
             };
