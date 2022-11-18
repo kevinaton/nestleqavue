@@ -76,7 +76,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/LaborCosts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<LaborCostViewModel>> PostLaborCost(LaborCostViewModel model)
         {
             

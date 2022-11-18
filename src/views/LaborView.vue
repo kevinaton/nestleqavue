@@ -28,6 +28,7 @@
         editData="year"
         :data="delItem"
         url="LaborCosts"
+        @change="value => value == true ? fetchData() : ''"
       />
       <SimpleToolbar 
         title="Labor"

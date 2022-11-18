@@ -28,6 +28,7 @@
             editData="id"
             :data="delItem"
             url="RawMaterials"
+            @change="value => value == true ? fetchData() : ''"
         />
         <RawMaterialToolbar 
             title="Raw Materials"

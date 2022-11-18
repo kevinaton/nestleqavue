@@ -28,6 +28,7 @@
                 editData="id"
                 :data="delItem"
                 url="TestCosts"
+                @change="value => value == true ? fetchData() : ''"
             />
             <SimpleToolbar 
                 title="Testing"

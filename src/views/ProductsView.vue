@@ -24,6 +24,7 @@
         editData="id"
         :data="delItem"
         url="Products"
+        @change="value => value == true ? fetchData() : ''"
       />
       <Breadcrumbs 
         class="mt-3"
@@ -238,7 +239,7 @@
     },
 
     methods: {
-      fetchData () {
+      fetchData() {
         let vm = this 
         vm.loading = true
         vm.$axios.get(`${process.env.VUE_APP_API_URL}/Products?PageNumber=${vm.tableOptions.page}&PageSize=20&SortColumn=${vm.tableOptions.sortBy[0]}&SortOrder=${vm.tableOptions.desc}`)
