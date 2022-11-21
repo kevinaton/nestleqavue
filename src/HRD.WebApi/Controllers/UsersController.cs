@@ -115,6 +115,7 @@ namespace HRD.WebApi.Controllers
                 Id = id,
                 Name = user.Name,
                 UserId = user.UserId,
+                Email = user.Email,
                 Roles = user.UserRoles.Select(s => new RoleViewModel
                 {
                     Id = s.Role.Id,
