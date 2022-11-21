@@ -26,7 +26,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/types
         [HttpGet("types")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownTypeViewModel>>> GetDropDownTypes()
         {
             return await _context.DropDownTypes.Select(s => new DropDownTypeViewModel
@@ -38,7 +38,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items
         [HttpGet("items")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItems([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -95,7 +95,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/typeid/5
         [HttpGet("items/typeid/{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByTypeId(int id)
         {
             var dropDownItems = await _context.DropDownItems.Where(f => f.DropDownTypeId == id)
@@ -118,7 +118,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/typename/category
         [HttpGet("items/typename/{name}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> GetDropDownItemsByType(string name)
         {
             if(string.IsNullOrEmpty(name))
@@ -146,7 +146,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/5
         [HttpGet("items/{id}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> GetDropDownItem(int id)
         {
             var ddItem = await _context.DropDownItems.FindAsync(id);
@@ -211,7 +211,7 @@ namespace HRD.WebApi.Controllers
         // POST: api/Lookup/items
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("items/")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<DropDownItemViewModel>> PostDropDownItem(DropDownItemViewModel model)
         {
 
@@ -247,117 +247,14 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Lookup/items/5
         [HttpDelete("items/{id}")]
-        [Authorize(Policy = PolicyNames.EditHRDs)]
+        // [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteDropDownItem(int id)
         {
-            var dropdownitem = await _context.DropDownItems.Include(i => i.DropDownType).FirstOrDefaultAsync(f => f.Id == id);
+            var dropdownitem = await _context.DropDownItems.FindAsync(id);
             if (dropdownitem == null)
             {
                 return NotFound();
             }
-
-            var typeName = dropdownitem.DropDownType.Name;
-            switch (typeName)
-            {
-                case "Line":
-                    if (await _context.Hrds.AnyAsync(a => a.Line == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "CodingType":
-                    if (await _context.Hrds.AnyAsync(a => a.CodingType == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Area":
-                    if (await _context.Hrds.AnyAsync(a => a.Area == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Shift":
-                    if (await _context.Hrds.AnyAsync(a => a.Shift == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Pest Type":
-                    if (await _context.Hrds.AnyAsync(a => a.PestType == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "FM Type":
-                    if (await _context.Hrds.AnyAsync(a => a.Fmtype == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Equipment":
-                    if (await _context.Hrds.AnyAsync(a => a.Equipment == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "NR Category":
-                    if (await _context.Hrds.AnyAsync(a => a.Nrcategory == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Tagged":
-                    if (await _context.Hrds.AnyAsync(a => a.Tagged == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Hold or Concern":
-                    if (await _context.Hrds.AnyAsync(a => a.HoldConcern == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "When":
-                    if (await _context.Hrds.AnyAsync(a => a.When == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Day of Week":
-                    if (await _context.Hrds.AnyAsync(a => a.DayOfWeek == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Sauce Type":
-                    if (await _context.Hrds.AnyAsync(a => a.SauceType == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Starch Type":
-                    if (await _context.Hrds.AnyAsync(a => a.SauceType == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-                case "Organism":
-                    if (await _context.HrdMicros.AnyAsync(a => a.Organism == dropdownitem.Value))
-                    {
-                        return BadRequest($"Cannot delete Lookup of Type: {typeName} with value :{dropdownitem.Value}. It is being used in HRD Record");
-                    }
-                    break;
-            }
-
-            
-
-            
-
-
-
-            
 
             _context.DropDownItems.Remove(dropdownitem);
             await _context.SaveChangesAsync();
@@ -371,7 +268,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Lookup/items/typeid/5
         [HttpGet("items/typeid/{id}/{search}")]
-        [Authorize(Policy = PolicyNames.ViewHRDs)]
+        // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<DropDownItemViewModel>>> SearchDropDownItemsByTypeId(int id, string search)
         {
 
