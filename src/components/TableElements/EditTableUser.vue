@@ -32,17 +32,15 @@
                     <v-card-text>
                         <v-container class="px-0">
                             <v-row>
-                                <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="6"
-                                >
+                                <v-col>
                                     <v-text-field
                                         v-model="edit.name"
                                         :label="forms[0].label"
                                         :rules="[rules.required]"
                                     ></v-text-field>
                                 </v-col>
+                            </v-row>
+                            <v-row>
                                 <v-col
                                     cols="12"
                                     sm="6"
@@ -52,6 +50,17 @@
                                         v-model="edit.userId"
                                         :label="forms[1].label"
                                         :rules="[rules.required]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="6"
+                                >
+                                    <v-text-field
+                                        v-model="edit.email"
+                                        :label="forms[2].label"
+                                        :rules="[rules.email]"
                                     ></v-text-field>
                                 </v-col>
                             </v-row>

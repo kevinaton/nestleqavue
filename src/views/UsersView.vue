@@ -162,6 +162,7 @@ export default {
         },
         { text: 'Name', sortable: true, value: 'name' },
         { text: 'User ID', sortable: true, value: 'userId' },
+        { text: 'Email', sortable: true, value: 'email' },
         { text: 'Actions', value: 'actions', sortable: false, align: 'right' },
     ],
     users: [],
@@ -199,6 +200,16 @@ export default {
         },
         {
             index:2,
+            name:'email',
+            label:'Email',
+            type:'',
+            value:'',
+            edit:true,
+            visible:true,
+            rules:value => !!value || 'Required'
+        },
+        {
+            index:3,
             name:'id',
             label:'ID',
             type:'',
