@@ -28,7 +28,7 @@ namespace HRD.WebApi.Controllers
 
         // GET: api/Roles
         [HttpGet]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<RoleViewModel>>> GetRoles([FromQuery] PaginationFilter filter)
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
@@ -81,7 +81,7 @@ namespace HRD.WebApi.Controllers
 
         //GET: api/Roles/1
         [HttpGet("{id}")]
-        // [Authorize(Policy = PolicyNames.ViewHRDs)]
+        [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<RoleViewModel>> GetRole(int id)
         {
             var role = await _context.Roles.Include(i => i.Permissions).FirstOrDefaultAsync(f => f.Id == id);
@@ -105,7 +105,7 @@ namespace HRD.WebApi.Controllers
 
         //PUT: api/Roles/1
         [HttpPut("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult> PutRole(int id, RoleViewModel model)
         {
             if(id != model.Id)
@@ -113,16 +113,11 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
-            if (await _context.Roles.AnyAsync(a => a.Name.ToLower() == model.Name.ToLower() && a.Id != model.Id))
-            {
-                return BadRequest($"Role name: {model.Name} already exists.");
-            }
-
             var role = new Role
             {
                 Id = model.Id,
                 Name = model.Name,
-                DisplayName = string.IsNullOrEmpty(model.DisplayName) ? model.Name : model.DisplayName,
+                DisplayName = model.DisplayName,
                 IsStatic = model.IsStatic
             };
 
@@ -183,18 +178,13 @@ namespace HRD.WebApi.Controllers
         }
 
         [HttpPost]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<ActionResult<RoleViewModel>> PostRole(RoleViewModel model)
         {
-            if(await _context.Roles.AnyAsync(a => a.Name.ToLower() == model.Name.ToLower()))
-            {
-                return BadRequest($"Role name: {model.Name} already exists.");
-            }
-
             var role = new Role
             {
                 Name = model.Name,
-                DisplayName = string.IsNullOrEmpty(model.DisplayName) ? model.Name : model.DisplayName,
+                DisplayName = model.DisplayName,
                 IsStatic = model.IsStatic,
                 Permissions = new List<Permission>()
             };
@@ -227,18 +217,13 @@ namespace HRD.WebApi.Controllers
 
         // DELETE: api/Roles/1
         [HttpDelete("{id}")]
-        // [Authorize(Policy = PolicyNames.EditHRDs)]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
         public async Task<IActionResult> DeleteRole(int id)
         {
             var role = await _context.Roles.FindAsync(id);
             if (role == null)
             {
                 return NotFound();
-            }
-
-            if(await _context.UserRoles.AnyAsync(a => a.RoleId == role.Id))
-            {
-                return BadRequest($"Cannot delete Role: {role.Name}. It is being referenced to a User");
             }
 
             try
