@@ -187,15 +187,15 @@ export default {
             let vm = this
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`)
             .then((res) => {
-                console.log(res)
                 vm.edit = {
                     id: res.data.id,
+                    email: res.data.email,
                     name: res.data.name,
                     userId: res.data.userId,
                     roles: res.data.roles
                 }
                 vm.origVal = vm.edit
-                console.log(vm.edit)
+                console.log(vm.origVal)
             })
             .catch(err => {
                 vm.snackbar.snack = true
