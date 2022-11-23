@@ -8,11 +8,17 @@ namespace HRD.WebApi.Services
     public interface IUserService
     {
         UserViewModel Get(UserLoginViewModel userLogin);
-        IEnumerable<UserViewModel> GetAll();
+        Task<IEnumerable<UserViewModel>> GetAll();
+        Task<PagedResponse<List<UserViewModel>>> GetAll(PaginationFilter filter);
         Task<int> GetOrCreateUserIdByUsername(string username);
         Task<List<Role>> GetUserRoles(int id);
         Task<IEnumerable<string>> GetUserPermissions(int userId);
 
         Task<List<User>> GetUsersByRole(string roleName);
+
+        Task<UserViewModel> GetUser(int id);
+        Task UpdateUser(UserViewModel model);
+
+        Task<bool> IsUserUsed(UserViewModel model);
     }
 }
