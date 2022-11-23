@@ -32,17 +32,15 @@
                     <v-card-text>
                         <v-container class="px-0">
                             <v-row>
-                                <v-col
-                                    cols="12"
-                                    sm="6"
-                                    md="6"
-                                >
+                                <v-col>
                                     <v-text-field
                                         v-model="edit.name"
                                         :label="forms[0].label"
                                         :rules="[rules.required]"
                                     ></v-text-field>
                                 </v-col>
+                            </v-row>
+                            <v-row>
                                 <v-col
                                     cols="12"
                                     sm="6"
@@ -52,6 +50,17 @@
                                         v-model="edit.userId"
                                         :label="forms[1].label"
                                         :rules="[rules.required]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                    cols="12"
+                                    sm="6"
+                                    md="6"
+                                >
+                                    <v-text-field
+                                        v-model="edit.email"
+                                        :label="forms[2].label"
+                                        :rules="[rules.email]"
                                     ></v-text-field>
                                 </v-col>
                             </v-row>
@@ -178,15 +187,15 @@ export default {
             let vm = this
             vm.$axios.get(`${process.env.VUE_APP_API_URL}/Users/${vm.item.id}`)
             .then((res) => {
-                console.log(res)
                 vm.edit = {
                     id: res.data.id,
+                    email: res.data.email,
                     name: res.data.name,
                     userId: res.data.userId,
                     roles: res.data.roles
                 }
                 vm.origVal = vm.edit
-                console.log(vm.edit)
+                console.log(vm.origVal)
             })
             .catch(err => {
                 vm.snackbar.snack = true

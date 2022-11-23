@@ -50,17 +50,15 @@
                     <v-card-text>
                         <v-container class="px-0">
                             <v-row>
-                                <v-col
-                                cols="12"
-                                sm="6"
-                                md="6"
-                                >
+                                <v-col>
                                     <v-text-field
                                         v-model="addUser.name"
                                         label="Name"
                                         :rules="[rules.required]"
                                     ></v-text-field>
                                 </v-col>
+                            </v-row>
+                            <v-row>
                                 <v-col
                                 cols="12"
                                 sm="6"
@@ -70,6 +68,17 @@
                                         v-model="addUser.userId"
                                         label="User ID"
                                         :rules="[rules.required]"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col
+                                cols="12"
+                                sm="6"
+                                md="6"
+                                >
+                                    <v-text-field
+                                        v-model="addUser.email"
+                                        label="Email"
+                                        :rules="[rules.email]"
                                     ></v-text-field>
                                 </v-col>
                             </v-row>
@@ -177,12 +186,14 @@ export default {
             id:0,
             name:'',
             userId:'',
+            email:'',
             roles:[]
         },
         defaultUser:{
             id:0,
             name:'',
             userId:'',
+            email:'',
             roles:[]
         }
     }),
