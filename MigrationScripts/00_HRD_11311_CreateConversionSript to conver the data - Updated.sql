@@ -22,8 +22,8 @@ CREATE TABLE [dbo].[HRD](
 	[ContactOtherPlant] [bit] NULL,
 	[GLOBENum] [nvarchar](10) NULL,
 	[ShortDescription] [nvarchar](75) NULL,
-	[Problem] [nvarchar](max) NULL,
-	[ReworkInstructions] [nvarchar](max) NULL,
+	[Problem] [nvarchar](4000) NULL,
+	[ReworkInstructions] [nvarchar](500) NULL,
 	[ReworkApproved] [bit] NULL,
 	[ReworkApprovedBy] [nvarchar](50) NULL,
 	[ReworkStarted] [datetime] NULL,
@@ -69,7 +69,7 @@ CREATE TABLE [dbo].[HRD](
 	[CodingType] [nvarchar](20) NULL,
 	[CodingDetails] [nvarchar](10) NULL,
 	[YearHeld] [nvarchar](4) NULL,
-	[QAComments] [nvarchar](max) NULL,
+	[QAComments] [nvarchar](2000) NULL,
 	[SecondaryNotification] [bit] NULL,
 	[IsPest] [bit] NULL,
 	[IsSMI] [bit] NULL,
@@ -151,7 +151,7 @@ CREATE TABLE [dbo].[HRD](
 	[VeggieComponent] [nvarchar](50) NULL,
 	[SauceType] [nvarchar](50) NULL,
 	[StarchType] [nvarchar](50) NULL,
-	[AdditionalComments] [nvarchar](max) NULL
+	[AdditionalComments] [nvarchar](1000) NULL
 
  CONSTRAINT [PK_HRD] PRIMARY KEY CLUSTERED 
 (
@@ -283,7 +283,7 @@ CREATE TABLE [dbo].[HRDNotes](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[HRDId] [int] NOT NULL,
 	[Category] [nvarchar](50) NULL,
-	[Description] [nvarchar](max) NULL,
+	[Description] [nvarchar](500) NULL,
 	[UserID] [nvarchar](50) NULL,
 	[Date] [datetime] NULL,
 	[FileName] [nvarchar](400) NULL,
