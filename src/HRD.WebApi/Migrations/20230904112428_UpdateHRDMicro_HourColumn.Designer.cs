@@ -4,6 +4,7 @@ using HRD.WebApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HRD.WebApi.Migrations
 {
     [DbContext(typeof(HRDContext))]
-    partial class HRDContextModelSnapshot : ModelSnapshot
+    [Migration("20230904112428_UpdateHRDMicro_HourColumn")]
+    partial class UpdateHRDMicro_HourColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -667,7 +669,7 @@ namespace HRD.WebApi.Migrations
 
                     b.Property<string>("Hour")
                         .IsRequired()
-                        .HasColumnType("char(1)");
+                        .HasColumnType("nvarchar(1)");
 
                     b.Property<int>("HrdId")
                         .HasColumnType("int")
