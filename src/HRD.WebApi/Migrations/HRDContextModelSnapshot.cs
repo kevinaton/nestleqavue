@@ -667,7 +667,7 @@ namespace HRD.WebApi.Migrations
 
                     b.Property<string>("Hour")
                         .IsRequired()
-                        .HasColumnType("nvarchar(1)");
+                        .HasColumnType("char(1)");
 
                     b.Property<int>("HrdId")
                         .HasColumnType("int")
