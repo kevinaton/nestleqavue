@@ -11,6 +11,7 @@ using HRD.WebApi.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using HRD.WebApi.Authorization;
 using Microsoft.Extensions.Configuration;
+using HRD.WebApi.Services;
 
 namespace HRD.WebApi.Controllers
 {
@@ -20,15 +21,17 @@ namespace HRD.WebApi.Controllers
     {
         private readonly HRDContext _context;
         protected IAuthorizationService AuthorizationService { get; }
+        private readonly IUserService _service;
         protected IConfiguration Configuration { get; }
 
         public UsersController(HRDContext context,
             IAuthorizationService authorizationService,
-            IConfiguration configuration)
+            IConfiguration configuration, IUserService service)
         {
             _context = context;
             AuthorizationService = authorizationService;
             Configuration = configuration;
+            _service = service;
         }
 
         // GET: api/Users
@@ -38,69 +41,17 @@ namespace HRD.WebApi.Controllers
         {
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.SortColumn, filter.SortOrder, filter.SearchString);
 
-            var query = _context.Users.Select(s => new UserViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                Email = s.Email,
-                UserId = s.UserId
-            });
+            var pagedResponse = await _service.GetAll(validFilter);
 
-            //Sorting
-            switch (validFilter.SortColumn)
-            {
-                case "id":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Id)
-                        : query.OrderBy(o => o.Id);
-                    break;
-                case "name":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Name)
-                        : query.OrderBy(o => o.Name);
-                    break;
-                case "userid":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.UserId)
-                        : query.OrderBy(o => o.UserId);
-                    break;
-                case "email":
-                    query = validFilter.SortOrder == "desc"
-                        ? query.OrderByDescending(o => o.Email)
-                        : query.OrderBy(o => o.Email);
-                    break;
-            }
-
-            if (!string.IsNullOrEmpty(validFilter.SearchString))
-            {
-                query = query.Where(f => f.Name.Contains(filter.SearchString)
-                                        || f.UserId.Contains(filter.SearchString)
-                                        || f.Email.Contains(filter.SearchString));
-            }
-
-            var totalRecords = await query.CountAsync();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / validFilter.PageSize);
-
-            //Pagination
-            query = query.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                .Take(validFilter.PageSize);
-
-            var itemList = await query.ToListAsync();
-
-            return Ok(new PagedResponse<List<UserViewModel>>(itemList, validFilter.PageNumber, validFilter.PageSize, totalRecords, totalPages));
+            return Ok(pagedResponse);
         }
 
         [HttpGet("GetAll")]
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<IEnumerable<UserLookupDto>>> GetAll()
         {
-            var query = _context.Users.OrderBy(o => o.Name).Select(s => new UserLookupDto
-            {
-                UserId = s.UserId,
-                Name = s.Name
-            });
 
-            var results = await query.ToListAsync();
+            var results = await _service.GetAll();
 
             return Ok(results);
         }
@@ -110,28 +61,14 @@ namespace HRD.WebApi.Controllers
         // [Authorize(Policy = PolicyNames.ViewHRDs)]
         public async Task<ActionResult<UserViewModel>> GetUser(int id)
         {
-            var user = await _context.Users.Include("UserRoles.Role").FirstOrDefaultAsync(f => f.Id == id);
+            var user = await _service.GetUser(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            var model = new UserViewModel
-            {
-                Id = id,
-                Name = user.Name,
-                UserId = user.UserId,
-                Email = user.Email,
-                Roles = user.UserRoles.Select(s => new RoleViewModel
-                {
-                    Id = s.Role.Id,
-                    Name = s.Role.Name,
-                    DisplayName = s.Role.DisplayName
-                }).ToList()
-            };
-
-            return model;
+            return user;
         }
 
         // PUT: api/Users/5
@@ -145,60 +82,12 @@ namespace HRD.WebApi.Controllers
                 return BadRequest();
             }
 
-            if (await _context.Users.AnyAsync(a => a.Id != model.Id && (a.Name.ToLower() == model.Name.ToLower() || a.UserId == model.UserId)))
+            if (await _service.IsUserUsed(model))
             {
                 return BadRequest($"User name: {model.Name} with userId {model.UserId} already exists.");
             }
 
-            var user = new User
-            {
-                Id = model.Id,
-                UserId = model.UserId,
-                Email = model.Email,
-                Name = model.Name
-            };
-
-            _context.Entry(user).State = EntityState.Modified;
-
-            //Add Or Update Role
-            foreach (var role in model.Roles)
-            {
-                var userRoleEntity = await _context.UserRoles.FirstOrDefaultAsync(f => f.UserId == model.Id && f.RoleId == role.Id);
-
-                if (userRoleEntity == null)
-                {
-                    var userRole = new UserRole
-                    {
-                        UserId = model.Id,
-                        RoleId = role.Id
-                    };
-
-                    _context.UserRoles.Add(userRole);
-                }
-            }
-
-            //Delete Role
-            var toDeleteRoleList = await _context.UserRoles.Where(f => f.UserId == model.Id && !model.Roles.Select(s => s.Id).Any(a => a == f.RoleId)).ToListAsync();
-            foreach (var userRole in toDeleteRoleList)
-            {
-                _context.Entry(userRole).State = EntityState.Deleted;
-            }
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _service.UpdateUser(model);
 
             return NoContent();
         }

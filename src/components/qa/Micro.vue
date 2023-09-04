@@ -149,7 +149,7 @@
                                         <v-text-field
                                         v-model="micro.hour"
                                         label="Hour"
-                                        type="number"
+                                        type="text"
                                         ></v-text-field>
                                     </v-col>
                                     <v-col
