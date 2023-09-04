@@ -32,7 +32,7 @@
             </v-row>
             <v-row class="mt-0">
                 <v-col>
-                    <v-textarea :readonly="!access" v-model="inpValue.qaComments" :rules="[rules.counter]" outlined label="QA Comments"></v-textarea>
+                    <v-textarea :readonly="!access" v-model="inpValue.qaComments" :rules="[rules.counterComments]" outlined label="QA Comments"></v-textarea>
                 </v-col>
             </v-row>
             <v-row>

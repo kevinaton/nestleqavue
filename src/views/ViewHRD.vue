@@ -115,7 +115,8 @@
             panel: [0,1,2,3,4,5],
             rules: {
                 required: value => !!value || 'Required.',
-                counter: value => (value || '').length <= 50 || 'Max 50 characters',
+                counter: value => (value || '').length <= 50 || 'Max 50 characters only.',
+                counterComments: value => (value || '').length <= 2000 || 'Max 2000 characters only.',
                 dayCode: value => (value || '').length <= 4 || 'Max 4 digits',
                 int: value => value <= 2147483647 || 'Max out. Enter a lesser amount',
                 fert: value => (value || '').length <= 8 || 'Input 8 digits only',
