@@ -29,7 +29,7 @@
             <v-row class="mt-0">
                 <v-col>
                     <SelectDropdownString
-                        dropdownValue="Category"
+                        dropdownValue="SubCategory"
                         :inpValue="inpValue.holdSubCategory"
                         :access="!access"
                         label="Hold Sub-category" 
