@@ -196,6 +196,7 @@
                                         color="blue darken-1"
                                         text
                                         @click="saveMicro"
+                                        :disabled="isSaveButtonDisabled"
                                     >
                                         Save
                                     </v-btn>
@@ -419,6 +420,10 @@ export default {
                 this.input.calendarMicro.menu=false
             }
             return obj
+        },
+
+        isSaveButtonDisabled() {
+            return !this.micro.hour || !this.micro.count || !this.micro.organism
         }
     },
     created() {
