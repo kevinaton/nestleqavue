@@ -196,7 +196,7 @@
                                         color="blue darken-1"
                                         text
                                         @click="saveMicro"
-                                        :disabled="isSaveButtonDisabled"
+                                        :disabled="isAddMicroSaveButtonDisabled"
                                     >
                                         Save
                                     </v-btn>
@@ -314,6 +314,7 @@
                                         color="blue darken-1"
                                         text
                                         @click="testSave"
+                                        :disabled="isAddTestingSaveButtonDisabled"
                                     >
                                         Save
                                     </v-btn>
@@ -422,8 +423,12 @@ export default {
             return obj
         },
 
-        isSaveButtonDisabled() {
+        isAddMicroSaveButtonDisabled() {
             return !this.micro.hour || !this.micro.count || !this.micro.organism
+        },
+
+        isAddTestingSaveButtonDisabled() {
+            return !this.testing.testName || !this.testing.qty || !this.testing.cost
         }
     },
     created() {
