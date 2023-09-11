@@ -458,8 +458,8 @@ export default {
             this.microIndex += 1
             this.inpValue.hrdMicros.push(addMicro)
             this.tempMicroTable.push(addMicro)
-            this.$parent.$parent.$parent.$parent.$parent.submitQA(true)
-            this.$parent.$parent.$parent.$parent.$parent.fetchQaRecords()
+            //this.$parent.$parent.$parent.$parent.$parent.submitQA(true)
+            //this.$parent.$parent.$parent.$parent.$parent.fetchQaRecords()
             this.close()
         },
         deleteMicroItem(item, index) {
