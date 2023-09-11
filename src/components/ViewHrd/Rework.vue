@@ -110,7 +110,7 @@
                 <v-row class="mt-0">
                     <v-col>
                         <v-text-field
-                            v-model="reworkStart"
+                            v-model="getReworkStarted"
                             outlined
                             readonly
                             label="Rework Started"
@@ -120,7 +120,7 @@
                     </v-col>
                     <v-col>
                         <v-text-field
-                            v-model="reworkComplete"
+                            v-model="getReworkCompleted"
                             outlined
                             readonly
                             label="Date Rework Completed"
@@ -155,7 +155,8 @@
 
 <script>
 import SelectDropdownString from '@/components/FormElements/SelectDropdownString.vue'
-import moment from 'moment'
+//import moment from 'moment'
+import moment from 'moment-timezone'
 
 export default {
     name:'Rework',
@@ -208,6 +209,28 @@ export default {
             if(this.reworkComplete)
                 return this.inpValue.reworkCompletedBy = this.user
         },
+        getReworkStarted() {
+            if(this.inpValue.reworkStarted) {
+                // detect your local machine's time zone
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                // parse the input date string using Moment.js and local time zone
+                const parsedDate = moment.tz(moment.utc(this.inpValue.reworkStarted), timeZone);
+                // format the parsed date in the desired format
+                const formattedDate = parsedDate.format('MM/DD/YYYY h:mm A');
+                return this.reworkStart = formattedDate;
+            }
+        },
+        getReworkCompleted() {
+            if(this.inpValue.reworkComplete) {
+                // detect your local machine's time zone
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                // parse the input date string using Moment.js and local time zone
+                const parsedDate = moment.tz(moment.utc(this.inpValue.reworkComplete), timeZone);
+                // format the parsed date in the desired format
+                const formattedDate = parsedDate.format('MM/DD/YYYY h:mm A');
+                return this.reworkComplete = formattedDate;
+            }
+        },
         getLaborHours() {
             if(this.inpValue.reworkStarted && this.inpValue.reworkComplete) {
                 let x = (this.dateComplete-this.dateStart) / 3600000
@@ -239,6 +262,11 @@ export default {
             this.dateStart = new Date()
             this.inpValue.reworkStarted = this.dateStart.toISOString()
             this.reworkStart = moment(this.dateStart).format('MM/DD/YYYY; hh:mm A')
+
+            if (this.inpValue.reworkComplete) {
+                this.inpValue.reworkComplete = ''
+                this.reworkComplete = ''
+            }
         },
         clearReworkStarted() {
             this.inpValue.reworkStarted = ''
