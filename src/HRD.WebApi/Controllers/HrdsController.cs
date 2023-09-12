@@ -1175,7 +1175,22 @@ namespace HRD.WebApi.Controllers
             };
 
             _context.Hrds.Add(hrd);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                
+                if ((model.IsNR.HasValue && model.IsNR.Value) || 
+                    (model.IsHRD.HasValue && model.IsHRD.Value))
+                {
+                    await SendNewQaRecordNotification(hrd.Id, model);
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
 
             model.Id = hrd.Id;
             return CreatedAtAction("GetQARecord", new { id = model.Id }, model);
@@ -1315,6 +1330,49 @@ namespace HRD.WebApi.Controllers
                 var bytes = await System.IO.File.ReadAllBytesAsync(path);
                 return File(bytes, contentType, Path.GetFileName(path));
             }
+        }
+
+        private async Task SendNewQaRecordNotification(int reportNumber, QARecordViewModel model)
+        {
+            string subject = "New HRD or NR Created";
+            string body = !string.IsNullOrWhiteSpace(model.Originator) 
+                ? $"QA Record {reportNumber} created by {model.Originator} for {model.ShortDescription}"
+                : $"QA Record {reportNumber} created for {model.ShortDescription}";
+
+            List<string> sendTo = new();
+            
+            // notify originator
+            if (!string.IsNullOrWhiteSpace(model.Originator))
+            {
+                var originator = await _userService.GetUserEmailByUserId(model.Originator);
+                if (!string.IsNullOrWhiteSpace(originator))
+                    sendTo.Add(originator);
+            }
+            
+            // notify bu Manager
+            if (!string.IsNullOrWhiteSpace(model.BUManager))
+            {
+                var buManager = await _userService.GetUserEmailByName(model.BUManager);
+                if (!string.IsNullOrWhiteSpace(buManager))
+                    sendTo.Add(buManager);
+            }
+
+            // notify line supervisor
+            if (!string.IsNullOrWhiteSpace(model.LineSupervisor)) 
+            {
+                var lineSupervisor = await _userService.GetUserEmailByName(model.LineSupervisor);
+                if (!string.IsNullOrWhiteSpace(lineSupervisor))
+                    sendTo.Add(lineSupervisor);
+            }
+
+            // notify author
+            var userId = Convert.ToInt32(User.Identities.First().Claims.First(f => f.Type == "UserId").Value);
+            var createdBy = await _userService.GetUserEmailById(userId);
+            if (!string.IsNullOrWhiteSpace(createdBy))
+                sendTo.Add(createdBy);
+
+            if (sendTo.Count > 0)
+                _emailService.SendEmail(sendTo, subject, body);
         }
 
         private async Task SendEmailNotification(bool isNotifyQaScrap, bool isNotifyPlantManagerScrap, bool isNotifyPlantControllerScrap, bool isNotifyScrapDestroyed)

@@ -62,6 +62,21 @@ namespace HRD.WebApi.Services
 
             return user.Id;
         }
+        public async Task<string> GetUserEmailById(int id)
+        {
+            var email = await _context.Users.AsNoTracking().Where(s => s.Id == id).Select(s => s.Email).FirstOrDefaultAsync();
+            return email;
+        }
+        public async Task<string> GetUserEmailByName(string name)
+        {
+            var email = await _context.Users.AsNoTracking().Where(s => s.Name.ToLower() == name.ToLower()).Select(s => s.Email).FirstOrDefaultAsync();
+            return email;
+        }
+        public async Task<string> GetUserEmailByUserId(string userId)
+        {
+            var email = await _context.Users.AsNoTracking().Where(s => s.UserId.ToLower() == userId.ToLower()).Select(s => s.Email).FirstOrDefaultAsync();
+            return email;
+        }
         public async Task<List<Role>> GetUserRoles(int id)
         {
             var result = await (from ur in _context.UserRoles
@@ -222,7 +237,7 @@ namespace HRD.WebApi.Services
                 await _context.SaveChangesAsync();
 
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
