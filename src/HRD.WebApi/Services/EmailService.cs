@@ -111,13 +111,13 @@ namespace HRD.WebApi.Services
                 // The userState can be any object that allows your callback
                 // method to identify this send operation.
                 // For this example, the userToken is a string constant.
-                string userState = "test message1";
+                //string userState = "test message1";
                 //client.SendAsync(message, userState);
                 //client.SendMailAsync(message);
                 client.Send(message);
                 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //return false;
             }

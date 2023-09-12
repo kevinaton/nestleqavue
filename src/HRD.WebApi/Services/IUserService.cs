@@ -11,6 +11,9 @@ namespace HRD.WebApi.Services
         Task<IEnumerable<UserViewModel>> GetAll();
         Task<PagedResponse<List<UserViewModel>>> GetAll(PaginationFilter filter);
         Task<int> GetOrCreateUserIdByUsername(string username);
+        Task<string> GetUserEmailById(int id);
+        Task<string> GetUserEmailByName(string name);
+        Task<string> GetUserEmailByUserId(string userId);
         Task<List<Role>> GetUserRoles(int id);
         Task<IEnumerable<string>> GetUserPermissions(int userId);
 
