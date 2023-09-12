@@ -117,7 +117,7 @@ namespace HRD.WebApi.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

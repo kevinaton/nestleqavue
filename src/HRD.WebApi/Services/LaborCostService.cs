@@ -85,7 +85,7 @@ namespace HRD.WebApi.Services
 
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
