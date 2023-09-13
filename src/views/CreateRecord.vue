@@ -250,7 +250,8 @@ export default {
                     else return true
                 }  
                 else return true
-            }
+            },
+            microHour: value => (value || '').length <= 2 || 'Max 1 character',
         },
         qaRec:{
             additionalComments:'',
