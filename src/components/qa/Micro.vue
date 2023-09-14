@@ -150,6 +150,8 @@
                                         v-model="micro.hour"
                                         label="Hour"
                                         type="text"
+                                        maxlength="1"
+                                        :rules="[rules.microHour]"
                                         ></v-text-field>
                                     </v-col>
                                     <v-col
@@ -400,7 +402,7 @@ export default {
             index: 0,
             id: 0,
             hrdId: 0,
-            hour:0,
+            hour:null,
             count:0,
             organism:''
         },
