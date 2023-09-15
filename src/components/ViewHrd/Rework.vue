@@ -238,6 +238,7 @@ export default {
             }
         }
     },
+    emits: ["change"],
     methods: {
         fetchTeamLeader() {
             let vm = this
@@ -267,6 +268,27 @@ export default {
                 this.inpValue.reworkComplete = ''
                 this.reworkComplete = ''
             }
+            
+            let vm = this,
+                formData = new FormData()
+
+            const data = {
+                id: this.inpValue.id,
+                reworkStarted: this.inpValue.reworkStarted,
+                reworkComplete: this.reworkComplete
+            };
+            formData.append('jsonString', JSON.stringify(data))
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${this.inpValue.id}/rework/set-time`, formData)
+                .then(res => {
+                    res.status
+                    this.$emit('change', true)
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
         },
         clearReworkStarted() {
             this.inpValue.reworkStarted = ''
@@ -275,6 +297,27 @@ export default {
             this.dateComplete = new Date()
             this.inpValue.reworkComplete = this.dateComplete.toISOString()
             this.reworkComplete = moment(this.dateComplete).format('MM/DD/YYYY; hh:mm A')
+            
+            let vm = this,
+                formData = new FormData()
+                
+            const data = {
+                id: this.inpValue.id,
+                reworkStarted: this.inpValue.reworkStarted,
+                reworkComplete: this.inpValue.reworkComplete
+            };
+            formData.append('jsonString', JSON.stringify(data))
+            vm.$axios.put(`${process.env.VUE_APP_API_URL}/Hrds/Hrd/${this.inpValue.id}/rework/set-time`, formData)
+                .then(res => {
+                    res.status
+                    this.$emit('change', true)
+                })
+                .catch(err => {
+                    vm.snackbar.snack = true
+                    vm.snackbar.snackColor = 'error'
+                    vm.snackbar.snackText = 'Something went wrong. Please try again later.'
+                    console.warn(err)
+                })
         },
         clearReworkCompleted() {
             this.inpValue.reworkComplete = ''

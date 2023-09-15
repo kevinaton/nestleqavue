@@ -685,6 +685,31 @@ namespace HRD.WebApi.Controllers
             return CreatedAtAction("GetHrd", new { id = model.Id }, model);
         }
 
+        // PUT: api/Hrds/5
+        [HttpPut("Hrd/{id}/rework/set-time")]
+        [Authorize(Policy = PolicyNames.EditHRDs)]
+        public async Task<IActionResult> ReworkStart(int id, [FromForm] string jsonString)
+        {
+            if (string.IsNullOrWhiteSpace(jsonString))
+                return BadRequest();
+
+            var model = JsonConvert.DeserializeObject<HrdReworkViewModel>(jsonString);
+            if (id != model.Id)
+            {
+                return BadRequest();
+            }
+
+            var hrd = await _context.Hrds.FirstOrDefaultAsync(f => f.Id == id);
+            if (hrd == null)
+                return NotFound();
+
+            hrd.ReworkStarted = model.ReworkStarted;
+            hrd.ReworkComplete = model.ReworkComplete;
+            _context.Entry(hrd).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         // DELETE: api/Hrds/5
         [HttpDelete("Hrd/{id}")]
         [Authorize(Policy = PolicyNames.EditHRDs)]

@@ -206,9 +206,9 @@ namespace HRD.WebApi.Controllers
                 await _context.Roles.AddAsync(role);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch(Exception)
             {
-                throw ex;
+                throw;
             }
             
             model.Id = role.Id;
