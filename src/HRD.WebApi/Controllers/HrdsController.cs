@@ -15,8 +15,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.StaticFiles;
 using Newtonsoft.Json;
 using System.Globalization;
-using HRD.WebApi.ViewModels.Enums;
 using HRD.WebApi.Services;
+using HRD.WebApi.ViewModels.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace HRD.WebApi.Controllers
 {
@@ -27,17 +28,20 @@ namespace HRD.WebApi.Controllers
         private readonly HRDContext _context;
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
+        private readonly ILogger<HrdsController> _logger;
         protected IConfiguration Configuration { get; }
 
         public HrdsController(HRDContext context,
             IConfiguration configuration,
             IUserService userService,
-            IEmailService emailService)
+            IEmailService emailService,
+            ILogger<HrdsController> logger)
         {
             _context = context;
             Configuration = configuration;
             _userService = userService;
             _emailService = emailService;
+            _logger = logger;
         }
 
         // GET: api/Hrds
@@ -1397,17 +1401,27 @@ namespace HRD.WebApi.Controllers
                 sendTo.Add(createdBy);
 
             if (sendTo.Count > 0)
-                _emailService.SendEmail(sendTo, subject, body);
+            {
+                try
+                {
+                    _emailService.SendEmail(sendTo, subject, body);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "An error occured while sending email notification for new QA Record.");
+                    _logger.LogTrace(e.StackTrace);
+                }
+            }
         }
 
         private async Task SendEmailNotification(bool isNotifyQaScrap, bool isNotifyPlantManagerScrap, bool isNotifyPlantControllerScrap, bool isNotifyScrapDestroyed)
         {
-            if(isNotifyQaScrap)
+            if (isNotifyQaScrap)
             {
                 var users = (await _userService.GetUsersByRole(RoleNames.QAScrapNotification))
                     .Where(f => !string.IsNullOrWhiteSpace(f.Email)).ToList();
                 //Send Email
-                foreach(var user in users)
+                foreach (var user in users)
                 {
                     //await WebMail.Send(user.Email, "", "hello");
                 }
