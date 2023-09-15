@@ -1,7 +1,9 @@
 ﻿using HRD.WebApi.Data;
 using HRD.WebApi.Data.Entities;
 using HRD.WebApi.ViewModels;
+using Microsoft.Build.Framework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +14,14 @@ namespace HRD.WebApi.Services
     public class LaborCostService : ILaborCostService
     {
         private readonly HRDContext _context;
+        private readonly ILogger<LaborCostService> _logger;
 
-        public LaborCostService(HRDContext context)
+        public LaborCostService(
+            HRDContext context,
+            ILogger<LaborCostService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task DeleteLaborCost(string year)
@@ -27,9 +33,9 @@ namespace HRD.WebApi.Services
                 _context.LaborCosts.Remove(laborCost);
                 await _context.SaveChangesAsync();
             }
-            catch
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError(e, "An error occurred while deleting labor cost.");
             }
             
         }
@@ -85,9 +91,10 @@ namespace HRD.WebApi.Services
 
                 await _context.SaveChangesAsync();
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                throw;
+                _logger.LogError(e, "An error occurred while creating labor cost.");
+                _logger.LogTrace(e.StackTrace);
             }
         }        
 

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using HRD.WebApi.Authorization;
 using Microsoft.Extensions.Configuration;
 using HRD.WebApi.Services;
+using Microsoft.Extensions.Logging;
 
 namespace HRD.WebApi.Controllers
 {
@@ -22,16 +23,21 @@ namespace HRD.WebApi.Controllers
         private readonly HRDContext _context;
         protected IAuthorizationService AuthorizationService { get; }
         private readonly IUserService _service;
+        private readonly ILogger<UsersController> _logger;
         protected IConfiguration Configuration { get; }
 
-        public UsersController(HRDContext context,
+        public UsersController(
+            HRDContext context,
             IAuthorizationService authorizationService,
-            IConfiguration configuration, IUserService service)
+            IConfiguration configuration, 
+            IUserService service,
+            ILogger<UsersController> logger)
         {
             _context = context;
             AuthorizationService = authorizationService;
             Configuration = configuration;
             _service = service;
+            _logger = logger;
         }
 
         // GET: api/Users
@@ -117,9 +123,11 @@ namespace HRD.WebApi.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw;
+                _logger.LogError(e, "Error saving user");
+                _logger.LogTrace(e.StackTrace);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while saving the user.");
             }
 
             model.Id = user.Id;

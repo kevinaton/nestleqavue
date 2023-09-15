@@ -1,6 +1,7 @@
 ﻿using HRD.WebApi.ViewModels;
 using HRD.WebApi.ViewModels.Enums;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -12,10 +13,14 @@ namespace HRD.WebApi.Services
     public class EmailService : IEmailService
     {
         public readonly IConfiguration _configuration;
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration configuration)
+        public EmailService(
+            IConfiguration configuration, 
+            ILogger<EmailService> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         public string EmailBodyMessage(EnumEmailNotificationType type)
@@ -117,9 +122,10 @@ namespace HRD.WebApi.Services
                 client.Send(message);
                 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //return false;
+                _logger.LogError(e, "An error occured while sending email.");
+                _logger.LogTrace(e.StackTrace);
             }
         }
     }
