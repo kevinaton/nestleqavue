@@ -15,9 +15,9 @@
                     </v-alert>
                 </v-col>
             </v-row>
-            <v-col class="mt-0" v-if="approveRework">
-                <v-divider></v-divider>
-                <v-row class="mt-3 mb-6">
+            <v-col class="mt-0">
+                <v-divider v-if="access"></v-divider>
+                <v-row class="mt-3 mb-6" v-if="access">
                     <v-col class="d-flex justify-end">
                         <v-btn
                         outlined
