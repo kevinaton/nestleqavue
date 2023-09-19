@@ -67,7 +67,7 @@
                         </v-row>
                     </v-col>
                     <v-col cols="12" md="6" sm="6">
-                        <v-row v-if="approveRework">
+                        <v-row>
                             <v-col cols="4" sm="4" md="4" class="d-flex align-center justify-end">
                                 <v-checkbox
                                     class="mt-0 pt-0"
